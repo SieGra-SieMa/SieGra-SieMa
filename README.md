@@ -1,4 +1,6 @@
-# SieGra SieMa
+<img src="https://user-images.githubusercontent.com/46094406/119267102-95cfd100-bbed-11eb-8843-084fc09be629.png" alt="siegrasiema2" width="1000"/>  
+
+# Description  
 This repository contains code for SieGra SieMa website and database. 
 
 # How to

@@ -1,0 +1,16 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.home-block-info {
+    height: 300px;
+    align-self: flex-end;
+    background-color: white;
+    padding: 20px;
+}
+
+.home-block-info > h2 {
+    font-size: 70px;
+    padding: 25px;
+}

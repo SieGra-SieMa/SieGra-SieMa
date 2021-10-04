@@ -1,0 +1,76 @@
+.teams-panel-block {
+    background-color: #EEE;
+    height: 440px;
+    width: 440px;
+    margin: 10px;
+    border: 2px dashed #808080;
+    border-radius: 50px;
+    padding: 50px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.teams-panel-block > h3 {
+    font-size: 30px;
+}
+
+.teams-panel-block > div {
+    display: flex;
+    flex-direction: column;
+}
+
+.teams-panel-block > div > label {
+    padding: 10px 20px;
+}
+
+#code-input {
+    display: block;
+    padding: 20px;
+    border-radius: 50px;
+    border: none;
+    outline: none;
+    font-size: 33px;
+    text-transform: uppercase;
+    letter-spacing: 20px;
+    text-align: center;
+    border: 1px solid #808080
+}
+
+#team-name-input {
+    display: block;
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: none;
+    outline: none;
+    font-size: 25px;
+    border: 1px solid #808080
+}
+
+.teams-panel-block > button,
+.teams-panel-block > a {
+    -webkit-appearance: none;
+    appearance: none;
+    border: 1px solid #e6583f;
+    background-color: #ff6347;
+    color: white;
+    justify-self: flex-end;
+    cursor: pointer;
+    border-radius: 25px;
+    padding: 10px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.teams-panel-block > button:hover,
+.teams-panel-block > a:hover {
+    border: 1px solid #d8533b;
+    background-color: #e6583f;
+}
+
+.teams-panel-block > button:active,
+.teams-panel-block > a:active {
+    border: 1px solid #be4732;
+    background-color: #d8533b;
+}

@@ -1,0 +1,9 @@
+.teams-list-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.loader {
+    padding: 50px;
+    align-self: center;
+}

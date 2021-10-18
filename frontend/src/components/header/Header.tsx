@@ -25,7 +25,7 @@ export default function Header() {
                             <li>HOME</li>
                         </Link>
                         <Link to="/teams">
-                            <li>TEAMS</li>
+                            <li>TEAMS</li>        
                         </Link>
                         {
                             user ? (

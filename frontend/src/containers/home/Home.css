@@ -1,16 +1,33 @@
-.home-container {
-    display: flex;
-    flex-direction: column;
+.content-section {
+    padding: 0;
 }
 
-.home-block-info {
-    height: 300px;
+.hero-container {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    background-position: center;
+    background-size: contain;
+    background-attachment: fixed;
+    background: linear-gradient(139deg, rgba(2,0,36,0) 0%, rgba(42,95,198,0.6783088235294117) 25%, rgba(42,104,255,0.8631827731092436) 50%, rgba(255,171,0,0.6923144257703081) 75%, rgba(255,179,0,0.32816876750700286) 100%), url("http://localhost:3000/hero.jpeg");
+}
+
+.hero-block-info {
+    height: 100%;
     align-self: flex-end;
-    background-color: white;
     padding: 20px;
 }
 
-.home-block-info > h2 {
+.hero-block-info > h2 {
     font-size: 70px;
     padding: 25px;
+}
+
+#heroImg {
+    height: 100%;
+}
+
+.img-container {
+    height: 80vh;
+    width: 100%;
 }

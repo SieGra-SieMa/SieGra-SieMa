@@ -81,10 +81,17 @@
     .dreamteam-member-list {
         flex-wrap: wrap;
     }
+    .hero-container {
+        flex-wrap: wrap;
+    }
 }
 
 @media all and (max-width: 560px) {
     .dreamteam-member-list {
+        flex-direction: column;
+    }
+
+    .hero-container {
         flex-direction: column;
     }
 

@@ -1,16 +1,6 @@
-body {
-    /* background: url("http://localhost:3000/background.png") no-repeat; */
-}
-
-.content-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 100px;
-}
-
 .container {
     width: 1400px;
+    margin: auto;
 }
 
 @media all and (max-width: 1400px) {

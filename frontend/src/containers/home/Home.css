@@ -1,35 +1,26 @@
-.content-section {
-    padding: 0;
-}
-
 .hero-container {
     display: flex;
-    flex-direction: row;
-    width: 80%;
     align-items: center;
+    justify-content: space-evenly;
+}
+
+.img-container {
+    height: 400px;
+    width: 400px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-image: url("http://localhost:3000/hero.jpeg");
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
 }
 
 .hero-block-info {
-    height: 100%;
-    align-self: flex-start;
+    max-width: 600px;
     padding: 20px;
 }
 
 .hero-block-info > h2 {
     font-size: 70px;
     padding: 25px;
-}
-
-#heroImg {
-    max-height: 100%;
-    max-width: 100%;
-    vertical-align: middle;
-}
-
-.img-container {
-    height: 30vw;
-    width: 30vw;
-    position: relative;
-    border-radius: 50%;
-    overflow: hidden;
 }

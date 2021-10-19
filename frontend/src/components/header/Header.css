@@ -2,9 +2,11 @@
     display: flex;
     justify-content: center;
     background-color: #ffffffbf;
-    position: sticky;
+    position: fixed;
+    width: 100%;
     top: 0;
     backdrop-filter: blur(4px);
+    z-index: 99;
 }
 
 .header-container {

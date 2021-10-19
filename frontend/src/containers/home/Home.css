@@ -1,18 +1,28 @@
+.main-section {
+    color: white;
+}
+
+.hero-wave {
+    position: relative;
+    bottom: -20px;
+}
+
+.hero-section {
+    background-color: #5F7B88;
+    position: relative;
+    margin: 0;
+}
+
 .hero-container {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
 }
 
-.img-container {
-    height: 400px;
+.hero-image {
     width: 400px;
     border-radius: 50%;
     overflow: hidden;
-    background-image: url("http://localhost:3000/hero.jpeg");
-    background-size: cover;
-    background-position: center;
-    flex-shrink: 0;
 }
 
 .hero-block-info {
@@ -20,7 +30,66 @@
     padding: 20px;
 }
 
-.hero-block-info > h2 {
+.hero-block-info > h2,
+.dreamteam-section h2  {
     font-size: 70px;
     padding: 25px;
+    text-align: center;
 }
+
+.dreamteam-wave {
+    margin: 0;
+    position: relative;
+    bottom: 0;
+    background-color: #5F7B88;
+}
+
+.dreamteam-section {
+    position: relative;
+    background-color: #E3A084;
+    top: -20px;
+}
+
+.dreamteam-member-list {
+    display: flex;
+    justify-content: center;
+}
+
+.dreamteam-member {
+    width: 420px;
+    padding: 25px;
+    box-sizing: border-box;
+}
+
+.dreamteam-member-image {
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 25px;
+}
+
+.dreamteam-member > h3 {
+    margin: 25px 0;
+    text-align: center;
+    font-size: 30px;
+}
+
+.dreamteam-member > p {
+    text-align: center;
+}
+
+@media all and (max-width: 1440px) {
+    .dreamteam-member-list {
+        flex-wrap: wrap;
+    }
+}
+
+@media all and (max-width: 560px) {
+    .dreamteam-member-list {
+        flex-direction: column;
+    }
+
+    .dreamteam-member {
+        width: 100%;
+    }
+}
+

@@ -7,10 +7,6 @@ export default function Header() {
 
     const user = authenticationService.currentUserValue;
 
-    const logout = () => {
-        authenticationService.logout()
-    }
-
     return (
         <header id="header">
             <div className="container header-container">
@@ -29,8 +25,8 @@ export default function Header() {
                         </Link>
                         {
                             user ? (
-                                <Link to='/' onClick={logout}>
-                                    <li>LOGOUT - {user.name} {user.surname}</li>
+                                <Link to='/account'>
+                                    <li>{user.name} {user.surname}</li>
                                 </Link>
                             ) : (
                                 <Link to="/account/authorize">

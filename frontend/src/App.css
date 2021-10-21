@@ -26,6 +26,27 @@
     object-position: center;
 }
 
+.button {
+    border: 1px solid #ca8c71;
+    background-color: #E3A084;
+    color: white;
+    padding: 10px 15px;
+    font-size: 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    margin: 40px 0px;
+}
+
+.button:hover {
+    border: 1px solid #9c664f;
+    background-color: #ca8c71;
+}
+
+.button:active {
+    border: 1px solid #855541;
+    background-color: #9c664f;
+}
+
 @media all and (max-width: 1600px) {
     .container {
         width: auto;

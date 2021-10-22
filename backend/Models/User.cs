@@ -15,6 +15,7 @@ namespace SieGraSieMa.Models
             Players = new HashSet<Player>();
             Teams = new HashSet<Team>();
             UserRoles = new HashSet<UserRole>();
+            RefreshTokens = new HashSet<RefreshToken>();
         }
 
         public int Id { get; set; }
@@ -30,5 +31,6 @@ namespace SieGraSieMa.Models
         public virtual ICollection<Player> Players { get; set; }
         public virtual ICollection<Team> Teams { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
+        public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
     }
 }

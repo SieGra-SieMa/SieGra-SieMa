@@ -26,6 +26,7 @@ namespace SieGraSieMa.Services
             Configuration = configuration;
         }
 
+        //register
         public User Create(AccountRequestDTO accountRequestDTO)
         {
             var isExist = _context.Users
@@ -59,31 +60,6 @@ namespace SieGraSieMa.Services
             return client;
         }
 
-        public AccountResponseDTO Authorize(CredentialsDTO credentialsDTO)
-        {
-
-            var salt = _context.Users
-                .Where(e => e.Email == credentialsDTO.Email)
-                .Select(e => e.Salt)
-                .First();
-
-            var password = GetPassword(credentialsDTO.Password, salt);
-
-            var user = _context.Users
-                .Where(e => e.Email == credentialsDTO.Email
-                && e.Password == password)
-                .First();
-
-            var token = CreateJwtToken(user);
-
-            return new AccountResponseDTO() {
-                Name = user.Name,
-                Surname = user.Surname,
-                Email = user.Email,
-                Token = token
-            };
-        }
-
         private string GetPassword(string password, string salt)
         {
             var valueBytes =
@@ -108,8 +84,111 @@ namespace SieGraSieMa.Services
             return Convert.ToBase64String(salt);
         }
 
+        //authorize
+        public AccountResponseDTO Authorize(AccountRequestDTO model, string ipAddress)
+        {
+            var salt = _context.Users
+                .Where(e => e.Email == model.Email)
+                .Select(e => e.Salt)
+                .First();
+
+            var password = GetPassword(model.Password, salt);
+
+            //check if user with salt and password exists
+            var user = _context.Users
+                .Where(e => e.Email == model.Email
+                && e.Password == password)
+                .First();
+
+            //generate jwt token
+            var jwtToken = CreateJwtToken(user);
+
+            //generate refresh token
+            var refreshToken = CreateRefreshToken(ipAddress);
+
+            //save generated refresh token to db
+            _context.RefreshTokens.Add(refreshToken);
+            _context.Update(user);
+            _context.SaveChanges();
+
+            return new AccountResponseDTO(user, jwtToken, refreshToken.Token);
+        }
+
         private string CreateJwtToken(User user)
         {
+            return "abc";
+        }
+
+        private RefreshToken CreateRefreshToken(string ipAddress)
+        {
+            return null;
+        }
+
+        //refresh token
+        public AccountResponseDTO RefreshToken(string token, string ipAddress)
+        {
+            //check if user with this token already exists
+            var user = _context.Users.Where(e => e.RefreshTokens.Any(t => t.Token == token)).First();
+
+            //check if token is active
+            var oldRefreshToken = user.RefreshTokens.Single(t => t.IsActive);
+
+            if(!oldRefreshToken.IsActive)
+            {
+                throw new Exception("This token already expired");
+            }
+
+            //generate new jwt token
+            var newJWTToken = CreateJwtToken(user);
+
+            //generate new token and write it to user
+            var newRefreshToken = CreateRefreshToken(ipAddress);
+
+            //write old refresh token to db
+            oldRefreshToken.Revoked = DateTime.UtcNow;
+            oldRefreshToken.RevokedByIp = ipAddress;
+            oldRefreshToken.ReplacedByToken = newRefreshToken.Token;
+            user.RefreshTokens.Add(newRefreshToken);
+            _context.Update(user);
+            _context.SaveChanges();
+
+            //return new tokens
+            return new AccountResponseDTO(user, newJWTToken, newRefreshToken.Token);
+        }
+
+        /*
+        public AccountResponseDTO Authorize(CredentialsDTO credentialsDTO)
+        {
+
+            var salt = _context.Users
+                .Where(e => e.Email == credentialsDTO.Email)
+                .Select(e => e.Salt)
+                .First();
+
+            var password = GetPassword(credentialsDTO.Password, salt);
+
+            var user = _context.Users
+                .Where(e => e.Email == credentialsDTO.Email
+                && e.Password == password)
+                .First();
+
+            var token = CreateJwtToken(user);
+
+            return new AccountResponseDTO() {
+                Name = user.Name,
+                Surname = user.Surname,
+                Email = user.Email,
+                Token = token
+            };
+        }
+        */
+
+
+
+        /*
+        private string CreateJwtToken(User user)
+        {
+
             var claims = new[]
                {
                     new Claim(ClaimTypes.Name, user.Email),
@@ -127,6 +206,9 @@ namespace SieGraSieMa.Services
             );
             var refreshToken = Guid.NewGuid();
             return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        }*/
+
+        //Token methods:
+
     }
 }

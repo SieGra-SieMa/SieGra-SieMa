@@ -61,7 +61,7 @@ export default function CreateAccount() {
                             <SyncLoader loading={true} size={12} margin={20}/>
                         </div> 
                         :
-                        <button className="button" type="submit">Create account</button>
+                        <button className="button account-enter-button" type="submit">Create account</button>
                 }
                 </div>
             </form>

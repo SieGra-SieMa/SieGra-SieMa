@@ -20,7 +20,7 @@ export default function JoinTeam() {
             <p>Enter code, which your friend gives you.</p>
             <input id="code-input" type="text" maxLength={5} placeholder="CODE"
                 value={code} onChange={e => setCode(e.target.value)}/>
-            <button style={code.length !== 5 ? { visibility: 'collapse'} : {}} onClick={onSubmit}>JOIN</button>
+            <button className="button" style={code.length !== 5 ? { visibility: 'collapse'} : {}} onClick={onSubmit}>JOIN</button>
         </div>
     );
 }

@@ -38,13 +38,13 @@ export default function Account() {
                                 value={surname} onChange={e => setSurname(e.target.value)}/>
                         </div>
                         <div className="input-controls">
-                            <button className="button" onClick={() => {
+                            <button className="button account-button" onClick={() => {
                                 setEmail(user.email)
                                 setName(user.name)
                                 setSurname(user.surname)
                                 setIsEditing(false)
                             }}>Cancel</button>
-                            <button className="button" type="submit">Save</button>
+                            <button className="button account-button" type="submit">Save</button>
                         </div>
                     </form>
                 ) : (<>
@@ -56,7 +56,7 @@ export default function Account() {
                     <br />
                     <p><b>Surname</b></p>
                     <p>{surname}</p>
-                    <button className="button" onClick={() => setIsEditing(true)}>Edit</button>
+                    <button className="button account-button" onClick={() => setIsEditing(true)}>Edit</button>
                 </>)}
             </div>
         </div>

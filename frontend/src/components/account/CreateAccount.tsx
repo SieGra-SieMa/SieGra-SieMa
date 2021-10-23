@@ -36,22 +36,22 @@ export default function CreateAccount() {
             <form onSubmit={createAccount}>
                 <div className="input-block">
                     <label htmlFor="email-input">Email</label>
-                    <input id="email-input" type="email"
+                    <input id="email-input" className="input-field" type="email"
                         value={email} onChange={e => setEmail(e.target.value)}/>
                 </div>
                 <div className="input-block">
                     <label htmlFor="name-input">Name</label>
-                    <input id="name-input" type="text"
+                    <input id="name-input" className="input-field" type="text"
                         value={name} onChange={e => setName(e.target.value)}/>
                 </div>
                 <div className="input-block">
                     <label htmlFor="surname-input">Surname</label>
-                    <input id="surname-input" type="text"
+                    <input id="surname-input" className="input-field" type="text"
                         value={surname} onChange={e => setSurname(e.target.value)}/>
                 </div>
                 <div className="input-block">
                     <label htmlFor="password-input">Password</label>
-                    <input id="password-input" type="password"
+                    <input id="password-input" className="input-field" type="password"
                         value={password} onChange={e => setPassword(e.target.value)}/>
                 </div>
                 <div className="input-block">

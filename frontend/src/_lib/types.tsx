@@ -4,6 +4,7 @@ export interface User {
 }
 
 export interface Account extends User {
+    email: string;
     token: string;
 }
 

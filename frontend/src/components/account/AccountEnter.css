@@ -14,31 +14,6 @@
     font-size: 20px;
 }
 
-.input-block {
-    display: flex;
-    flex-direction: column;
-}
-
-.input-block > label {
-    display: block;
-    padding: 5px 15px;
-    padding-top: 15px;
-}
-
-.input-block > input,
-#other-option {
-    padding: 10px 15px;
-    box-sizing: border-box;
-    border-radius: 20px;
-    outline: none;
-}
-
-.input-block > input {
-    font-size: 18px;
-    border: 1px solid #808080;
-    background-color: #EEE;
-}
-
 #other-option {
     margin: 40px 0px;
 }
@@ -69,6 +44,9 @@
 }
 
 #other-option {
+    padding: 10px 15px;
+    box-sizing: border-box;
+    border-radius: 20px;
     display: inline-block;
     text-align: center;
     background-color: white;

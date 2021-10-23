@@ -34,12 +34,12 @@ export default function SignIn() {
             <form onSubmit={signIn}>
                 <div className="input-block">
                     <label htmlFor="email-input">Email</label>
-                    <input id="email-input" type="email"
+                    <input id="email-input" className="input-field" type="email"
                         value={email} onChange={e => setEmail(e.target.value)}/>
                 </div>
                 <div className="input-block">
                     <label htmlFor="password-input">Password</label>
-                    <input id="password-input" type="password"
+                    <input id="password-input" className="input-field" type="password"
                         value={password} onChange={e => setPassword(e.target.value)}/>
                 </div>
                 <div className="input-block">

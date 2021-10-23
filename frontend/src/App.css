@@ -26,6 +26,32 @@
     object-position: center;
 }
 
+.input-field {
+    padding: 10px 15px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    outline: none;
+    font-size: 18px;
+    border: 1px solid #808080;
+    background-color: #EEE;
+}
+
+.input-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-block > label {
+    display: block;
+    padding: 5px 15px;
+    padding-top: 15px;
+}
+
+.input-controls {
+    display: flex;
+    justify-content: space-between;
+}
+
 .button {
     border: 1px solid #ca8c71;
     background-color: #E3A084;

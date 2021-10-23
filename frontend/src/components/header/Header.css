@@ -65,3 +65,7 @@
 #navigation > ul > a > li:active::after {
     margin-top: 3px;
 }
+
+.logout-button {
+    margin: 0;
+}

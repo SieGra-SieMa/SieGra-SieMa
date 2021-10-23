@@ -15,7 +15,7 @@ namespace SieGraSieMa.Models
         public SieGraSieMaContext(DbContextOptions<SieGraSieMaContext> options)
             : base(options)
         {
-            Database.SetInitializer(new SiegraSiemaInitializer());
+            //Database.SetInitializer(new SiegraSiemaInitializer());
         }
 
         public virtual DbSet<Album> Albums { get; set; }
@@ -27,6 +27,7 @@ namespace SieGraSieMa.Models
         public virtual DbSet<Medium> Media { get; set; }
         public virtual DbSet<Newsletter> Newsletters { get; set; }
         public virtual DbSet<Player> Players { get; set; }
+        public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Team> Teams { get; set; }
         public virtual DbSet<TeamInGroup> TeamInGroups { get; set; }
@@ -292,6 +293,51 @@ namespace SieGraSieMa.Models
                     .HasConstraintName("player_user");
             });
 
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.HasIndex(e => e.Id, "Id")
+                    .IsUnique();
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Token)
+                    .IsRequired()
+                    .HasMaxLength(320)
+                    .HasColumnName("token");
+
+                entity.Property(e => e.Expires)
+                    .IsRequired()
+                    .HasColumnName("expires");
+
+                entity.Property(e => e.Created)
+                    .IsRequired()
+                    .HasColumnName("created");
+
+                entity.Property(e => e.CreatedByIp)
+                    .IsRequired()
+                    .HasMaxLength(45)
+                    .HasColumnName("createdByIp");
+
+                entity.Property(e => e.Revoked)
+                    .HasColumnName("revoked");
+
+                entity.Property(e => e.RevokedByIp)
+                    .IsRequired()
+                    .HasMaxLength(45)
+                    .HasColumnName("revokedByIp");
+
+                entity.Property(e => e.ReplacedByToken)
+                    .IsRequired()
+                    .HasMaxLength(256)
+                    .HasColumnName("replacedByToken");
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.RefreshTokens)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("Table_26_user");
+
+            });
+
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.ToTable("roles");
@@ -488,9 +534,74 @@ namespace SieGraSieMa.Models
                     .HasConstraintName("Table_26_user");
             });
 
+            ModelBuilderExtensions.Seed(modelBuilder);
+
             OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    }
+    public static class ModelBuilderExtensions
+    {
+        public static void Seed(this ModelBuilder modelBuilder)
+        {
+            var salt = CreateSalt();
+
+            modelBuilder.Entity<Role>().HasData(
+                new Role() { Id = 1, Name = "Administrator" },
+                new Role() { Id = 2, Name = "Pracownik" },
+                new Role() { Id = 3, Name = "Użytkownik" }
+                );
+            modelBuilder.Entity<User>().HasData(
+            new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt },
+            new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt },
+            new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt },
+            new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt }
+            );
+
+            modelBuilder.Entity<UserRole>().HasData(
+            new UserRole() { UserId = 1, RoleId = 1 },
+            new UserRole() { UserId = 2, RoleId = 2 },
+            new UserRole() { UserId = 2, RoleId = 3 },
+            new UserRole() { UserId = 3, RoleId = 3 },
+            new UserRole() { UserId = 4, RoleId = 3 });
+
+
+            modelBuilder.Entity<Team>().HasData(
+            new Team() { Id = 1, Name = "Bogowie", CaptainId = 3, Code = "ABCD" },
+            new Team() { Id = 2, Name = "Demony", CaptainId = 3, Code = "DCBA" });
+
+
+            modelBuilder.Entity<Player>().HasData(
+            new Player() { TeamId = 1, UserId = 3 },
+            new Player() { TeamId = 1, UserId = 4 },
+            new Player() { TeamId = 2, UserId = 3 });
+
+
+            modelBuilder.Entity<Newsletter>().HasData(
+            new Newsletter() { Id = 1, UserId = 3 });
+        }
+        private static string GetPassword(string password, string salt)
+        {
+            var valueBytes =
+                       Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivation.Pbkdf2(
+                            password,
+                            System.Text.Encoding.UTF8.GetBytes(salt),
+                            Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivationPrf.HMACSHA512,
+                            1000,
+                            256 / 8
+                        );
+            return Convert.ToBase64String(valueBytes);
+        }
+        private static string CreateSalt(int maximumSaltLength = 32)
+        {
+            var salt = new byte[maximumSaltLength];
+            using (var random = new System.Security.Cryptography.RNGCryptoServiceProvider())
+            {
+                random.GetNonZeroBytes(salt);
+            }
+
+            return Convert.ToBase64String(salt);
+        }
     }
 }

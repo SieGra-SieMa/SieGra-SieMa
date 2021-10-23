@@ -7,6 +7,6 @@ namespace SieGraSieMa.DTOs
 {
     public class RevokeTokenDTO
     {
-        public string AccessToken { get; set; }
+        public string Token { get; set; }
     }
 }

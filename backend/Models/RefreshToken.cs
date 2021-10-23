@@ -21,6 +21,7 @@ namespace SieGraSieMa.Models
         public string RevokedByIp { get; set; }
         public string ReplacedByToken { get; set; }
         public bool IsActive => Revoked == null && !IsExpired;
+        public int UserId { get; set; }
         public virtual User User { get; set; }
     }
 }

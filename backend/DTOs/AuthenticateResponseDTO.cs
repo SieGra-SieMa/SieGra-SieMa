@@ -1,8 +1,9 @@
-using SieGraSieMa.Models;
-using System;
+﻿using SieGraSieMa.Models;
+
+
 namespace SieGraSieMa.DTOs
 {
-    public class AccountResponseDTO
+    public class AuthenticateResponseDTO
     {
         public string Name { get; set; }
         public string Surname { get; set; }
@@ -10,13 +11,13 @@ namespace SieGraSieMa.DTOs
         public string AccessToken { get; set; }
         public string RefreshToken { get; set; }
 
-        public AccountResponseDTO(User User, string AccessToken, string RefreshToken)
+        public AuthenticateResponseDTO(User User, string accessToken, string refreshToken)
         {
             this.Name = User.Name;
             this.Surname = User.Surname;
             this.Email = User.Email;
-            this.AccessToken = AccessToken;
-            this.RefreshToken = RefreshToken;
+            this.AccessToken = accessToken;
+            this.RefreshToken = refreshToken;
         }
     }
 }

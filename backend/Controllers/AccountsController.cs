@@ -86,8 +86,7 @@ namespace SieGraSieMa.Controllers
             return Ok(response);
 
         }
-
-
+        
         [HttpPost("revoke-token")]
         public IActionResult RevokeToken([FromBody] RevokeTokenDTO revokeTokenDTO)
         {

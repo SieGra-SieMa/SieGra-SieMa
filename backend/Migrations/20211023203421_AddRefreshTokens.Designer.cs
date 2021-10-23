@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SieGraSieMa.Models;
 
 namespace SieGraSieMa.Migrations
 {
     [DbContext(typeof(SieGraSieMaContext))]
-    partial class SieGraSieMaContextModelSnapshot : ModelSnapshot
+    [Migration("20211023203421_AddRefreshTokens")]
+    partial class AddRefreshTokens
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -305,6 +307,7 @@ namespace SieGraSieMa.Migrations
                         .HasColumnName("expires");
 
                     b.Property<string>("ReplacedByToken")
+                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("replacedByToken");
 
@@ -313,6 +316,7 @@ namespace SieGraSieMa.Migrations
                         .HasColumnName("revoked");
 
                     b.Property<string>("RevokedByIp")
+                        .IsRequired()
                         .HasMaxLength(45)
                         .HasColumnType("varchar(45)")
                         .HasColumnName("revokedByIp");
@@ -554,8 +558,8 @@ namespace SieGraSieMa.Migrations
                             Id = 1,
                             Email = "admin@gmail.com",
                             Name = "Adm",
-                            Password = "b24LKo6IxW6bO+vMJ67prmsu19fELXEoxUgVazMy7OU=",
-                            Salt = "XA3ciUNSx3mxr27NnYq8Zt3xGcV8FOQVcONg6YsJHB0=",
+                            Password = "zp4T0xc46FUkh8xbPl0lZpzt/oRUVI1eZPRf0kiH3Ok=",
+                            Salt = "mnUKOG9o0N+XellFoMC8Oo0IomwLFygk6AhBDQqdzI0=",
                             Surname = "In"
                         },
                         new
@@ -563,8 +567,8 @@ namespace SieGraSieMa.Migrations
                             Id = 2,
                             Email = "pracownik@gmail.com",
                             Name = "Prac",
-                            Password = "b24LKo6IxW6bO+vMJ67prmsu19fELXEoxUgVazMy7OU=",
-                            Salt = "XA3ciUNSx3mxr27NnYq8Zt3xGcV8FOQVcONg6YsJHB0=",
+                            Password = "zp4T0xc46FUkh8xbPl0lZpzt/oRUVI1eZPRf0kiH3Ok=",
+                            Salt = "mnUKOG9o0N+XellFoMC8Oo0IomwLFygk6AhBDQqdzI0=",
                             Surname = "Ownik"
                         },
                         new
@@ -572,8 +576,8 @@ namespace SieGraSieMa.Migrations
                             Id = 3,
                             Email = "kapitan@gmail.com",
                             Name = "Kap",
-                            Password = "b24LKo6IxW6bO+vMJ67prmsu19fELXEoxUgVazMy7OU=",
-                            Salt = "XA3ciUNSx3mxr27NnYq8Zt3xGcV8FOQVcONg6YsJHB0=",
+                            Password = "zp4T0xc46FUkh8xbPl0lZpzt/oRUVI1eZPRf0kiH3Ok=",
+                            Salt = "mnUKOG9o0N+XellFoMC8Oo0IomwLFygk6AhBDQqdzI0=",
                             Surname = "Itan"
                         },
                         new
@@ -581,8 +585,8 @@ namespace SieGraSieMa.Migrations
                             Id = 4,
                             Email = "gracz@gmail.com",
                             Name = "Gr",
-                            Password = "b24LKo6IxW6bO+vMJ67prmsu19fELXEoxUgVazMy7OU=",
-                            Salt = "XA3ciUNSx3mxr27NnYq8Zt3xGcV8FOQVcONg6YsJHB0=",
+                            Password = "zp4T0xc46FUkh8xbPl0lZpzt/oRUVI1eZPRf0kiH3Ok=",
+                            Salt = "mnUKOG9o0N+XellFoMC8Oo0IomwLFygk6AhBDQqdzI0=",
                             Surname = "acz"
                         });
                 });

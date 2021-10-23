@@ -110,6 +110,7 @@ namespace SieGraSieMa.Services
 
             //generate refresh token
             var refreshToken = CreateRefreshToken(ipAddress);
+            refreshToken.User = user;
 
             //save generated refresh token to db
             user.RefreshTokens.Add(refreshToken);
@@ -152,14 +153,17 @@ namespace SieGraSieMa.Services
         }*/
         public AuthenticateResponseDTO RefreshToken(string token, string ipAddress)
         {
+            //_context.ChangeTracker.LazyLoadingEnabled = false;
             //check if user with this token already exists
-            var user = _context.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+            var user = _context.Users.Include(User => User.RefreshTokens).SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
 
             // return null if no user found with token
             if (user == null) return null;
 
+            user.Email = "abs";
             //check if token is active
-            var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
+            var refreshToken = user.RefreshTokens.SingleOrDefault(x => x.Token == token);
+            if (refreshToken == null) return null;
 
             // return null if token is no longer active
             if (!refreshToken.IsActive) return null;
@@ -181,7 +185,7 @@ namespace SieGraSieMa.Services
 
         public bool RevokeToken(string token, string ipAddress)
         {
-            var user = _context.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+            var user = _context.Users.Include(User => User.RefreshTokens).SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
 
             // return false if no user found with token
             if (user == null) return false;

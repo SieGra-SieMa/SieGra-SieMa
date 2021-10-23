@@ -15,7 +15,7 @@ namespace SieGraSieMa.Models
         public SieGraSieMaContext(DbContextOptions<SieGraSieMaContext> options)
             : base(options)
         {
-            //Database.SetInitializer(new SiegraSiemaInitializer());
+            //this.Configuration.LazyLoadingEnabled = false;
         }
 
         public virtual DbSet<Album> Albums { get; set; }
@@ -265,7 +265,7 @@ namespace SieGraSieMa.Models
                     .WithMany(p => p.Newsletters)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Table_28_user");
+                    .HasConstraintName("newsletter_user");
             });
 
             modelBuilder.Entity<Player>(entity =>
@@ -297,12 +297,12 @@ namespace SieGraSieMa.Models
             {
                 entity.HasIndex(e => e.Id, "Id")
                     .IsUnique();
+                entity.ToTable("refresh_token");
                 entity.Property(e => e.Id).HasColumnName("id");
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Token)
                     .IsRequired()
-                    .HasMaxLength(320)
                     .HasColumnName("token");
 
                 entity.Property(e => e.Expires)
@@ -322,19 +322,16 @@ namespace SieGraSieMa.Models
                     .HasColumnName("revoked");
 
                 entity.Property(e => e.RevokedByIp)
-                    .IsRequired()
                     .HasMaxLength(45)
                     .HasColumnName("revokedByIp");
 
                 entity.Property(e => e.ReplacedByToken)
-                    .IsRequired()
-                    .HasMaxLength(256)
                     .HasColumnName("replacedByToken");
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.RefreshTokens)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Table_26_user");
+                    .HasConstraintName("refresh_token_user");
 
             });
 
@@ -407,13 +404,13 @@ namespace SieGraSieMa.Models
                     .WithMany(p => p.TeamInGroups)
                     .HasForeignKey(d => d.GroupId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("team_group");
+                    .HasConstraintName("team_in_group_group");
 
                 entity.HasOne(d => d.Team)
                     .WithMany(p => p.TeamInGroups)
                     .HasForeignKey(d => d.TeamId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Table_25_team");
+                    .HasConstraintName("team_in_group_team");
             });
 
             modelBuilder.Entity<TeamInTournament>(entity =>
@@ -435,13 +432,13 @@ namespace SieGraSieMa.Models
                     .WithMany(p => p.TeamInTournaments)
                     .HasForeignKey(d => d.TeamId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Table_27_team");
+                    .HasConstraintName("team_in_tournament_team");
 
                 entity.HasOne(d => d.Tournament)
                     .WithMany(p => p.TeamInTournaments)
                     .HasForeignKey(d => d.TournamentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Table_27_tournament");
+                    .HasConstraintName("team_in_tournament_tournament");
             });
 
             modelBuilder.Entity<Tournament>(entity =>
@@ -525,13 +522,13 @@ namespace SieGraSieMa.Models
                     .WithMany(p => p.UserRoles)
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Table_26_role");
+                    .HasConstraintName("user_role_role");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserRoles)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Table_26_user");
+                    .HasConstraintName("user_role_user");
             });
 
             ModelBuilderExtensions.Seed(modelBuilder);

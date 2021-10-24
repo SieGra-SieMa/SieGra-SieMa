@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { authenticationService } from '../../_services/authentication.service';
+import { usersService } from '../../_services/users.service';
 import './Account.css';
 
 export default function Account() {
@@ -7,26 +8,31 @@ export default function Account() {
     const user = authenticationService.currentUserValue!;
 
     const [isEditing, setIsEditing] = useState(false);
-    const [email, setEmail] = useState(user.email);
     const [name, setName] = useState(user.name);
     const [surname, setSurname] = useState(user.surname);
 
     const onSave = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setIsEditing(false);
+
+        usersService.update({
+            name, 
+            surname,
+        }).then(
+            (result) => {
+                setIsEditing(false);
+            },
+            (error) => alert(error)
+        )
     }
 
 	return (
         <div className="container account-container">
             <h1>Account Details</h1>
             <div className="account-details">
+                <p><b>Email</b></p>
+                <p>{user.email}</p>
                 {isEditing ? (
                     <form onSubmit={onSave}>
-                        <div className="input-block">
-                            <label htmlFor="email-input">Email</label>
-                            <input id="email-input" className="input-field" type="email"
-                                value={email} onChange={e => setEmail(e.target.value)}/>
-                        </div>
                         <div className="input-block">
                             <label htmlFor="name-input">Name</label>
                             <input id="name-input" className="input-field"
@@ -39,7 +45,6 @@ export default function Account() {
                         </div>
                         <div className="input-controls">
                             <button className="button account-button" onClick={() => {
-                                setEmail(user.email)
                                 setName(user.name)
                                 setSurname(user.surname)
                                 setIsEditing(false)
@@ -48,8 +53,6 @@ export default function Account() {
                         </div>
                     </form>
                 ) : (<>
-                    <p><b>Email</b></p>
-                    <p>{email}</p>
                     <br />
                     <p><b>Name</b></p>
                     <p>{name}</p>

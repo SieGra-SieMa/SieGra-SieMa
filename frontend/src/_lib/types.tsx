@@ -18,3 +18,8 @@ export interface Team {
     code: string;
     players: Player[];
 }
+
+export interface UserDetailsRequest {
+    name: string;
+    surname: string;
+}

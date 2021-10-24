@@ -20,9 +20,9 @@ export default function TeamsList() {
     }, [])
 
     return (
-        <div className="content-section">
+        <div className="container">
             <h1>My Teams</h1>
-            <div className="container teams-list-container">
+            <div className="teams-list-container">
                 {
                     teams ? teams.map((team, index) => (
                         <TeamsListItem key={index} team={team}/>

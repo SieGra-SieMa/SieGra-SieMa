@@ -8,8 +8,12 @@ export interface Account extends User {
     token: string;
 }
 
+export interface Player {
+    user: User;
+}
+
 export interface Team {
     name: string;
     code: string;
-    players: User[];
+    players: Player[];
 }

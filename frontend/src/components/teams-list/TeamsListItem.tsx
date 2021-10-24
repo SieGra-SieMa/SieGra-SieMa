@@ -23,7 +23,7 @@ export default function TeamsListItem({ team }: TeamsListItemProp) {
                         team.players.map((player, index) => (
                             <li className="participants-list-item" key={index}>
                                 <img src="/placeholder.png" alt="" />
-                                <p>{`${player.name} ${player.surname}`}</p>
+                                <p>{`${player.user.name} ${player.user.surname}`}</p>
                             </li>
                         ))
                     }

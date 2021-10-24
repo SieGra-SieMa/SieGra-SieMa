@@ -17,9 +17,9 @@ export default function Account() {
     }
 
 	return (
-        <div className="container">
-            <div className="account-container">
-                <h2>Account Details</h2>
+        <div className="container account-container">
+            <h1>Account Details</h1>
+            <div className="account-details">
                 {isEditing ? (
                     <form onSubmit={onSave}>
                         <div className="input-block">

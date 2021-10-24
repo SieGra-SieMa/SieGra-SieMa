@@ -160,7 +160,7 @@ namespace SieGraSieMa.Services
             // return null if no user found with token
             if (user == null) return null;
 
-            user.Email = "abs";
+            //user.Email = "abs";
             //check if token is active
             var refreshToken = user.RefreshTokens.SingleOrDefault(x => x.Token == token);
             if (refreshToken == null) return null;
@@ -207,7 +207,8 @@ namespace SieGraSieMa.Services
         private string CreateAccessToken(User user)
         {
             //return "abc";
-            var roles = user.UserRoles.ToList();
+            var roles = _context.Users.Include(u=>u.UserRoles).ThenInclude(us=>us.Role).SingleOrDefault(u => u.Email == user.Email).UserRoles.ToList();
+            //var roles = user.UserRoles.ToList();
             var claims = new Claim[roles.Count + 1];
             claims[0] = new Claim(ClaimTypes.Name, user.Email);
             for(int i = 1; i <= roles.Count; i++)

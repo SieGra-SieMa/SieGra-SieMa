@@ -545,9 +545,9 @@ namespace SieGraSieMa.Models
             var salt = CreateSalt();
 
             modelBuilder.Entity<Role>().HasData(
-                new Role() { Id = 1, Name = "Administrator" },
-                new Role() { Id = 2, Name = "Pracownik" },
-                new Role() { Id = 3, Name = "Użytkownik" }
+                new Role() { Id = 1, Name = "Admin" },
+                new Role() { Id = 2, Name = "Emp" },
+                new Role() { Id = 3, Name = "User" }
                 );
             modelBuilder.Entity<User>().HasData(
             new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt },

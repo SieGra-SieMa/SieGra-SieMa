@@ -67,9 +67,9 @@ namespace SieGraSieMa.Migrations
                 columns: new[] { "id", "name" },
                 values: new object[,]
                 {
-                    { 1, "Administrator" },
-                    { 2, "Pracownik" },
-                    { 3, "Użytkownik" }
+                    { 1, "Admin" },
+                    { 2, "Emp" },
+                    { 3, "User" }
                 });
 
             migrationBuilder.InsertData(

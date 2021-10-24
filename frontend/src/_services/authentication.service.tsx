@@ -1,8 +1,9 @@
 import { BehaviorSubject } from 'rxjs';
 import Config from '../config.json';
+import { Account } from '../_lib/types';
 import { handleResponse } from '../_lib/_utils/handle-response';
 
-const currentUserSubject = new BehaviorSubject(
+const currentUserSubject = new BehaviorSubject<Account | null>(
     localStorage.getItem('currentUser') && JSON.parse(localStorage.getItem('currentUser')!)
 );
 

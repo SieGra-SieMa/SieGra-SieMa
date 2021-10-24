@@ -1,5 +1,5 @@
 .teams-list-item-block {
-    margin: 15px;
+    margin: 15px 0;
     display: flex;
     flex-direction: column;
     border-radius: 25px;

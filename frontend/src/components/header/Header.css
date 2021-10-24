@@ -6,7 +6,7 @@
     width: 100%;
     top: 0;
     backdrop-filter: blur(4px);
-    z-index: 99;
+    z-index: 9999;
 }
 
 .header-container {
@@ -64,4 +64,15 @@
 
 #navigation > ul > a > li:active::after {
     margin-top: 3px;
+}
+
+.logout-button {
+    margin: 0;
+}
+
+@media all and (max-width: 720px) {
+    .header-container {
+        flex-direction: column;
+        align-items: center;
+    }
 }

@@ -7,7 +7,7 @@ export default function ManageTeams() {
         <div className="teams-panel-block">
             <h3>Manage your own teams</h3>
             <p>Edit your teams.</p>
-            <Link to='/teams/manage'>MANAGE</Link>
+            <Link className="button" to='/teams/manage'>MANAGE</Link>
         </div>
     );
 }

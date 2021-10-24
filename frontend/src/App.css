@@ -1,6 +1,8 @@
 .container {
     width: 1600px;
     margin: auto;
+    padding: 0 25px;
+    box-sizing: border-box;
 }
 
 
@@ -24,6 +26,53 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
+}
+
+.input-field {
+    padding: 10px 15px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    outline: none;
+    font-size: 18px;
+    border: 1px solid #808080;
+    background-color: #EEE;
+}
+
+.input-block {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-block > label {
+    display: block;
+    padding: 5px 15px;
+    padding-top: 15px;
+}
+
+.input-controls {
+    display: flex;
+    justify-content: space-between;
+}
+
+.button {
+    border: 1px solid #ca8c71;
+    background-color: #E3A084;
+    color: white;
+    padding: 10px 15px;
+    font-size: 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.button:hover {
+    border: 1px solid #9c664f;
+    background-color: #ca8c71;
+}
+
+.button:active {
+    border: 1px solid #855541;
+    background-color: #9c664f;
 }
 
 @media all and (max-width: 1600px) {

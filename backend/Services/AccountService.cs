@@ -53,6 +53,11 @@ namespace SieGraSieMa.Services
             };
 
             _context.Users.Add(client);
+            client.UserRoles.Add(new UserRole
+            {
+                Role = _context.Roles.Where(r => r.Name == "User").FirstOrDefault(),
+                User = client
+            });
             _context.SaveChanges();
 
             client.Password = null;
@@ -88,6 +93,8 @@ namespace SieGraSieMa.Services
         //authorize
         public AuthenticateResponseDTO Authenticate(AuthenticateRequestDTO request, string ipAddress)
         {
+            if (_context.Users
+                .Where(e => e.Email == request.Email).FirstOrDefault() == null) return null;
             //decode password with salt
             var salt = _context.Users
                 .Where(e => e.Email == request.Email)
@@ -207,17 +214,17 @@ namespace SieGraSieMa.Services
         private string CreateAccessToken(User user)
         {
             //return "abc";
-            var roles = _context.Users.Include(u=>u.UserRoles).ThenInclude(us=>us.Role).SingleOrDefault(u => u.Email == user.Email).UserRoles.ToList();
+            var roles = _context.Users.Include(u => u.UserRoles).ThenInclude(us => us.Role).SingleOrDefault(u => u.Email == user.Email).UserRoles.ToList();
             //var roles = user.UserRoles.ToList();
             var claims = new Claim[roles.Count + 1];
             claims[0] = new Claim(ClaimTypes.Name, user.Email);
-            for(int i = 1; i <= roles.Count; i++)
+            for (int i = 1; i <= roles.Count; i++)
             {
-                claims[i] = new Claim(ClaimTypes.Role, roles[i-1].Role.Name);
+                claims[i] = new Claim(ClaimTypes.Role, roles[i - 1].Role.Name);
             }
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration["SecretKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            
+
             var token = new JwtSecurityToken
             (
                 issuer: "SieGraSieMa",

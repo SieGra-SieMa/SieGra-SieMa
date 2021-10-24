@@ -22,7 +22,7 @@ export default function CreateTeam() {
                 <label htmlFor="team-name-input">Team name:</label>
                 <input id="team-name-input" type="text" value={name} onChange={e => setName(e.target.value)}/>
             </div>
-            <button style={name.length === 0 ? { visibility: 'collapse'} : {}} onClick={onSubmit}>CREATE</button>
+            <button className="button" style={name.length === 0 ? { visibility: 'collapse'} : {}} onClick={onSubmit}>CREATE</button>
         </div>
     );
 }

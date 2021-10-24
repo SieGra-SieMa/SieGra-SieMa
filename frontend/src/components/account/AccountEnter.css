@@ -14,7 +14,8 @@
     font-size: 20px;
 }
 
-#other-option {
+#other-option,
+.account-enter-button {
     margin: 40px 0px;
 }
 

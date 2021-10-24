@@ -11,7 +11,7 @@ export default function Header() {
 
     const logout = () => {
         authenticationService.logout();
-        history.push('/accounts/authorize');
+        history.push('/account/authorize');
     }
 
     return (

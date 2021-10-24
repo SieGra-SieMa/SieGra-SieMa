@@ -49,7 +49,7 @@ export default function SignIn() {
                             <SyncLoader loading={true} size={12} margin={20}/>
                         </div> 
                         :
-                        <button className="button" type="submit">Sign in</button>
+                        <button className="button account-enter-button" type="submit">Sign in</button>
                 }
                 </div>
             </form>

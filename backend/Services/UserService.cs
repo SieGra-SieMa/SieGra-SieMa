@@ -46,7 +46,6 @@ namespace SieGraSieMa.Services
         public void UpdateUser(string email, UserDetailsDTO userDetails)
         {
             var user = GetUser(email);
-            user.Email = userDetails.Email;
             user.Name = userDetails.Name;
             user.Surname = userDetails.Surname;
             _SieGraSieMaContext.Users.Update(user);

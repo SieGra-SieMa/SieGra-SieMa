@@ -17,7 +17,7 @@ export default function SignIn() {
         e.preventDefault();
         setError(false);
         setLoading(true);
-        authenticationService.authorize(email, password)
+        authenticationService.authenticate(email, password)
             .then(
                 _ => history.push('/'),
                 _ => {

@@ -5,7 +5,8 @@ export interface User {
 
 export interface Account extends User {
     email: string;
-    token: string;
+    accessToken: string;
+    refreshToken: string;
 }
 
 export interface Player {

@@ -55,6 +55,7 @@ namespace SieGraSieMa.Services
         {
             var team = _SieGraSieMaContext.Teams
                 .Include(e => e.Players)
+                .ThenInclude(e => e.User)
                 .Where(e => e.Id == id)
                 .SingleOrDefault();
 
@@ -71,8 +72,8 @@ namespace SieGraSieMa.Services
 
             if (team.CaptainId == user.Id)
             {
-                var newCaptain = team.Players.FirstOrDefault().User;
-                if (player != null)
+                var newCaptain = team.Players.FirstOrDefault()?.User;
+                if (newCaptain != null)
                 {
                     team.Captain = newCaptain;
                 }

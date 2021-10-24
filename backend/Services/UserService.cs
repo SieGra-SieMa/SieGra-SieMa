@@ -1,4 +1,5 @@
-﻿using SieGraSieMa.Models;
+﻿using SieGraSieMa.DTOs.Users;
+using SieGraSieMa.Models;
 using SieGraSieMa.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -42,12 +43,12 @@ namespace SieGraSieMa.Services
             return _SieGraSieMaContext.Users.ToList();
         }
 
-        public void UpdateUser(int Id, User NewUser)
+        public void UpdateUser(string email, UserDetailsDTO userDetails)
         {
-            var User = GetUser(Id);
-            User.Email = NewUser.Email;
-            User.Name = NewUser.Name;
-            User.Surname = NewUser.Surname;
+            var user = GetUser(email);
+            user.Name = userDetails.Name;
+            user.Surname = userDetails.Surname;
+            _SieGraSieMaContext.Users.Update(user);
             _SieGraSieMaContext.SaveChanges();
         }
     }

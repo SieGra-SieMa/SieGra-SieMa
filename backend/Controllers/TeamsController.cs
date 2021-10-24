@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TeamsController : ControllerBase
@@ -27,7 +28,7 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Users")]
+        [Authorize(Roles = "User")]
         public IActionResult GetTeamByMail()
         {
             try
@@ -45,7 +46,7 @@ namespace SieGraSieMa.Controllers
 
         //[HttpPost("create")]
         [HttpPost()]
-        [Authorize(Roles = "Users")]
+        [Authorize(Roles = "User")]
         public IActionResult Create(TeamDTO teamDTO)
         {
             try
@@ -63,7 +64,7 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpPost("join")]
-        [Authorize(Roles = "Users")]
+        [Authorize(Roles = "User")]
         public IActionResult Join(TeamCodeDTO teamCodeDTO)
         {
             try
@@ -82,7 +83,7 @@ namespace SieGraSieMa.Controllers
             
         }
         [HttpPost("leave")]
-        [Authorize(Roles = "Users")]
+        [Authorize(Roles = "User")]
         public IActionResult Leave(TeamLeaveDTO teamLeaveDTO)
         {
             try

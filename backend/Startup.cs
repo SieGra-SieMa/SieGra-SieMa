@@ -58,6 +58,7 @@ namespace SieGraSieMa
                     builder => {
                         builder.WithOrigins("http://localhost:3000");
                         builder.AllowAnyHeader();
+                        builder.AllowAnyMethod();
                     });
             });
             services.AddControllers().AddNewtonsoftJson(options =>

@@ -1,15 +1,23 @@
 import { useState } from 'react';
+import { useHistory } from 'react-router';
 import { authenticationService } from '../../_services/authentication.service';
 import { usersService } from '../../_services/users.service';
-import './Account.css';
+import './AccountProfile.css';
 
-export default function Account() {
+export default function AccountProfile() {
+
+    const history = useHistory();
 
     const user = authenticationService.currentUserValue!;
 
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState(user.name);
     const [surname, setSurname] = useState(user.surname);
+
+    if (!user) {
+        history.push('/account/authorize');
+        return null;
+    }
 
     const onSave = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -20,6 +28,7 @@ export default function Account() {
         }).then(
             (result) => {
                 setIsEditing(false);
+                authenticationService.setCurrentUser({ ...user, name, surname });
             },
             (error) => alert(error)
         )

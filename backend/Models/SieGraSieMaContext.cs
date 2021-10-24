@@ -15,6 +15,7 @@ namespace SieGraSieMa.Models
         public SieGraSieMaContext(DbContextOptions<SieGraSieMaContext> options)
             : base(options)
         {
+            //this.Configuration.LazyLoadingEnabled = false;
         }
 
         public virtual DbSet<Album> Albums { get; set; }
@@ -26,6 +27,7 @@ namespace SieGraSieMa.Models
         public virtual DbSet<Medium> Media { get; set; }
         public virtual DbSet<Newsletter> Newsletters { get; set; }
         public virtual DbSet<Player> Players { get; set; }
+        public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Team> Teams { get; set; }
         public virtual DbSet<TeamInGroup> TeamInGroups { get; set; }
@@ -38,7 +40,7 @@ namespace SieGraSieMa.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseMySQL("Server=localhost;database=SieGraSieMa;user=siegra;password=siema");
             }
         }
@@ -263,7 +265,7 @@ namespace SieGraSieMa.Models
                     .WithMany(p => p.Newsletters)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Table_28_user");
+                    .HasConstraintName("newsletter_user");
             });
 
             modelBuilder.Entity<Player>(entity =>
@@ -289,6 +291,48 @@ namespace SieGraSieMa.Models
                     .WithMany(p => p.Players)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("player_user");
+            });
+
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.HasIndex(e => e.Id, "Id")
+                    .IsUnique();
+                entity.ToTable("refresh_token");
+                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Token)
+                    .IsRequired()
+                    .HasColumnName("token");
+
+                entity.Property(e => e.Expires)
+                    .IsRequired()
+                    .HasColumnName("expires");
+
+                entity.Property(e => e.Created)
+                    .IsRequired()
+                    .HasColumnName("created");
+
+                entity.Property(e => e.CreatedByIp)
+                    .IsRequired()
+                    .HasMaxLength(45)
+                    .HasColumnName("createdByIp");
+
+                entity.Property(e => e.Revoked)
+                    .HasColumnName("revoked");
+
+                entity.Property(e => e.RevokedByIp)
+                    .HasMaxLength(45)
+                    .HasColumnName("revokedByIp");
+
+                entity.Property(e => e.ReplacedByToken)
+                    .HasColumnName("replacedByToken");
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.RefreshTokens)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("refresh_token_user");
+
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -360,13 +404,13 @@ namespace SieGraSieMa.Models
                     .WithMany(p => p.TeamInGroups)
                     .HasForeignKey(d => d.GroupId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("team_group");
+                    .HasConstraintName("team_in_group_group");
 
                 entity.HasOne(d => d.Team)
                     .WithMany(p => p.TeamInGroups)
                     .HasForeignKey(d => d.TeamId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Table_25_team");
+                    .HasConstraintName("team_in_group_team");
             });
 
             modelBuilder.Entity<TeamInTournament>(entity =>
@@ -388,13 +432,13 @@ namespace SieGraSieMa.Models
                     .WithMany(p => p.TeamInTournaments)
                     .HasForeignKey(d => d.TeamId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Table_27_team");
+                    .HasConstraintName("team_in_tournament_team");
 
                 entity.HasOne(d => d.Tournament)
                     .WithMany(p => p.TeamInTournaments)
                     .HasForeignKey(d => d.TournamentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Table_27_tournament");
+                    .HasConstraintName("team_in_tournament_tournament");
             });
 
             modelBuilder.Entity<Tournament>(entity =>
@@ -478,18 +522,83 @@ namespace SieGraSieMa.Models
                     .WithMany(p => p.UserRoles)
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Table_26_role");
+                    .HasConstraintName("user_role_role");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserRoles)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Table_26_user");
+                    .HasConstraintName("user_role_user");
             });
+
+            ModelBuilderExtensions.Seed(modelBuilder);
 
             OnModelCreatingPartial(modelBuilder);
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
+    }
+    public static class ModelBuilderExtensions
+    {
+        public static void Seed(this ModelBuilder modelBuilder)
+        {
+            var salt = CreateSalt();
+
+            modelBuilder.Entity<Role>().HasData(
+                new Role() { Id = 1, Name = "Admin" },
+                new Role() { Id = 2, Name = "Emp" },
+                new Role() { Id = 3, Name = "User" }
+                );
+            modelBuilder.Entity<User>().HasData(
+            new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt },
+            new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt },
+            new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt },
+            new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt }
+            );
+
+            modelBuilder.Entity<UserRole>().HasData(
+            new UserRole() { UserId = 1, RoleId = 1 },
+            new UserRole() { UserId = 2, RoleId = 2 },
+            new UserRole() { UserId = 2, RoleId = 3 },
+            new UserRole() { UserId = 3, RoleId = 3 },
+            new UserRole() { UserId = 4, RoleId = 3 });
+
+
+            modelBuilder.Entity<Team>().HasData(
+            new Team() { Id = 1, Name = "Bogowie", CaptainId = 3, Code = "ABCDE" },
+            new Team() { Id = 2, Name = "Demony", CaptainId = 3, Code = "EDCBA" });
+
+
+            modelBuilder.Entity<Player>().HasData(
+            new Player() { TeamId = 1, UserId = 3 },
+            new Player() { TeamId = 1, UserId = 4 },
+            new Player() { TeamId = 2, UserId = 3 });
+
+
+            modelBuilder.Entity<Newsletter>().HasData(
+            new Newsletter() { Id = 1, UserId = 3 });
+        }
+        private static string GetPassword(string password, string salt)
+        {
+            var valueBytes =
+                       Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivation.Pbkdf2(
+                            password,
+                            System.Text.Encoding.UTF8.GetBytes(salt),
+                            Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivationPrf.HMACSHA512,
+                            1000,
+                            256 / 8
+                        );
+            return Convert.ToBase64String(valueBytes);
+        }
+        private static string CreateSalt(int maximumSaltLength = 32)
+        {
+            var salt = new byte[maximumSaltLength];
+            using (var random = new System.Security.Cryptography.RNGCryptoServiceProvider())
+            {
+                random.GetNonZeroBytes(salt);
+            }
+
+            return Convert.ToBase64String(salt);
+        }
     }
 }

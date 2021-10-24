@@ -14,9 +14,7 @@ function update(user: UserDetailsRequest): Promise<Response> {
             'Content-Type': 'application/json', 
             ...authHeader(),
         },
-        body: JSON.stringify({ 
-            user,
-        })
+        body: JSON.stringify(user)
     }
 
     return fetch(`${Config.HOST}/api/users/change-details`, requestOptions)

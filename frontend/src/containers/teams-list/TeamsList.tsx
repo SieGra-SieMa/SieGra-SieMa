@@ -6,8 +6,14 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { Team } from '../../_lib/types';
 import SyncLoader from 'react-spinners/SyncLoader';
+import { authenticationService } from '../../_services/authentication.service';
+import { useHistory } from 'react-router';
 
 export default function TeamsList() {
+
+    const history = useHistory();
+
+    const user = authenticationService.currentUserValue!;
 
     const [teams, setTeams] = useState<Team[] | null>(null);
 
@@ -19,13 +25,27 @@ export default function TeamsList() {
             )
     }, [])
 
+    const onRemove = (id: number) => {
+        const data = teams ? [...teams] : [];
+        const index = data.findIndex(e => e.id === id) ?? -1;
+        if (index >= 0) {
+            data.splice(index, 1);
+            setTeams(data);
+        }
+    };
+
+    if (!user) {
+        history.push('/');
+        return null;
+    }
+
     return (
         <div className="container">
             <h1>My Teams</h1>
             <div className="teams-list-container">
                 {
                     teams ? teams.map((team, index) => (
-                        <TeamsListItem key={index} team={team}/>
+                        <TeamsListItem key={index} team={team} onRemove={onRemove}/>
                     )) : 
                     <div className="loader">
                         <SyncLoader loading={true} size={20} margin={20}/>

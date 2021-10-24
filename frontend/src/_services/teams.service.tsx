@@ -5,7 +5,8 @@ import { authHeader } from '../_lib/_utils/auth-header';
 export const teamsService = {
     join,
     create,
-    get
+    get,
+    leave,
 };
 
 function join(code: string): Promise<Response> {
@@ -48,5 +49,19 @@ function get() {
     }
 
     return fetch(`${Config.HOST}/api/teams/`, requestOptions)
+        .then(handleResponse)
+};
+
+function leave(id: number): Promise<Response> {
+    const requestOptions = {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json', 
+            ...authHeader() 
+        },
+        body: JSON.stringify({ id })
+    }
+
+    return fetch(`${Config.HOST}/api/teams/leave`, requestOptions)
         .then(handleResponse)
 };

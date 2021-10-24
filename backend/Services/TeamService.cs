@@ -106,9 +106,11 @@ namespace SieGraSieMa.Services
 
         public IEnumerable<Team> GetTeamsWithUser(string email)
         {
-            return _SieGraSieMaContext.Teams.Include(e => e.Players).ThenInclude(p=>p.User)
-               .Where(e => e.Players.Any(e => e.User.Email == email)).ToList();
-            //return _SieGraSieMaContext.Teams.Include(e => e.Players).ToList();
+            return _SieGraSieMaContext.Teams
+                .Where(e => e.Players.Any(e => e.User.Email == email))
+                .Include(e => e.Players)
+                .ThenInclude(e => e.User)
+                .ToList();
         }
 
         public IEnumerable<Team> GetTeams()

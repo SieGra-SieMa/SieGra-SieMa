@@ -47,30 +47,3 @@
     font-size: 25px;
     border: 1px solid #808080
 }
-
-.teams-panel-block > button,
-.teams-panel-block > a {
-    -webkit-appearance: none;
-    appearance: none;
-    border: 1px solid #e6583f;
-    background-color: #ff6347;
-    color: white;
-    justify-self: flex-end;
-    cursor: pointer;
-    border-radius: 25px;
-    padding: 10px;
-    font-size: 20px;
-    text-align: center;
-}
-
-.teams-panel-block > button:hover,
-.teams-panel-block > a:hover {
-    border: 1px solid #d8533b;
-    background-color: #e6583f;
-}
-
-.teams-panel-block > button:active,
-.teams-panel-block > a:active {
-    border: 1px solid #be4732;
-    background-color: #d8533b;
-}

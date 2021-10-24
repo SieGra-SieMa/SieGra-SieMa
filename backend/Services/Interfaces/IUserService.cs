@@ -1,4 +1,5 @@
-﻿using SieGraSieMa.Models;
+﻿using SieGraSieMa.DTOs.Users;
+using SieGraSieMa.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace SieGraSieMa.Services.Interfaces
     public interface IUserService
     {
         void AddUser(User User);
-        void UpdateUser(int Id, User User);
+        void UpdateUser(string email, UserDetailsDTO userDetailsDTO);
         void DeleteUser(int Id);
         User GetUser(int Id);
         User GetUser(string Email);

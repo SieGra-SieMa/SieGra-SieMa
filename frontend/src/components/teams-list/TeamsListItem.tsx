@@ -1,6 +1,7 @@
 import React from 'react';
 import './TeamsListItem.css';
 import { Team } from '../../_lib/types';
+import { teamsService } from '../../_services/teams.service';
 
 type TeamsListItemProp = {
     team: Team
@@ -22,7 +23,6 @@ export default function TeamsListItem({ team }: TeamsListItemProp) {
                     {
                         team.players.map((player, index) => (
                             <li className="participants-list-item" key={index}>
-                                <img src="/placeholder.png" alt="" />
                                 <p>{`${player.user.name} ${player.user.surname}`}</p>
                             </li>
                         ))
@@ -30,7 +30,7 @@ export default function TeamsListItem({ team }: TeamsListItemProp) {
                 </ul>
             </div>
             <div className="teams-list-item-footer">
-                <div className="exit-button">
+                <div className="exit-button" onClick={() => teamsService.leave(team.id)}>
                     EXIT
                 </div>
             </div>

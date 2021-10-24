@@ -13,6 +13,7 @@ export interface Player {
 }
 
 export interface Team {
+    id: number;
     name: string;
     code: string;
     players: Player[];

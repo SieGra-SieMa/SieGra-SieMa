@@ -12,7 +12,7 @@ import Footer from './components/footer/Footer';
 import TeamsPanel from './containers/teams-panel/TeamsPanel';
 import TeamsList from './containers/teams-list/TeamsList';
 import Home from './containers/home/Home';
-import Account from './components/account/Account';
+import AccountProfile from './components/account/AccountProfile';
 
 export default function App() {
     return (
@@ -28,7 +28,7 @@ export default function App() {
                     <SignIn />
                 </Route>
                 <Route path="/account">
-                    <Account />
+                    <AccountProfile />
                 </Route>
                 <Route path="/teams/manage">
                     <TeamsList />

@@ -9,10 +9,11 @@ const currentUserSubject = new BehaviorSubject<Account | null>(
 
 export const authenticationService = {
     register,
-    authorize,
+    authenticate,
     logout,
     currentUser: currentUserSubject.asObservable(),
-    get currentUserValue () { return currentUserSubject.value }
+    get currentUserValue () { return currentUserSubject.value },
+    setCurrentUser,
 };
 
 function register(name: string, surname: string, email: string, password: string) {
@@ -26,14 +27,14 @@ function register(name: string, surname: string, email: string, password: string
         .then(handleResponse)
 };
 
-function authorize(email: string, password: string) {
+function authenticate(email: string, password: string) {
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ email, password, name: "1", surname: "1" })
     }
 
-    return fetch(`${Config.HOST}/api/accounts/authorize`, requestOptions)
+    return fetch(`${Config.HOST}/api/accounts/authenticate`, requestOptions)
         .then(handleResponse)
         .then(user => {
             localStorage.setItem('currentUser', JSON.stringify(user))
@@ -44,6 +45,11 @@ function authorize(email: string, password: string) {
 };
 
 function logout() {
-    localStorage.removeItem('currentUser')
-    currentUserSubject.next(null)
+    localStorage.removeItem('currentUser');
+    currentUserSubject.next(null);
 };
+
+function setCurrentUser(user: Account) {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    currentUserSubject.next(user);
+}

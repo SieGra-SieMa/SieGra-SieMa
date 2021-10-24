@@ -565,8 +565,8 @@ namespace SieGraSieMa.Models
 
 
             modelBuilder.Entity<Team>().HasData(
-            new Team() { Id = 1, Name = "Bogowie", CaptainId = 3, Code = "ABCD" },
-            new Team() { Id = 2, Name = "Demony", CaptainId = 3, Code = "DCBA" });
+            new Team() { Id = 1, Name = "Bogowie", CaptainId = 3, Code = "ABCDE" },
+            new Team() { Id = 2, Name = "Demony", CaptainId = 3, Code = "EDCBA" });
 
 
             modelBuilder.Entity<Player>().HasData(

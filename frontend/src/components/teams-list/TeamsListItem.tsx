@@ -4,10 +4,11 @@ import { Team } from '../../_lib/types';
 import { teamsService } from '../../_services/teams.service';
 
 type TeamsListItemProp = {
-    team: Team
+    team: Team,
+    onRemove: (id: number) => void,
 }
 
-export default function TeamsListItem({ team }: TeamsListItemProp) {
+export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
     return (
         <div className="teams-list-item-block">
             <div className="teams-list-item-header">
@@ -30,7 +31,10 @@ export default function TeamsListItem({ team }: TeamsListItemProp) {
                 </ul>
             </div>
             <div className="teams-list-item-footer">
-                <div className="exit-button" onClick={() => teamsService.leave(team.id)}>
+                <div className="exit-button" onClick={() => {
+                    teamsService.leave(team.id)
+                        .then(() => onRemove(team.id))
+                }}>
                     EXIT
                 </div>
             </div>

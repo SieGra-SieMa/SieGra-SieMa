@@ -14,57 +14,8 @@
     font-size: 20px;
 }
 
-.input-block {
-    display: flex;
-    flex-direction: column;
-}
-
-.input-block > label {
-    display: block;
-    padding: 5px 15px;
-    padding-top: 15px;
-}
-
-.input-block > input,
-.input-block > button,
-#other-option {
-    padding: 10px 15px;
-    box-sizing: border-box;
-    border-radius: 20px;
-    outline: none;
-}
-
-.input-block > input {
-    font-size: 18px;
-    border: 1px solid #808080;
-    background-color: #EEE;
-}
-
-.input-block > button,
 #other-option {
     margin: 40px 0px;
-}
-
-.input-block > button {
-    border: 1px solid #e6583f;
-    background-color: #ff6347;
-    font-size: 20px;
-    cursor: pointer;
-    color: white;
-}
-
-.input-block > button:hover {
-    border: 1px solid #d8533b;
-    background-color: #e6583f;
-    font-size: 20px;
-    cursor: pointer;
-}
-
-.input-block > button:active {
-    border: 1px solid #be4732;
-    background-color: #d8533b;
-    font-size: 20px;
-    cursor: pointer;
 }
 
 .account-enter-block > span {
@@ -93,6 +44,9 @@
 }
 
 #other-option {
+    padding: 10px 15px;
+    box-sizing: border-box;
+    border-radius: 20px;
     display: inline-block;
     text-align: center;
     background-color: white;

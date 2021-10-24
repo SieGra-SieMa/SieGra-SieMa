@@ -1,10 +1,12 @@
 #header {
     display: flex;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: #ffffffbf;
     position: sticky;
+    width: 100%;
     top: 0;
     backdrop-filter: blur(4px);
+    z-index: 9999;
 }
 
 .header-container {
@@ -62,4 +64,8 @@
 
 #navigation > ul > a > li:active::after {
     margin-top: 3px;
+}
+
+.logout-button {
+    margin: 0;
 }

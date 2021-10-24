@@ -1,14 +1,17 @@
 import React from 'react';
 import './Header.css';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { authenticationService } from '../../_services/authentication.service';
 
 export default function Header() {
 
+    const history = useHistory();
     const user = authenticationService.currentUserValue;
 
+
     const logout = () => {
-        authenticationService.logout()
+        authenticationService.logout();
+        history.push('/accounts/authorize');
     }
 
     return (
@@ -25,13 +28,16 @@ export default function Header() {
                             <li>HOME</li>
                         </Link>
                         <Link to="/teams">
-                            <li>TEAMS</li>
+                            <li>TEAMS</li>        
                         </Link>
                         {
                             user ? (
-                                <Link to='/' onClick={logout}>
-                                    <li>LOGOUT - {user.name} {user.surname}</li>
-                                </Link>
+                                <>
+                                    <Link to='/account'>
+                                        <li>{user.name} {user.surname}</li>
+                                    </Link>
+                                    <button className="button logout-button" onClick={logout}>Logout</button>
+                                </>
                             ) : (
                                 <Link to="/account/authorize">
                                     <li>ACCOUNT</li>

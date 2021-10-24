@@ -1,16 +1,134 @@
-.home-container {
-    display: flex;
-    flex-direction: column;
+.main-section {
+    color: white;
 }
 
-.home-block-info {
-    height: 300px;
-    align-self: flex-end;
-    background-color: white;
+.hero-wave,
+.hero-section,
+.news-section {
+    background-color: #5F7B88;
+}
+
+.hero-section h2,
+.dreamteam-section h2,
+.news-section h2  {
+    font-size: 70px;
+    padding: 25px;
+    text-align: center;
+}
+
+.hero-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.hero-image {
+    width: 400px;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.hero-block-info {
+    max-width: 600px;
     padding: 20px;
 }
 
-.home-block-info > h2 {
-    font-size: 70px;
-    padding: 25px;
+.dreamteam-wave,
+.dreamteam-section {
+    background-color: #E3A084;
 }
+
+.dreamteam-member-list {
+    display: flex;
+    justify-content: center;
+}
+
+.dreamteam-member {
+    width: 520px;
+    padding: 25px;
+    box-sizing: border-box;
+}
+
+.dreamteam-member-image {
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 50px;
+}
+
+.dreamteam-member > h3 {
+    margin: 25px 0;
+    text-align: center;
+    font-size: 30px;
+}
+
+.dreamteam-member > p {
+    text-align: center;
+}
+
+.news-list {
+    display: flex;
+    justify-content: center;
+}
+
+.news-post {
+    background-color: rgb(34, 34, 34);
+    width: 500px;
+    height: 500px;
+    margin: 0 25px 25px;
+    border-radius: 30px;
+}
+
+.news-wave,
+.footer-section {
+    background-color: #3e555f;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px 50px;
+}
+
+.footer-icon {
+    width: 150px;
+    height: 150px;
+}
+
+@media all and (max-width: 1600px) {
+    .dreamteam-member-list {
+        flex-wrap: wrap;
+    }
+
+    .news-list {
+        flex-wrap: wrap;
+    }
+}
+
+@media all and (max-width: 1440px) {
+    .hero-container {
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+@media all and (max-width: 960px) {
+    .footer-container {
+        flex-direction: column;
+    }
+
+    .footer-block {
+        margin: 10px 0;
+    }
+}
+
+@media all and (max-width: 560px) {
+    .dreamteam-member {
+        width: 100%;
+    }
+
+    .news-post {
+        width: 100%;
+    }
+}
+

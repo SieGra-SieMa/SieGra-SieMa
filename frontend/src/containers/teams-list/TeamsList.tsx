@@ -18,7 +18,7 @@ export default function TeamsList() {
     const [teams, setTeams] = useState<Team[] | null>(null);
 
     useEffect(() => {
-        teamsService.getTeams()
+        teamsService.get()
             .then(
                 result => setTeams(result),
                 error => alert(error)

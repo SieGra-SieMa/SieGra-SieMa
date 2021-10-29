@@ -24,8 +24,3 @@ export interface UserDetailsRequest {
     name: string;
     surname: string;
 }
-
-export interface Tokens {
-    accessToken: string;
-    refreshToken: string;
-}

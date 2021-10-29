@@ -1,7 +1,7 @@
 import { BehaviorSubject } from 'rxjs';
 import Config from '../config.json';
 import { Account, Tokens } from '../_lib/types';
-import { post } from '../_lib/_utils/utils';
+import { post } from '../_lib/utils';
 
 const currentUserSubject = new BehaviorSubject<Account | null>(
     localStorage.getItem('currentUser') && JSON.parse(localStorage.getItem('currentUser') ?? 'null')
@@ -47,4 +47,4 @@ function logout() {
 function setCurrentUser(user: Account) {
     localStorage.setItem('currentUser', JSON.stringify(user));
     currentUserSubject.next(user);
-}
+};

@@ -1,6 +1,6 @@
-import { HOST } from '../../config.json';
-import { authenticationService } from '../../_services/authentication.service';
-import { Account } from '../types';
+import { HOST } from '../config.json';
+import { authenticationService } from '../_services/authentication.service';
+import { Account } from './types';
 
 // export interface WSResponse {
 // 	error: string | undefined;

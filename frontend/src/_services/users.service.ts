@@ -1,6 +1,6 @@
 import Config from '../config.json';
 import { UserDetailsRequest } from '../_lib/types';
-import { patch } from '../_lib/_utils/utils';
+import { patch } from '../_lib/utils';
 
 export const usersService = {
     update,

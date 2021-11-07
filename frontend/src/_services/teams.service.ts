@@ -1,6 +1,6 @@
 import Config from '../config.json';
 import { Team } from '../_lib/types';
-import { get, post } from '../_lib/_utils/utils';
+import { get, post } from '../_lib/utils';
 
 export const teamsService = {
     join,

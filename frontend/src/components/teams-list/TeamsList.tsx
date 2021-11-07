@@ -1,6 +1,6 @@
 import React from 'react';
 import './TeamsList.css';
-import TeamsListItem from '../../components/teams-list/TeamsListItem';
+import TeamsListItem from './TeamsListItem';
 import { teamsService } from '../../_services/teams.service';
 import { useState } from 'react';
 import { useEffect } from 'react';

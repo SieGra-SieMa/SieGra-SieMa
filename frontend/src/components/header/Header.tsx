@@ -13,7 +13,6 @@ export default function Header() {
 
     useEffect(() => {
         const subscription = userObservable.subscribe((user) => {
-            console.log(user)
             setUser(user);
         });
         return () => { 

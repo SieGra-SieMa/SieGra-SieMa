@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -143,9 +145,8 @@ namespace SieGraSieMa.Models
 
                 entity.Property(e => e.Name)
                     .IsRequired()
-                    .HasMaxLength(1)
-                    .HasColumnName("name")
-                    .IsFixedLength(true);
+                    .HasMaxLength(2)
+                    .HasColumnName("name");
 
                 entity.Property(e => e.TournamentId).HasColumnName("tournament_id");
 
@@ -195,14 +196,14 @@ namespace SieGraSieMa.Models
 
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
-                entity.Property(e => e.EndDate).HasColumnName("end_date");
+                //entity.Property(e => e.EndDate).HasColumnName("end_date");
 
-                entity.Property(e => e.Referee)
-                    .IsRequired()
-                    .HasMaxLength(128)
-                    .HasColumnName("referee");
+                //entity.Property(e => e.Referee)
+                //    .IsRequired()
+                //    .HasMaxLength(128)
+                //    .HasColumnName("referee");
 
-                entity.Property(e => e.StartDate).HasColumnName("start_date");
+                //entity.Property(e => e.StartDate).HasColumnName("start_date");
 
                 entity.Property(e => e.TeamAwayId).HasColumnName("team_away_id");
 
@@ -455,7 +456,6 @@ namespace SieGraSieMa.Models
                     .HasColumnName("address");
 
                 entity.Property(e => e.Description)
-                    .IsRequired()
                     .HasColumnName("description");
 
                 entity.Property(e => e.EndDate).HasColumnName("end_date");
@@ -549,12 +549,13 @@ namespace SieGraSieMa.Models
                 new Role() { Id = 2, Name = "Emp" },
                 new Role() { Id = 3, Name = "User" }
                 );
-            modelBuilder.Entity<User>().HasData(
-            new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt },
-            new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt },
-            new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt },
-            new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt }
-            );
+            List<User> UsersList = new List<User>();
+            UsersList.Add(new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt });
+            UsersList.Add(new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt });
+            UsersList.Add(new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt });
+            UsersList.Add(new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt });
+            modelBuilder.Entity<User>().HasData(UsersList);
+
 
             modelBuilder.Entity<UserRole>().HasData(
             new UserRole() { UserId = 1, RoleId = 1 },
@@ -564,9 +565,10 @@ namespace SieGraSieMa.Models
             new UserRole() { UserId = 4, RoleId = 3 });
 
 
-            modelBuilder.Entity<Team>().HasData(
-            new Team() { Id = 1, Name = "Bogowie", CaptainId = 3, Code = "ABCDE" },
-            new Team() { Id = 2, Name = "Demony", CaptainId = 3, Code = "EDCBA" });
+            List<Team> TeamsList = new List<Team>();
+            TeamsList.Add(new Team() { Id = 1, Name = "Bogowie", CaptainId = 3, Code = "ABCDE" });
+            TeamsList.Add(new Team() { Id = 2, Name = "Demony", CaptainId = 3, Code = "EDCBA" });
+            modelBuilder.Entity<Team>().HasData(TeamsList);
 
 
             modelBuilder.Entity<Player>().HasData(
@@ -577,6 +579,12 @@ namespace SieGraSieMa.Models
 
             modelBuilder.Entity<Newsletter>().HasData(
             new Newsletter() { Id = 1, UserId = 3 });
+
+            modelBuilder.Entity<Tournament>().HasData(new Tournament() { Name = "Turniej testowy numer 1" , Id=1, Address="Zbożowa -1"});
+
+            
+
+
         }
         private static string GetPassword(string password, string salt)
         {

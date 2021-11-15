@@ -51,6 +51,8 @@ namespace SieGraSieMa
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ITeamService, TeamService>();
+            services.AddTransient<IGenerateService, GenerateService>();
+            services.AddTransient<IMatchService, MatchService>();
             //services.AddControllers();
             services.AddCors(options =>
             {

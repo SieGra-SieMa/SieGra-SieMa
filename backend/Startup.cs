@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,7 +13,9 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
+using SieGraSieMa.Services.Email;
 using SieGraSieMa.Services.Interfaces;
+using SieGraSieMa.Services.JWT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +36,11 @@ namespace SieGraSieMa
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(options => {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -49,8 +56,19 @@ namespace SieGraSieMa
             services.AddDbContext<SieGraSieMaContext>(options => options.UseMySQL(Configuration.GetConnectionString("SieGraSieMaDatabase")));
 
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IAccountIdentityServices, AccountIdentityService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ITeamService, TeamService>();
+            services.AddTransient<IEmailService, EmailService>();
+
+            services.AddIdentity<User, IdentityRole<int>>()
+            .AddEntityFrameworkStores<SieGraSieMaContext>()
+            .AddDefaultTokenProviders();
+
+            /*services.AddIdentity<User, IdentityRole<int>>()
+            .AddEntityFrameworkStores<SieGraSieMaContext>()
+            .AddDefaultTokenProviders();*/
+
             //services.AddControllers();
             services.AddCors(options =>
             {
@@ -61,6 +79,9 @@ namespace SieGraSieMa
                         builder.AllowAnyMethod();
                     });
             });
+
+            services.AddScoped<JwtHandler>();
+
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             );

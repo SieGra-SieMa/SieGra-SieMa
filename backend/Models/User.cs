@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 
 #nullable disable
 
 namespace SieGraSieMa.Models
 {
-    public partial class User
+    public partial class User : IdentityUser<int>
     {
         public User()
         {
@@ -14,7 +15,6 @@ namespace SieGraSieMa.Models
             Newsletters = new HashSet<Newsletter>();
             Players = new HashSet<Player>();
             Teams = new HashSet<Team>();
-            UserRoles = new HashSet<UserRole>();
             RefreshTokens = new HashSet<RefreshToken>();
         }
 
@@ -30,7 +30,6 @@ namespace SieGraSieMa.Models
         public virtual ICollection<Newsletter> Newsletters { get; set; }
         public virtual ICollection<Player> Players { get; set; }
         public virtual ICollection<Team> Teams { get; set; }
-        public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
     }
 }

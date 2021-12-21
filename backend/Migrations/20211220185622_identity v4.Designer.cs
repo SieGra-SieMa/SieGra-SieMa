@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SieGraSieMa.Models;
 
 namespace SieGraSieMa.Migrations
 {
     [DbContext(typeof(SieGraSieMaContext))]
-    partial class SieGraSieMaContextModelSnapshot : ModelSnapshot
+    [Migration("20211220185622_identity v4")]
+    partial class identityv4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,19 +50,19 @@ namespace SieGraSieMa.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "8a700770-1369-4ad6-9b39-93242bea267b",
+                            ConcurrencyStamp = "dfc5819b-6258-4a9b-a175-32aec88eb2d4",
                             Name = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "a46164cb-1e4c-4d1f-966f-fec9a301a31b",
+                            ConcurrencyStamp = "7ec758ea-29bd-4a82-9843-a7928a0181a9",
                             Name = "Emp"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "53ed36f3-f8e4-40b2-bfed-3e861addae11",
+                            ConcurrencyStamp = "2fa99d7b-d5b3-47bf-8e5f-ee4a85d53607",
                             Name = "User"
                         });
                 });
@@ -749,15 +751,14 @@ namespace SieGraSieMa.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "49b517fa-37e6-45a7-9e29-e543f8bd4d8a",
+                            ConcurrencyStamp = "7c626a73-7849-4a30-bc7c-447204b9c417",
                             Email = "admin@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Adm",
-                            Password = "AQAAAAEAACcQAAAAECUjlFhKI8ckOt9u9MD0mIB7+56cqk1CZ+3sfR7dXiAb821dXzbDZHt5x4hNZRcGMw==",
+                            Password = "8s/huq0Ozwzx8ZwP95f6VQI+l/WiplA/4dSW52dhWs8=",
                             PhoneNumberConfirmed = false,
-                            Salt = "rmbJsCKod5jERzbwepczkEmC+rDrZtomQkN3rJ4wYBc=",
-                            SecurityStamp = "e9399456-2cf0-4c17-9adc-6ab93e625397",
+                            Salt = "OIrrEZPEdZ4JQ+84ziThv8MieV8/P2qJu9c5fK8lizs=",
                             Surname = "In",
                             TwoFactorEnabled = false
                         },
@@ -765,15 +766,14 @@ namespace SieGraSieMa.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cbefb095-80d3-425b-8529-bd9b42cb0d9e",
+                            ConcurrencyStamp = "e7a2c73b-2a20-4295-b50d-3c4037575add",
                             Email = "pracownik@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Prac",
-                            Password = "Ek2NbjScFCcoUrTZDnIdFJyd3CNHxX4p0R8pfb9a/+A=",
+                            Password = "8s/huq0Ozwzx8ZwP95f6VQI+l/WiplA/4dSW52dhWs8=",
                             PhoneNumberConfirmed = false,
-                            Salt = "rmbJsCKod5jERzbwepczkEmC+rDrZtomQkN3rJ4wYBc=",
-                            SecurityStamp = "77bb1986-b58e-46b0-9a36-0764eb0b9e66",
+                            Salt = "OIrrEZPEdZ4JQ+84ziThv8MieV8/P2qJu9c5fK8lizs=",
                             Surname = "Ownik",
                             TwoFactorEnabled = false
                         },
@@ -781,15 +781,14 @@ namespace SieGraSieMa.Migrations
                         {
                             Id = 3,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d71480d2-2325-40ff-9b11-ba14f39f9011",
+                            ConcurrencyStamp = "556ae830-8601-4a78-a0b5-d874db1f3194",
                             Email = "kapitan@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Kap",
-                            Password = "Ek2NbjScFCcoUrTZDnIdFJyd3CNHxX4p0R8pfb9a/+A=",
+                            Password = "8s/huq0Ozwzx8ZwP95f6VQI+l/WiplA/4dSW52dhWs8=",
                             PhoneNumberConfirmed = false,
-                            Salt = "rmbJsCKod5jERzbwepczkEmC+rDrZtomQkN3rJ4wYBc=",
-                            SecurityStamp = "ca19a45b-a23b-475f-b455-8486206e3540",
+                            Salt = "OIrrEZPEdZ4JQ+84ziThv8MieV8/P2qJu9c5fK8lizs=",
                             Surname = "Itan",
                             TwoFactorEnabled = false
                         },
@@ -797,15 +796,14 @@ namespace SieGraSieMa.Migrations
                         {
                             Id = 4,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "67c3a919-c82e-48ea-a47c-9fa6608d46f4",
+                            ConcurrencyStamp = "f94a6a73-62e3-43ba-b15c-8f6b21c0119f",
                             Email = "gracz@gmail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             Name = "Gr",
-                            Password = "Ek2NbjScFCcoUrTZDnIdFJyd3CNHxX4p0R8pfb9a/+A=",
+                            Password = "8s/huq0Ozwzx8ZwP95f6VQI+l/WiplA/4dSW52dhWs8=",
                             PhoneNumberConfirmed = false,
-                            Salt = "rmbJsCKod5jERzbwepczkEmC+rDrZtomQkN3rJ4wYBc=",
-                            SecurityStamp = "174e0a3c-f41e-47a1-be99-6880eda57987",
+                            Salt = "OIrrEZPEdZ4JQ+84ziThv8MieV8/P2qJu9c5fK8lizs=",
                             Surname = "acz",
                             TwoFactorEnabled = false
                         });

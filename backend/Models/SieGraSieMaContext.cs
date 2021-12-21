@@ -1,4 +1,6 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -6,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace SieGraSieMa.Models
 {
-    public partial class SieGraSieMaContext : DbContext
+    public partial class SieGraSieMaContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public SieGraSieMaContext()
         {
@@ -28,13 +30,11 @@ namespace SieGraSieMa.Models
         public virtual DbSet<Newsletter> Newsletters { get; set; }
         public virtual DbSet<Player> Players { get; set; }
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
-        public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Team> Teams { get; set; }
         public virtual DbSet<TeamInGroup> TeamInGroups { get; set; }
         public virtual DbSet<TeamInTournament> TeamInTournaments { get; set; }
         public virtual DbSet<Tournament> Tournaments { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<UserRole> UserRoles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -47,6 +47,20 @@ namespace SieGraSieMa.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>(entity => entity.Property(m => m.Id).HasMaxLength(85));
+            modelBuilder.Entity<IdentityRole<int>>(entity => entity.Property(m => m.Id).HasMaxLength(85));
+
+            modelBuilder.Entity<IdentityUserClaim<int>>(entity => entity.Property(m => m.Id).HasMaxLength(85));
+            modelBuilder.Entity<IdentityRoleClaim<int>>(entity => entity.Property(m => m.Id).HasMaxLength(85));
+
+            modelBuilder.Entity<IdentityUserLogin<int>>(entity => entity.Property(m => m.LoginProvider).HasMaxLength(85));
+            modelBuilder.Entity<IdentityUserLogin<int>>(entity => entity.Property(m => m.ProviderKey).HasMaxLength(85));
+
+            modelBuilder.Entity<IdentityUserToken<int>>(entity => entity.Property(m => m.LoginProvider).HasMaxLength(85));
+            modelBuilder.Entity<IdentityUserToken<int>>(entity => entity.Property(m => m.Name).HasMaxLength(85));
+
             modelBuilder.Entity<Album>(entity =>
             {
                 entity.ToTable("album");
@@ -335,20 +349,6 @@ namespace SieGraSieMa.Models
 
             });
 
-            modelBuilder.Entity<Role>(entity =>
-            {
-                entity.ToTable("roles");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(32)
-                    .HasColumnName("name");
-            });
-
             modelBuilder.Entity<Team>(entity =>
             {
                 entity.ToTable("team");
@@ -505,32 +505,6 @@ namespace SieGraSieMa.Models
                     .HasColumnName("surname");
             });
 
-            modelBuilder.Entity<UserRole>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.RoleId })
-                    .HasName("PRIMARY");
-
-                entity.ToTable("user_roles");
-
-                entity.HasIndex(e => e.RoleId, "Table_26_role");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.Property(e => e.RoleId).HasColumnName("role_id");
-
-                entity.HasOne(d => d.Role)
-                    .WithMany(p => p.UserRoles)
-                    .HasForeignKey(d => d.RoleId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("user_role_role");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.UserRoles)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("user_role_user");
-            });
-
             ModelBuilderExtensions.Seed(modelBuilder);
 
             OnModelCreatingPartial(modelBuilder);
@@ -544,24 +518,31 @@ namespace SieGraSieMa.Models
         {
             var salt = CreateSalt();
 
-            modelBuilder.Entity<Role>().HasData(
-                new Role() { Id = 1, Name = "Admin" },
-                new Role() { Id = 2, Name = "Emp" },
-                new Role() { Id = 3, Name = "User" }
+            var hasher = new PasswordHasher<User>();
+
+            //hasher.HashPassword();
+
+            modelBuilder.Entity<IdentityRole<int>>().HasData(
+                new IdentityRole<int>() { Id = 1, Name = "Admin" },
+                new IdentityRole<int>() { Id = 2, Name = "Emp" },
+                new IdentityRole<int>() { Id = 3, Name = "User" }
                 );
+
+            var Auser = new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", Salt = salt};
+
             modelBuilder.Entity<User>().HasData(
-            new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt },
-            new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt },
-            new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt },
-            new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt }
+            new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", Password = hasher.HashPassword(Auser, "haslo123"), Salt = salt, SecurityStamp = Guid.NewGuid().ToString() },
+            new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt, SecurityStamp = Guid.NewGuid().ToString() },
+            new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt, SecurityStamp = Guid.NewGuid().ToString() },
+            new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt, SecurityStamp = Guid.NewGuid().ToString() }
             );
 
-            modelBuilder.Entity<UserRole>().HasData(
-            new UserRole() { UserId = 1, RoleId = 1 },
-            new UserRole() { UserId = 2, RoleId = 2 },
-            new UserRole() { UserId = 2, RoleId = 3 },
-            new UserRole() { UserId = 3, RoleId = 3 },
-            new UserRole() { UserId = 4, RoleId = 3 });
+            modelBuilder.Entity<IdentityUserRole<int>>().HasData(
+            new IdentityUserRole<int>() { UserId = 1, RoleId = 1 },
+            new IdentityUserRole<int>() { UserId = 2, RoleId = 2 },
+            new IdentityUserRole<int>() { UserId = 2, RoleId = 3 },
+            new IdentityUserRole<int>() { UserId = 3, RoleId = 3 },
+            new IdentityUserRole<int>() { UserId = 4, RoleId = 3 });
 
 
             modelBuilder.Entity<Team>().HasData(

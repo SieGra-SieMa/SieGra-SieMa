@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SieGraSieMa.Services.Interfaces;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
 
 namespace SieGraSieMa.Services
 {
@@ -30,7 +31,7 @@ namespace SieGraSieMa.Services
         //register
         public User Create(AuthenticateRequestDTO authenticateRequestDTO)
         {
-            var isExist = _context.Users
+            /*var isExist = _context.Users
                 .Where(e => e.Email == authenticateRequestDTO.Email)
                 .SingleOrDefault();
 
@@ -53,17 +54,18 @@ namespace SieGraSieMa.Services
             };
 
             _context.Users.Add(client);
-            client.UserRoles.Add(new UserRole
+            client.UserRoles.Add(new IdentityUserRole<int>
             {
-                Role = _context.Roles.Where(r => r.Name == "User").FirstOrDefault(),
-                User = client
+                RoleId = _context.Roles.Where(r => r.Name == "User").FirstOrDefault().Id,
+                UserId = client.Id
             });
             _context.SaveChanges();
 
             client.Password = null;
             client.Salt = null;
 
-            return client;
+            return client;*/
+            return null;
         }
 
         private string GetPassword(string password, string salt)
@@ -213,7 +215,7 @@ namespace SieGraSieMa.Services
 
         private string CreateAccessToken(User user)
         {
-            //return "abc";
+            /*//return "abc";
             var roles = _context.Users.Include(u => u.UserRoles).ThenInclude(us => us.Role).SingleOrDefault(u => u.Email == user.Email).UserRoles.ToList();
             //var roles = user.UserRoles.ToList();
             var claims = new Claim[roles.Count + 1];
@@ -232,8 +234,8 @@ namespace SieGraSieMa.Services
                 claims: claims,
                 expires: DateTime.Now.AddMinutes(60),
                 signingCredentials: creds
-            );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            );*/
+            return null;//new JwtSecurityTokenHandler().WriteToken("pl");
         }
 
         private RefreshToken CreateRefreshToken(string ipAddress)

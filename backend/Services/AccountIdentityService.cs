@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using SieGraSieMa.DTOs.IdentityDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services.JWT;
@@ -27,8 +28,8 @@ namespace SieGraSieMa.Services
 
         public async Task<RefreshTokenDTO> RefreshToken(string token)
         {
-            var user = _context.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
-            //var user = _context.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token.Equals(token)));
+            var user = _context.Users.Include(i => i.RefreshTokens).SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+
             var refreshTokenDTO = new RefreshTokenDTO();
             if (user == null)
             {
@@ -82,7 +83,7 @@ namespace SieGraSieMa.Services
 
         public async Task<bool> RevokeToken(string token)
         {
-            var user = _context.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+            var user = _context.Users.Include(i => i.RefreshTokens).SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
             // return false if no user found with token
             if (user == null) return false;
             var refreshToken = user.RefreshTokens.Single(x => x.Token == token);

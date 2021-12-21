@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './Header.css';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, 
+    // useHistory 
+} from 'react-router-dom';
 import { authenticationService } from '../../_services/authentication.service';
 import { Account } from '../../_lib/types';
 
 export default function Header() {
 
-    const history = useHistory();
+    // const history = useHistory();
     const userObservable = authenticationService.currentUser;
 
     const [user, setUser] = useState<Account | null>(null);
@@ -22,7 +24,7 @@ export default function Header() {
 
     const logout = () => {
         authenticationService.logout();
-        history.push('/account/authorize');
+        // history.push('/account/authorize');
     }
 
     return (
@@ -50,7 +52,7 @@ export default function Header() {
                                     <button className="button logout-button" onClick={logout}>Logout</button>
                                 </>
                             ) : (
-                                <Link to="/account/authorize">
+                                <Link to="/account">
                                     <li>ACCOUNT</li>
                                 </Link>
                             )

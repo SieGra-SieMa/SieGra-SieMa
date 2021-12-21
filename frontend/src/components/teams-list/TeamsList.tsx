@@ -7,11 +7,11 @@ import { useEffect } from 'react';
 import { Team } from '../../_lib/types';
 import SyncLoader from 'react-spinners/SyncLoader';
 import { authenticationService } from '../../_services/authentication.service';
-import { useHistory } from 'react-router';
+// import { useHistory } from 'react-router';
 
 export default function TeamsList() {
 
-    const history = useHistory();
+    // const history = useHistory();
 
     const user = authenticationService.currentUserValue!;
 
@@ -35,7 +35,7 @@ export default function TeamsList() {
     };
 
     if (!user) {
-        history.push('/');
+        // history.push('/');
         return null;
     }
 

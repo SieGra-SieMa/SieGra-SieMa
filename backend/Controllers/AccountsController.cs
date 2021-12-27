@@ -40,7 +40,7 @@ namespace SieGraSieMa.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("Login")]
+        [HttpPost("Authenticate")]
         public async Task<IActionResult> Login([FromBody] LoginDTO login)
         {
             var user = await _userManager.FindByEmailAsync(login.Email);

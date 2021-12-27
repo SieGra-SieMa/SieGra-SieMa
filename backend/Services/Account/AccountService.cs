@@ -11,7 +11,15 @@ using System.Threading.Tasks;
 
 namespace SieGraSieMa.Services
 {
-    public class AccountIdentityService : IAccountIdentityServices
+    public interface IAccountIdentityServices
+    {
+        public Task<RefreshToken> CreateRefreshToken(User user);
+
+        public Task<RefreshTokenDTO> RefreshToken(string token);
+
+        public Task<bool> RevokeToken(string token);
+    }
+    public class AccountService : IAccountIdentityServices
     {
         private readonly SieGraSieMaContext _context;
 
@@ -19,7 +27,7 @@ namespace SieGraSieMa.Services
 
         public IConfiguration Configuration { get; set; }
 
-        public AccountIdentityService(SieGraSieMaContext context, IConfiguration configuration, JwtHandler jwtHandler)
+        public AccountService(SieGraSieMaContext context, IConfiguration configuration, JwtHandler jwtHandler)
         {
             _context = context;
             _jwtHandler = jwtHandler;

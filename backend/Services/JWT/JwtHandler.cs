@@ -55,7 +55,7 @@ namespace SieGraSieMa.Services.JWT
                 issuer: "SieGraSieMa",
                 audience: "Users",
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(Convert.ToDouble(_jwtSettings.GetSection("expiryInMinutes").Value)),
+                expires: DateTime.Now.AddMinutes(Convert.ToDouble(5)),
                 signingCredentials: signingCredentials);
 
             return tokenOptions;

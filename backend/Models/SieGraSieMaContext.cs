@@ -34,7 +34,6 @@ namespace SieGraSieMa.Models
         public virtual DbSet<TeamInGroup> TeamInGroups { get; set; }
         public virtual DbSet<TeamInTournament> TeamInTournaments { get; set; }
         public virtual DbSet<Tournament> Tournaments { get; set; }
-        public virtual DbSet<User> Users { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -489,15 +488,15 @@ namespace SieGraSieMa.Models
                     .HasMaxLength(32)
                     .HasColumnName("name");
 
-                entity.Property(e => e.Password)
+               /* entity.Property(e => e.Password)
                     .IsRequired()
                     .HasMaxLength(256)
-                    .HasColumnName("password");
+                    .HasColumnName("password");*/
 
-                entity.Property(e => e.Salt)
+                /*entity.Property(e => e.Salt)
                     .IsRequired()
                     .HasMaxLength(256)
-                    .HasColumnName("salt");
+                    .HasColumnName("salt");*/
 
                 entity.Property(e => e.Surname)
                     .IsRequired()
@@ -516,7 +515,7 @@ namespace SieGraSieMa.Models
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            var salt = CreateSalt();
+            //var salt = CreateSalt();
 
             var hasher = new PasswordHasher<User>();
 
@@ -528,13 +527,11 @@ namespace SieGraSieMa.Models
                 new IdentityRole<int>() { Id = 3, Name = "User" }
                 );
 
-            var Auser = new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", Salt = salt};
-
             modelBuilder.Entity<User>().HasData(
-            new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", Password = hasher.HashPassword(Auser, "haslo123"), Salt = salt, SecurityStamp = Guid.NewGuid().ToString() },
-            new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt, SecurityStamp = Guid.NewGuid().ToString() },
-            new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt, SecurityStamp = Guid.NewGuid().ToString() },
-            new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt, SecurityStamp = Guid.NewGuid().ToString() }
+            new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", NormalizedEmail = "admin@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
+            new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", NormalizedEmail = "pracownik@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
+            new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", NormalizedEmail = "kapitan@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
+            new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", NormalizedEmail = "gracz@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() }
             );
 
             modelBuilder.Entity<IdentityUserRole<int>>().HasData(

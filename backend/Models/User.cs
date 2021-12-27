@@ -18,12 +18,8 @@ namespace SieGraSieMa.Models
             RefreshTokens = new HashSet<RefreshToken>();
         }
 
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-        public string Salt { get; set; }
 
         public virtual ICollection<Contestant> Contestants { get; set; }
         public virtual ICollection<Log> Logs { get; set; }

@@ -12,7 +12,7 @@ namespace SieGraSieMa.Services.Interfaces
         int CheckCountPaidTeamsInTournament(int tournamentId);
         IEnumerable<Team> CheckCorectnessOfTeams(int tournamentId);
         IEnumerable<Group> CreateBasicGroups(int tournamentId);
-        IEnumerable<Group> CreateLadderGroups(int tournamentId);
+        IEnumerable<Group> CreateLadderGroups(int tournamentId, int groupCount);
         IEnumerable<TeamInGroup> AddTeamsToGroup(int tournamentId);
         IEnumerable<TeamInGroup> CreateTeamTemplatesInLadder(int tournamentId);
         IEnumerable<Match> CreateMatchTemplates(int tournamentId);

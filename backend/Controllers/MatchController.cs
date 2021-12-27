@@ -48,6 +48,7 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var response = _matchService.CheckCorectnessOfTeams(id);
+                if (response.Count() == 0) return Ok();
                 return Ok(response);
             }
             catch (Exception e)
@@ -56,13 +57,29 @@ namespace SieGraSieMa.Controllers
             }
         }
 
+        [HttpGet("createBasicGroups/{id}")]
+        public IActionResult CreateBasicGroups(int id)
+        {
+            try
+            {
+                var response = _matchService.CreateBasicGroups(id);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("addTeamsToGroups/{id}")]
+        public IActionResult AddTeamsToGroup(int id)
+        {
+            var response = _matchService.AddTeamsToGroup(id);
+            return Ok(response);
+        }
 
         /*
-        
-        bool CheckCorectnessOfTeams(int tournamentId);
-        IEnumerable<Group> CreateBasicGroups(int tournamentId);
-        IEnumerable<Group> CreateLadderGroups(int tournamentId);
-        IEnumerable<TeamInGroup> AddTeamsToGroup(int tournamentId);
+        IEnumerable<Group> CreateLadderGroups(int tournamentId); wydaje mi się żeby nie robić, bo to się odpala automatycznie z basic group
         IEnumerable<TeamInGroup> CreateTeamTemplatesInLadder(int tournamentId);
         IEnumerable<Match> CreateMatchTemplates(int tournamentId);
         Match InsertMatchResult(int matchId);

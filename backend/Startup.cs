@@ -1,7 +1,9 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -9,10 +11,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using SieGraSieMa.Mappers;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
+using SieGraSieMa.Services.Email;
 using SieGraSieMa.Services.Interfaces;
+using SieGraSieMa.Services.JWT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +39,11 @@ namespace SieGraSieMa
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(options => {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
@@ -48,9 +58,29 @@ namespace SieGraSieMa
                 });
             services.AddDbContext<SieGraSieMaContext>(options => options.UseMySQL(Configuration.GetConnectionString("SieGraSieMaDatabase")));
 
-            services.AddTransient<IAccountService, AccountService>();
+            //Configure Mapper
+            var mapperConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mapperConfig.CreateMapper();
+            services.AddSingleton(mapper);
+
+            //services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IAccountIdentityServices, AccountService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ITeamService, TeamService>();
+            services.AddTransient<IEmailService, EmailService>();
+
+            services.AddIdentity<User, IdentityRole<int>>()
+            .AddEntityFrameworkStores<SieGraSieMaContext>()
+            .AddDefaultTokenProviders();
+
+            /*services.AddIdentity<User, IdentityRole<int>>()
+            .AddEntityFrameworkStores<SieGraSieMaContext>()
+            .AddDefaultTokenProviders();*/
+
             //services.AddControllers();
             services.AddCors(options =>
             {
@@ -61,9 +91,33 @@ namespace SieGraSieMa
                         builder.AllowAnyMethod();
                     });
             });
+
+            services.AddScoped<JwtHandler>();
+
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
             );
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "ToDo API",
+                    Description = "An ASP.NET Core Web API for managing ToDo items",
+                    TermsOfService = new Uri("https://example.com/terms%22"),
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Example Contact",
+                        Url = new Uri("https://example.com/contact%22")
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "Example License",
+                        Url = new Uri("https://example.com/license%22")
+                    }
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -72,6 +126,12 @@ namespace SieGraSieMa
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    options.RoutePrefix = string.Empty;
+                });
             }
 
             app.UseCors("AllowSpecificOrigin");

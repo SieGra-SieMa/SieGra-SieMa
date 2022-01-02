@@ -1,4 +1,4 @@
-.teams-panel-block {
+.root {
     background-color: #EEE;
     height: 440px;
     width: 440px;
@@ -12,20 +12,20 @@
     justify-content: space-between;
 }
 
-.teams-panel-block > h3 {
+.root > h3 {
     font-size: 30px;
 }
 
-.teams-panel-block > div {
+.root > div {
     display: flex;
     flex-direction: column;
 }
 
-.teams-panel-block > div > label {
+.root > div > label {
     padding: 10px 20px;
 }
 
-#code-input {
+#codeInput {
     display: block;
     padding: 20px;
     border-radius: 50px;
@@ -38,7 +38,7 @@
     border: 1px solid #808080
 }
 
-#team-name-input {
+#teamNameInput {
     display: block;
     padding: 10px 20px;
     border-radius: 50px;
@@ -46,4 +46,16 @@
     outline: none;
     font-size: 25px;
     border: 1px solid #808080
+}
+
+.disabled {
+    border: 1px solid #ca8c71;
+    background-color: #E3A084;
+    color: white;
+    padding: 10px 15px;
+    font-size: 20px;
+    border-radius: 20px;
+    cursor: not-allowed;
+    text-align: center;
+    opacity: 0.5;
 }

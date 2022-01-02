@@ -43,9 +43,9 @@ export default function Header() {
                         {
                             user ? (
                                 <>
-                                    <Link to="/teams">
+                                    {/* <Link to="/teams">
                                         <li>TEAMS</li>        
-                                    </Link>
+                                    </Link> */}
                                     <Link to='/account'>
                                         <li>{user.name} {user.surname}</li>
                                     </Link>

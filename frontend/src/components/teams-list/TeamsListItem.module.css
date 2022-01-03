@@ -1,0 +1,90 @@
+.root {
+    width: 360px;
+    margin: 25px 10px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 25px;
+    border: 1px solid #808080;
+}
+
+.header {
+    padding: 10px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #EEE;
+    border-bottom: 1px solid #808080;
+}
+
+.header > h3 {
+    font-size: 30px;
+}
+
+.codeBlock {
+    display: flex;
+    align-items: center;
+    padding: 0 15px;
+}
+
+.codeBlock > span {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.codeBlock > h3 {
+    font-size: 20px;
+}
+
+.content {
+    background-color: white;
+}
+
+.content > p {
+    padding: 15px;
+    font-size: 20px;
+}
+
+.participantsList {
+    display: flex;
+    flex-direction: column;    
+    padding: 15px;
+}
+
+.participantsListItem {
+    margin: 10px 0;
+}
+
+.participantsListItem > img {
+    max-width: 200px;
+    max-height: 200px;
+}
+
+.participantsListItem > p {
+    overflow: hidden;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    background-color: #EEE;
+    border-top: 1px solid #808080;
+}
+
+.footer > .exitButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    color: red;
+}
+
+.footer > .exitButton:hover {
+    color: #ad0000;
+}
+
+.footer > .exitButton:active {
+    color: #8d0000;
+}

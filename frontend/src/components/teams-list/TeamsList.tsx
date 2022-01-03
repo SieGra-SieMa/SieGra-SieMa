@@ -1,4 +1,3 @@
-import React from 'react';
 import './TeamsList.css';
 import TeamsListItem from './TeamsListItem';
 import { teamsService } from '../../_services/teams.service';
@@ -9,7 +8,7 @@ import SyncLoader from 'react-spinners/SyncLoader';
 import { authenticationService } from '../../_services/authentication.service';
 // import { useHistory } from 'react-router';
 
-export default function TeamsList() {
+export default function TeamsList({ reload } : { reload: boolean }) {
 
     // const history = useHistory();
 
@@ -17,13 +16,18 @@ export default function TeamsList() {
 
     const [teams, setTeams] = useState<Team[] | null>(null);
 
+    const isFirstFetch = teams !== null;
+
     useEffect(() => {
+        if (isFirstFetch) {
+            if (!reload) return;
+        }
         teamsService.getTeams()
             .then(
                 result => setTeams(result),
                 error => alert(error)
             )
-    }, [])
+    }, [reload, isFirstFetch])
 
     const onRemove = (id: number) => {
         const data = teams ? [...teams] : [];
@@ -40,8 +44,8 @@ export default function TeamsList() {
     }
 
     return (
-        <div className="container">
-            <h1>My Teams</h1>
+        <div>
+            <h1>My teams</h1>
             <div className="teams-list-container">
                 {
                     teams ? teams.map((team, index) => (

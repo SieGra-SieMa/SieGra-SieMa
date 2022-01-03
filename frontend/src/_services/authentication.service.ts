@@ -18,11 +18,11 @@ export const authenticationService = {
 };
 
 function register(name: string, surname: string, email: string, password: string): Promise<{}> {
-    return post(`${Config.HOST}/api/accounts/create`, { name, surname, email, password });
+    return post(`${Config.HOST}/api/accounts/register`, { name, surname, email, password });
 };
 
 function authenticate(email: string, password: string): Promise<Account>  {
-    return post<Account>(`${Config.HOST}/api/accounts/authenticate`, { email, password, name: "1", surname: "1" })
+    return post<Account>(`${Config.HOST}/api/accounts/authenticate`, { email, password })
         .then(user => {
             localStorage.setItem('currentUser', JSON.stringify(user));
             currentUserSubject.next(user);
@@ -34,7 +34,7 @@ function authenticate(email: string, password: string): Promise<Account>  {
 function refresh(refreshToken: string): Promise<Tokens>  {
     return post<Tokens>(`${Config.HOST}/api/accounts/refresh-token`, { refreshToken })
         .then(tokens => {
-            localStorage.setItem('currentUser', JSON.stringify({...currentUserSubject.value, ...tokens}));
+            localStorage.setItem('currentUser', JSON.stringify({...currentUserSubject.value, ...tokens }));
             return tokens;
         })
 };

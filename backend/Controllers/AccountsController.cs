@@ -72,7 +72,7 @@ namespace SieGraSieMa.Controllers
 
             await _userManager.ResetAccessFailedCountAsync(user);
 
-            return Ok(new AuthenticateResponseDTO { IsAuthSuccessful = true, Token = token, RefreshingToken = refreshToken.Token });
+            return Ok(new AuthenticateResponseDTO { IsAuthSuccessful = true, AccessToken = token, RefreshToken = refreshToken.Token });
         }
 
         private async Task<IActionResult> GenerateOTPFor2StepVerification(User user)
@@ -88,7 +88,7 @@ namespace SieGraSieMa.Controllers
             //https://ethereal.email/
             await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
 
-            return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email", Token = token });
+            return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email"});
         }
 
         [AllowAnonymous]
@@ -109,7 +109,7 @@ namespace SieGraSieMa.Controllers
             var token = await _jwtHandler.GenerateToken(user);
             var refreshingToken = await _accountService.CreateRefreshToken(user);
             SetRefreshTokenInCookie(refreshingToken.Token);
-            return Ok(new AuthenticateResponseDTO { IsAuthSuccessful = true, Token = token, RefreshingToken = refreshingToken.Token });
+            return Ok(new AuthenticateResponseDTO { IsAuthSuccessful = true, AccessToken = token, RefreshToken = refreshingToken.Token });
         }
 
         [AllowAnonymous]
@@ -123,15 +123,15 @@ namespace SieGraSieMa.Controllers
 
             var user = new User
             {
-                Name= registerRequest.FirstName,
-                Surname= registerRequest.LastName,
+                Name= registerRequest.Name,
+                Surname= registerRequest.Surname,
                 UserName = registerRequest.Email,
                 Email = registerRequest.Email,
                 NormalizedEmail = registerRequest.Email.ToUpper(),
                 NormalizedUserName = registerRequest.Email.ToUpper(),
                 EmailConfirmed = false,
                 PhoneNumber = null,
-                TwoFactorEnabled = true
+                TwoFactorEnabled = false
             };
 
             var result = await _userManager.CreateAsync(user, registerRequest.Password);
@@ -176,7 +176,7 @@ namespace SieGraSieMa.Controllers
         [HttpPost("Refresh-Token")]
         public async Task<IActionResult> RefreshToken([FromBody] RevokeTokenDTO model)
         {
-            var refreshToken = model.Token ?? Request.Cookies["refreshToken"];
+            var refreshToken = model.RefreshToken ?? Request.Cookies["refreshToken"];
             var response = await _accountService.RefreshToken(refreshToken);
             if (!string.IsNullOrEmpty(response.RefreshToken))
                 SetRefreshTokenInCookie(response.RefreshToken);
@@ -190,7 +190,7 @@ namespace SieGraSieMa.Controllers
         public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenDTO model)
         {
             // accept token from request body or cookie
-            var token = model.Token ?? Request.Cookies["refreshToken"];
+            var token = model.RefreshToken ?? Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(token))
                 return BadRequest(new { message = "Token is required" });
             var response = _accountService.RevokeToken(token);

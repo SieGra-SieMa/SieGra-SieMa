@@ -51,6 +51,7 @@ namespace SieGraSieMa
                         ValidateIssuer = true,
                         ValidateAudience = true,
                         ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
                         ValidIssuer = "SieGraSieMa",
                         ValidAudience = "Users",
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))

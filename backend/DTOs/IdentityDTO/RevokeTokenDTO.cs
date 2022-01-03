@@ -7,6 +7,6 @@ namespace SieGraSieMa.DTOs.IdentityDTO
 {
     public class RevokeTokenDTO
     {
-        public string Token { get; set; }
+        public string RefreshToken { get; set; }
     }
 }

@@ -18,6 +18,11 @@ namespace SieGraSieMa.Services
         public Task<RefreshTokenDTO> RefreshToken(string token);
 
         public Task<bool> RevokeToken(string token);
+
+        public Task<List<User>> GetAll();
+
+        public Task<User> GetById(int id);
+
     }
     public class AccountService : IAccountIdentityServices
     {
@@ -118,6 +123,16 @@ namespace SieGraSieMa.Services
                     CreatedByIp = "123"
                 };
             }
+        }
+
+        public async Task<List<User>> GetAll()
+        {
+            return await _context.Users.ToListAsync();
+        }
+
+        public async Task<User> GetById(int id)
+        {
+            return await _context.Users.FindAsync(id);
         }
     }
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using SieGraSieMa.DTOs.IdentityDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
@@ -41,7 +42,7 @@ namespace SieGraSieMa.Controllers
 
         [AllowAnonymous]
         [HttpPost("Authenticate")]
-        public async Task<IActionResult> Login([FromBody] LoginDTO login)
+        public async Task<IActionResult> Authenticate([FromBody] LoginDTO login)
         {
             var user = await _userManager.FindByEmailAsync(login.Email);
             if (user == null)
@@ -85,13 +86,13 @@ namespace SieGraSieMa.Controllers
             var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
 
             //https://ethereal.email/
-            //_emailService.Send("jennyfer.erdman1@ethereal.email", user.Email, "Two Factor", token);
+            await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
 
             return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email", Token = token });
         }
 
         [AllowAnonymous]
-        [HttpPost("TwoStepVerification")]
+        [HttpPost("Verify")]
         public async Task<IActionResult> TwoStepVerification([FromBody] LoginTwoFactorDTO twoFactorDto)
         {
             if (!ModelState.IsValid)
@@ -112,7 +113,7 @@ namespace SieGraSieMa.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDTO registerRequest)
         {
             if (registerRequest == null || !ModelState.IsValid)
@@ -120,7 +121,18 @@ namespace SieGraSieMa.Controllers
 
             //var user = _mapper.Map<User>(registerRequest);
 
-            var user = new User { Name = registerRequest.FirstName, Email = registerRequest.Email, UserName = registerRequest.LastName, Surname = "Chaka", SecurityStamp = Guid.NewGuid().ToString() };
+            var user = new User
+            {
+                Name= registerRequest.FirstName,
+                Surname= registerRequest.LastName,
+                UserName = registerRequest.Email,
+                Email = registerRequest.Email,
+                NormalizedEmail = registerRequest.Email.ToUpper(),
+                NormalizedUserName = registerRequest.Email.ToUpper(),
+                EmailConfirmed = false,
+                PhoneNumber = null,
+                TwoFactorEnabled = true
+            };
 
             var result = await _userManager.CreateAsync(user, registerRequest.Password);
             if (!result.Succeeded)
@@ -133,15 +145,15 @@ namespace SieGraSieMa.Controllers
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             var param = new Dictionary<string, string>
             {
-               {"token", token },
-                {"email", user.Email }
+               {"userid", Convert.ToString(user.Id) },
+               {"token", token }
             };
 
-            //Email service
-            //var callback = QueryHelpers.AddQueryString(userForRegistration.ClientURI, param);
+            //Email
+            var link = $"{Request.Scheme}://{Request.Host}/api/Account/Confirm-Email";
+            var callback = QueryHelpers.AddQueryString(link, param);
 
-            //var message = new Message(new string[] { "codemazetest@gmail.com" }, "Email Confirmation token", callback, null);
-            //await _emailSender.SendEmailAsync(message);
+            await _emailService.SendAsync(user.Email, "Potwierdź konto email", callback);
 
             //TODO change role
             await _userManager.AddToRoleAsync(user, "User");
@@ -161,10 +173,10 @@ namespace SieGraSieMa.Controllers
 
         //refresh token
         [AllowAnonymous]
-        [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken()
+        [HttpPost("Refresh-Token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RevokeTokenDTO model)
         {
-            var refreshToken = Request.Cookies["refreshToken"];
+            var refreshToken = model.Token ?? Request.Cookies["refreshToken"];
             var response = await _accountService.RefreshToken(refreshToken);
             if (!string.IsNullOrEmpty(response.RefreshToken))
                 SetRefreshTokenInCookie(response.RefreshToken);
@@ -174,7 +186,7 @@ namespace SieGraSieMa.Controllers
 
         //revoke token
         [AllowAnonymous]
-        [HttpPost("revoke-token")]
+        [HttpPost("Revoke-Token")]
         public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenDTO model)
         {
             // accept token from request body or cookie
@@ -187,21 +199,36 @@ namespace SieGraSieMa.Controllers
             return Ok(new { message = "Token revoked" });
         }
 
-
-        /*[HttpGet]
-        public IActionResult GetAll()
+        [AllowAnonymous]
+        [HttpGet("Confirm-Email")]
+        public async Task<IActionResult> ConfirmEmail(string userid, string token)
         {
-            var users = _accountService.GetAll();
+
+            var userFound = await _userManager.FindByIdAsync(userid);
+            var result = (await _userManager.ConfirmEmailAsync(userFound, token));
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok("Email Confirmed");
+        }
+
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetAll()
+        {
+            var users = await _accountService.GetAll();
             return Ok(users);
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var user = _accountService.GetById(id);
+            var user = await _accountService.GetById(id);
             if (user == null) return NotFound();
 
-            return Ok(user);
-        }*/
+            return Ok("user");
+        }
     }
 }

@@ -522,16 +522,16 @@ namespace SieGraSieMa.Models
             //hasher.HashPassword();
 
             modelBuilder.Entity<IdentityRole<int>>().HasData(
-                new IdentityRole<int>() { Id = 1, Name = "Admin" },
-                new IdentityRole<int>() { Id = 2, Name = "Emp" },
-                new IdentityRole<int>() { Id = 3, Name = "User" }
+                new IdentityRole<int>() { Id = 1, Name = "Admin", NormalizedName="Admin" },
+                new IdentityRole<int>() { Id = 2, Name = "Emp", NormalizedName = "Emp" },
+                new IdentityRole<int>() { Id = 3, Name = "User", NormalizedName = "User" }
                 );
 
             modelBuilder.Entity<User>().HasData(
-            new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", NormalizedEmail = "admin@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
-            new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", NormalizedEmail = "pracownik@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
-            new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", NormalizedEmail = "kapitan@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
-            new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", NormalizedEmail = "gracz@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() }
+            new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", NormalizedEmail = "admin@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString()},
+            new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", NormalizedEmail = "pracownik@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString()},
+            new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", NormalizedEmail = "kapitan@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString()},
+            new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", NormalizedEmail = "gracz@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString()}
             );
 
             modelBuilder.Entity<IdentityUserRole<int>>().HasData(
@@ -555,28 +555,6 @@ namespace SieGraSieMa.Models
 
             modelBuilder.Entity<Newsletter>().HasData(
             new Newsletter() { Id = 1, UserId = 3 });
-        }
-        private static string GetPassword(string password, string salt)
-        {
-            var valueBytes =
-                       Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivation.Pbkdf2(
-                            password,
-                            System.Text.Encoding.UTF8.GetBytes(salt),
-                            Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivationPrf.HMACSHA512,
-                            1000,
-                            256 / 8
-                        );
-            return Convert.ToBase64String(valueBytes);
-        }
-        private static string CreateSalt(int maximumSaltLength = 32)
-        {
-            var salt = new byte[maximumSaltLength];
-            using (var random = new System.Security.Cryptography.RNGCryptoServiceProvider())
-            {
-                random.GetNonZeroBytes(salt);
-            }
-
-            return Convert.ToBase64String(salt);
         }
     }
 }

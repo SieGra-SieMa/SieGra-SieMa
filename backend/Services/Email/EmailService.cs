@@ -1,5 +1,7 @@
 ﻿using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using MimeKit;
 using MimeKit.Text;
 using System;
@@ -11,19 +13,34 @@ namespace SieGraSieMa.Services.Email
 {
     public interface IEmailService
     {
-        void Send(string from, string to, string subject, string html);
+        Task<bool> SendAsync(string to, string subject, string html);
     }
 
     public class EmailService : IEmailService
     {
+        //https://ethereal.email/messages
         public IConfiguration _Configuration { get; set; }
+        private readonly ILogger<EmailService> _logger;
 
-        public EmailService(IConfiguration Configuration)
+
+        private readonly string smtpServer, username, password, from;
+        private readonly int port;
+
+
+        public EmailService(IConfiguration Configuration, ILogger<EmailService> logger)
         {
             _Configuration = Configuration;
+            _logger = logger;
+
+            smtpServer = _Configuration.GetValue<string>("EmailService:SmtpServer");
+            username = _Configuration.GetValue<string>("EmailService:Username");
+            password = _Configuration.GetValue<string>("EmailService:Password");
+            from = _Configuration.GetValue<string>("EmailService:From");
+            port = _Configuration.GetValue<int>("EmailService:Port");
+
         }
 
-        public void Send(string from, string to, string subject, string html)
+        public async Task<bool> SendAsync(string to, string subject, string html)
         {
             // create message
             var email = new MimeMessage();
@@ -33,12 +50,23 @@ namespace SieGraSieMa.Services.Email
             email.Body = new TextPart(TextFormat.Html) { Text = html };
 
             // send email
-            using var smtp = new SmtpClient();
-            //TODO Setup account on ethereal email
-            //smtp.Connect("mail.smtp.port", 8025, SecureSocketOptions.StartTls); smtp.ethereal.email
-            //smtp.Authenticate("jennyfer.erdman1@ethereal.email", "Nwsv1ycWtFBTSnQGGM");
-            smtp.Send(email);
-            smtp.Disconnect(true);
+            using (var smtp = new SmtpClient())
+            {
+                try
+                {
+                    await smtp.ConnectAsync(smtpServer, port, SecureSocketOptions.StartTls);
+                    await smtp.AuthenticateAsync(username, password);
+                    await smtp.SendAsync(email);
+                    await smtp.DisconnectAsync(true);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    return false;
+                }
+            }
+
         }
     }
 }

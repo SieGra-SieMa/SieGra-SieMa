@@ -150,7 +150,7 @@ namespace SieGraSieMa.Controllers
             };
 
             //Email
-            var link = $"{Request.Scheme}://{Request.Host}/api/Account/Confirm-Email";
+            var link = $"{Request.Scheme}://{Request.Host}/api/Accounts/Confirm-Email";
             var callback = QueryHelpers.AddQueryString(link, param);
 
             await _emailService.SendAsync(user.Email, "Potwierdź konto email", callback);

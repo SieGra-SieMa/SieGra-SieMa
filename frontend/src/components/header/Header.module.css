@@ -1,4 +1,4 @@
-#header {
+.root {
     display: flex;
     justify-content: center;
     background-color: rgba(255, 255, 255, 0.75);
@@ -9,43 +9,43 @@
     z-index: 9999;
 }
 
-.header-container {
+.container {
     display: flex;
     justify-content: space-between;
 }
 
-#logo-block {
+.logo {
     padding: 25px;
 }
 
-#logo-block > a > img {
+.logo > a > img {
     max-width: 75px;
     max-height: 75px;
 }
 
-#navigation {
+.navigation {
     padding: 10px;
     display: flex;
 }
 
-#navigation > ul {
+.navigation > ul {
     display: flex;
     align-items: center;
 }
 
-#navigation > ul > a {
+.navigation > ul > a {
     color: black;
     margin: 10px;
 }
 
-#navigation > ul > a > li {
+.navigation > ul > a > li {
     padding: 15px;
     font-size: 20px;
     cursor: pointer;
     position: relative;
 }
 
-#navigation > ul > a > li::after {
+.navigation > ul > a > li::after {
     content: '';
     display: block;
     position: absolute;
@@ -56,22 +56,22 @@
     transition: width .2s, margin-top .2s;
 }
 
-#navigation > ul > a > li:hover::after {
+.navigation > ul > a > li:hover::after {
     content: '';
     left: 15px;
     width: calc(100% -  30px);
 }
 
-#navigation > ul > a > li:active::after {
+.navigation > ul > a > li:active::after {
     margin-top: 3px;
 }
 
-.logout-button {
+.logout {
     margin: 0;
 }
 
 @media all and (max-width: 720px) {
-    .header-container {
+    .container {
         flex-direction: column;
         align-items: center;
     }

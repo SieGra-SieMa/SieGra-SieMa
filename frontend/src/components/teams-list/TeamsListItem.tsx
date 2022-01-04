@@ -38,10 +38,10 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
                     <h3>{ team.code }</h3>
                 </div>
                 <div
-                    className={styles.exitButton}
+                    className={styles.leaveButton}
                     onClick={leaveTeam}
                 >
-                    EXIT
+                    LEAVE
                 </div>
             </div>
         </div>

@@ -1,4 +1,10 @@
 .root {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.option {
     background-color: #EEE;
     height: 440px;
     width: 440px;
@@ -12,16 +18,16 @@
     justify-content: space-between;
 }
 
-.root > h3 {
+.option > h3 {
     font-size: 30px;
 }
 
-.root > div {
+.option > div {
     display: flex;
     flex-direction: column;
 }
 
-.root > div > label {
+.option > div > label {
     padding: 10px 20px;
 }
 

@@ -15,7 +15,7 @@ export default function JoinTeam() {
     }
 
     return (
-        <div className={styles.root}>
+        <div className={styles.option}>
             <h3>Join a team</h3>
             <p>Enter code, which your friend gives you.</p>
             <input

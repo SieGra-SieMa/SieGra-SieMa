@@ -16,15 +16,11 @@ export default function App() {
             <Header />
             <Routes>
                 <Route index element={<Home />} />
-
-                <Route path="account/*" element={<PrivateRoute />}>
-                    <Route path="*" element={<AccountPage />}/>
-                </Route>
-
-                {/* <Route path="teams" element={<Outlet />}>
-                    <Route index element={<TeamsPanel />} />
-                    <Route path="manage" element={<TeamsList />} />
-                </Route> */}
+                <Route path="account/*" element={
+                    <PrivateRoute>
+                        <AccountPage />
+                    </PrivateRoute>
+                }/>
             </Routes>
             <Footer />
         </BrowserRouter>

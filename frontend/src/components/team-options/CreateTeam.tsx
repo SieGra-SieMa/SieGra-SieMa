@@ -15,7 +15,7 @@ export default function CreateTeam() {
     }
 
     return (
-        <div className={styles.root}>
+        <div className={styles.option}>
             <h3>Create a team</h3>
             <p>If you and your friends want to participate in our tournaments, you can create your own team.</p>
             <div>

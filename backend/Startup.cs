@@ -1,4 +1,5 @@
 using AutoMapper;
+using AutoWrapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -138,6 +139,8 @@ namespace SieGraSieMa
             app.UseCors("AllowSpecificOrigin");
 
             app.UseHttpsRedirection();
+
+            app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions { UseApiProblemDetailsException = true });
 
             app.UseRouting();
 

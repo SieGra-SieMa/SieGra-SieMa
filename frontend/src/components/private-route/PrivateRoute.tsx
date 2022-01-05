@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
 import { authenticationService } from '../../_services/authentication.service';
 import AccountEnter from '../account-enter/AccountEnter';
 
-export default function PrivateRoute() {
+export default function PrivateRoute({ children }: { children: JSX.Element }) {
 
     const [user, setUser] = useState(authenticationService.currentUserValue);
 
@@ -16,5 +15,5 @@ export default function PrivateRoute() {
         return <AccountEnter />;
     }
 
-    return <Outlet />;
+    return children;
 }

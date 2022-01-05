@@ -24,7 +24,6 @@
 .codeBlock {
     display: flex;
     align-items: center;
-    padding: 0 15px;
 }
 
 .codeBlock > span {
@@ -69,22 +68,22 @@
     justify-content: space-between;
     background-color: #EEE;
     border-top: 1px solid #808080;
+    padding: 15px;
 }
 
-.footer > .exitButton {
+.footer > .leaveButton {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 15px;
     font-size: 20px;
     cursor: pointer;
     color: red;
 }
 
-.footer > .exitButton:hover {
+.footer > .leaveButton:hover {
     color: #ad0000;
 }
 
-.footer > .exitButton:active {
+.footer > .leaveButton:active {
     color: #8d0000;
 }

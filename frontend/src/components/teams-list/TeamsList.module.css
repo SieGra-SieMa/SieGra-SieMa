@@ -1,11 +1,10 @@
-.teams-list-container {
+.content {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
-    justify-content: center;
 }
 
 .loader {
     padding: 50px;
-    align-self: center;
+    margin: auto;
 }

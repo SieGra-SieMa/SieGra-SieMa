@@ -140,7 +140,7 @@ namespace SieGraSieMa
 
             app.UseHttpsRedirection();
 
-            app.UseApiResponseAndExceptionWrapper(new AutoWrapperOptions { UseApiProblemDetailsException = true });
+            app.UseApiResponseAndExceptionWrapper();//new AutoWrapperOptions { UseApiProblemDetailsException = true }
 
             app.UseRouting();
 

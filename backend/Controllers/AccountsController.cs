@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using SieGraSieMa.DTOs;
+using Microsoft.AspNetCore.WebUtilities;
+using SieGraSieMa.DTOs.IdentityDTO;
+using SieGraSieMa.Models;
 using SieGraSieMa.Services;
-using SieGraSieMa.Services.Interfaces;
+using SieGraSieMa.Services.Email;
+using SieGraSieMa.Services.JWT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,142 +16,219 @@ using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
 {
-    [Authorize]
-    [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
+    [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly IAccountService _accountService;
+        private readonly IAccountIdentityServices _accountService;
 
-        public AccountsController(IAccountService accountService)
+        private readonly JwtHandler _jwtHandler;
+
+        private readonly UserManager<User> _userManager;
+
+        private readonly IMapper _mapper;
+
+        private readonly IEmailService _emailService;
+
+        public AccountsController(UserManager<User> userManager, JwtHandler jwtHandler, IEmailService emailService, IAccountIdentityServices accountServices, IMapper mapper)
         {
-            _accountService = accountService;
-        }
-
-
-        [AllowAnonymous]
-        [HttpPost("create")]
-        public ActionResult Create(AuthenticateRequestDTO accountRequestDTO)
-        {
-            try
-            {
-                var account = _accountService.Create(accountRequestDTO);
-                return Ok(account);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e);
-            }
-        }
-
-        /*[AllowAnonymous]
-        [HttpPost("authorize")]
-        public IActionResult Authorize(AccountRequestDTO request)
-        {
-            try
-            {
-                var account = _accountService.Authorize(request, "abc");
-                return Ok(account);
-            }
-            catch (Exception)
-            {
-                return Forbid();
-            }
-        }*/
-
-
-        //Token methods:
-
-        [AllowAnonymous]
-        [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody] AuthenticateRequestDTO requestDTO)
-        {
-            var response = _accountService.Authenticate(requestDTO, ipAddress());
-
-            if (response == null)
-                return BadRequest(new { message = "Email or password is incorrect" });
-
-            setTokenCookie(response.RefreshToken);
-
-            return Ok(response);
+            _accountService = accountServices;
+            _userManager = userManager;
+            _jwtHandler = jwtHandler;
+            _mapper = mapper;
+            _emailService = emailService;
         }
 
         [AllowAnonymous]
-        [HttpPost("refresh-token")]
-        public IActionResult RefreshToken()
+        [HttpPost("Authenticate")]
+        public async Task<IActionResult> Authenticate([FromBody] LoginDTO login)
         {
-            var refreshToken = Request.Cookies["refreshToken"];
-            var response = _accountService.RefreshToken(refreshToken, ipAddress());
+            var user = await _userManager.FindByEmailAsync(login.Email);
+            if (user == null)
+                return BadRequest("Invalid Request");
 
-            if (response == null)
-                return Unauthorized(new { message = "Invalid token" });
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+                return Unauthorized(new AuthenticateResponseDTO { ErrorMessage = "Email is not confirmed" });
 
-            setTokenCookie(response.RefreshToken);
+            if (!await _userManager.CheckPasswordAsync(user, login.Password))
+            {
+                await _userManager.AccessFailedAsync(user);
 
-            return Ok(response);
+                if (await _userManager.IsLockedOutAsync(user))
+                {
+                    return Unauthorized(new AuthenticateResponseDTO { ErrorMessage = "The account is locked out" });
+                }
 
-        }
-        
-        [HttpPost("revoke-token")]
-        public IActionResult RevokeToken([FromBody] RevokeTokenDTO revokeTokenDTO)
-        {
-            // accept token from request body or cookie
-            var token = revokeTokenDTO.Token ?? Request.Cookies["refreshToken"];
+                return Unauthorized(new AuthenticateResponseDTO { ErrorMessage = "Invalid Authentication" });
+            }
 
-            if (string.IsNullOrEmpty(token))
-                return BadRequest(new { message = "Token is required" });
+            if (await _userManager.GetTwoFactorEnabledAsync(user))
+                return await GenerateOTPFor2StepVerification(user);
 
-            var response = _accountService.RevokeToken(token, ipAddress());
+            var token = await _jwtHandler.GenerateToken(user);
+            var refreshToken = await _accountService.CreateRefreshToken(user);
+            SetRefreshTokenInCookie(refreshToken.Token);
 
-            if (!response)
-                return NotFound(new { message = "Token not found" });
+            await _userManager.ResetAccessFailedCountAsync(user);
 
-            return Ok(new { message = "Token revoked" });
-        }
-
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var users = _accountService.GetAll();
-            return Ok(users);
+            return Ok(new AuthenticateResponseDTO { IsAuthSuccessful = true, AccessToken = token, RefreshToken = refreshToken.Token });
         }
 
-        [HttpGet("{id}")]
-        public IActionResult GetById(int id)
+        private async Task<IActionResult> GenerateOTPFor2StepVerification(User user)
         {
-            var user = _accountService.GetById(id);
-            if (user == null) return NotFound();
+            var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
+            if (!providers.Contains("Email"))
+            {
+                return Unauthorized(new AuthenticateResponseDTO { ErrorMessage = "Invalid 2-Step Verification Provider." });
+            }
 
-            return Ok(user);
+            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+
+            //https://ethereal.email/
+            await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
+
+            return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email"});
         }
 
-        [HttpGet("{id}/refresh-tokens")]
-        public IActionResult GetRefreshTokens(int id)
+        [AllowAnonymous]
+        [HttpPost("Verify")]
+        public async Task<IActionResult> TwoStepVerification([FromBody] LoginTwoFactorDTO twoFactorDto)
         {
-            var user = _accountService.GetById(id);
-            if (user == null) return NotFound();
+            if (!ModelState.IsValid)
+                return BadRequest();
 
-            return Ok(user.RefreshTokens);
+            var user = await _userManager.FindByEmailAsync(twoFactorDto.Email);
+            if (user == null)
+                return BadRequest("Invalid Request");
+
+            var validVerification = await _userManager.VerifyTwoFactorTokenAsync(user, twoFactorDto.Provider, twoFactorDto.Token);
+            if (!validVerification)
+                return BadRequest("Invalid Token Verification");
+
+            var token = await _jwtHandler.GenerateToken(user);
+            var refreshingToken = await _accountService.CreateRefreshToken(user);
+            SetRefreshTokenInCookie(refreshingToken.Token);
+            return Ok(new AuthenticateResponseDTO { IsAuthSuccessful = true, AccessToken = token, RefreshToken = refreshingToken.Token });
         }
 
-        // helper methods
+        [AllowAnonymous]
+        [HttpPost("Register")]
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterDTO registerRequest)
+        {
+            if (registerRequest == null || !ModelState.IsValid)
+                return BadRequest();
 
-        private void setTokenCookie(string token)
+            //var user = _mapper.Map<User>(registerRequest);
+
+            var user = new User
+            {
+                Name= registerRequest.Name,
+                Surname= registerRequest.Surname,
+                UserName = registerRequest.Email,
+                Email = registerRequest.Email,
+                NormalizedEmail = registerRequest.Email.ToUpper(),
+                NormalizedUserName = registerRequest.Email.ToUpper(),
+                EmailConfirmed = false,
+                PhoneNumber = null,
+                TwoFactorEnabled = false
+            };
+
+            var result = await _userManager.CreateAsync(user, registerRequest.Password);
+            if (!result.Succeeded)
+            {
+                 var errors = result.Errors.Select(e => e.Description);
+            
+                 return BadRequest(new RegisterResponseDTO { Errors = errors });
+            }
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var param = new Dictionary<string, string>
+            {
+               {"userid", Convert.ToString(user.Id) },
+               {"token", token }
+            };
+
+            //Email
+            var link = $"{Request.Scheme}://{Request.Host}/api/Accounts/Confirm-Email";
+            var callback = QueryHelpers.AddQueryString(link, param);
+
+            await _emailService.SendAsync(user.Email, "Potwierdź konto email", callback);
+
+            //TODO change role
+            await _userManager.AddToRoleAsync(user, "User");
+
+            return Ok(token);
+        }
+
+        private void SetRefreshTokenInCookie(string refreshToken)
         {
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(7)
+                Expires = DateTime.UtcNow.AddDays(10),
             };
-            Response.Cookies.Append("refreshToken", token, cookieOptions);
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
 
-        private string ipAddress()
+        //refresh token
+        [AllowAnonymous]
+        [HttpPost("Refresh-Token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RevokeTokenDTO model)
         {
-            if (Request.Headers.ContainsKey("X-Forwarded-For"))
-                return Request.Headers["X-Forwarded-For"];
-            else
-                return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
+            var refreshToken = model.RefreshToken ?? Request.Cookies["refreshToken"];
+            var response = await _accountService.RefreshToken(refreshToken);
+            if (!string.IsNullOrEmpty(response.RefreshToken))
+                SetRefreshTokenInCookie(response.RefreshToken);
+
+             return Ok(response);
+        }
+
+        //revoke token
+        [AllowAnonymous]
+        [HttpPost("Revoke-Token")]
+        public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenDTO model)
+        {
+            // accept token from request body or cookie
+            var token = model.RefreshToken ?? Request.Cookies["refreshToken"];
+            if (string.IsNullOrEmpty(token))
+                return BadRequest(new { message = "Token is required" });
+            var response = _accountService.RevokeToken(token);
+            if (!await response)
+                return NotFound(new { message = "Token not found" });
+            return Ok(new { message = "Token revoked" });
+        }
+
+        [AllowAnonymous]
+        [HttpGet("Confirm-Email")]
+        public async Task<IActionResult> ConfirmEmail(string userid, string token)
+        {
+
+            var userFound = await _userManager.FindByIdAsync(userid);
+            var result = (await _userManager.ConfirmEmailAsync(userFound, token));
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok("Email Confirmed");
+        }
+
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetAll()
+        {
+            var users = await _accountService.GetAll();
+            return Ok(users);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var user = await _accountService.GetById(id);
+            if (user == null) return NotFound();
+
+            return Ok("user");
         }
     }
 }

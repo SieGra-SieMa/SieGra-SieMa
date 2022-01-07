@@ -18,8 +18,8 @@ export function handleResponse<T>(
 		const rawData = JSON.parse(text) as T;
 		if (response.ok) return rawData;
 		if ([401, 403].indexOf(response.status) !== -1) {
-			const user = localStorage.getItem('user');
-			if (user && response.url !== `${HOST}users/refresh` && !retry) {
+			const user = localStorage.getItem('currentUser');
+			if (user && response.url !== `${HOST}accounts/refresh-token` && !retry) {
 				const parsedData = (JSON.parse(user));
 				const refreshToken = parsedData.refreshToken;
 				if (refreshToken) {

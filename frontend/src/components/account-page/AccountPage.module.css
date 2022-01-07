@@ -1,0 +1,34 @@
+.navigation {
+    display: flex;
+    justify-content: center;
+    background-color: #e3a084;
+}
+
+.navigation > ul {
+    width: 1200px;
+    display: flex;
+    justify-content: center;
+}
+
+.navigation > ul li {
+    padding: 20px;
+    cursor: pointer;
+    min-width: 100px;
+    text-align: center;
+    color: black;
+    font-size: 20px;
+    transition: background-color .3s;
+    background-color: #e9a88c;
+}
+
+.navigation > ul li:hover {
+    background-color: #f3b195;
+}
+
+.activeLink > li {
+    background-color: #ffbca1 !important;
+}
+
+.content {
+    margin-top: 25px;
+}

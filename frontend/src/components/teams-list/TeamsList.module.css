@@ -1,0 +1,10 @@
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.loader {
+    padding: 50px;
+    margin: auto;
+}

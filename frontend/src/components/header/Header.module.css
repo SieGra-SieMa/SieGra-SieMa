@@ -1,0 +1,78 @@
+.root {
+    display: flex;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.75);
+    position: sticky;
+    width: 100%;
+    top: 0;
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo {
+    padding: 25px;
+}
+
+.logo > a > img {
+    max-width: 75px;
+    max-height: 75px;
+}
+
+.navigation {
+    padding: 10px;
+    display: flex;
+}
+
+.navigation > ul {
+    display: flex;
+    align-items: center;
+}
+
+.navigation > ul > a {
+    color: black;
+    margin: 10px;
+}
+
+.navigation > ul > a > li {
+    padding: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    position: relative;
+}
+
+.navigation > ul > a > li::after {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 16px;
+    width: 0px;
+    height: 2px;
+    background-color: black;
+    transition: width .2s, margin-top .2s;
+}
+
+.navigation > ul > a > li:hover::after {
+    content: '';
+    left: 15px;
+    width: calc(100% -  30px);
+}
+
+.navigation > ul > a > li:active::after {
+    margin-top: 3px;
+}
+
+.logout {
+    margin: 0;
+}
+
+@media all and (max-width: 720px) {
+    .container {
+        flex-direction: column;
+        align-items: center;
+    }
+}

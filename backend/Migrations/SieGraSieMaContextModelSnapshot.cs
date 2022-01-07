@@ -17,6 +17,189 @@ namespace SieGraSieMa.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.7");
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(85)
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "70918f65-cf53-482e-b18a-9eae49d13eaa",
+                            Name = "Admin",
+                            NormalizedName = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ConcurrencyStamp = "223611a3-51df-48ef-8ce6-5e03bf9f28dc",
+                            Name = "Emp",
+                            NormalizedName = "Emp"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ConcurrencyStamp = "545290f6-3797-44f4-9c9a-8e75893910c7",
+                            Name = "User",
+                            NormalizedName = "User"
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(85)
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetRoleClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(85)
+                        .HasColumnType("int");
+
+                    b.Property<string>("ClaimType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ClaimValue")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<string>("ProviderKey")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<string>("ProviderDisplayName")
+                        .HasColumnType("text");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LoginProvider", "ProviderKey");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AspNetUserLogins");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            RoleId = 1
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            RoleId = 2
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            UserId = 3,
+                            RoleId = 3
+                        },
+                        new
+                        {
+                            UserId = 4,
+                            RoleId = 3
+                        });
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LoginProvider")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<string>("Value")
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId", "LoginProvider", "Name");
+
+                    b.ToTable("AspNetUserTokens");
+                });
+
             modelBuilder.Entity("SieGraSieMa.Models.Album", b =>
                 {
                     b.Property<int>("Id")
@@ -320,41 +503,6 @@ namespace SieGraSieMa.Migrations
                     b.ToTable("refresh_token");
                 });
 
-            modelBuilder.Entity("SieGraSieMa.Models.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(32)
-                        .HasColumnType("varchar(32)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Emp"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "User"
-                        });
-                });
-
             modelBuilder.Entity("SieGraSieMa.Models.Team", b =>
                 {
                     b.Property<int>("Id")
@@ -502,8 +650,16 @@ namespace SieGraSieMa.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasMaxLength(85)
                         .HasColumnType("int")
                         .HasColumnName("id");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -511,23 +667,40 @@ namespace SieGraSieMa.Migrations
                         .HasColumnType("varchar(320)")
                         .HasColumnName("email");
 
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("varchar(32)")
                         .HasColumnName("name");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
+                    b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)")
-                        .HasColumnName("password");
+                        .HasColumnType("varchar(256)");
 
-                    b.Property<string>("Salt")
-                        .IsRequired()
+                    b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)")
-                        .HasColumnName("salt");
+                        .HasColumnType("varchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
 
                     b.Property<string>("Surname")
                         .IsRequired()
@@ -535,7 +708,21 @@ namespace SieGraSieMa.Migrations
                         .HasColumnType("varchar(64)")
                         .HasColumnName("surname");
 
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex");
 
                     b.HasIndex(new[] { "Email" }, "email")
                         .IsUnique();
@@ -546,84 +733,118 @@ namespace SieGraSieMa.Migrations
                         new
                         {
                             Id = 1,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "2ab3f7eb-a1f5-4f8e-8bbc-a923d38c92e6",
                             Email = "admin@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
                             Name = "Adm",
-                            Password = "Fqg7LOUe9eVFTwxGRRrLv0rgSY4EHkL1vTrlA065rvc=",
-                            Salt = "JCzZ5lbgkL6pl25XG6kqaPDwaqCbX2GWJg0hu0Lke5k=",
-                            Surname = "In"
+                            NormalizedEmail = "admin@gmail.com",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHUg4GvNj6MpaHUJZVGKCE6rdGvG1mog8WHXKTGeycAh9N4JJa96wJsOnstXC/OPMQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "8245e200-0eae-44ac-a2fd-74670c1166fb",
+                            Surname = "In",
+                            TwoFactorEnabled = false
                         },
                         new
                         {
                             Id = 2,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "009cad0f-ce8f-47a3-b961-73fccb3542e6",
                             Email = "pracownik@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
                             Name = "Prac",
-                            Password = "Fqg7LOUe9eVFTwxGRRrLv0rgSY4EHkL1vTrlA065rvc=",
-                            Salt = "JCzZ5lbgkL6pl25XG6kqaPDwaqCbX2GWJg0hu0Lke5k=",
-                            Surname = "Ownik"
+                            NormalizedEmail = "pracownik@gmail.com",
+                            PasswordHash = "AQAAAAEAACcQAAAAENjRLErJbe4i3QZIBsCBL4PVRGX3L9/PxGSJFrEZMp/wpU7ugLDF6O+nHKrmjlX0Tg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "205a93c8-2d7e-4bf7-822a-f102480855f8",
+                            Surname = "Ownik",
+                            TwoFactorEnabled = false
                         },
                         new
                         {
                             Id = 3,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "db6ac4d6-ab17-477d-b15d-7aa6d46ce591",
                             Email = "kapitan@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
                             Name = "Kap",
-                            Password = "Fqg7LOUe9eVFTwxGRRrLv0rgSY4EHkL1vTrlA065rvc=",
-                            Salt = "JCzZ5lbgkL6pl25XG6kqaPDwaqCbX2GWJg0hu0Lke5k=",
-                            Surname = "Itan"
+                            NormalizedEmail = "kapitan@gmail.com",
+                            PasswordHash = "AQAAAAEAACcQAAAAENHGecrABa0I1j/qH2ErzfHEWDi7YVBmHSY2ZY6O7jvYdnuAHdX0tXiRri2RoWHG6Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "ab71e3bc-dd32-4a0e-bb92-150c1556ab89",
+                            Surname = "Itan",
+                            TwoFactorEnabled = false
                         },
                         new
                         {
                             Id = 4,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c7ab9b29-48cf-4bb6-9dd8-0cf549d57c66",
                             Email = "gracz@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
                             Name = "Gr",
-                            Password = "Fqg7LOUe9eVFTwxGRRrLv0rgSY4EHkL1vTrlA065rvc=",
-                            Salt = "JCzZ5lbgkL6pl25XG6kqaPDwaqCbX2GWJg0hu0Lke5k=",
-                            Surname = "acz"
+                            NormalizedEmail = "gracz@gmail.com",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDcPfJecegOsq5ca+s2JlbjePjWUWs2uJ1zYC12wu/o7G5Vujw0q6MG2o5z3gys+tw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "baf93244-a4cf-4922-9d57-88c403b662b1",
+                            Surname = "acz",
+                            TwoFactorEnabled = false
                         });
                 });
 
-            modelBuilder.Entity("SieGraSieMa.Models.UserRole", b =>
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int")
-                        .HasColumnName("user_id");
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int")
-                        .HasColumnName("role_id");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
+                {
+                    b.HasOne("SieGraSieMa.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.HasKey("UserId", "RoleId")
-                        .HasName("PRIMARY");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
+                {
+                    b.HasOne("SieGraSieMa.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.HasIndex(new[] { "RoleId" }, "Table_26_role");
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole<int>", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.ToTable("user_roles");
+                    b.HasOne("SieGraSieMa.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            RoleId = 2
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            RoleId = 3
-                        },
-                        new
-                        {
-                            UserId = 3,
-                            RoleId = 3
-                        },
-                        new
-                        {
-                            UserId = 4,
-                            RoleId = 3
-                        });
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
+                {
+                    b.HasOne("SieGraSieMa.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SieGraSieMa.Models.Album", b =>
@@ -809,25 +1030,6 @@ namespace SieGraSieMa.Migrations
                     b.Navigation("Tournament");
                 });
 
-            modelBuilder.Entity("SieGraSieMa.Models.UserRole", b =>
-                {
-                    b.HasOne("SieGraSieMa.Models.Role", "Role")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId")
-                        .HasConstraintName("user_role_role")
-                        .IsRequired();
-
-                    b.HasOne("SieGraSieMa.Models.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .HasConstraintName("user_role_user")
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("SieGraSieMa.Models.Album", b =>
                 {
                     b.Navigation("Media");
@@ -841,11 +1043,6 @@ namespace SieGraSieMa.Migrations
             modelBuilder.Entity("SieGraSieMa.Models.Group", b =>
                 {
                     b.Navigation("TeamInGroups");
-                });
-
-            modelBuilder.Entity("SieGraSieMa.Models.Role", b =>
-                {
-                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("SieGraSieMa.Models.Team", b =>
@@ -888,8 +1085,6 @@ namespace SieGraSieMa.Migrations
                     b.Navigation("RefreshTokens");
 
                     b.Navigation("Teams");
-
-                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

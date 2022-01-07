@@ -20,7 +20,7 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
             <div className={styles.header}>
                 <h3>{ team.name }</h3>
             </div>
-            <div className={styles.content}>
+            {/* <div className={styles.content}>
                 <ul className={styles.participantsList}>
                     {team.players.map((player, index) => (
                         <li
@@ -31,18 +31,18 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
                         </li>
                     ))}
                 </ul>
-            </div>
+            </div> */}
             <div className={styles.footer}>
                 <div className={styles.codeBlock}>
                     <span>Code: </span>
                     <h3>{ team.code }</h3>
                 </div>
-                <div
+                <button
                     className={styles.leaveButton}
                     onClick={leaveTeam}
                 >
                     LEAVE
-                </div>
+                </button>
             </div>
         </div>
     );

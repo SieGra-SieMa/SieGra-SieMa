@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './AccountEnter.module.css';
-import { authenticationService } from '../../_services/authentication.service';
 import SyncLoader from 'react-spinners/SyncLoader';
+import { accountService } from '../../_services/accounts.service';
 
 export default function CreateAccount() {
 
@@ -16,7 +16,7 @@ export default function CreateAccount() {
         e.preventDefault();
         setError(false);
         setLoading(true);
-        authenticationService.register(name, surname, email, password)
+        accountService.register(name, surname, email, password)
             .then(
                 _ => {}, 
                 _ => {

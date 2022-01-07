@@ -1,0 +1,32 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    row-gap: 25px;
+    margin-top: 20px;
+}
+
+.item {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: box-shadow .3s;
+    background-color: #EEE;
+    padding: 30px;
+}
+
+.item:hover {
+    box-shadow: 0 0 5px #AAA;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header > h3 {
+    font-size: 30px;
+}
+
+.dates {
+    font-weight: bold;
+}

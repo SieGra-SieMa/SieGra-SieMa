@@ -1,24 +1,27 @@
 import React, { useState } from 'react';
 import styles from './AccountEnter.module.css';
-import { authenticationService } from '../../_services/authentication.service';
 import SyncLoader from 'react-spinners/SyncLoader';
+import { useAuth } from '../auth/AuthContext';
+import { accountService } from '../../_services/accounts.service';
 
 export default function SignIn() {
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const { saveSession } = useAuth();
+
+    const [email, setEmail] = useState('gracz@gmail.com');
+    const [password, setPassword] = useState('haslo123');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState(null);
 
     const signIn = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setError(false);
+        setError(null);
         setLoading(true);
-        authenticationService.authenticate(email, password)
+        accountService.authenticate(email, password)
             .then(
-                _ => {},
-                _ => {
-                    setError(true);
+                session => saveSession(session),
+                e => {
+                    setError(e);
                     setLoading(false);
                 }
             );
@@ -27,7 +30,7 @@ export default function SignIn() {
 	return (
         <div className={styles.enterBlock}>
             <h3>SIGN IN</h3>
-            {error && <div className={styles.failed}>FAILED</div>}
+            {error && <div className={styles.failed}>FAILED: { error }</div>}
             <form onSubmit={signIn}>
                 <div className="input-block">
                     <label htmlFor="SignIn-email">Email</label>

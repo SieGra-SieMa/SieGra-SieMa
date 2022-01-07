@@ -22,10 +22,23 @@ namespace SieGraSieMa.Services
         }
         public IEnumerable<TeamInGroup> AddTeamsToGroup(int tournamentId)
         {
-            var groups = _context.Groups.Where(t => t.TournamentId == tournamentId && t.Ladder == false).ToListAsync();
+            var groups = _context.Groups.Where(t => t.TournamentId == tournamentId && t.Ladder == false) 
+                .Select(s => new
+                {
+                    //Group = s,
+                    Id = s.Id//,
+                    //TournamentId = s.TournamentId,
+                    //Ladder = s.Ladder
+                })
+                .ToListAsync();
             var teams = _context.Teams.Include(t => t.TeamInTournaments)
                                 .ThenInclude(tr => tr.Tournament)
-                                .Where(t => t.TeamInTournaments.Any(tr => tr.TournamentId == tournamentId && tr.Paid == true)).ToListAsync();
+                                .Where(t => t.TeamInTournaments.Any(tr => tr.TournamentId == tournamentId && tr.Paid == true))
+                                .Select(t=>new
+                                {
+                                    Id=t.Id
+                                })
+                                .ToListAsync();
             
             int i = 0;
             List<TeamInGroup> teamInGroups = new List<TeamInGroup>();
@@ -35,8 +48,8 @@ namespace SieGraSieMa.Services
                 if (i >= groupcount) i = 0;
                 teamInGroups.Add(new TeamInGroup
                 {
-                    Group = groups.Result[i],
-                    Team = team
+                    GroupId = groups.Result[i].Id,
+                    TeamId = team.Id
                 });
                 i++;
             }

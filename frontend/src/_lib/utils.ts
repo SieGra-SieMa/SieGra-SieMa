@@ -13,8 +13,8 @@ export interface WSResponse {
 }
 
 export function handleResponse<T>(
-	response: Response, 
-	options: RequestInit, 
+	response: Response,
+	options: RequestInit,
 	retry: boolean = false
 ): Promise<T> {
 	return response.text().then(async (text) => {
@@ -24,22 +24,21 @@ export function handleResponse<T>(
 				const refreshToken = (JSON.parse(session) as Session).refreshToken;
 				if (refreshToken) {
 					try {
-						const tokens = await accountService.refresh("refreshToken");
+						const tokens = await accountService.refresh(refreshToken);
 						localStorage.setItem(
-							'session', 
+							'session',
 							JSON.stringify({
-								...tokens, 
+								...tokens,
 								accessToken: tokens.token
 							})
 						);
 						(options.headers as Headers).set(
-							'Authorization', 
+							'Authorization',
 							`Bearer ${tokens.token}`
 						);
 						return await fetch(response.url, options)
 							.then(res => handleResponse<T>(res, options, true));
 					} catch (e) {
-						window.location.reload();
 						return Promise.reject(e);
 					}
 				}
@@ -49,7 +48,7 @@ export function handleResponse<T>(
 		const rawData = JSON.parse(text) as WSResponse;
 		if (response.ok) return rawData.result as T;
 		const error = (
-			rawData.isError && 
+			rawData.isError &&
 			rawData.responseException?.exceptionMessage.errorMessage
 		) || response.statusText;
 		return Promise.reject(error);

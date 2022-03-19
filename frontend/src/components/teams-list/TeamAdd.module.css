@@ -1,0 +1,11 @@
+.root {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 50px;
+}
+
+.container {
+    display: grid;
+    row-gap: 15px;
+    grid-auto-rows: min-content;
+}

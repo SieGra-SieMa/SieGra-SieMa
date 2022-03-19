@@ -11,7 +11,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         }
         return null;
     });
-  
+
     const saveSession = (session: Session | null) => {
         if (session) {
             localStorage.setItem('session', JSON.stringify(session));
@@ -20,8 +20,8 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         }
         setSession(session);
     }
-  
+
     const value = { session, saveSession };
-  
+
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

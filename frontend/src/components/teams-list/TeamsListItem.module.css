@@ -1,22 +1,23 @@
+@import '../../variables.css';
+
 .root {
     display: flex;
     flex-direction: column;
     overflow: hidden;
     border-radius: 15px;
     transition: box-shadow .3s;
-    background-color: #EEE;
-    padding: 30px
+    background-color: #eee;
 }
 
 .root:hover {
-    box-shadow: 0 0 5px #AAA;
+    box-shadow: 0 0 5px var(--box-shadow-color);
 }
 
-.header {
-
+.content {
+    padding: 30px;
 }
 
-.header > h3 {
+.content > h3 {
     font-size: 30px;
 }
 
@@ -34,58 +35,30 @@
     font-size: 20px;
 }
 
-.content {
-    background-color: #fff;
-    border-radius: 10px;
-    border: 1px solid #808080;
-    margin: 10px 0
-}
-
-.content > p {
-    padding: 15px;
-    font-size: 20px;
-}
-
-.participantsList {
-    display: flex;
-    flex-direction: column;    
-    padding: 15px;
-}
-
-.participantsListItem {
-    margin: 10px 0;
-}
-
-.participantsListItem > img {
-    max-width: 200px;
-    max-height: 200px;
-}
-
-.participantsListItem > p {
-    overflow: hidden;
-}
-
 .footer {
-    /* display: flex; */
-    /* justify-content: space-between; */
+    display: flex;
+    padding: 15px;
+    column-gap: 10px;
+    justify-content: space-between;
 }
 
-.footer > .leaveButton {
+.button {
     appearance: none;
-    /* display: flex;
-    align-items: center;
-    justify-content: center; */
     font-size: 15px;
     cursor: pointer;
-    color: red;
     border: none;
-    background-color: inherit;
+    background-color: #ddd;
+    padding: 25px 50px;
+    border-radius: 10px;
+    transition: background-color .3s, box-shadow .3s;
+    font-weight: bold;
 }
 
-.footer > .leaveButton:hover {
-    color: #ad0000;
+.button:hover {
+    background-color: #cfcfcf;
+    box-shadow: 0 0 5px var(--box-shadow-color);
 }
 
-.footer > .leaveButton:active {
-    color: #8d0000;
+.button:active {
+    background-color: #aaa;
 }

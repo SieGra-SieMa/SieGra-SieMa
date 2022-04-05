@@ -1,69 +1,65 @@
 import React, { useState } from 'react';
 import styles from './AccountEnter.module.css';
-import { authenticationService } from '../../_services/authentication.service';
 import SyncLoader from 'react-spinners/SyncLoader';
+import { useAuth } from '../auth/AuthContext';
+import { accountService } from '../../_services/accounts.service';
+import InputField from '../form/InputField';
 
 export default function SignIn() {
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const { saveSession } = useAuth();
+
+    const [email, setEmail] = useState('gracz@gmail.com');
+    const [password, setPassword] = useState('haslo123');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
     const signIn = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setError(false);
+        setError(null);
         setLoading(true);
-        authenticationService.authenticate(email, password)
+        accountService.authenticate(email, password)
             .then(
-                _ => {},
-                _ => {
-                    setError(true);
+                session => saveSession(session),
+                e => {
+                    setError(e.message || e);
                     setLoading(false);
                 }
             );
     };
 
-	return (
+    return (
         <div className={styles.enterBlock}>
             <h3>SIGN IN</h3>
-            {error && <div className={styles.failed}>FAILED</div>}
             <form onSubmit={signIn}>
-                <div className="input-block">
-                    <label htmlFor="SignIn-email">Email</label>
-                    <input
-                        id="SignIn-email" 
-                        className="input-field" 
-                        type="email"
-                        value={email} 
-                        onChange={e => setEmail(e.target.value)}
-                    />
-                </div>
-                <div className="input-block">
-                    <label htmlFor="SignIn-password">Password</label>
-                    <input
-                        id="SignIn-password"
-                        className="input-field"
-                        type="password"
-                        value={password} 
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                </div>
-                <div className="input-block">
-                    {loading ? (
-                        <div className={styles.loader}>
-                            <SyncLoader loading={true} size={12} margin={20}/>
-                        </div>
-                    ) : (
-                        <button
-                            className={`${styles.enterButton} button`} 
-                            type="submit"
-                        >
-                            Sign in
-                        </button>
-                    )}
-                </div>
+                {error && <div className={styles.failed}>FAILED: {error}</div>}
+                <InputField
+                    id='SignIn-email'
+                    label='Email'
+                    type='email'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+                <InputField
+                    id='SignIn-password'
+                    label='Password'
+                    type='password'
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+                {loading ? (
+                    <div className={styles.loader}>
+                        <SyncLoader loading={true} size={7} margin={20} />
+                    </div>
+                ) : (
+                    <button
+                        className="button"
+                        type="submit"
+                    >
+                        Sign in
+                    </button>
+                )}
             </form>
         </div>
-	);
+    );
 }

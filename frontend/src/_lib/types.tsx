@@ -26,6 +26,11 @@ export interface UserDetailsRequest {
 }
 
 export interface Tokens {
+    token: string;
+    refreshToken: string;
+}
+
+export interface Session {
     accessToken: string;
     refreshToken: string;
 }

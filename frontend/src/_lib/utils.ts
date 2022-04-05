@@ -1,55 +1,66 @@
 import { HOST } from '../config.json';
-import { authenticationService } from '../_services/authentication.service';
-import { Account } from './types';
+import { accountService } from '../_services/accounts.service';
+import { Session } from './types';
 
-// export interface WSResponse {
-// 	error: string | undefined;
-// 	data: any;
-// }
+export interface WSResponse {
+	isError: boolean;
+	responseException: {
+		exceptionMessage: {
+			errorMessage: string;
+		};
+	} | undefined;
+	result: any;
+}
 
 export function handleResponse<T>(
-	response: Response, 
-	options: RequestInit, 
+	response: Response,
+	options: RequestInit,
 	retry: boolean = false
 ): Promise<T> {
 	return response.text().then(async (text) => {
-		// const rawData = JSON.parse(text) as WSResponse;
-		// if (response.ok) return rawData.data as T;
-		const rawData = JSON.parse(text) as T;
-		if (response.ok) return rawData;
 		if ([401, 403].indexOf(response.status) !== -1) {
-			const user = localStorage.getItem('currentUser');
-			if (user && response.url !== `${HOST}accounts/refresh-token` && !retry) {
-				const parsedData = (JSON.parse(user));
-				const refreshToken = parsedData.refreshToken;
+			const session = localStorage.getItem('session');
+			if (session && response.url !== `${HOST}accounts/refresh-token` && !retry) {
+				const refreshToken = (JSON.parse(session) as Session).refreshToken;
 				if (refreshToken) {
 					try {
-						const tokens = await authenticationService.refresh(refreshToken);
-						(options.headers as Headers).set('Authorization', `Bearer ${tokens.accessToken}`);
+						const tokens = await accountService.refresh(refreshToken);
+						localStorage.setItem(
+							'session',
+							JSON.stringify({
+								...tokens,
+								accessToken: tokens.token
+							})
+						);
+						(options.headers as Headers).set(
+							'Authorization',
+							`Bearer ${tokens.token}`
+						);
 						return await fetch(response.url, options)
-							.then(res => handleResponse<T>(res, options, true))
+							.then(res => handleResponse<T>(res, options, true));
 					} catch (e) {
-						authenticationService.logout()
-						window.location.reload();
-						return Promise.reject(e)
+						return Promise.reject(e);
 					}
 				}
 			}
-			authenticationService.logout()
-			window.location.reload();
 		}
-		// const error = rawData.error || response.statusText;
-		const error = rawData || response.statusText;
-		return Promise.reject(error)
+
+		const rawData = JSON.parse(text) as WSResponse;
+		if (response.ok) return rawData.result as T;
+		const error = (
+			rawData.isError &&
+			rawData.responseException?.exceptionMessage.errorMessage
+		) || response.statusText;
+		return Promise.reject(error);
 	});
 }
 
 export function api<T>(url: string, options: RequestInit): Promise<T> {
-	const user = localStorage.getItem('currentUser');
+	const session = localStorage.getItem('session');
 	const headers = new Headers();
 	headers.set('Content-Type', 'application/json');
-	if (user) {
-		const token = (JSON.parse(user) as Account).accessToken;
+	if (session) {
+		const token = (JSON.parse(session) as Session).accessToken;
 		headers.set('Authorization', `Bearer ${token}`);
 	}
 	options.headers = headers;

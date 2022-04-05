@@ -1,6 +1,4 @@
 .root {
-    /* background-color: tomato; */
-    padding: 10px;
     display: flex;
     align-items: center;
     margin-top: 100px;
@@ -21,23 +19,22 @@
     font-size: 20px;
 }
 
-.enterButton {
-    margin: 40px 0px;
+.enterBlock > form {
+    display: grid;
+    row-gap: 15px;
 }
 
 .loader {
     display: flex;
     justify-content: center;
-    padding: 35px 0;
 }
 
 .failed {
-    padding: 10px;
+    padding: 15px 20px;
+    border-radius: 5px;
     background-color: #ffd7d7;
     color: #b60000;
-    border: 1px dashed #b60000;
 }
-
 
 .root > span {
     text-align: center;

@@ -10,7 +10,7 @@ export default function AccountEnter() {
     }, []);
 
     return (
-        <div className={styles.root}>
+        <div className={`container ${styles.root}`}>
             <SignIn />
             <span>OR</span>
             <CreateAccount />

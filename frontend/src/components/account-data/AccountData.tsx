@@ -1,9 +1,6 @@
-import { authenticationService } from '../../_services/authentication.service';
 import styles from './AccountData.module.css';
 
 export default function AccountData() {
-
-    const user = authenticationService.currentUserValue;
 
     return (
         <div className={styles.root}>
@@ -17,7 +14,7 @@ export default function AccountData() {
                             Edit
                         </button>
                     </div>
-                    <h2>{user?.name} {user?.surname}</h2>
+                    <h2>Username</h2>
                 </div>
             </div>
         </div>

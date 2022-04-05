@@ -7,22 +7,25 @@ import {
 import Header from './components/header/Header';
 import Footer from './components/footer/Footer';
 import Home from './components/home/Home';
-import PrivateRoute from './components/private-route/PrivateRoute';
+import PrivateRoute from './components/auth/RequireAuth';
 import AccountPage from './components/account-page/AccountPage';
+import AuthProvider from './components/auth/AuthProvider';
 
 export default function App() {
     return (
-        <BrowserRouter>
-            <Header />
-            <Routes>
-                <Route index element={<Home />} />
-                <Route path="account/*" element={
-                    <PrivateRoute>
-                        <AccountPage />
-                    </PrivateRoute>
-                }/>
-            </Routes>
-            <Footer />
-        </BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
+                <Header />
+                <Routes>
+                    <Route index element={<Home />} />
+                    <Route path="account/*" element={
+                        <PrivateRoute>
+                            <AccountPage />
+                        </PrivateRoute>
+                    }/>
+                </Routes>
+                <Footer />
+            </BrowserRouter>
+        </AuthProvider>
     );
 }

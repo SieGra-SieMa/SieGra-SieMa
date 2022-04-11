@@ -178,6 +178,10 @@ namespace SieGraSieMa.Controllers
         {
             var refreshToken = model.RefreshToken ?? Request.Cookies["refreshToken"];
             var response = await _accountService.RefreshToken(refreshToken);
+
+            if (!response.IsAuthenticated)
+                return Unauthorized();
+
             if (!string.IsNullOrEmpty(response.RefreshToken))
                 SetRefreshTokenInCookie(response.RefreshToken);
 

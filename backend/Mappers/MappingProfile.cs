@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using SieGraSieMa.DTOs.IdentityDTO;
+using SieGraSieMa.DTOs.TournamentDTO;
 using SieGraSieMa.Models;
 using System;
 using System.Collections.Generic;

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SieGraSieMa.DTOs.TournamentDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services.Tournaments;
 using System;
@@ -16,13 +18,16 @@ namespace SieGraSieMa.Controllers
     {
         private readonly ITournamentsService _tournamentsService;
 
-        public TournamentsController(ITournamentsService tournamentsService)
+        private readonly IMapper _mapper;
+
+        public TournamentsController(ITournamentsService tournamentsService, IMapper mapper)
         {
             _tournamentsService = tournamentsService;
+            _mapper = mapper;
         }
 
         [AllowAnonymous]
-        [HttpGet("All")]
+        [HttpGet()]
         public async Task<IActionResult> GetTournaments()
         {
             var tournaments = await _tournamentsService.GetTournaments();
@@ -42,10 +47,12 @@ namespace SieGraSieMa.Controllers
             return Ok(tournament);
         }
 
-        [HttpPost("Create")]
-        public async Task<IActionResult> CreateTournament(Tournament tournament)
+        [HttpPost()]
+        public async Task<IActionResult> CreateTournament(CreateTournamentDTO tournament)
         {
-            var result = await _tournamentsService.CreateTournament(tournament);
+            //var newTournament = _mapper.Map<Tournament>(tournament);
+            var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
+            var result = await _tournamentsService.CreateTournament(newTournament);
 
             if (!result)
                 return BadRequest(result);
@@ -53,10 +60,12 @@ namespace SieGraSieMa.Controllers
             return Ok(result);
         }
 
-        [HttpPut("Update")]
-        public async Task<IActionResult> UpdateTournament(Tournament tournament)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateTournament(CreateTournamentDTO tournament, int id)
         {
-            var result = await _tournamentsService.UpdateTournament(tournament);
+            var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
+
+            var result = await _tournamentsService.UpdateTournament(id, newTournament);
 
             if (!result)
                 return BadRequest(result);
@@ -64,7 +73,7 @@ namespace SieGraSieMa.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("Delete")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTournament(int id)
         {
             var result = await _tournamentsService.DeleteTournament(id);

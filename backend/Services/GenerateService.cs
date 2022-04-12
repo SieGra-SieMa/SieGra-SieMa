@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services.Interfaces;
 using System;
@@ -8,81 +9,83 @@ using System.Threading.Tasks;
 
 namespace SieGraSieMa.Services
 {
+    public interface IGenerateService
+    {
+        public Task<IEnumerable<Team>> GenerateTeams(int amount, int tournamentId);
+    }
     public class GenerateService : IGenerateService
     {
         private readonly SieGraSieMaContext _context;
+        private readonly UserManager<User> _userManager;
 
         public IConfiguration Configuration { get; set; }
 
-        public GenerateService(SieGraSieMaContext context, IConfiguration configuration)
+        public GenerateService(UserManager<User> userManager, SieGraSieMaContext context, IConfiguration configuration)
         {
             _context = context;
             Configuration = configuration;
+            _userManager = userManager;
         }
-        public IEnumerable<Team> GenerateTeams(int amount, int tournamentId)
+        public async Task<IEnumerable<Team>> GenerateTeams(int amount, int tournamentId)
         {
-            //List<User> UsersList = new List<User>();
             List<Team> TeamsList = new List<Team>();
-            string salt = CreateSalt();
-
             for (int teamCounter = 0; teamCounter < amount; teamCounter++)
             {
-                var captain = new User() { Name = RandomString(6), Surname = RandomString(8), Email = RandomString(6) + "@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt };
-                captain.UserRoles.Add(new UserRole() { User = captain, RoleId = 3 });
-                var team = new Team() { Code = RandomString(5), Captain = captain, Name = RandomString(10) };
-                team.Players.Add(new Player() { Team = team, User = captain });
-                //UsersList.Add(captain);
+                //tworzenie kapitana
+                var emm = RandomString(6) + "@gmail.com";
+                var username = RandomString(8);
+                var captain = new User { 
+                    Name = RandomString(6), 
+                    Surname = RandomString(8),
+                    UserName = username,
+                    Email = emm, 
+                    NormalizedEmail = emm.ToUpper(), 
+                    NormalizedUserName = username.ToUpper(),
+                    EmailConfirmed = true, 
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    TwoFactorEnabled = false
+                };
+                await _userManager.CreateAsync(captain, "bardzoTr00dneH@slo");
+                await _userManager.AddToRoleAsync(captain, "User");
+                //tworzenie teamu
+                var team = new Team { Code = RandomString(5), Captain = captain, Name = RandomString(10) };
+                //dodawanie graczy do teamu
+                team.Players.Add(new Player { Team = team, User = captain });
                 for (int player = 1; player < 5; player++)
                 {
-                    var user = new User() { Name = RandomString(6), Surname = RandomString(8), Email = RandomString(6) + "@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt };
-                    user.UserRoles.Add(new UserRole() { User = user, RoleId = 3 });
+                    emm = RandomString(6) + "@gmail.com";
+                    username = RandomString(8);
+                    var user = new User
+                    {
+                        Name = RandomString(6),
+                        Surname = RandomString(8),
+                        UserName = username,
+                        Email = emm,
+                        NormalizedEmail = emm.ToUpper(),
+                        NormalizedUserName = username.ToUpper(),
+                        EmailConfirmed = true,
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        TwoFactorEnabled = false
+                    };
+                    await _userManager.CreateAsync(user, "bardzoTr00dneH@slo");
+                    await _userManager.AddToRoleAsync(user, "User");
                     team.Players.Add(new Player() { Team = team, User = user });
-                    //UsersList.Add(user);
                 }
                 TeamsList.Add(team);
-                team.TeamInTournaments.Add(new TeamInTournament() { Team = team, TournamentId = tournamentId, Paid = true });
+                team.TeamInTournaments.Add(new TeamInTournament { Team = team, TournamentId = tournamentId, Paid = true });
 
             }
-
             _context.Teams.AddRange(TeamsList);
-            _context.SaveChanges();
-
-            //modelBuilder.Entity<User>().HasData(UsersList);
-            //modelBuilder.Entity<Team>().HasData(TeamsList);
-
-
-
+            await _context.SaveChangesAsync();
             return TeamsList;
         }
         private static string RandomString(int length)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
             var random = new Random();
             return new string(Enumerable.Repeat(chars, length)
                                                     .Select(s => s[random.Next(s.Length)])
                                                     .ToArray());
-        }
-        private static string GetPassword(string password, string salt)
-        {
-            var valueBytes =
-                       Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivation.Pbkdf2(
-                            password,
-                            System.Text.Encoding.UTF8.GetBytes(salt),
-                            Microsoft.AspNetCore.Cryptography.KeyDerivation.KeyDerivationPrf.HMACSHA512,
-                            1000,
-                            256 / 8
-                        );
-            return Convert.ToBase64String(valueBytes);
-        }
-        private static string CreateSalt(int maximumSaltLength = 32)
-        {
-            var salt = new byte[maximumSaltLength];
-            using (var random = new System.Security.Cryptography.RNGCryptoServiceProvider())
-            {
-                random.GetNonZeroBytes(salt);
-            }
-
-            return Convert.ToBase64String(salt);
         }
     }
 }

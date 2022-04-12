@@ -48,21 +48,21 @@ namespace SieGraSieMa.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "f8b48b49-2bff-435e-b60b-e618cef935e4",
+                            ConcurrencyStamp = "70918f65-cf53-482e-b18a-9eae49d13eaa",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "53947a80-840e-4da1-9375-85c12e18e318",
+                            ConcurrencyStamp = "223611a3-51df-48ef-8ce6-5e03bf9f28dc",
                             Name = "Emp",
                             NormalizedName = "Emp"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "614dcd0a-affd-4fd4-af13-1341245ff6d8",
+                            ConcurrencyStamp = "545290f6-3797-44f4-9c9a-8e75893910c7",
                             Name = "User",
                             NormalizedName = "User"
                         });
@@ -503,6 +503,44 @@ namespace SieGraSieMa.Migrations
                     b.ToTable("refresh_token");
                 });
 
+<<<<<<< HEAD
+            modelBuilder.Entity("SieGraSieMa.Models.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("varchar(32)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Emp"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "User"
+                        });
+                });
+
+=======
+>>>>>>> main
             modelBuilder.Entity("SieGraSieMa.Models.Team", b =>
                 {
                     b.Property<int>("Id")
@@ -734,65 +772,89 @@ namespace SieGraSieMa.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "259617d9-f8b8-492e-bcdb-cc55db1e2030",
+                            ConcurrencyStamp = "2ab3f7eb-a1f5-4f8e-8bbc-a923d38c92e6",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "Adm",
+<<<<<<< HEAD
+                            Password = "Fqg7LOUe9eVFTwxGRRrLv0rgSY4EHkL1vTrlA065rvc=",
+                            Salt = "JCzZ5lbgkL6pl25XG6kqaPDwaqCbX2GWJg0hu0Lke5k=",
+                            Surname = "In"
+=======
                             NormalizedEmail = "admin@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKttNKQYq3OOBpUI8lALtKk9tQJWrkf5GGlPT3jUN4Oy2ugHKF70WBQ3MQjR2oRvAQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHUg4GvNj6MpaHUJZVGKCE6rdGvG1mog8WHXKTGeycAh9N4JJa96wJsOnstXC/OPMQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "457cd223-68a5-4dab-b5eb-1f39b8bfd827",
+                            SecurityStamp = "8245e200-0eae-44ac-a2fd-74670c1166fb",
                             Surname = "In",
                             TwoFactorEnabled = false
+>>>>>>> main
                         },
                         new
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6c869d21-c3fe-49df-a462-f2ad9f588ae0",
+                            ConcurrencyStamp = "009cad0f-ce8f-47a3-b961-73fccb3542e6",
                             Email = "pracownik@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "Prac",
+<<<<<<< HEAD
+                            Password = "Fqg7LOUe9eVFTwxGRRrLv0rgSY4EHkL1vTrlA065rvc=",
+                            Salt = "JCzZ5lbgkL6pl25XG6kqaPDwaqCbX2GWJg0hu0Lke5k=",
+                            Surname = "Ownik"
+=======
                             NormalizedEmail = "pracownik@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMc7lB1A5ox0fCoK1xsi9sgqaFIWZKsmTIbxSaRX5ccdqs+0dVD50EyDm1lMLzvxbw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAENjRLErJbe4i3QZIBsCBL4PVRGX3L9/PxGSJFrEZMp/wpU7ugLDF6O+nHKrmjlX0Tg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "ea33d2c1-4430-490b-b63e-9c788b45cd67",
+                            SecurityStamp = "205a93c8-2d7e-4bf7-822a-f102480855f8",
                             Surname = "Ownik",
                             TwoFactorEnabled = false
+>>>>>>> main
                         },
                         new
                         {
                             Id = 3,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fbb815f2-0418-44fe-bfbb-3f8d55c04f23",
+                            ConcurrencyStamp = "db6ac4d6-ab17-477d-b15d-7aa6d46ce591",
                             Email = "kapitan@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "Kap",
+<<<<<<< HEAD
+                            Password = "Fqg7LOUe9eVFTwxGRRrLv0rgSY4EHkL1vTrlA065rvc=",
+                            Salt = "JCzZ5lbgkL6pl25XG6kqaPDwaqCbX2GWJg0hu0Lke5k=",
+                            Surname = "Itan"
+=======
                             NormalizedEmail = "kapitan@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEPKR6UfcGmNmFQ43NAO9jYhITe/VIGTX9MjffQbzvJz3xFMFMT2N3HPTqaHWVEgrFw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAENHGecrABa0I1j/qH2ErzfHEWDi7YVBmHSY2ZY6O7jvYdnuAHdX0tXiRri2RoWHG6Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "527ce89a-2c6b-469c-a353-0285af097c23",
+                            SecurityStamp = "ab71e3bc-dd32-4a0e-bb92-150c1556ab89",
                             Surname = "Itan",
                             TwoFactorEnabled = false
+>>>>>>> main
                         },
                         new
                         {
                             Id = 4,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2338a37d-c06b-4ec0-9717-c0a678d11e4f",
+                            ConcurrencyStamp = "c7ab9b29-48cf-4bb6-9dd8-0cf549d57c66",
                             Email = "gracz@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "Gr",
+<<<<<<< HEAD
+                            Password = "Fqg7LOUe9eVFTwxGRRrLv0rgSY4EHkL1vTrlA065rvc=",
+                            Salt = "JCzZ5lbgkL6pl25XG6kqaPDwaqCbX2GWJg0hu0Lke5k=",
+                            Surname = "acz"
+=======
                             NormalizedEmail = "gracz@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEH8gvG7cHtb6iAXuut5ihFG1tx9PLNdalH4FnUgwNwe3lkUqqM7rxwtc1DSpkm4JoA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDcPfJecegOsq5ca+s2JlbjePjWUWs2uJ1zYC12wu/o7G5Vujw0q6MG2o5z3gys+tw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e4d81bb5-05f4-409b-aa0f-686387cc861e",
+                            SecurityStamp = "baf93244-a4cf-4922-9d57-88c403b662b1",
                             Surname = "acz",
                             TwoFactorEnabled = false
+>>>>>>> main
                         });
                 });
 

@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SieGraSieMa.Services.Interfaces;
+using SieGraSieMa.Services;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
 {
-    [Authorize(Roles ="Emp")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(Roles ="Emp")]
     [Route("api/[controller]")]
     [ApiController]
     public class MatchController : ControllerBase
@@ -21,33 +21,28 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpGet("countTeams/{id}")]
-        public IActionResult CountTeams(int id)
+        public async Task<IActionResult> CountTeams(int id)
         {
-            var response = _matchService.CheckCountTeamsInTournament(id);
-
-            if (response == 0)
-                return BadRequest(new { message = "Bad tournament number or no teams registered for tournament" });
+            var response = await _matchService.CheckCountTeamsInTournament(id);
+            if (response == 0) return BadRequest(new { message = "Bad tournament number or no teams registered for tournament" });
 
             return Ok(response);
         }
 
         [HttpGet("countPaidTeams/{id}")]
-        public IActionResult CountPaidTeams(int id)
+        public async Task<IActionResult> CountPaidTeams(int id)
         {
-            var response = _matchService.CheckCountPaidTeamsInTournament(id);
-
-            if (response == 0)
-                return BadRequest(new { message = "Bad tournament number or no teams paid for tournament" });
-
+            var response = await _matchService.CheckCountPaidTeamsInTournament(id);
+            if (response == 0) return BadRequest(new { message = "Bad tournament number or no teams paid for tournament" });
             return Ok(response);
         }
 
         [HttpGet("checkCorectnessOfTeams/{id}")]
-        public IActionResult CheckCorectnessOfTeams(int id)
+        public async Task<IActionResult> CheckCorectnessOfTeams(int id)
         {
             try
             {
-                var response = _matchService.CheckCorectnessOfTeams(id);
+                var response = await _matchService.CheckCorectnessOfTeams(id);
                 if (response.Count() == 0) return Ok();
                 return Ok(response);
             }
@@ -58,11 +53,11 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpGet("createBasicGroups/{id}")]
-        public IActionResult CreateBasicGroups(int id)
+        public async Task<IActionResult> CreateBasicGroups(int id)
         {
             try
             {
-                var response = _matchService.CreateBasicGroups(id);
+                var response = await _matchService.CreateBasicGroups(id);
                 return Ok(response);
             }
             catch (Exception e)
@@ -72,9 +67,9 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpGet("addTeamsToGroups/{id}")]
-        public IActionResult AddTeamsToGroup(int id)
+        public async Task<IActionResult> AddTeamsToGroup(int id)
         {
-            var response = _matchService.AddTeamsToGroup(id);
+            var response = await _matchService.AddTeamsToGroup(id);
             return Ok(response);
         }
 

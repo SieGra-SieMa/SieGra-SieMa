@@ -73,9 +73,12 @@ namespace SieGraSieMa
             services.AddTransient<IAccountIdentityServices, AccountService>();
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ITeamService, TeamService>();
+<<<<<<< HEAD
             services.AddTransient<IGenerateService, GenerateService>();
             services.AddTransient<IMatchService, MatchService>();
+=======
             services.AddTransient<IEmailService, EmailService>();
+
             services.AddIdentity<User, IdentityRole<int>>()
             .AddEntityFrameworkStores<SieGraSieMaContext>()
             .AddDefaultTokenProviders();
@@ -84,8 +87,7 @@ namespace SieGraSieMa
             .AddEntityFrameworkStores<SieGraSieMaContext>()
             .AddDefaultTokenProviders();*/
 
-
-
+>>>>>>> main
             //services.AddControllers();
             services.AddCors(options =>
             {
@@ -143,7 +145,7 @@ namespace SieGraSieMa
 
             app.UseHttpsRedirection();
 
-            //app.UseApiResponseAndExceptionWrapper();//new AutoWrapperOptions { UseApiProblemDetailsException = true }
+            app.UseApiResponseAndExceptionWrapper();//new AutoWrapperOptions { UseApiProblemDetailsException = true }
 
             app.UseRouting();
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SieGraSieMa.DTOs;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services.Interfaces;
 using System;
@@ -105,12 +106,12 @@ namespace SieGraSieMa.Services
             return _SieGraSieMaContext.Teams.Where(t => t.Id == Id).SingleOrDefault();
         }
 
-        public IEnumerable<Team> GetTeamsWithUser(string email)
+        public IEnumerable<GetTeamsDTO> GetTeamsWithUser(string email)
         {
             return _SieGraSieMaContext.Teams
                 .Where(e => e.Players.Any(e => e.User.Email == email))
                 .Include(e => e.Players)
-                .ThenInclude(e => e.User)
+                .ThenInclude(e => e.User).Select(t => new GetTeamsDTO{ Id=t.Id,Name=t.Name,CaptainId=t.CaptainId,CaptainName=t.Captain.Name,CaptainSurname=t.Captain.Surname,Code=t.Code})
                 .ToList();
         }
 

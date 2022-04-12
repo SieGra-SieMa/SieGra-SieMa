@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SieGraSieMa.Services.Interfaces;
+using SieGraSieMa.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +19,9 @@ namespace SieGraSieMa.Controllers
             _generateService = generateService;
         }
         [HttpGet("matchData")]
-        public IActionResult GenerateMatchData()
+        public async Task<IActionResult> GenerateMatchData()
         {
-            var teams = _generateService.GenerateTeams(20,1);
+            var teams = await _generateService.GenerateTeams(20,1);
             if (teams == null) return NotFound();
 
             return Ok(teams);

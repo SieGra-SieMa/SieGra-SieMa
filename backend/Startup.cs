@@ -20,6 +20,7 @@ using SieGraSieMa.Services;
 using SieGraSieMa.Services.Email;
 using SieGraSieMa.Services.Interfaces;
 using SieGraSieMa.Services.JWT;
+using SieGraSieMa.Services.Tournaments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,6 +75,7 @@ namespace SieGraSieMa
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ITeamService, TeamService>();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<ITournamentsService, TournamentService>();
 
             services.AddIdentity<User, IdentityRole<int>>()
             .AddEntityFrameworkStores<SieGraSieMaContext>()

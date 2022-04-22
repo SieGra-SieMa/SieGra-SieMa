@@ -1,6 +1,7 @@
 import { authState } from '../components/auth/AuthProvider';
 import { HOST } from '../config.json';
 import { accountService } from '../_services/accounts.service';
+import { ROLES } from './roles';
 import { Session } from './types';
 
 export interface WSResponse {
@@ -28,7 +29,8 @@ export function handleResponse<T>(
 						const tokens = await accountService.refresh(refreshToken);
 						authState.update({
 							...tokens,
-							accessToken: tokens.token
+							accessToken: tokens.token,
+							role: ROLES.User // TODO
 						} as Session);
 						(options.headers as Headers).set(
 							'Authorization',

@@ -1,10 +1,11 @@
 import styles from './Header.module.css';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
+import GuardComponent from '../guard-components/GuardComponent';
 
 export default function Header() {
 
-    const { session, setSession } = useAuth();
+    const { setSession } = useAuth();
 
     const logout = () => setSession(null);
 
@@ -21,16 +22,23 @@ export default function Header() {
                         <Link to="/">
                             <li>HOME</li>
                         </Link>
-                        {session ? (<>
+                        <GuardComponent
+                            element={
+                                <Link to="/account/">
+                                    <li>ACCOUNT</li>
+                                </Link>
+                            }
+                        >
                             <Link to='/account/'>
                                 <li>Username</li>
                             </Link>
-                            <button className={`button ${styles.logout}`} onClick={logout}>Logout</button>
-                        </>) : (
-                            <Link to="/account/">
-                                <li>ACCOUNT</li>
-                            </Link>
-                        )}
+                            <button
+                                className={`button ${styles.logout}`}
+                                onClick={logout}
+                            >
+                                Logout
+                            </button>
+                        </GuardComponent>
                     </ul>
                 </nav>
             </div>

@@ -4,9 +4,9 @@ import { useAuth } from '../auth/AuthContext';
 
 export default function Header() {
 
-    const { session, saveSession } = useAuth();
+    const { session, setSession } = useAuth();
 
-    const logout = () => saveSession(null);
+    const logout = () => setSession(null);
 
     return (
         <header className={styles.root}>

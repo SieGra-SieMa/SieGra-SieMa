@@ -7,7 +7,7 @@ import InputField from '../form/InputField';
 
 export default function SignIn() {
 
-    const { saveSession } = useAuth();
+    const { setSession } = useAuth();
 
     const [email, setEmail] = useState('gracz@gmail.com');
     const [password, setPassword] = useState('haslo123');
@@ -20,7 +20,7 @@ export default function SignIn() {
         setLoading(true);
         accountService.authenticate(email, password)
             .then(
-                session => saveSession(session),
+                session => setSession(session),
                 e => {
                     setError(e.message || e);
                     setLoading(false);

@@ -3,7 +3,7 @@ import { Session } from '../../_lib/types';
 
 interface AuthContextType {
     session: Session | null;
-    saveSession: (session: Session | null) => void;
+    setSession: (session: Session | null) => void;
 }
 
 export const AuthContext = createContext<AuthContextType>(null!);

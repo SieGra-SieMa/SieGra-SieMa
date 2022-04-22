@@ -6,10 +6,6 @@
     grid-auto-rows: min-content;
 }
 
-.label {
-    padding: 0 20px;
-}
-
 .input {
     min-width: 300px;
     padding: 15px 20px;
@@ -22,6 +18,6 @@
     transition: box-shadow .3s;
 }
 
-.input:hover  {
+.input:hover {
     box-shadow: 0 0 3px var(--box-shadow-color);
 }

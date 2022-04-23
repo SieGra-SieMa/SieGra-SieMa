@@ -40,7 +40,7 @@ export default function SignIn() {
 
     return (
         <div className={styles.enterBlock}>
-            <h3>SIGN IN</h3>
+            <h3>Sign in</h3>
             <form onSubmit={signIn}>
                 {error && <div className={styles.failed}>FAILED: {error}</div>}
                 <InputField

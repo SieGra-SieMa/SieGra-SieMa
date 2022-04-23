@@ -29,13 +29,13 @@ export default function TeamsList() {
 
     return (
         <div className="container">
-            <h1>My teams</h1>
+            <h2 className={styles.title}>My teams</h2>
             <div className={styles.content}>
                 {teams ? teams.map((team, index) => (
-                    <TeamsListItem key={index} team={team} onRemove={onRemove}/>
+                    <TeamsListItem key={index} team={team} onRemove={onRemove} />
                 )) : (
                     <div className={styles.loader}>
-                        <SyncLoader loading={true} size={20} margin={20}/>
+                        <SyncLoader loading={true} size={20} margin={20} />
                     </div>
                 )}
             </div>

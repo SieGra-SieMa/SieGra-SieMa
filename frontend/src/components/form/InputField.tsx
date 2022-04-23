@@ -5,16 +5,20 @@ interface InputFieldProp {
     id?: string;
     label?: string;
     type?: string
+    maxLength?: number;
+    placeholder?: string;
     value: string;
     onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
 export default function InputField({
-    id, 
+    id,
     label,
     type = 'text',
+    maxLength,
+    placeholder,
     value,
-    onChange
+    onChange,
 }: InputFieldProp) {
     return (
         <div className={styles.root}>
@@ -23,7 +27,9 @@ export default function InputField({
                 id={id}
                 className={styles.input}
                 type={type}
-                value={value} 
+                maxLength={maxLength}
+                placeholder={placeholder}
+                value={value}
                 onChange={onChange}
             />
         </div>

@@ -29,7 +29,7 @@ export default function CreateAccount() {
 
     return (
         <div className={styles.enterBlock}>
-            <h3>CREATE ACCOUNT</h3>
+            <h3>Create account</h3>
             <form onSubmit={createAccount}>
                 {error && <div className={styles.failed}>{error}</div>}
                 <InputField

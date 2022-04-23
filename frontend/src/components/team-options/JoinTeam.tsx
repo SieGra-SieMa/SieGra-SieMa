@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styles from './TeamOptions.module.css';
 import { teamsService } from '../../_services/teams.service';
+import InputField from '../form/InputField';
 
 export default function JoinTeam() {
 
@@ -16,15 +17,15 @@ export default function JoinTeam() {
 
     return (
         <div className={styles.option}>
-            <h3>Join a team</h3>
+            <h2>Join a team</h2>
             <p>Enter code, which your friend gives you.</p>
-            <input
+            <InputField
                 id={styles.codeInput}
                 type="text"
                 maxLength={5}
                 placeholder="CODE"
                 value={code}
-                onChange={e => setCode(e.target.value)}
+                onChange={(e) => setCode(e.target.value)}
             />
             <button
                 className={code.length !== 5 ? ['button', styles.disabled].join(' ') : 'button'}

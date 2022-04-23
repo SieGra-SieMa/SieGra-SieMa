@@ -6,6 +6,7 @@ export default function TeamOptions() {
     return (
         <div className={`container ${styles.root}`}>
             <CreateTeam />
+            <span>OR</span>
             <JoinTeam />
         </div>
     );

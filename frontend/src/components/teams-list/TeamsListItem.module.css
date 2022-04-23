@@ -6,18 +6,18 @@
     overflow: hidden;
     border-radius: 15px;
     transition: box-shadow .3s;
-    background-color: #eee;
+    background-color: #fff;
+    padding: 30px;
+    row-gap: 45px;
 }
 
 .root:hover {
     box-shadow: 0 0 5px var(--box-shadow-color);
 }
 
-.content {
-    padding: 30px;
-}
+.content {}
 
-.content > h3 {
+.content>h3 {
     font-size: 30px;
 }
 
@@ -26,25 +26,24 @@
     align-items: center;
 }
 
-.codeBlock > span {
+.codeBlock>span {
     margin-right: 10px;
     font-size: 20px;
 }
 
-.codeBlock > h3 {
+.codeBlock>h3 {
     font-size: 20px;
 }
 
 .footer {
     display: flex;
-    padding: 15px;
     column-gap: 10px;
     justify-content: space-between;
 }
 
 .button {
     appearance: none;
-    font-size: 15px;
+    font-size: 17px;
     cursor: pointer;
     border: none;
     background-color: #ddd;

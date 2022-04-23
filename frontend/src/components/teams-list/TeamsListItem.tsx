@@ -27,10 +27,10 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
     return (
         <div className={styles.root}>
             <div className={styles.content}>
-                <h3>{ team.name }</h3>
+                <h3>{team.name}</h3>
                 <div className={styles.codeBlock}>
                     <span>Code: </span>
-                    <h3>{ team.code }</h3>
+                    <h3>{team.code}</h3>
                 </div>
                 <ul>
                     {team.players.map((player, index) => (
@@ -47,13 +47,19 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
                     className={styles.button}
                     onClick={() => setIsAdd(true)}
                 >
-                    ADD PARTICIPANT
+                    Add participants
+                </button>
+                <button
+                    className={styles.button}
+                    onClick={() => setIsAdd(true)}
+                >
+                    Edit team
                 </button>
                 <button
                     className={styles.button}
                     onClick={() => setIsConfirm(true)}
                 >
-                    LEAVE
+                    Leave
                 </button>
             </div>
             {isAdd && (

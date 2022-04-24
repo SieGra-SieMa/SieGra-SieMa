@@ -99,3 +99,10 @@ export function patch<T>(url: string, body: any): Promise<T> {
 	}
 	return api<T>(url, options);
 }
+
+export function del<T>(url: string): Promise<T> {
+	const options: RequestInit = {
+		method: 'DELETE',
+	}
+	return api<T>(url, options);
+}

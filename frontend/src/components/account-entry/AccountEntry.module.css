@@ -12,14 +12,14 @@
     padding: 20px;
 }
 
-.enterBlock > h3 {
+.enterBlock>h3 {
     font-weight: normal;
     text-align: center;
     padding: 20px;
     font-size: 20px;
 }
 
-.enterBlock > form {
+.enterBlock>form {
     display: grid;
     row-gap: 15px;
 }
@@ -36,7 +36,7 @@
     color: #b60000;
 }
 
-.root > span {
+.root>span {
     text-align: center;
     color: #808080;
     font-size: 20px;
@@ -46,8 +46,8 @@
     align-self: stretch;
 }
 
-.root > span::after,
-.root > span::before {
+.root>span::after,
+.root>span::before {
     content: '';
     display: block;
     width: 0;
@@ -56,10 +56,14 @@
     border-right: 1px dashed #808080;
 }
 
-.root > span::after {
+.root>span::after {
     margin-top: 10px;
 }
 
-.root > span::before {
+.root>span::before {
     margin-bottom: 10px;
+}
+
+.spacing {
+    height: 30px;
 }

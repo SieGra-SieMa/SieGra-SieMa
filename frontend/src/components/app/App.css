@@ -1,4 +1,4 @@
-@import './variables.css';
+@import '../../variables.css';
 
 .container {
     width: 1600px;
@@ -17,7 +17,7 @@
     padding-bottom: 100%;
 }
 
-.image-container > img { 
+.image-container>img {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -38,7 +38,7 @@
     appearance: none;
     border: none;
     background-color: #E3A084;
-    color: white;
+    color: #fff;
     padding: 15px 20px;
     font-size: 17px;
     border-radius: 5px;

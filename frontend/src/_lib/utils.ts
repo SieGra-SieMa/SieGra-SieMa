@@ -1,5 +1,7 @@
+import { authState } from '../components/auth/AuthProvider';
 import { HOST } from '../config.json';
 import { accountService } from '../_services/accounts.service';
+import { ROLES } from './roles';
 import { Session } from './types';
 
 export interface WSResponse {
@@ -20,18 +22,16 @@ export function handleResponse<T>(
 	return response.text().then(async (text) => {
 		if ([401, 403].indexOf(response.status) !== -1) {
 			const session = localStorage.getItem('session');
-			if (session && response.url !== `${HOST}accounts/refresh-token` && !retry) {
+			if (session && response.url !== `${HOST}/api/accounts/refresh-token` && !retry) {
 				const refreshToken = (JSON.parse(session) as Session).refreshToken;
 				if (refreshToken) {
 					try {
 						const tokens = await accountService.refresh(refreshToken);
-						localStorage.setItem(
-							'session',
-							JSON.stringify({
-								...tokens,
-								accessToken: tokens.token
-							})
-						);
+						authState.update({
+							...tokens,
+							accessToken: tokens.token,
+							role: ROLES.User // TODO
+						} as Session);
 						(options.headers as Headers).set(
 							'Authorization',
 							`Bearer ${tokens.token}`
@@ -39,6 +39,7 @@ export function handleResponse<T>(
 						return await fetch(response.url, options)
 							.then(res => handleResponse<T>(res, options, true));
 					} catch (e) {
+						authState.logout();
 						return Promise.reject(e);
 					}
 				}

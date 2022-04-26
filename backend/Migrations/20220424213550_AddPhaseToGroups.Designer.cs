@@ -2,20 +2,22 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SieGraSieMa.Models;
 
 namespace SieGraSieMa.Migrations
 {
     [DbContext(typeof(SieGraSieMaContext))]
-    partial class SieGraSieMaContextModelSnapshot : ModelSnapshot
+    [Migration("20220424213550_AddPhaseToGroups")]
+    partial class AddPhaseToGroups
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
-                .HasAnnotation("ProductVersion", "5.0.16");
+                .HasAnnotation("ProductVersion", "5.0.7");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<int>", b =>
                 {
@@ -48,21 +50,21 @@ namespace SieGraSieMa.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "6fafb2dd-a732-4371-aeba-574c7be5deec",
+                            ConcurrencyStamp = "f549d8fa-2cfa-4e63-8ea8-ce3364853c16",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "7df91437-da27-4725-9a1d-a1352f9fc0ca",
+                            ConcurrencyStamp = "e391dd02-8088-4966-b5d0-dd045d33a956",
                             Name = "Emp",
                             NormalizedName = "Emp"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "01159956-4aa5-4a78-8043-8262a674e9b0",
+                            ConcurrencyStamp = "19712254-d755-4df3-ad82-49fec4345003",
                             Name = "User",
                             NormalizedName = "User"
                         });
@@ -340,34 +342,28 @@ namespace SieGraSieMa.Migrations
 
             modelBuilder.Entity("SieGraSieMa.Models.Match", b =>
                 {
-                    b.Property<int>("TournamentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Phase")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MatchId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("match_id");
+                        .HasColumnName("id");
 
-                    b.Property<int?>("TeamAwayId")
+                    b.Property<int>("TeamAwayId")
                         .HasColumnType("int")
                         .HasColumnName("team_away_id");
 
-                    b.Property<int?>("TeamAwayScore")
+                    b.Property<int>("TeamAwayScore")
                         .HasColumnType("int")
                         .HasColumnName("team_away_score");
 
-                    b.Property<int?>("TeamHomeId")
+                    b.Property<int>("TeamHomeId")
                         .HasColumnType("int")
                         .HasColumnName("team_home_id");
 
-                    b.Property<int?>("TeamHomeScore")
+                    b.Property<int>("TeamHomeScore")
                         .HasColumnType("int")
                         .HasColumnName("team_home_score");
 
-                    b.HasKey("TournamentId", "Phase", "MatchId")
-                        .HasName("PRIMARY");
+                    b.HasKey("Id");
 
                     b.HasIndex(new[] { "TeamAwayId" }, "match_away");
 
@@ -744,15 +740,15 @@ namespace SieGraSieMa.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "be1eabad-df9a-4e58-8a15-6716d1a38e00",
+                            ConcurrencyStamp = "dc91146b-851a-4504-a646-fc8e51b1447e",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "Adm",
                             NormalizedEmail = "admin@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMfSHkF2hwfqH2hxNNJe5dzKcnq2rn3Env6ol/MJLwbLWYkTQLfHEV2sU40TgwiHAQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMHbG20DStwYORajE6gTnmmHtH9+YI2YQJDnB6+NKh3I/2r4NuRscEyc4Ir01jEl7w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "aa2ef628-d697-47d0-8d06-59cb7b3f4693",
+                            SecurityStamp = "49496d3a-1241-4d5c-9026-4e3b8c006d09",
                             Surname = "In",
                             TwoFactorEnabled = false
                         },
@@ -760,15 +756,15 @@ namespace SieGraSieMa.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ee461096-8098-46cd-8555-8909106f09ea",
+                            ConcurrencyStamp = "f849bf9f-bd2c-4b62-a450-ea8f07201522",
                             Email = "pracownik@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "Prac",
                             NormalizedEmail = "pracownik@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAECr5nbn3Z0bK5JH4c5j7sP4lp3uqHRKnERiiE1Qihev/zAZBg0C4HSuzbuFYIploFw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDsHoVArIC2hzzd7tH0Z60eMobXxYfTjYdaiOaKt2FHwrunBUzzNv3m/DqDUlz2ifQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "9a9db7a9-3ac2-49c0-81c7-fbfe384cc03e",
+                            SecurityStamp = "7a4de017-3129-4b02-b2e0-7af1afdac04f",
                             Surname = "Ownik",
                             TwoFactorEnabled = false
                         },
@@ -776,15 +772,15 @@ namespace SieGraSieMa.Migrations
                         {
                             Id = 3,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "938a9846-de3f-4dd5-a987-121ff94191ba",
+                            ConcurrencyStamp = "c09666b3-21f2-44f3-b626-2d2e47c4a31b",
                             Email = "kapitan@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "Kap",
                             NormalizedEmail = "kapitan@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFw+I47PQKLJfLZ6QAtZc/++a0iinYePg/KPW3ca4rh+kCp8UPEUggmUppMuUc47zA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEy1RrRP8IuK+F0i1R/TJiDBr9DPyId/qfJeDVORU5u5/8bbAfVebMLaCFVq6YwzEw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "700468f1-7d41-4442-ae3c-610b782a2e82",
+                            SecurityStamp = "2678df16-fcd8-46d4-aefa-d644aff7e94b",
                             Surname = "Itan",
                             TwoFactorEnabled = false
                         },
@@ -792,15 +788,15 @@ namespace SieGraSieMa.Migrations
                         {
                             Id = 4,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "48721dc3-afdd-4196-8ca3-04d3cd19b56d",
+                            ConcurrencyStamp = "48c361cc-763c-49d7-952b-51221c3def18",
                             Email = "gracz@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             Name = "Gr",
                             NormalizedEmail = "gracz@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHRxO0TBBauqRiH7Y23CPJFZ/bcqevTyghvUPD2FOP9WEZl6N9dVHT0TgFZ/H6yGoQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAYlelwpLiQ+Fvn2q13d0yglnNsr7e7j/TKqzI2zH+hzfhiyvpb+lgglZ//LbY60ng==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "24fe531f-3dda-4e23-89db-852030972812",
+                            SecurityStamp = "028a25a2-ea63-4a26-ac2c-8b5c944a90f8",
                             Surname = "acz",
                             TwoFactorEnabled = false
                         });
@@ -924,24 +920,18 @@ namespace SieGraSieMa.Migrations
                     b.HasOne("SieGraSieMa.Models.TeamInGroup", "TeamAway")
                         .WithMany("MatchTeamAways")
                         .HasForeignKey("TeamAwayId")
-                        .HasConstraintName("match_away");
+                        .HasConstraintName("match_away")
+                        .IsRequired();
 
                     b.HasOne("SieGraSieMa.Models.TeamInGroup", "TeamHome")
                         .WithMany("MatchTeamHomes")
                         .HasForeignKey("TeamHomeId")
-                        .HasConstraintName("match_home");
-
-                    b.HasOne("SieGraSieMa.Models.Tournament", "Tournament")
-                        .WithMany("Matches")
-                        .HasForeignKey("TournamentId")
-                        .HasConstraintName("tournament")
+                        .HasConstraintName("match_home")
                         .IsRequired();
 
                     b.Navigation("TeamAway");
 
                     b.Navigation("TeamHome");
-
-                    b.Navigation("Tournament");
                 });
 
             modelBuilder.Entity("SieGraSieMa.Models.Medium", b =>
@@ -1084,8 +1074,6 @@ namespace SieGraSieMa.Migrations
                     b.Navigation("Contests");
 
                     b.Navigation("Groups");
-
-                    b.Navigation("Matches");
 
                     b.Navigation("TeamInTournaments");
                 });

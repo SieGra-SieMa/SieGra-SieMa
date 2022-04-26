@@ -12,7 +12,7 @@ namespace SieGraSieMa.Services
 {
     public class TeamService : ITeamService
     {
-        private readonly IMapper _mapper;
+        //private readonly IMapper _mapper;
         private readonly SieGraSieMaContext _SieGraSieMaContext;
 
         public TeamService(SieGraSieMaContext SieGraSieMaContext)

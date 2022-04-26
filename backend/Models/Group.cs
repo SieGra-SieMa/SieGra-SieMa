@@ -16,6 +16,7 @@ namespace SieGraSieMa.Models
         public string Name { get; set; }
         public int TournamentId { get; set; }
         public bool Ladder { get; set; }
+        public int Phase { get; set; }
 
         public virtual Tournament Tournament { get; set; }
         public virtual ICollection<TeamInGroup> TeamInGroups { get; set; }

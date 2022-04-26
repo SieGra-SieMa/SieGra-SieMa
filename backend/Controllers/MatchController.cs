@@ -20,30 +20,31 @@ namespace SieGraSieMa.Controllers
             _matchService = matchService;
         }
 
-        [HttpGet("countTeams/{id}")]
-        public async Task<IActionResult> CountTeams(int id)
+        [HttpGet("countTeams/{tournamentId}")]
+        public async Task<IActionResult> CountTeams(int tournamentId)
         {
-            var response = await _matchService.CheckCountTeamsInTournament(id);
+            var response = await _matchService.CheckCountTeamsInTournament(tournamentId);
             if (response == 0) return BadRequest(new { message = "Bad tournament number or no teams registered for tournament" });
 
             return Ok(response);
         }
 
-        [HttpGet("countPaidTeams/{id}")]
-        public async Task<IActionResult> CountPaidTeams(int id)
+        [HttpGet("countPaidTeams/{tournamentId}")]
+        public async Task<IActionResult> CountPaidTeams(int tournamentId)
         {
-            var response = await _matchService.CheckCountPaidTeamsInTournament(id);
+            var response = await _matchService.CheckCountPaidTeamsInTournament(tournamentId);
             if (response == 0) return BadRequest(new { message = "Bad tournament number or no teams paid for tournament" });
             return Ok(response);
         }
 
-        [HttpGet("checkCorectnessOfTeams/{id}")]
-        public async Task<IActionResult> CheckCorectnessOfTeams(int id)
+        [HttpGet("checkCorectnessOfTeams/{tournamentId}")]
+        public async Task<IActionResult> CheckCorectnessOfTeams(int tournamentId)
         {
             try
             {
-                var response = await _matchService.CheckCorectnessOfTeams(id);
-                if (response.Count() == 0) return Ok();
+                var response = await _matchService.CheckCorectnessOfTeams(tournamentId);
+                //if (response.Count() == 0) return Ok();
+                if (response.Any()) return Ok();
                 return Ok(response);
             }
             catch (Exception e)
@@ -52,12 +53,12 @@ namespace SieGraSieMa.Controllers
             }
         }
 
-        [HttpGet("createBasicGroups/{id}")]
-        public async Task<IActionResult> CreateBasicGroups(int id)
+        [HttpGet("createBasicGroups/{tournamentId}")]
+        public async Task<IActionResult> CreateBasicGroups(int tournamentId)
         {
             try
             {
-                var response = await _matchService.CreateBasicGroups(id);
+                var response = await _matchService.CreateBasicGroups(tournamentId);
                 return Ok(response);
             }
             catch (Exception e)
@@ -66,17 +67,37 @@ namespace SieGraSieMa.Controllers
             }
         }
 
-        [HttpGet("addTeamsToGroups/{id}")]
-        public async Task<IActionResult> AddTeamsToGroup(int id)
+        [HttpGet("addTeamsToGroups/{tournamentId}")]
+        public async Task<IActionResult> AddTeamsToGroup(int tournamentId)
         {
-            var response = await _matchService.AddTeamsToGroup(id);
-            return Ok(response);
+            try
+            {
+                var response = await _matchService.AddTeamsToGroup(tournamentId);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpGet("createMatchTemplates/{tournamentId}")]
+        public async Task<IActionResult> CreateMatchTemplates(int tournamentId)
+        {
+            try
+            {
+                var response = await _matchService.CreateMatchTemplates(tournamentId);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         /*
         IEnumerable<Group> CreateLadderGroups(int tournamentId); wydaje mi się żeby nie robić, bo to się odpala automatycznie z basic group
         IEnumerable<TeamInGroup> CreateTeamTemplatesInLadder(int tournamentId);
-        IEnumerable<Match> CreateMatchTemplates(int tournamentId);
+        
         Match InsertMatchResult(int matchId);
         IEnumerable<Group> ComposeLadderGroups(int tournamentId);*/
     }

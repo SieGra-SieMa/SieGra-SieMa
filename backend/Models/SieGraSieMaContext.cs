@@ -156,6 +156,9 @@ namespace SieGraSieMa.Models
 
                 entity.Property(e => e.Ladder).HasColumnName("ladder");
 
+                entity.Property(e => e.Phase)
+                    .HasColumnName("phase");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(2)
@@ -198,6 +201,9 @@ namespace SieGraSieMa.Models
 
             modelBuilder.Entity<Match>(entity =>
             {
+                entity.HasKey(e => new { e.TournamentId, e.Phase, e.MatchId })
+                    .HasName("PRIMARY");
+
                 entity.ToTable("match");
 
                 entity.HasIndex(e => e.TeamAwayId, "match_away");
@@ -205,9 +211,15 @@ namespace SieGraSieMa.Models
                 entity.HasIndex(e => new { e.TeamHomeId, e.TeamAwayId }, "meet")
                     .IsUnique();
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.MatchId).HasColumnName("match_id");
 
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                //entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.HasOne(d => d.Tournament)
+                    .WithMany(p => p.Matches)
+                    .HasForeignKey(d => d.TournamentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("tournament");
 
                 //entity.Property(e => e.EndDate).HasColumnName("end_date");
 
@@ -218,13 +230,13 @@ namespace SieGraSieMa.Models
 
                 //entity.Property(e => e.StartDate).HasColumnName("start_date");
 
-                entity.Property(e => e.TeamAwayId).HasColumnName("team_away_id");
+                entity.Property(e => e.TeamAwayId).HasColumnName("team_away_id").IsRequired(false);
 
-                entity.Property(e => e.TeamAwayScore).HasColumnName("team_away_score");
+                entity.Property(e => e.TeamAwayScore).HasColumnName("team_away_score").IsRequired(false);
 
-                entity.Property(e => e.TeamHomeId).HasColumnName("team_home_id");
+                entity.Property(e => e.TeamHomeId).HasColumnName("team_home_id").IsRequired(false);
 
-                entity.Property(e => e.TeamHomeScore).HasColumnName("team_home_score");
+                entity.Property(e => e.TeamHomeScore).HasColumnName("team_home_score").IsRequired(false);
 
                 entity.HasOne(d => d.TeamAway)
                     .WithMany(p => p.MatchTeamAways)

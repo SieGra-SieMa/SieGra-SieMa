@@ -1,11 +1,13 @@
 using AutoMapper;
-using AutoWrapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +16,8 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using SieGraSieMa.DTOs;
+using SieGraSieMa.DTOs.ResponseWrapper;
 using SieGraSieMa.Mappers;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
@@ -23,6 +27,7 @@ using SieGraSieMa.Services.JWT;
 using SieGraSieMa.Services.Tournaments;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -69,6 +74,7 @@ namespace SieGraSieMa
 
             IMapper mapper = mapperConfig.CreateMapper();
             services.AddSingleton(mapper);
+            services.AddSingleton<IActionResultExecutor<ObjectResult>, ResponseResultExecutor>();
 
             //services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IAccountIdentityServices, AccountService>();
@@ -129,7 +135,7 @@ namespace SieGraSieMa
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
                 {
@@ -142,7 +148,13 @@ namespace SieGraSieMa
 
             app.UseHttpsRedirection();
 
-            app.UseApiResponseAndExceptionWrapper();//new AutoWrapperOptions { UseApiProblemDetailsException = true }
+            app.UseExceptionHandler(a => a.Run(async context =>
+            {
+                var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+                var exception = exceptionHandlerPathFeature.Error;
+
+                await context.Response.WriteAsJsonAsync(new { error = exception.Message });
+            }));
 
             app.UseRouting();
 

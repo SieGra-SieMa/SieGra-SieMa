@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.TournamentDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services.Tournaments;
@@ -42,33 +43,33 @@ namespace SieGraSieMa.Controllers
             var tournament = await _tournamentsService.GetTournament(id);
 
             if (tournament == null)
-                return NotFound();
+                return NotFound(new ResponseErrorDTO { Error = "Tournament not found" });
 
             return Ok(tournament);
         }
 
         [HttpPost()]
-        public async Task<IActionResult> CreateTournament(CreateTournamentDTO tournament)
+        public async Task<IActionResult> CreateTournament(RequestTournamentDTO tournament)
         {
             //var newTournament = _mapper.Map<Tournament>(tournament);
             var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
             var result = await _tournamentsService.CreateTournament(newTournament);
 
             if (!result)
-                return BadRequest(result);
+                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
             return Ok(result);
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateTournament(CreateTournamentDTO tournament, int id)
+        public async Task<IActionResult> UpdateTournament(RequestTournamentDTO tournament, int id)
         {
             var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
 
             var result = await _tournamentsService.UpdateTournament(id, newTournament);
 
             if (!result)
-                return BadRequest(result);
+                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
             return Ok(result);
         }
@@ -79,7 +80,7 @@ namespace SieGraSieMa.Controllers
             var result = await _tournamentsService.DeleteTournament(id);
 
             if (!result)
-                return NotFound(result);
+                return NotFound(new ResponseErrorDTO { Error = "Tournament not found" });
 
             return Ok(result);
         }

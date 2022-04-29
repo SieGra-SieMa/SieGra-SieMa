@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SieGraSieMa.DTOs.MatchDTO;
 using SieGraSieMa.Services;
 using System;
 using System.Linq;
@@ -86,6 +87,62 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var response = await _matchService.CreateMatchTemplates(tournamentId);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpPatch("insertMatchResults")]
+        public async Task<IActionResult> InsertMatchResult(MatchResultDTO matchResultDTO)
+        {
+            try
+            {
+                /*var identity = HttpContext.User.Identity as ClaimsIdentity;
+                IEnumerable<Claim> claim = identity.Claims;
+                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                _userService.UpdateUser(email, userDetailsDTO);*/
+                var response=await _matchService.InsertMatchResult(matchResultDTO);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpGet("getAvailableGroupMatches/{tournamentId}")]
+        public async Task<IActionResult> GetAvailableGroupMatches(int tournamentId)
+        {
+            try
+            {
+                var response = await _matchService.GetAvailableGroupMatches(tournamentId, IMatchService.MatchesEnum.All);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpGet("getAvailableGroupMatchesPlayed/{tournamentId}")]
+        public async Task<IActionResult> GetAvailableGroupMatchesPlayed(int tournamentId)
+        {
+            try
+            {
+                var response = await _matchService.GetAvailableGroupMatches(tournamentId, IMatchService.MatchesEnum.Played);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        [HttpGet("getAvailableGroupMatchesNotPlayed/{tournamentId}")]
+        public async Task<IActionResult> GetAvailableGroupMatchesNotPlayed(int tournamentId)
+        {
+            try
+            {
+                var response = await _matchService.GetAvailableGroupMatches(tournamentId, IMatchService.MatchesEnum.NotPlayed);
                 return Ok(response);
             }
             catch (Exception e)

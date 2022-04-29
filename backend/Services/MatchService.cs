@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using SieGraSieMa.DTOs.MatchDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services.Interfaces;
 using System;
@@ -11,6 +12,7 @@ namespace SieGraSieMa.Services
 {
     public interface IMatchService
     {
+        public enum MatchesEnum { All, NotPlayed, Played }
         public Task<int> CheckCountTeamsInTournament(int tournamentId);//done
         public Task<int> CheckCountPaidTeamsInTournament(int tournamentId);//done
         public Task<int> CheckCountGroupsInTournament(int tournamentId);//done
@@ -18,10 +20,11 @@ namespace SieGraSieMa.Services
         public Task<IEnumerable<Group>> CreateBasicGroups(int tournamentId);//done
         public Task<IEnumerable<Group>> CreateLadderGroups(int tournamentId, int groupCount);//done
         public Task<IEnumerable<TeamInGroup>> AddTeamsToGroup(int tournamentId);//done
-        public Task<IEnumerable<Match>> CreateMatchTemplates(int tournamentId);
-        public Task<IEnumerable<TeamInGroup>> CreateTeamTemplatesInLadder(int tournamentId);
-        public Task<Match> InsertMatchResult(int matchId);
+        public Task<IEnumerable<Match>> CreateMatchTemplates(int tournamentId);//done
+        //public Task<IEnumerable<TeamInGroup>> CreateTeamTemplatesInLadder(int tournamentId);
+        public Task<Match> InsertMatchResult(MatchResultDTO matchResultDTO);//done
         public Task<IEnumerable<Group>> ComposeLadderGroups(int tournamentId);
+        public Task<GetAvailableGroupMatchesDTO> GetAvailableGroupMatches(int tournamentId, MatchesEnum matchesEnum);
 
 
     }
@@ -111,23 +114,23 @@ namespace SieGraSieMa.Services
 
                 switch (teams.Count)
                 {
-                    case < 8:
+                    case < 8://wzór pseudodrabinki, gdzie w każdej grupie są 2 lub 1 zespół
                         nonLadderGroupCount = 'D';
                         ladderGroupCount = 4;
                         break;
-                    case < 16:
+                    case < 16://wzór pseudodrabinki, gdzie w każdej grupie są 2 lub 1 zespół
                         nonLadderGroupCount = 'H';
                         ladderGroupCount = 8;
                         break;
-                    case < 25:
+                    case < 25://prawdziwe grupy, minimum 4 zespoły w 4 grupach
                         nonLadderGroupCount = 'D';
                         ladderGroupCount = 8;
                         break;
-                    case < 37:
+                    case < 37://prawdziwe grupy, minimum 4 zespoły w 6 grupach + 2 zespoły lucky loosers
                         nonLadderGroupCount = 'F';
                         ladderGroupCount = 16;
                         break;
-                    case < 200:
+                    case < 200://prawdziwe grupy, minimum 4 zespoły w 8 grupach
                         nonLadderGroupCount = 'H';
                         ladderGroupCount = 16;
                         break;
@@ -135,7 +138,7 @@ namespace SieGraSieMa.Services
                         throw new Exception("Too much teams");
                 }
 
-                /*if (teams.Count() < 16) //wzór pseudodrabinki, gdzie w każdej grupie są 2 lub 1 zespół
+                /*if (teams.Count() < 16) 
                 {
                     if (teams.Count() < 8)
                     {
@@ -148,17 +151,17 @@ namespace SieGraSieMa.Services
                         ladderGroupCount = 8; //4?
                     }
                 }
-                else if (teams.Count() < 25) //prawdziwe grupy, minimum 4 zespoły w 4 grupach
+                else if (teams.Count() < 25) 
                 {
                     nonLadderGroupCount = 'D';
                     ladderGroupCount = 8;//4?
                 }
-                else if (teams.Count() < 37) //prawdziwe grupy, minimum 4 zespoły w 6 grupach + 2 zespoły lucky loosers
+                else if (teams.Count() < 37) 
                 {
                     nonLadderGroupCount = 'F';
                     ladderGroupCount = 16;//8?
                 }
-                else //prawdziwe grupy, minimum 4 zespoły w 8 grupach
+                else 
                 {
                     nonLadderGroupCount = 'H';
                     ladderGroupCount = 16;//8?
@@ -190,7 +193,6 @@ namespace SieGraSieMa.Services
                 for (int i = 0; i < groupCount / phase / 2; i++)
                 {
                     groups.Add(new Group()
-                    //_context.Groups.Add(new Group()
                     {
                         Name = counter.ToString(),
                         TournamentId = tournamentId,
@@ -198,24 +200,20 @@ namespace SieGraSieMa.Services
                         Phase = phase
                     });
                     counter++;
-                    //_context.SaveChanges();
                 }
                 lastPhase = phase;
             }
 
             groups.Add(new Group() //finaliści
-            //_context.Groups.Add(new Group()
             {
                 Name = counter.ToString(),
                 TournamentId = tournamentId,
                 Ladder = true,
                 Phase = lastPhase + 2
             });
-            //_context.SaveChanges();
 
             counter++;
             groups.Add(new Group() //o 3 miejsce
-            //_context.Groups.Add(new Group()
             {
                 Name = counter.ToString(),
                 TournamentId = tournamentId,
@@ -343,17 +341,67 @@ namespace SieGraSieMa.Services
 
             return matchTemplates;
         }
-        public async Task<IEnumerable<TeamInGroup>> CreateTeamTemplatesInLadder(int tournamentId)
+        public async Task<Match> InsertMatchResult(MatchResultDTO matchResultDTO)
         {
-            throw new NotImplementedException();
-        }
-        public async Task<Match> InsertMatchResult(int matchId)
-        {
-            throw new NotImplementedException();
+            var match = _context.Matches.Find(matchResultDTO.TournamentId, matchResultDTO.Phase, matchResultDTO.MatchId);
+            if (match == null) throw new Exception("No match found with this PKs");
+            if (match.TeamHomeId == null || match.TeamAwayId == null) throw new Exception("Match has no teams");
+            match.TeamHomeScore = matchResultDTO.HomeTeamPoints;
+            match.TeamAwayScore = matchResultDTO.AwayTeamPoints;
+            _context.Matches.Update(match);
+            await _context.SaveChangesAsync();
+            return match;
         }
         public async Task<IEnumerable<Group>> ComposeLadderGroups(int tournamentId)
         {
             throw new NotImplementedException();
+        }
+        /*public async Task<IEnumerable<TeamInGroup>> CreateTeamTemplatesInLadder(int tournamentId)
+        {
+            throw new NotImplementedException();
+        }*/
+
+
+
+        public async Task<GetAvailableGroupMatchesDTO> GetAvailableGroupMatches(int tournamentId, IMatchService.MatchesEnum matchesEnum = IMatchService.MatchesEnum.All)
+        {
+            List<GetGroupsMatchesDTO> Groups = await _context.Groups.Where(t => t.TournamentId == tournamentId && t.Ladder == false)
+                            .Select(s => new GetGroupsMatchesDTO() { GroupName = s.Name, GroupId = s.Id })
+                            .ToListAsync();
+            Groups.ForEach(group =>
+            {
+                IQueryable<Match> query = _context.Matches.Include(m => m.TeamAway).Include(m => m.TeamHome)
+                            .Where(m => m.TeamAway.GroupId == group.GroupId || m.TeamHome.GroupId == group.GroupId);
+                switch (matchesEnum)
+                {
+                    case IMatchService.MatchesEnum.NotPlayed:
+                        query = query.Where(m => m.TeamAwayScore == null && m.TeamHomeScore == null);
+                        break;
+                    case IMatchService.MatchesEnum.Played:
+                        query = query.Where(m => m.TeamAwayScore != null && m.TeamHomeScore != null);
+                        break;
+                    case IMatchService.MatchesEnum.All:
+                        break;
+                }
+                //List<GetMatchDTO> Matches = query.Select(m => new GetMatchDTO()
+                var Matches = query.Select(m => new GetMatchDTO()
+                {
+                    TournamentId = m.TournamentId,
+                    Phase = m.Phase,
+                    MatchId = m.MatchId,
+                    TeamHome = new DTOs.TeamDTO() { Name = m.TeamHome.Team.Name },
+                    TeamAway = new DTOs.TeamDTO() { Name = m.TeamAway.Team.Name }
+                }).ToListAsync();
+
+                /*List<GetMatchDTO> Matches = _context.Matches.Include(m => m.TeamAway).Include(m => m.TeamHome)
+                            .Where(m => m.TeamAway.GroupId == group.GroupId || m.TeamHome.GroupId == group.GroupId)
+                            .Select(m => new GetMatchDTO() {TeamHome= new DTOs.TeamDTO() {Name= m.TeamHome.Team.Name },TeamAway= new DTOs.TeamDTO() { Name = m.TeamAway.Team.Name } })
+                            .ToList();*/
+                group.Matches = Matches.Result;
+            });
+
+            GetAvailableGroupMatchesDTO result = new() { GroupsMatches = Groups };
+            return result;
         }
     }
 }

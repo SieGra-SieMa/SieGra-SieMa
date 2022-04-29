@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using SieGraSieMa.DTOs;
 using SieGraSieMa.DTOs.IdentityDTO;
-using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.Models;
 using System;
 using System.Collections.Generic;
@@ -15,6 +15,9 @@ namespace SieGraSieMa.Mappers
         {
             CreateMap<RegisterDTO, User>()
                 .ForMember(u => u.Name, opt => opt.MapFrom(x => x.Email));
+            /*CreateMap<TeamDTO, Team>()
+                .ForMember(u => u.Name, opt => opt.MapFrom(x => x.Name));
+            CreateMap<Team, TeamDTO>();*/
             /*CreateMap<PlayerDTO, Player>()
                 .ForPath(dest => dest.User.Id, opt => opt.MapFrom(x => x.Id))
                 .ForPath(dest => dest.User.Name, opt => opt.MapFrom(x => x.Name))

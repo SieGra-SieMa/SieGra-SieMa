@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SieGraSieMa.DTOs.GenerateDTO;
 using SieGraSieMa.Services;
 using System;
 using System.Collections.Generic;
@@ -18,13 +19,21 @@ namespace SieGraSieMa.Controllers
         {
             _generateService = generateService;
         }
-        [HttpGet("matchData")]
-        public async Task<IActionResult> GenerateMatchData()
+        [HttpPost("generateTeamsForTournament")]
+        public async Task<IActionResult> GenerateTeamsForTournament([FromBody] GenerateTeamsDTO generateTeamsDTO)
         {
-            var teams = await _generateService.GenerateTeams(20,1);
+            var teams = await _generateService.GenerateTeams(generateTeamsDTO.teamsCount, generateTeamsDTO.tournamentId);
             if (teams == null) return NotFound();
 
             return Ok(teams);
+        }
+        [HttpPost("generateMatchResults")]
+        public async Task<IActionResult> GenerateMatchResults([FromBody] GenerateMatchResultDTO generateMatchResultDTO)
+        {
+            var matches = await _generateService.GenerateMatchResults(generateMatchResultDTO.tournamentId, generateMatchResultDTO.phase);
+            if (matches == null) return NotFound();
+
+            return Ok(matches);
         }
     }
 }

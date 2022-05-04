@@ -12,5 +12,7 @@ namespace SieGraSieMa.DTOs.MatchDTO
         public int MatchId { get; set; }
         public TeamDTO TeamHome { get; set; }
         public TeamDTO TeamAway { get; set; }
+        public int? TeamHomeScore { get; set; }
+        public int? TeamAwayScore { get; set; }
     }
 }

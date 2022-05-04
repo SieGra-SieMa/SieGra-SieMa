@@ -85,6 +85,7 @@ namespace SieGraSieMa
             services.AddTransient<IMatchService, MatchService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IAlbumService, AlbumService>();
+            services.AddTransient<ITournamentsService, TournamentService>();
             services.AddIdentity<User, IdentityRole<int>>()
             .AddEntityFrameworkStores<SieGraSieMaContext>()
             .AddDefaultTokenProviders();

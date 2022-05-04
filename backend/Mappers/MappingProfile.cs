@@ -1,5 +1,9 @@
 ﻿using AutoMapper;
+using SieGraSieMa.DTOs.AlbumDTO;
+using SieGraSieMa.DTOs.ContestDTO;
+using SieGraSieMa.DTOs.GroupDTO;
 using SieGraSieMa.DTOs.IdentityDTO;
+using SieGraSieMa.DTOs.TeamInTournamentDTO;
 using SieGraSieMa.DTOs.TournamentDTO;
 using SieGraSieMa.Models;
 using System;
@@ -15,6 +19,26 @@ namespace SieGraSieMa.Mappers
         {
             CreateMap<RegisterDTO, User>()
                 .ForMember(u => u.Name, opt => opt.MapFrom(x => x.Email));
+
+            CreateMap<ResponseTournamentDTO, Tournament>();
+
+            CreateMap<Tournament, ResponseTournamentDTO>();
+
+            CreateMap<ResponseAlbumDTO, Album>();
+
+            CreateMap<Album, ResponseAlbumDTO>();
+
+            CreateMap<ResponseContestDTO, Contest>();
+
+            CreateMap<Contest, ResponseContestDTO>();
+
+            CreateMap<ResponseGroupDTO, Group>();
+
+            CreateMap<Group, ResponseGroupDTO>();
+
+            CreateMap<ResponseTeamInTournamentDTO, TeamInTournament>();
+
+            CreateMap<TeamInTournament, ResponseTeamInTournamentDTO>();
         }
     }
 }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.IdentityDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
@@ -46,10 +47,10 @@ namespace SieGraSieMa.Controllers
         {
             var user = await _userManager.FindByEmailAsync(login.Email);
             if (user == null)
-                return BadRequest("Invalid Request");
+                return BadRequest(new ResponseErrorDTO { Error = "Bad request"});
 
             if (!await _userManager.IsEmailConfirmedAsync(user))
-                return Unauthorized(new AuthenticateResponseDTO { ErrorMessage = "Email is not confirmed" });
+                return Unauthorized(new ResponseErrorDTO { Error = "Email is not confirmed" });
 
             if (!await _userManager.CheckPasswordAsync(user, login.Password))
             {
@@ -57,10 +58,10 @@ namespace SieGraSieMa.Controllers
 
                 if (await _userManager.IsLockedOutAsync(user))
                 {
-                    return Unauthorized(new AuthenticateResponseDTO { ErrorMessage = "The account is locked out" });
+                    return Unauthorized(new ResponseErrorDTO { Error = "Account is locked out" });
                 }
 
-                return Unauthorized(new AuthenticateResponseDTO { ErrorMessage = "Invalid Authentication" });
+                return Unauthorized(new ResponseErrorDTO { Error = "Incorrect password" });
             }
 
             if (await _userManager.GetTwoFactorEnabledAsync(user))
@@ -80,7 +81,7 @@ namespace SieGraSieMa.Controllers
             var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
             if (!providers.Contains("Email"))
             {
-                return Unauthorized(new AuthenticateResponseDTO { ErrorMessage = "Invalid 2-Step Verification Provider." });
+                return Unauthorized(new ResponseErrorDTO { Error = "Wrong provider" });
             }
 
             var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
@@ -96,15 +97,15 @@ namespace SieGraSieMa.Controllers
         public async Task<IActionResult> TwoStepVerification([FromBody] LoginTwoFactorDTO twoFactorDto)
         {
             if (!ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
             var user = await _userManager.FindByEmailAsync(twoFactorDto.Email);
             if (user == null)
-                return BadRequest("Invalid Request");
+                return BadRequest(new ResponseErrorDTO { Error = "Wrong email" });
 
             var validVerification = await _userManager.VerifyTwoFactorTokenAsync(user, twoFactorDto.Provider, twoFactorDto.Token);
             if (!validVerification)
-                return BadRequest("Invalid Token Verification");
+                return BadRequest(new ResponseErrorDTO { Error = "Wrong token" });
 
             var token = await _jwtHandler.GenerateToken(user);
             var refreshingToken = await _accountService.CreateRefreshToken(user);
@@ -117,7 +118,7 @@ namespace SieGraSieMa.Controllers
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDTO registerRequest)
         {
             if (registerRequest == null || !ModelState.IsValid)
-                return BadRequest();
+                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
             //var user = _mapper.Map<User>(registerRequest);
 
@@ -139,7 +140,7 @@ namespace SieGraSieMa.Controllers
             {
                  var errors = result.Errors.Select(e => e.Description);
             
-                 return BadRequest(new RegisterResponseDTO { Errors = errors });
+                 return BadRequest(new ResponseErrorDTO { Error = errors.ToString() });
             }
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -180,7 +181,7 @@ namespace SieGraSieMa.Controllers
             var response = await _accountService.RefreshToken(refreshToken);
 
             if (!response.IsAuthenticated)
-                return Unauthorized();
+                return Unauthorized(new ResponseErrorDTO { Error = "Wrong token" });
 
             if (!string.IsNullOrEmpty(response.RefreshToken))
                 SetRefreshTokenInCookie(response.RefreshToken);
@@ -196,11 +197,11 @@ namespace SieGraSieMa.Controllers
             // accept token from request body or cookie
             var token = model.RefreshToken ?? Request.Cookies["refreshToken"];
             if (string.IsNullOrEmpty(token))
-                return BadRequest(new { message = "Token is required" });
+                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
             var response = _accountService.RevokeToken(token);
             if (!await response)
-                return NotFound(new { message = "Token not found" });
-            return Ok(new { message = "Token revoked" });
+                return NotFound(new ResponseErrorDTO { Error = "Token not found" });
+            return Ok();
         }
 
         [AllowAnonymous]
@@ -209,13 +210,15 @@ namespace SieGraSieMa.Controllers
         {
 
             var userFound = await _userManager.FindByIdAsync(userid);
+            if (userFound == null)
+                return BadRequest(new ResponseErrorDTO { Error = "Wrong user id" });
             var result = (await _userManager.ConfirmEmailAsync(userFound, token));
             if (!result.Succeeded)
             {
-                return BadRequest(result.Errors);
+                return BadRequest(new ResponseErrorDTO { Error = "Email not confirmed" });
             }
 
-            return Ok("Email Confirmed");
+            return Ok();
         }
 
 

@@ -1,23 +1,13 @@
-import { useEffect, useState } from 'react';
 import styles from './Header.module.css';
 import { Link } from 'react-router-dom';
-import { authenticationService } from '../../_services/authentication.service';
-import { Account } from '../../_lib/types';
+import { useAuth } from '../auth/AuthContext';
+import GuardComponent from '../guard-components/GuardComponent';
 
 export default function Header() {
 
-    const userObservable = authenticationService.currentUser;
+    const { setSession } = useAuth();
 
-    const [user, setUser] = useState<Account | null>(null);
-
-    useEffect(() => {
-        const subscription = userObservable.subscribe((user) => setUser(user));
-        return () => subscription.unsubscribe();
-    }, [userObservable]);
-
-    const logout = () => {
-        authenticationService.logout();
-    };
+    const logout = () => setSession(null);
 
     return (
         <header className={styles.root}>
@@ -32,16 +22,23 @@ export default function Header() {
                         <Link to="/">
                             <li>HOME</li>
                         </Link>
-                        {user ? (<>
+                        <GuardComponent
+                            element={
+                                <Link to="/account/">
+                                    <li>ACCOUNT</li>
+                                </Link>
+                            }
+                        >
                             <Link to='/account/'>
-                                <li>{user.name} {user.surname}</li>
+                                <li>Username</li>
                             </Link>
-                            <button className={`button ${styles.logout}`} onClick={logout}>Logout</button>
-                        </>) : (
-                            <Link to="/account/">
-                                <li>ACCOUNT</li>
-                            </Link>
-                        )}
+                            <button
+                                className={`button ${styles.logout}`}
+                                onClick={logout}
+                            >
+                                Logout
+                            </button>
+                        </GuardComponent>
                     </ul>
                 </nav>
             </div>

@@ -1,21 +1,28 @@
+@import '../../variables.css';
+
 .root {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
     flex-wrap: wrap;
+    row-gap: 15px;
+    column-gap: 15px;
 }
 
 .option {
-    background-color: #EEE;
+    background-color: #eee;
     height: 440px;
     width: 440px;
-    margin: 10px;
-    border: 2px dashed #808080;
-    border-radius: 50px;
+    border-radius: 20px;
     padding: 50px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    transition: box-shadow .3s;
+}
+
+.option:hover {
+    box-shadow: 0 0 5px var(--box-shadow-color);
 }
 
 .option > h3 {
@@ -34,34 +41,36 @@
 #codeInput {
     display: block;
     padding: 20px;
-    border-radius: 50px;
+    border-radius: 20px;
     border: none;
     outline: none;
     font-size: 33px;
     text-transform: uppercase;
     letter-spacing: 20px;
     text-align: center;
-    border: 1px solid #808080
+    border: 1px solid #808080;
 }
 
 #teamNameInput {
     display: block;
     padding: 10px 20px;
-    border-radius: 50px;
+    border-radius: 20px;
     border: none;
     outline: none;
     font-size: 25px;
-    border: 1px solid #808080
+    border: 1px solid #808080;
 }
 
 .disabled {
-    border: 1px solid #ca8c71;
-    background-color: #E3A084;
-    color: white;
-    padding: 10px 15px;
-    font-size: 20px;
-    border-radius: 20px;
-    cursor: not-allowed;
-    text-align: center;
     opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.disabled:hover {
+    background-color: #E3A084;
+    box-shadow: none;
+}
+
+.disabled:active {
+    background-color: #E3A084;
 }

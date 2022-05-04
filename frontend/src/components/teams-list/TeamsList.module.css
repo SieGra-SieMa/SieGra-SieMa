@@ -1,7 +1,8 @@
 .content {
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
+    flex-direction: column;
+    row-gap: 25px;
+    margin-top: 20px;
 }
 
 .loader {

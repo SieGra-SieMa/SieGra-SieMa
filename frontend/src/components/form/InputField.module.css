@@ -1,0 +1,23 @@
+@import '../../variables.css';
+
+.root {
+    display: grid;
+    row-gap: 5px;
+    grid-auto-rows: min-content;
+}
+
+.input {
+    min-width: 300px;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    outline: none;
+    font-size: 18px;
+    border: none;
+    background-color: #eee;
+    transition: box-shadow .3s;
+}
+
+.input:hover {
+    box-shadow: 0 0 3px var(--box-shadow-color);
+}

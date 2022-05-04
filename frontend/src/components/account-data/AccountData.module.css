@@ -44,15 +44,13 @@
 
 .editButton {
     background-color: #3e555f;
-    border: 1px solid #2f424b;
 }
 
 .editButton:hover {
     background-color: #2f424b;
-    border: 1px solid #23343b;
+    box-shadow: 0 0 5px #2f424b;
 }
 
 .editButton:active {
     background-color: #23343b;
-    border: 1px solid #223138;
 }

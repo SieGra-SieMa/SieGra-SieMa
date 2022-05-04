@@ -1,3 +1,5 @@
+import { ROLES } from './roles';
+
 export interface User {
     name: string;
     surname: string;
@@ -26,6 +28,12 @@ export interface UserDetailsRequest {
 }
 
 export interface Tokens {
+    token: string;
+    refreshToken: string;
+}
+
+export interface Session {
     accessToken: string;
     refreshToken: string;
+    role: ROLES;
 }

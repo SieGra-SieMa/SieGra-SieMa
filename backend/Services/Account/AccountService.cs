@@ -69,6 +69,7 @@ namespace SieGraSieMa.Services
             //fill the DTO
             refreshTokenDTO.Token = newJWTToken;
             refreshTokenDTO.RefreshToken = newRefreshToken.Token;
+            refreshTokenDTO.IsAuthenticated = true;
             refreshTokenDTO.Email = user.Email;
             refreshTokenDTO.UserName = user.UserName;
             refreshTokenDTO.RefreshTokenExpiration = newRefreshToken.Expires;

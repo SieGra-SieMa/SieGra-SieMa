@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
-using SieGraSieMa.DTOs;
+using SieGraSieMa.DTOs.AlbumDTO;
+using SieGraSieMa.DTOs.ContestDTO;
+using SieGraSieMa.DTOs.GroupDTO;
 using SieGraSieMa.DTOs.IdentityDTO;
+using SieGraSieMa.DTOs.TeamInTournamentDTO;
+using SieGraSieMa.DTOs.TournamentDTO;
 using SieGraSieMa.Models;
 using System;
 using System.Collections.Generic;
@@ -15,17 +19,26 @@ namespace SieGraSieMa.Mappers
         {
             CreateMap<RegisterDTO, User>()
                 .ForMember(u => u.Name, opt => opt.MapFrom(x => x.Email));
-            /*CreateMap<TeamDTO, Team>()
-                .ForMember(u => u.Name, opt => opt.MapFrom(x => x.Name));
-            CreateMap<Team, TeamDTO>();*/
-            /*CreateMap<PlayerDTO, Player>()
-                .ForPath(dest => dest.User.Id, opt => opt.MapFrom(x => x.Id))
-                .ForPath(dest => dest.User.Name, opt => opt.MapFrom(x => x.Name))
-                .ForPath(dest => dest.User.Surname, opt => opt.MapFrom(x => x.Surname));*/
-            //CreateMap<PlayerDTO, User>();
-            //CreateMap<List<PlayerDTO>, List<Player>>();
-            //CreateMap<List<Player> ,List<PlayerDTO>>();
-            //CreateMap<Player, PlayerDTO>();
+
+            CreateMap<ResponseTournamentDTO, Tournament>();
+
+            CreateMap<Tournament, ResponseTournamentDTO>();
+
+            CreateMap<ResponseAlbumDTO, Album>();
+
+            CreateMap<Album, ResponseAlbumDTO>();
+
+            CreateMap<ResponseContestDTO, Contest>();
+
+            CreateMap<Contest, ResponseContestDTO>();
+
+            CreateMap<ResponseGroupDTO, Group>();
+
+            CreateMap<Group, ResponseGroupDTO>();
+
+            CreateMap<ResponseTeamInTournamentDTO, TeamInTournament>();
+
+            CreateMap<TeamInTournament, ResponseTeamInTournamentDTO>();
         }
     }
 }

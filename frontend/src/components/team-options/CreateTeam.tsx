@@ -9,7 +9,7 @@ export default function CreateTeam() {
     const onSubmit = () => {
         teamsService.create(name)
             .then(
-                _ => alert("OK"),
+                _ => alert(`You have created team "${name}"`),
                 error => alert(error)
             )
     }
@@ -28,7 +28,7 @@ export default function CreateTeam() {
                 />
             </div>
             <button
-                className={name.length === 0 ? styles.disabled : 'button'}
+                className={name.length === 0 ? ['button', styles.disabled].join(' ') : 'button'}
                 disabled={name.length === 0}
                 onClick={onSubmit}
             >

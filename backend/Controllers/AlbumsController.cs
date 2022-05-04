@@ -1,15 +1,8 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SieGraSieMa.DTOs.AlbumDTO;
 using SieGraSieMa.DTOs.ErrorDTO;
-using SieGraSieMa.DTOs.GroupDTO;
-using SieGraSieMa.DTOs.MediumDTO;
-using SieGraSieMa.DTOs.TeamInTournamentDTO;
-using SieGraSieMa.DTOs.TournamentDTO;
-using SieGraSieMa.Models;
-using SieGraSieMa.Services.Tournaments;
+using SieGraSieMa.Services.Albums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,41 +12,39 @@ namespace SieGraSieMa.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TournamentsController : ControllerBase
+    public class AlbumsController : ControllerBase
     {
-        private readonly ITournamentsService _tournamentsService;
 
-        private readonly IMapper _mapper;
+        private readonly IAlbumService _albumService;
 
-        public TournamentsController(ITournamentsService tournamentsService, IMapper mapper)
+        public AlbumsController(IAlbumService albumService)
         {
-            _tournamentsService = tournamentsService;
-            _mapper = mapper;
+            _albumService = albumService;
         }
 
         [AllowAnonymous]
         [HttpGet()]
-        public async Task<IActionResult> GetTournaments()
+        public async Task<IActionResult> GetAlbums()
         {
-            var tournaments = await _tournamentsService.GetTournaments();
+            var albums = await _albumService.GetAlbums();
 
-            return Ok(tournaments);
+            return Ok(albums);
         }
 
         [AllowAnonymous]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetTournament(int id)
+        public async Task<IActionResult> GetAlbum(int id)
         {
-            var tournament = await _tournamentsService.GetTournament(id);
+            var album = await _albumService.GetAlbum(id);
 
-            if (tournament == null)
+            if (album == null)
                 return NotFound(new ResponseErrorDTO { Error = "Tournament not found" });
 
-            return Ok(tournament);
+            return Ok(album);
         }
 
-        [HttpPost()]
-        public async Task<IActionResult> CreateTournament(RequestTournamentDTO tournament)
+        /*[HttpPost()]
+        public async Task<IActionResult> CreateAlbum(RequestAlbumDTO album)
         {
             //var newTournament = _mapper.Map<Tournament>(tournament);
             var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
@@ -66,7 +57,7 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateTournament(RequestTournamentDTO tournament, int id)
+        public async Task<IActionResult> UpdateAlbum(RequestTournamentDTO tournament, int id)
         {
             var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
 
@@ -76,20 +67,17 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
             return Ok(result);
-        }
+        }*/
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTournament(int id)
+        public async Task<IActionResult> DeleteAlbum(int id)
         {
-            var result = await _tournamentsService.DeleteTournament(id);
+            var result = await _albumService.DeleteAlbum(id);
 
             if (!result)
-                return NotFound(new ResponseErrorDTO { Error = "Tournament not found" });
+                return NotFound(new ResponseErrorDTO { Error = "Album not found" });
 
             return Ok(result);
         }
-
-
-
     }
 }

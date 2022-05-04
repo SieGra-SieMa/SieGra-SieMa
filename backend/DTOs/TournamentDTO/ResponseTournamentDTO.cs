@@ -1,6 +1,8 @@
 ﻿using SieGraSieMa.DTOs.AlbumDTO;
 using SieGraSieMa.DTOs.ContestantDTO;
 using SieGraSieMa.DTOs.ContestDTO;
+using SieGraSieMa.DTOs.GroupDTO;
+using SieGraSieMa.DTOs.TeamInTournamentDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +18,10 @@ namespace SieGraSieMa.DTOs.TournamentDTO
         public DateTime EndDate { get; set; }
         public string Description { get; set; }
         public string Address { get; set; }
-        public virtual ICollection<ResponseAlbumDTO> Albums { get; set; }
-        public virtual ICollection<ResponseContestDTO> Contests { get; set; }
-        public virtual ICollection<ResponseAlbumDTO> Groups { get; set; }
-        public virtual ICollection<ResponseAlbumDTO> TeamInTournaments { get; set; }
+        public virtual IEnumerable<ResponseAlbumDTO> Albums { get; set; }
+        public virtual IEnumerable<ResponseContestDTO> Contests { get; set; }
+        public virtual IEnumerable<ResponseGroupDTO> Groups { get; set; }
+        public virtual IEnumerable<ResponseTeamInTournamentDTO> TeamInTournaments { get; set; }
 
 
 

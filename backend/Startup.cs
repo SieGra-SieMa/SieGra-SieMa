@@ -21,6 +21,7 @@ using SieGraSieMa.DTOs.ResponseWrapper;
 using SieGraSieMa.Mappers;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
+using SieGraSieMa.Services.Albums;
 using SieGraSieMa.Services.Email;
 using SieGraSieMa.Services.Interfaces;
 using SieGraSieMa.Services.JWT;
@@ -83,6 +84,7 @@ namespace SieGraSieMa
             services.AddTransient<IGenerateService, GenerateService>();
             services.AddTransient<IMatchService, MatchService>();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IAlbumService, AlbumService>();
             services.AddIdentity<User, IdentityRole<int>>()
             .AddEntityFrameworkStores<SieGraSieMaContext>()
             .AddDefaultTokenProviders();

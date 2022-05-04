@@ -15,7 +15,7 @@ namespace SieGraSieMa.Models
 
         public int Id { get; set; }
         public int GroupId { get; set; }
-        public int TeamId { get; set; }
+        public int? TeamId { get; set; }
 
         public virtual Group Group { get; set; }
         public virtual Team Team { get; set; }

@@ -26,5 +26,6 @@ namespace SieGraSieMa.Models
         public virtual ICollection<Contest> Contests { get; set; }
         public virtual ICollection<Group> Groups { get; set; }
         public virtual ICollection<TeamInTournament> TeamInTournaments { get; set; }
+        public virtual ICollection<Match> Matches { get; set; }
     }
 }

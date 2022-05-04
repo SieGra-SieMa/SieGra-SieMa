@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer")]
+    //[Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class TeamsController : ControllerBase
@@ -28,15 +28,15 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "User")]
+        //[Authorize(Roles = "User")]
         public IActionResult GetTeamByMail()
         {
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
                 IEnumerable<Claim> claim = identity.Claims;
-                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
-                return Ok(_teamService.GetTeamsWithUser(email));
+                //var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                return Ok(_teamService.GetTeamsWithUser("gracz@gmail.com"));
             }
             catch (Exception e)
             {

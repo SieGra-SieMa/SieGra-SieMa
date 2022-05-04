@@ -1,8 +1,11 @@
 ﻿using System;
+<<<<<<< HEAD
 using System.Collections.Generic;
 using System.Linq;
+=======
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+>>>>>>> main
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -156,9 +159,6 @@ namespace SieGraSieMa.Models
 
                 entity.Property(e => e.Ladder).HasColumnName("ladder");
 
-                entity.Property(e => e.Phase)
-                    .HasColumnName("phase");
-
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(2)
@@ -201,9 +201,6 @@ namespace SieGraSieMa.Models
 
             modelBuilder.Entity<Match>(entity =>
             {
-                entity.HasKey(e => new { e.TournamentId, e.Phase, e.MatchId })
-                    .HasName("PRIMARY");
-
                 entity.ToTable("match");
 
                 entity.HasIndex(e => e.TeamAwayId, "match_away");
@@ -211,15 +208,9 @@ namespace SieGraSieMa.Models
                 entity.HasIndex(e => new { e.TeamHomeId, e.TeamAwayId }, "meet")
                     .IsUnique();
 
-                entity.Property(e => e.MatchId).HasColumnName("match_id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                //entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.HasOne(d => d.Tournament)
-                    .WithMany(p => p.Matches)
-                    .HasForeignKey(d => d.TournamentId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("tournament");
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 //entity.Property(e => e.EndDate).HasColumnName("end_date");
 
@@ -230,13 +221,13 @@ namespace SieGraSieMa.Models
 
                 //entity.Property(e => e.StartDate).HasColumnName("start_date");
 
-                entity.Property(e => e.TeamAwayId).HasColumnName("team_away_id").IsRequired(false);
+                entity.Property(e => e.TeamAwayId).HasColumnName("team_away_id");
 
-                entity.Property(e => e.TeamAwayScore).HasColumnName("team_away_score").IsRequired(false);
+                entity.Property(e => e.TeamAwayScore).HasColumnName("team_away_score");
 
-                entity.Property(e => e.TeamHomeId).HasColumnName("team_home_id").IsRequired(false);
+                entity.Property(e => e.TeamHomeId).HasColumnName("team_home_id");
 
-                entity.Property(e => e.TeamHomeScore).HasColumnName("team_home_score").IsRequired(false);
+                entity.Property(e => e.TeamHomeScore).HasColumnName("team_home_score");
 
                 entity.HasOne(d => d.TeamAway)
                     .WithMany(p => p.MatchTeamAways)
@@ -538,12 +529,23 @@ namespace SieGraSieMa.Models
                 new IdentityRole<int>() { Id = 2, Name = "Emp", NormalizedName = "Emp" },
                 new IdentityRole<int>() { Id = 3, Name = "User", NormalizedName = "User" }
                 );
+<<<<<<< HEAD
+            List<User> UsersList = new List<User>();
+            UsersList.Add(new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt });
+            UsersList.Add(new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt });
+            UsersList.Add(new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt });
+            UsersList.Add(new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", Password = GetPassword("haslo123", salt), Salt = salt });
+            modelBuilder.Entity<User>().HasData(UsersList);
+
+=======
+
             modelBuilder.Entity<User>().HasData(
-            new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", NormalizedEmail = "admin@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
-            new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", NormalizedEmail = "pracownik@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
-            new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", NormalizedEmail = "kapitan@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
-            new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", NormalizedEmail = "gracz@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() }
+            new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", NormalizedEmail = "admin@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString()},
+            new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", NormalizedEmail = "pracownik@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString()},
+            new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", NormalizedEmail = "kapitan@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString()},
+            new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", NormalizedEmail = "gracz@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString()}
             );
+>>>>>>> main
 
             modelBuilder.Entity<IdentityUserRole<int>>().HasData(
             new IdentityUserRole<int>() { UserId = 1, RoleId = 1 },
@@ -553,9 +555,10 @@ namespace SieGraSieMa.Models
             new IdentityUserRole<int>() { UserId = 4, RoleId = 3 });
 
 
-            modelBuilder.Entity<Team>().HasData(
-            new Team() { Id = 1, Name = "Bogowie", CaptainId = 3, Code = "ABCDE" },
-            new Team() { Id = 2, Name = "Demony", CaptainId = 3, Code = "EDCBA" });
+            List<Team> TeamsList = new List<Team>();
+            TeamsList.Add(new Team() { Id = 1, Name = "Bogowie", CaptainId = 3, Code = "ABCDE" });
+            TeamsList.Add(new Team() { Id = 2, Name = "Demony", CaptainId = 3, Code = "EDCBA" });
+            modelBuilder.Entity<Team>().HasData(TeamsList);
 
 
             modelBuilder.Entity<Player>().HasData(

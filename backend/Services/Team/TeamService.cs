@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services.Interfaces;
 using System;
@@ -10,6 +12,7 @@ namespace SieGraSieMa.Services
 {
     public class TeamService : ITeamService
     {
+        //private readonly IMapper _mapper;
         private readonly SieGraSieMaContext _SieGraSieMaContext;
 
         public TeamService(SieGraSieMaContext SieGraSieMaContext)
@@ -105,12 +108,40 @@ namespace SieGraSieMa.Services
             return _SieGraSieMaContext.Teams.Where(t => t.Id == Id).SingleOrDefault();
         }
 
-        public IEnumerable<Team> GetTeamsWithUser(string email)
+        public IEnumerable<GetTeamsDTO> GetTeamsWithUser(string email)
         {
             return _SieGraSieMaContext.Teams
                 .Where(e => e.Players.Any(e => e.User.Email == email))
                 .Include(e => e.Players)
                 .ThenInclude(e => e.User)
+                .Select(t => new GetTeamsDTO{
+                    Id=t.Id,
+                    Name=t.Name,
+                    CaptainId=t.CaptainId,
+                    Captain= new PlayerDTO
+                    {
+                        Id = t.CaptainId,
+                        Name = t.Captain.Name,
+                        Surname = t.Captain.Surname
+
+                    },
+                    //CaptainName=t.Captain.Name,
+                    //CaptainSurname=t.Captain.Surname,
+                    Code =t.Code,
+                    //Players=t.Players.Select(p=>_mapper.Map<PlayerDTO>(p.User)).ToList()
+                    Players=t.Players
+                        .Select(p=>new PlayerDTO
+                        {
+                            Id=p.UserId,
+                            Name=p.User.Name,
+                            Surname=p.User.Surname
+
+                        }).ToList()
+                    //Players = t.Players.FirstOrDefault().Select(p=>_mapper.Map<PlayerDTO>(p))
+                    //Players=t.Players.AsEnumerable().Select(player=>_mapper.Map<PlayerDTO>(player)).ToList()
+                    //Players=t.Players.Select(player=>_mapper.Map<PlayerDTO>(player))
+                    //Players=_mapper.Map<List<Player>>(t.Players)
+                })
                 .ToList();
         }
 

@@ -1,4 +1,5 @@
-﻿using SieGraSieMa.Models;
+﻿using SieGraSieMa.DTOs.TeamsDTO;
+using SieGraSieMa.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace SieGraSieMa.Services.Interfaces
         void RemoveTeam(int id);
         void ChangeCaptain(int id, int userId);
         Team GetTeam(int id);
-        IEnumerable<Team> GetTeamsWithUser(string email);
+        IEnumerable<GetTeamsDTO> GetTeamsWithUser(string email);
         IEnumerable<Team> GetTeams();
     }
 }

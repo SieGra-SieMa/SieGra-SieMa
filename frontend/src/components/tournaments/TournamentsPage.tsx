@@ -23,7 +23,7 @@ export default function TournamentsPage() {
 
     return (
         <div className="container">
-            <h1>Tournamets</h1>
+            <h2 className={styles.title}>Tournamets</h2>
             <div className={styles.content}>
                 {tournaments && tournaments.map((tournament, index) => (
                     <div key={index} className={styles.item}>

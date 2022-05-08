@@ -1,3 +1,7 @@
+.title {
+    font-size: 33px;
+}
+
 .content {
     display: flex;
     flex-direction: column;
@@ -9,12 +13,12 @@
     border-radius: 15px;
     overflow: hidden;
     transition: box-shadow .3s;
-    background-color: #EEE;
+    background-color: #fff;
     padding: 30px;
 }
 
 .item:hover {
-    box-shadow: 0 0 5px #AAA;
+    box-shadow: 0 0 5px #aaa;
 }
 
 .header {
@@ -23,7 +27,7 @@
     align-items: center;
 }
 
-.header > h3 {
+.header>h3 {
     font-size: 30px;
 }
 

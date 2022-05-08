@@ -3,6 +3,7 @@ import { ROLES } from './roles';
 export interface User {
     name: string;
     surname: string;
+    roles: ROLES[];
 }
 
 export interface Account extends User {
@@ -33,7 +34,6 @@ export interface Tokens {
 export interface Session {
     accessToken: string;
     refreshToken: string;
-    role: ROLES;
 }
 
 // Tournaments

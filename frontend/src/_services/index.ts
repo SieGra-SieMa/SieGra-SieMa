@@ -16,12 +16,15 @@ const authState = {
 	},
 }
 
+let session: Session | null = null;
+
 const services = {
 	accountsService,
 	teamsService,
 	tournamentsService,
 	usersService,
 	authState,
+	setSession: (value: Session | null) => session = value,
 };
 
 export default services;
@@ -38,9 +41,13 @@ function handleResponse<T>(
 ): Promise<T> {
 	return response.text().then(async (text) => {
 		if ([401, 403].indexOf(response.status) !== -1) {
-			const session = localStorage.getItem('session');
-			if (session && response.url !== `${HOST}/api/accounts/refresh-token` && !retry) {
-				const refreshToken = (JSON.parse(session) as Session).refreshToken;
+			if (session === null) {
+				authState.logout();
+				return Promise.reject(response.statusText);
+			}
+
+			if (response.url !== `${HOST}/api/accounts/refresh-token` && !retry) {
+				const refreshToken = session.refreshToken;
 				if (refreshToken) {
 					try {
 						const tokens = await accountsService.refresh(refreshToken);
@@ -82,11 +89,10 @@ function handleResponse<T>(
 }
 
 export function api<T>(url: string, options: RequestInit): Promise<T> {
-	const session = localStorage.getItem('session');
 	const headers = new Headers();
 	headers.set('Content-Type', 'application/json');
 	if (session) {
-		const token = (JSON.parse(session) as Session).accessToken;
+		const token = session.accessToken;
 		headers.set('Authorization', `Bearer ${token}`);
 	}
 	options.headers = headers;

@@ -4,7 +4,6 @@ import SyncLoader from 'react-spinners/SyncLoader';
 import { useAuth } from '../auth/AuthContext';
 import InputField from '../form/InputField';
 import { useNavigate } from 'react-router-dom';
-import { ROLES } from '../../_lib/roles';
 import { useApi } from '../api/ApiContext';
 
 export default function SignIn() {
@@ -27,10 +26,7 @@ export default function SignIn() {
         accountsService.authenticate(email, password)
             .then(
                 (session) => {
-                    setSession({
-                        ...session,
-                        role: ROLES.User,
-                    });
+                    setSession(session);
                     navigate('/account/');
                 },
                 (e) => {

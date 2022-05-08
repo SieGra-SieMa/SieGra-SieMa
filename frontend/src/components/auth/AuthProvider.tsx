@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Session } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
 import { AuthContext } from './AuthContext';
@@ -8,28 +8,31 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     const api = useApi();
 
     const [session, setSessionState] = useState<Session | null>(() => {
-        const session = localStorage.getItem('session');
-        if (session) {
-            return JSON.parse(session) as Session;
+        const data = localStorage.getItem('session');
+        if (data) {
+            const session = JSON.parse(data) as Session;
+            api.setSession(session);
+            return session;
         }
         return null;
     });
 
-    const setSession = (session: Session | null) => {
+    const setSession = useCallback((session: Session | null) => {
         if (session) {
             localStorage.setItem('session', JSON.stringify(session));
         } else {
             localStorage.removeItem('session');
         }
+        api.setSession(session);
         setSessionState(session);
-    }
-
-    const value = { session, setSession };
+    }, [setSessionState, api]);
 
     useEffect(() => {
         api.authState.logout = () => setSession(null);
         api.authState.update = (s) => setSession(s);
-    }, [api]);
+    }, [setSession, api]);
+
+    const value = useMemo(() => ({ session, setSession }), [session, setSession]);
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

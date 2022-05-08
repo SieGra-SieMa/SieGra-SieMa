@@ -17,28 +17,31 @@ import TournamentsPage from '../tournaments/TournamentsPage';
 import { ROLES } from '../../_lib/roles';
 import { ApiContext } from '../api/ApiContext';
 import services from '../../_services';
+import UserProvider from '../user/UserProvider';
 
 export default function App() {
     return (
         <ApiContext.Provider value={services}>
             <AuthProvider>
-                <BrowserRouter>
-                    <Header />
-                    <Routes>
-                        <Route index element={<Home />} />
-                        <Route path="entry" element={<AccountEntry />} />
-                        <Route path="access-denied" element={<div>ACCESS DENIED</div>} />
-                        <Route path="account/*" element={<AccountPage />}>
-                            <Route element={<GuardRoute roles={[ROLES.User, ROLES.Admin]} />}>
-                                <Route index element={<TeamOptions />} />
-                                <Route path="myteams" element={<TeamsList />} />
-                                <Route path="tournaments" element={<TournamentsPage />} />
-                                <Route path="*" element={<h2>404 NOT FOUND</h2>} />
+                <UserProvider>
+                    <BrowserRouter>
+                        <Header />
+                        <Routes>
+                            <Route index element={<Home />} />
+                            <Route path="entry" element={<AccountEntry />} />
+                            <Route path="access-denied" element={<div>ACCESS DENIED</div>} />
+                            <Route path="account/*" element={<AccountPage />}>
+                                <Route element={<GuardRoute roles={[ROLES.User, ROLES.Admin]} />}>
+                                    <Route index element={<TeamOptions />} />
+                                    <Route path="myteams" element={<TeamsList />} />
+                                    <Route path="tournaments" element={<TournamentsPage />} />
+                                    <Route path="*" element={<h2>404 NOT FOUND</h2>} />
+                                </Route>
                             </Route>
-                        </Route>
-                    </Routes>
-                    <Footer />
-                </BrowserRouter>
+                        </Routes>
+                        <Footer />
+                    </BrowserRouter>
+                </UserProvider>
             </AuthProvider>
         </ApiContext.Provider>
     );

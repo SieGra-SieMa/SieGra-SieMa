@@ -18,7 +18,7 @@
     padding: 25px;
 }
 
-.logo > a > img {
+.logo>a>img {
     max-width: 75px;
     max-height: 75px;
 }
@@ -28,24 +28,24 @@
     display: flex;
 }
 
-.navigation > ul {
+.navigation>ul {
     display: flex;
     align-items: center;
+    column-gap: 15px;
 }
 
-.navigation > ul > a {
-    color: black;
-    margin: 10px;
+.navigation>ul>li:active::after {
+    margin-top: 3px;
 }
 
-.navigation > ul > a > li {
+.navigation>ul>li>a {
     padding: 15px;
+    color: black;
     font-size: 20px;
-    cursor: pointer;
     position: relative;
 }
 
-.navigation > ul > a > li::after {
+.navigation>ul>li>a::after {
     content: '';
     display: block;
     position: absolute;
@@ -56,14 +56,10 @@
     transition: width .2s, margin-top .2s;
 }
 
-.navigation > ul > a > li:hover::after {
+.navigation>ul>li>a:hover::after {
     content: '';
     left: 15px;
-    width: calc(100% -  30px);
-}
-
-.navigation > ul > a > li:active::after {
-    margin-top: 3px;
+    width: calc(100% - 30px);
 }
 
 .logout {

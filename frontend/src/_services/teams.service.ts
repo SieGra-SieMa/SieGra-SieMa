@@ -14,11 +14,11 @@ function join(code: string): Promise<{}> {
 };
 
 function create(name: string): Promise<{}> {
-    return post(`${Config.HOST}/api/teams/`, { name });
+    return post(`${Config.HOST}/api/teams`, { name });
 };
 
-function getTeams(): Promise<Team[]>  {
-    return get<Team[]>(`${Config.HOST}/api/teams/`);
+function getTeams(): Promise<Team[]> {
+    return get<Team[]>(`${Config.HOST}/api/teams`);
 };
 
 function leave(id: number): Promise<{}> {

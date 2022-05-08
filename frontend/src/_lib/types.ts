@@ -37,3 +37,14 @@ export interface Session {
     refreshToken: string;
     role: ROLES;
 }
+
+// Tournaments
+
+export interface Tournament {
+    id: number;
+    name: string;
+    startDate: Date,
+    endDate: Date,
+    description: string;
+    address: string;
+}

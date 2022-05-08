@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import styles from './AccountEntry.module.css';
 import SyncLoader from 'react-spinners/SyncLoader';
-import { accountService } from '../../_services/accounts.service';
 import InputField from '../form/InputField';
+import { useApi } from '../api/ApiContext';
 
 export default function CreateAccount() {
+
+    const { accountsService } = useApi();
 
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
@@ -17,7 +19,7 @@ export default function CreateAccount() {
         e.preventDefault();
         setError(null);
         setLoading(true);
-        accountService.register(name, surname, email, password)
+        accountsService.register(name, surname, email, password)
             .then(
                 () => { },
                 (e) => {

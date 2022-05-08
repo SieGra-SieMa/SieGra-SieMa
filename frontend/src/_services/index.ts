@@ -1,15 +1,37 @@
-import { authState } from '../components/auth/AuthProvider';
 import { HOST } from '../config.json';
-import { accountService } from '../_services/accounts.service';
-import { ROLES } from './roles';
-import { Session } from './types';
+import { ROLES } from '../_lib/roles';
+import { Session } from '../_lib/types';
 
-export interface WSResponse {
+import accountsService from './accounts.service';
+import teamsService from './teams.service';
+import tournamentsService from './tournaments.service';
+import usersService from './users.service';
+
+const authState = {
+	logout: () => {
+		localStorage.removeItem('session');
+	},
+	update: (session: Session) => {
+		localStorage.setItem('session', JSON.stringify(session));
+	},
+}
+
+const services = {
+	accountsService,
+	teamsService,
+	tournamentsService,
+	usersService,
+	authState,
+};
+
+export default services;
+
+interface WSResponse {
 	error: string;
 	data: any;
 }
 
-export function handleResponse<T>(
+function handleResponse<T>(
 	response: Response,
 	options: RequestInit,
 	retry: boolean = false
@@ -21,7 +43,7 @@ export function handleResponse<T>(
 				const refreshToken = (JSON.parse(session) as Session).refreshToken;
 				if (refreshToken) {
 					try {
-						const tokens = await accountService.refresh(refreshToken);
+						const tokens = await accountsService.refresh(refreshToken);
 						authState.update({
 							...tokens,
 							accessToken: tokens.token,
@@ -41,8 +63,19 @@ export function handleResponse<T>(
 			}
 		}
 
+		if (!text) {
+			if (response.ok) {
+				return {} as T;
+			}
+
+			return Promise.reject(response.statusText);
+		}
+
 		const rawData = JSON.parse(text) as WSResponse;
-		if (response.ok) return rawData.data as T;
+		if (response.ok) {
+			return rawData.data as T;
+		}
+
 		const error = rawData.error || response.statusText;
 		return Promise.reject(error);
 	});

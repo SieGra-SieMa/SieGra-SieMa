@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import styles from './AccountEntry.module.css';
 import SyncLoader from 'react-spinners/SyncLoader';
 import { useAuth } from '../auth/AuthContext';
-import { accountService } from '../../_services/accounts.service';
 import InputField from '../form/InputField';
 import { useNavigate } from 'react-router-dom';
 import { ROLES } from '../../_lib/roles';
+import { useApi } from '../api/ApiContext';
 
 export default function SignIn() {
+
+    const { accountsService } = useApi();
 
     const navigate = useNavigate();
 
@@ -22,7 +24,7 @@ export default function SignIn() {
         e.preventDefault();
         setError(null);
         setLoading(true);
-        accountService.authenticate(email, password)
+        accountsService.authenticate(email, password)
             .then(
                 (session) => {
                     setSession({

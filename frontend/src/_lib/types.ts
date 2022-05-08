@@ -11,9 +11,7 @@ export interface Account extends User {
     refreshToken: string;
 }
 
-export interface Player {
-    user: User;
-}
+export interface Player extends User { }
 
 export interface Team {
     id: number;

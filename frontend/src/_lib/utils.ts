@@ -5,13 +5,8 @@ import { ROLES } from './roles';
 import { Session } from './types';
 
 export interface WSResponse {
-	isError: boolean;
-	responseException: {
-		exceptionMessage: {
-			errorMessage: string;
-		};
-	} | undefined;
-	result: any;
+	error: string;
+	data: any;
 }
 
 export function handleResponse<T>(
@@ -47,11 +42,8 @@ export function handleResponse<T>(
 		}
 
 		const rawData = JSON.parse(text) as WSResponse;
-		if (response.ok) return rawData.result as T;
-		const error = (
-			rawData.isError &&
-			rawData.responseException?.exceptionMessage.errorMessage
-		) || response.statusText;
+		if (response.ok) return rawData.data as T;
+		const error = rawData.error || response.statusText;
 		return Promise.reject(error);
 	});
 }

@@ -37,7 +37,7 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
                         <li
                             key={index}
                         >
-                            <p>{`${player.user.name} ${player.user.surname}`}</p>
+                            <p>{`${player.name} ${player.surname}`}</p>
                         </li>
                     ))}
                 </ul>

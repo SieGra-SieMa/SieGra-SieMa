@@ -1,17 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Session } from '../../_lib/types';
+import { useApi } from '../api/ApiContext';
 import { AuthContext } from './AuthContext';
 
-export const authState = {
-    logout: () => {
-        localStorage.removeItem('session');
-    },
-    update: (session: Session) => {
-        localStorage.setItem('session', JSON.stringify(session));
-    },
-}
-
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
+
+    const api = useApi();
 
     const [session, setSessionState] = useState<Session | null>(() => {
         const session = localStorage.getItem('session');
@@ -33,9 +27,9 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     const value = { session, setSession };
 
     useEffect(() => {
-        authState.logout = () => setSession(null);
-        authState.update = (s) => setSession(s);
-    }, []);
+        api.authState.logout = () => setSession(null);
+        api.authState.update = (s) => setSession(s);
+    }, [api]);
 
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

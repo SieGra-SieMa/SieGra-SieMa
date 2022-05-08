@@ -1,12 +1,14 @@
 import styles from './TeamsList.module.css';
 import TeamsListItem from './TeamsListItem';
-import { teamsService } from '../../_services/teams.service';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Team } from '../../_lib/types';
 import SyncLoader from 'react-spinners/SyncLoader';
+import { useApi } from '../api/ApiContext';
 
 export default function TeamsList() {
+
+    const { teamsService } = useApi();
 
     const [teams, setTeams] = useState<Team[] | null>(null);
 
@@ -16,7 +18,7 @@ export default function TeamsList() {
                 result => setTeams(result),
                 error => alert(error)
             )
-    }, []);
+    }, [teamsService]);
 
     const onRemove = (id: number) => {
         const data = teams ? [...teams] : [];

@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import styles from './TeamOptions.module.css';
-import { teamsService } from '../../_services/teams.service';
 import InputField from '../form/InputField';
+import { useApi } from '../api/ApiContext';
 
 export default function CreateTeam() {
+
+    const { teamsService } = useApi();
 
     const [name, setName] = useState<string>('');
 
     const onSubmit = () => {
-        teamsService.create(name)
+        teamsService.createTeam(name)
             .then(
                 _ => alert(`You have created team "${name}"`),
                 error => alert(error)

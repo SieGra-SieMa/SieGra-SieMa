@@ -1,10 +1,12 @@
 import Config from '../config.json';
 import { UserDetailsRequest } from '../_lib/types';
-import { patch } from '../_lib/utils';
+import { patch } from '.';
 
-export const usersService = {
+const usersService = {
     update,
 };
+
+export default usersService;
 
 function update(user: UserDetailsRequest): Promise<{}> {
     return patch(`${Config.HOST}/api/users/change-details`, user);

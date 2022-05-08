@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import styles from './TeamOptions.module.css';
-import { teamsService } from '../../_services/teams.service';
 import InputField from '../form/InputField';
+import { useApi } from '../api/ApiContext';
 
 export default function JoinTeam() {
+
+    const { teamsService } = useApi();
 
     const [code, setCode] = useState<string>('');
 
     const onSubmit = () => {
-        teamsService.join(code)
+        teamsService.joinTeam(code)
             .then(
                 _ => alert(`You have joined the team`),
                 error => alert(error)

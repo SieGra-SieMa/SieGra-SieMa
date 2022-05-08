@@ -1,10 +1,10 @@
 import styles from './TeamsListItem.module.css';
 import { Team } from '../../_lib/types';
-import { teamsService } from '../../_services/teams.service';
 import { useCallback, useState } from 'react';
 import Modal from '../modal/Modal';
 import TeamLeave from './TeamLeave';
 import TeamAdd from './TeamAdd';
+import { useApi } from '../api/ApiContext';
 
 type TeamsListItemProp = {
     team: Team,
@@ -13,16 +13,18 @@ type TeamsListItemProp = {
 
 export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
 
+    const { teamsService } = useApi();
+
     const [isAdd, setIsAdd] = useState(false);
     const [isConfirm, setIsConfirm] = useState(false);
 
     const leaveTeam = useCallback(() => {
-        teamsService.leave(team.id)
+        teamsService.leaveTeam(team.id)
             .then(() => {
                 setIsConfirm(false);
                 onRemove(team.id)
             })
-    }, [team.id, onRemove]);
+    }, [team.id, onRemove, teamsService]);
 
     return (
         <div className={styles.root}>

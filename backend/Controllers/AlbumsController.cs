@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs.AlbumDTO;
 using SieGraSieMa.DTOs.ErrorDTO;
+using SieGraSieMa.Models;
 using SieGraSieMa.Services.Albums;
 using System;
 using System.Collections.Generic;
@@ -47,12 +48,12 @@ namespace SieGraSieMa.Controllers
         [HttpPost()]
         public async Task<IActionResult> CreateAlbum(RequestAlbumDTO album)
         {
-            var result = await _albumService.CreateAlbum(new Models.Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = album.TournamentId });
+            var result = await _albumService.CreateAlbum(new Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = album.TournamentId });
 
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
-            return Ok(result);
+            return Ok();
         }
 
         [HttpPatch("{id}")]
@@ -64,7 +65,7 @@ namespace SieGraSieMa.Controllers
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
-            return Ok(result);
+            return Ok();
         }
 
         [HttpDelete("{id}")]

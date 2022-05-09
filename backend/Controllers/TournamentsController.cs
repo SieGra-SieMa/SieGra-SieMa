@@ -62,7 +62,7 @@ namespace SieGraSieMa.Controllers
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
-            return Ok(result);
+            return Ok();
         }
 
         [HttpPatch("{id}")]
@@ -75,7 +75,7 @@ namespace SieGraSieMa.Controllers
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
-            return Ok(result);
+            return Ok();
         }
 
         [HttpDelete("{id}")]

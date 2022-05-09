@@ -67,7 +67,10 @@ namespace SieGraSieMa.Services.Albums
             var oldAlbum = await _SieGraSieMaContext.Albums.FindAsync(id);
             if (oldAlbum == null)
                 return false;
-            _SieGraSieMaContext.Albums.Update(album);
+            oldAlbum.Name = album.Name;
+            oldAlbum.CreateDate = album.CreateDate;
+            oldAlbum.TournamentId = album.TournamentId;
+            _SieGraSieMaContext.Albums.Update(oldAlbum);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return true;
 

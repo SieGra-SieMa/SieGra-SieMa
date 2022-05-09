@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SieGraSieMa.DTOs.AlbumDTO;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.Services.Albums;
 using System;
@@ -38,17 +39,15 @@ namespace SieGraSieMa.Controllers
             var album = await _albumService.GetAlbum(id);
 
             if (album == null)
-                return NotFound(new ResponseErrorDTO { Error = "Tournament not found" });
+                return NotFound(new ResponseErrorDTO { Error = "Album not found" });
 
             return Ok(album);
         }
 
-        /*[HttpPost()]
+        [HttpPost()]
         public async Task<IActionResult> CreateAlbum(RequestAlbumDTO album)
         {
-            //var newTournament = _mapper.Map<Tournament>(tournament);
-            var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
-            var result = await _tournamentsService.CreateTournament(newTournament);
+            var result = await _albumService.CreateAlbum(new Models.Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = album.TournamentId });
 
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
@@ -57,17 +56,16 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateAlbum(RequestTournamentDTO tournament, int id)
+        public async Task<IActionResult> UpdateAlbum(RequestAlbumDTO album, int id)
         {
-            var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
+            var newAlbum = new Models.Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = album.TournamentId };
 
-            var result = await _tournamentsService.UpdateTournament(id, newTournament);
-
+            var result = await _albumService.UpdateAlbum(id, newAlbum);
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
             return Ok(result);
-        }*/
+        }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAlbum(int id)

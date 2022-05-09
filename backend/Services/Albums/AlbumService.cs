@@ -50,9 +50,11 @@ namespace SieGraSieMa.Services.Albums
 
         public async Task<ResponseAlbumDTO> GetAlbum(int id)
         {
-            var albums = await _SieGraSieMaContext.Albums.FindAsync(id);
+            var album = await _SieGraSieMaContext.Albums.FindAsync(id);
+            if (album == null)
+                return null;
                 
-            return new ResponseAlbumDTO { Id = albums.Id, Name = albums.Name, CreateDate = albums.CreateDate, TournamentId = albums.TournamentId};
+            return new ResponseAlbumDTO { Id = album.Id, Name = album.Name, CreateDate = album.CreateDate, TournamentId = album.TournamentId};
         }
 
         public async Task<IEnumerable<ResponseAlbumDTO>> GetAlbums()

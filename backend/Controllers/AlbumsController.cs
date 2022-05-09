@@ -76,7 +76,7 @@ namespace SieGraSieMa.Controllers
             if (!result)
                 return NotFound(new ResponseErrorDTO { Error = "Album not found" });
 
-            return Ok(result);
+            return Ok();
         }
     }
 }

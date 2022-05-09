@@ -15,12 +15,11 @@
 }
 
 .logo {
-    padding: 25px;
+    padding: 20px;
 }
 
 .logo>a>img {
-    max-width: 75px;
-    max-height: 75px;
+    max-height: 50px;
 }
 
 .navigation {

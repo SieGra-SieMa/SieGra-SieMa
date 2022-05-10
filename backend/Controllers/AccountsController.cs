@@ -73,7 +73,7 @@ namespace SieGraSieMa.Controllers
 
             await _userManager.ResetAccessFailedCountAsync(user);
 
-            return Ok(new AuthenticateResponseDTO { IsAuthSuccessful = true, AccessToken = token, RefreshToken = refreshToken.Token });
+            return Ok(new AuthenticateResponseDTO { AccessToken = token, RefreshToken = refreshToken.Token });
         }
 
         private async Task<IActionResult> GenerateOTPFor2StepVerification(User user)
@@ -110,7 +110,7 @@ namespace SieGraSieMa.Controllers
             var token = await _jwtHandler.GenerateToken(user);
             var refreshingToken = await _accountService.CreateRefreshToken(user);
             SetRefreshTokenInCookie(refreshingToken.Token);
-            return Ok(new AuthenticateResponseDTO { IsAuthSuccessful = true, AccessToken = token, RefreshToken = refreshingToken.Token });
+            return Ok(new AuthenticateResponseDTO { AccessToken = token, RefreshToken = refreshingToken.Token });
         }
 
         [AllowAnonymous]

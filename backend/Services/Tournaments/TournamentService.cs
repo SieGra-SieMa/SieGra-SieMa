@@ -14,7 +14,7 @@ namespace SieGraSieMa.Services.Tournaments
 {
     public interface ITournamentsService
     {
-        public Task<IEnumerable<ResponseTournamentDTO>> GetTournaments();
+        public Task<IEnumerable<TournamentListDTO>> GetTournaments();
 
         public Task<ResponseTournamentDTO> GetTournament(int id);
 
@@ -86,31 +86,21 @@ namespace SieGraSieMa.Services.Tournaments
             return tournament;
         }
 
-        public async Task<IEnumerable<ResponseTournamentDTO>> GetTournaments()
+        public async Task<IEnumerable<TournamentListDTO>> GetTournaments()
         {
             var tournaments =  await _SieGraSieMaContext.Tournaments
                 .Include(t => t.TeamInTournaments)
                 .Include(t => t.Groups)
                 .Include(t => t.Contests)
                 .Include(t => t.Albums)
-                .Select(t => new ResponseTournamentDTO
+                .Select(t => new TournamentListDTO
                 {
                     Id = t.Id,
                     Name = t.Name,
                     StartDate = t.StartDate,
                     EndDate = t.EndDate,
                     Description = t.Description,
-                    Address = t.Address,
-                    Albums = t.Albums.Select(a => new ResponseAlbumDTO
-                    {
-                        Id = a.Id,
-                        Name = a.Name,
-                        CreateDate = a.CreateDate,
-                        TournamentId = a.TournamentId,
-                        Media = a.Media.Select(m => new ResponseMediumDTO { Id = m.Id, AlbumId = m.AlbumId, Url = m.Url })
-                    }),
-                    Groups = t.Groups.Select(g => new ResponseGroupDTO { Id = g.Id, Name = g.Name, TournamentId = g.TournamentId, Ladder = g.Ladder }),
-                    TeamInTournaments = t.TeamInTournaments.Select(i => new ResponseTeamInTournamentDTO { TeamId = i.TeamId, TournamentId = i.TournamentId, Paid = i.Paid })
+                    Address = t.Address
                 })
                 .ToListAsync();
 

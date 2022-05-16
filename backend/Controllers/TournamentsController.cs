@@ -89,7 +89,55 @@ namespace SieGraSieMa.Controllers
             return Ok(result);
         }
 
+        [HttpGet("{id}/teams/count")]
+        public async Task<IActionResult> CountTeams(int id, [FromQuery] ITournamentsService.TeamsEnum filter)
+        {
+            var response = await _tournamentsService.CheckCountTeamsInTournament(id, filter);
+            if (response == 0) return BadRequest(new { message = "Bad tournament number or no teams registered for tournament" });
 
-
+            return Ok(new { count = response });
+        }
+        [HttpGet("{id}/teams/checkCorrectness")]
+        public async Task<IActionResult> CheckCorectnessOfTeams(int id)
+        {
+            try
+            {
+                var response = await _tournamentsService.CheckCorectnessOfTeams(id);;
+                if (response.Any()) return BadRequest(response);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+        [HttpPost("{id}/prepareTournament")]
+        public async Task<IActionResult> PrepareTournament(int id)
+        {
+            try
+            {
+                var groups = await _tournamentsService.CreateBasicGroups(id);
+                var teams = await _tournamentsService.AddTeamsToGroup(id);
+                var matches = await _tournamentsService.CreateMatchTemplates(id);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+        [HttpPost("{id}/groups/composeLadder")]
+        public async Task<IActionResult> ComposeLadderGroups(int id)
+        {
+            try
+            {
+                var response = await _tournamentsService.ComposeLadderGroups(id);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
     }
 }

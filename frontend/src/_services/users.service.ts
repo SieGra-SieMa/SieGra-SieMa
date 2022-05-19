@@ -1,18 +1,14 @@
 import Config from '../config.json';
 import { User, UserDetailsRequest } from '../_lib/types';
-import { get, patch } from '.';
+import Service from './service';
 
-const usersService = {
-    updateUser,
-    currentUser,
-};
+export default class UsersService extends Service {
 
-export default usersService;
+    updateUser(user: UserDetailsRequest): Promise<{}> {
+        return super.patch(`${Config.HOST}/api/users/change-details`, user);
+    };
 
-function updateUser(user: UserDetailsRequest): Promise<{}> {
-    return patch(`${Config.HOST}/api/users/change-details`, user);
-};
-
-function currentUser(): Promise<User> {
-    return get(`${Config.HOST}/api/users/current`);
-};
+    currentUser(): Promise<User> {
+        return super.get(`${Config.HOST}/api/users/current`);
+    };
+}

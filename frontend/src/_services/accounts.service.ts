@@ -1,28 +1,22 @@
 import Config from '../config.json';
-import { Session, Tokens } from '../_lib/types';
-import { post } from './index';
+import { Session } from '../_lib/types';
+import Service from './service';
 
-const accountsService = {
-    register,
-    authenticate,
-    logout,
-    refresh,
-};
+export default class AccountsService extends Service {
 
-export default accountsService;
+    register(name: string, surname: string, email: string, password: string): Promise<{}> {
+        return super.post(`${Config.HOST}/api/accounts/register`, { name, surname, email, password });
+    };
 
-function register(name: string, surname: string, email: string, password: string): Promise<{}> {
-    return post(`${Config.HOST}/api/accounts/register`, { name, surname, email, password });
-};
+    authenticate(email: string, password: string): Promise<Session> {
+        return super.post<Session>(`${Config.HOST}/api/accounts/authenticate`, { email, password })
+    };
 
-function authenticate(email: string, password: string): Promise<Session> {
-    return post<Session>(`${Config.HOST}/api/accounts/authenticate`, { email, password })
-};
+    // refresh(refreshToken: string): Promise<Tokens> {
+    //     return super.post<Tokens>(`${Config.HOST}/api/accounts/refresh-token`, { refreshToken });
+    // };
 
-function refresh(refreshToken: string): Promise<Tokens> {
-    return post<Tokens>(`${Config.HOST}/api/accounts/refresh-token`, { refreshToken });
-};
-
-function logout() {
-    return Promise.resolve();
+    logout() {
+        return Promise.resolve();
+    };
 };

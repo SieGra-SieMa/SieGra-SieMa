@@ -1,7 +1,7 @@
 import { useContext, createContext } from 'react';
-import services from '../../_services';
+import ApiClient from '../../_services';
 
-export const ApiContext = createContext(services);
+export const ApiContext = createContext(new ApiClient());
 
 export function useApi() {
     return useContext(ApiContext);

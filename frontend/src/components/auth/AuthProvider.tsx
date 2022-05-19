@@ -28,8 +28,11 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     }, [setSessionState, api]);
 
     useEffect(() => {
-        api.authState.logout = () => setSession(null);
-        api.authState.update = (s) => setSession(s);
+        const authState = {
+            logout: () => setSession(null),
+            update: (s: Session | null) => setSession(s)
+        }
+        api.setAuthState(authState);
     }, [setSession, api]);
 
     const value = useMemo(() => ({ session, setSession }), [session, setSession]);

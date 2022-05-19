@@ -1,33 +1,26 @@
 import Config from '../config.json';
 import { Tournament } from '../_lib/types';
-import { del, get, patch, post } from '.';
+import Service from './service';
 
-const tournamentsServices = {
-    getTournaments,
-    createTournament,
-    getTournamentbyId,
-    updateTournament,
-    removeTournament,
-};
+export default class TournamentsService extends Service {
 
-export default tournamentsServices;
+    getTournaments(): Promise<{}> {
+        return super.get(`${Config.HOST}/api/tournaments`);
+    };
 
-function getTournaments(): Promise<{}> {
-    return get(`${Config.HOST}/api/tournaments`);
-};
+    createTournament(tournament: Tournament): Promise<Tournament> {
+        return super.post(`${Config.HOST}/api/tournaments`, tournament);
+    };
 
-function createTournament(tournament: Tournament): Promise<Tournament> {
-    return post(`${Config.HOST}/api/tournaments`, tournament);
-};
+    getTournamentbyId(id: number): Promise<Tournament> {
+        return super.get(`${Config.HOST}/api/tournaments/${id}`);
+    };
 
-function getTournamentbyId(id: number): Promise<Tournament> {
-    return get(`${Config.HOST}/api/tournaments/${id}`);
-};
+    updateTournament(tournament: Tournament): Promise<Tournament> {
+        return super.patch(`${Config.HOST}/api/tournaments/${tournament.id}`, tournament);
+    };
 
-function updateTournament(tournament: Tournament): Promise<Tournament> {
-    return patch(`${Config.HOST}/api/tournaments/${tournament.id}`, tournament);
-};
-
-function removeTournament(id: number): Promise<Tournament> {
-    return del(`${Config.HOST}/api/tournaments/${id}`);
-};
+    removeTournament(id: number): Promise<Tournament> {
+        return super.del(`${Config.HOST}/api/tournaments/${id}`);
+    };
+}

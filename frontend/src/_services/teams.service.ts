@@ -1,28 +1,22 @@
 import Config from '../config.json';
 import { Team } from '../_lib/types';
-import { get, post } from '.';
+import Service from './service';
 
-const teamsService = {
-    joinTeam,
-    createTeam,
-    getTeams,
-    leaveTeam,
-};
+export default class TeamsService extends Service {
 
-export default teamsService;
+    joinTeam(code: string): Promise<{}> {
+        return super.post(`${Config.HOST}/api/teams/join`, { code });
+    };
 
-function joinTeam(code: string): Promise<{}> {
-    return post(`${Config.HOST}/api/teams/join`, { code });
-};
+    createTeam(name: string): Promise<{}> {
+        return super.post(`${Config.HOST}/api/teams`, { name });
+    };
 
-function createTeam(name: string): Promise<{}> {
-    return post(`${Config.HOST}/api/teams`, { name });
-};
+    getTeams(): Promise<Team[]> {
+        return super.get<Team[]>(`${Config.HOST}/api/teams`);
+    };
 
-function getTeams(): Promise<Team[]> {
-    return get<Team[]>(`${Config.HOST}/api/teams`);
-};
-
-function leaveTeam(id: number): Promise<{}> {
-    return post(`${Config.HOST}/api/teams/leave`, { id })
-};
+    leaveTeam(id: number): Promise<{}> {
+        return super.post(`${Config.HOST}/api/teams/leave`, { id });
+    };
+}

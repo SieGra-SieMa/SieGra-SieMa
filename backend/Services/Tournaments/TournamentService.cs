@@ -539,6 +539,7 @@ namespace SieGraSieMa.Services.Tournaments
                 });
                 list.Add(team);
             });
+            //TODO Sortowanie listy po ilosci
             return list;
         }
     }

@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
 {
-    /*[Authorize(AuthenticationSchemes = "Bearer")]*/
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class TeamsController : ControllerBase
@@ -74,6 +74,7 @@ namespace SieGraSieMa.Controllers
                 IEnumerable<Claim> claim = identity.Claims;
                 var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
                 var captain = _userService.GetUser(email);
+                //TODO change exception types
                 var response = await _teamService.IsUserAbleToJoinTeam(captain, teamCodeDTO.Code);
                 if(!response)
                     return BadRequest(new ResponseErrorDTO { Error = "Player already belongs to another team which is in the same tournament as this one" });

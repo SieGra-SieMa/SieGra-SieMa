@@ -18,5 +18,6 @@ namespace SieGraSieMa.Services.Interfaces
         Team GetTeam(int id);
         IEnumerable<GetTeamsDTO> GetTeamsWithUser(string email);
         IEnumerable<Team> GetTeams();
+        Task<bool> IsUserAbleToJoinTeam(User user, string code);
     }
 }

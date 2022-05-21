@@ -13,6 +13,7 @@ using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.DTOs.TournamentDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
+using SieGraSieMa.Services.Interfaces;
 using SieGraSieMa.Services.Tournaments;
 using System;
 using System.Collections.Generic;
@@ -27,17 +28,20 @@ namespace SieGraSieMa.Controllers
     {
         private readonly ITournamentsService _tournamentsService;
         private readonly IContestService _contestService;
+        private readonly ITeamService _teamService;
+
 
         private readonly UserManager<User> _userManager;
 
         private readonly IMapper _mapper;
 
-        public TournamentsController(ITournamentsService tournamentsService, IMapper mapper, UserManager<User> userManager, IContestService contestService)
+        public TournamentsController(ITournamentsService tournamentsService, IMapper mapper, UserManager<User> userManager, IContestService contestService, ITeamService teamService)
         {
             _tournamentsService = tournamentsService;
             _mapper = mapper;
             _userManager = userManager;
             _contestService = contestService;
+            _teamService = teamService;
         }
         [AllowAnonymous]
         [HttpGet()]
@@ -144,20 +148,23 @@ namespace SieGraSieMa.Controllers
             }
         }
         [HttpPost("{id}/teams/join")]
-        public async Task<IActionResult> JoinTournament(int id, GetTeamsDTO team)
+        public async Task<IActionResult> JoinTournament(int id, int teamId)
         {
             try
             {
+                var team = _teamService.GetTeamWithPlayers(teamId);
+                if(team == null)
+                    return BadRequest(new ResponseErrorDTO { Error = "Team does not exists" });
                 List<User> listOfUsers = new();
-                team.Players.ForEach(async p => listOfUsers.Add(await _userManager.FindByIdAsync(p.Id.ToString())));
+                team.Players.Select(async p => listOfUsers.Add(await _userManager.FindByIdAsync(p.UserId.ToString())));
                 var respone = await _tournamentsService.CheckUsersInTeam(listOfUsers, id);
                 if (respone)
                 {
                     var resp = await _tournamentsService.AddTeamToTournament(team.Id, id);
                     if (!resp)
-                        return BadRequest(new ResponseErrorDTO { Error = "Team or tournament does not exists" });
+                        return BadRequest(new ResponseErrorDTO { Error = "Tournament does not exists" });
 
-                    return Ok("Tournament joined!");
+                    return Ok();
                 }
 
                 return BadRequest(new ResponseErrorDTO { Error = "One of the players already belongs to another team" });

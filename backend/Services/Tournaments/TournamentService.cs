@@ -37,6 +37,7 @@ namespace SieGraSieMa.Services.Tournaments
         public Task<IEnumerable<GetMatchDTO>> ComposeLadderGroups(int tournamentId);//zbiera najlepsze teamy i wypełnia nimi drabinkę
         public Task<bool> CheckUsersInTeam(List<User> users, int tournamentId);
         public Task<bool> AddTeamToTournament(int teamId, int tournamentId);
+        public List<ResponseTeamScoresDTO> GetTeamScoresInGroups(int tournamentId, int groupId);
 
 
     }
@@ -44,10 +45,12 @@ namespace SieGraSieMa.Services.Tournaments
     {
 
         private readonly SieGraSieMaContext _SieGraSieMaContext;
+        private readonly IMatchService _matchService;
 
-        public TournamentService(SieGraSieMaContext SieGraSieMaContext)
+        public TournamentService(SieGraSieMaContext SieGraSieMaContext, IMatchService matchService)
         {
             _SieGraSieMaContext = SieGraSieMaContext;
+            _matchService = matchService;
         }
         public async Task<bool> CreateTournament(Tournament tournament)
         {
@@ -68,6 +71,8 @@ namespace SieGraSieMa.Services.Tournaments
         }
         public async Task<ResponseTournamentDTO> GetTournament(int id)
         {
+            GetLadderDTO ladder = await _matchService.GetLadderMatches(id);
+
             var tournament = await _SieGraSieMaContext.Tournaments
                 .Include(t => t.TeamInTournaments)
                 .ThenInclude(t => t.Team)
@@ -89,13 +94,30 @@ namespace SieGraSieMa.Services.Tournaments
                         Name = a.Name,
                         CreateDate = a.CreateDate,
                         TournamentId = a.TournamentId,
-                        Media = a.Media.Select(m => new ResponseMediumDTO { Id = m.Id, AlbumId = m.AlbumId, Url = m.Url })
+                        Media = a.Media.Select(m => new ResponseMediumDTO
+                        {
+                            Id = m.Id,
+                            AlbumId = m.AlbumId,
+                            Url = m.Url
+                        })
                     }),
-                    Groups = t.Groups.Select(g => new ResponseGroupDTO { Id = g.Id, Name = g.Name, TournamentId = g.TournamentId, Ladder = g.Ladder }),
-                    Teams = t.TeamInTournaments.Select(t => t.Team.Name)
+                    Groups = t.Groups.Where(g => g.Ladder == false).Select(g => new ResponseGroupDTO
+                    {
+                        Id = g.Id,
+                        Name = g.Name,
+                        TournamentId = g.TournamentId,
+                        //Teams = GetTeamScoresInGroups(g.TournamentId,g.Id)
+                        //TODO team punktacja
+                    }),
+                    Ladder = ladder
+                    //Teams = t.TeamInTournaments.Select(t => t.Team.Name)
                     //TeamInTournaments = t.TeamInTournaments.Select(i => new ResponseTeamInTournamentDTO { TeamId = i.TeamId, TournamentId = i.TournamentId, Paid = i.Paid })
                 })
                 .FirstOrDefaultAsync();
+            tournament.Groups.ToList().ForEach(g =>
+            {
+                g.Teams = GetTeamScoresInGroups(g.TournamentId, g.Id);
+            });
 
             return tournament;
         }
@@ -122,13 +144,14 @@ namespace SieGraSieMa.Services.Tournaments
         public async Task<bool> UpdateTournament(int id, Tournament tournament)
         {
             var oldTournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
-            if (oldTournament == null)
-                return false;
-            _SieGraSieMaContext.Tournaments.Update(tournament);
-            if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
-                return true;
-
-            return false;
+            if (oldTournament == null) return false;
+            oldTournament.Name = tournament.Name;
+            oldTournament.StartDate = tournament.StartDate;
+            oldTournament.EndDate = tournament.EndDate;
+            oldTournament.Description = tournament.Description;
+            oldTournament.Address = tournament.Address;
+            _SieGraSieMaContext.Tournaments.Update(oldTournament);
+            return await _SieGraSieMaContext.SaveChangesAsync() > 0;
         }
         public async Task<int> CheckCountTeamsInTournament(int tournamentId, TeamsEnum teamsEnum)
         {
@@ -438,7 +461,6 @@ namespace SieGraSieMa.Services.Tournaments
                                 }).ToList();
             return result;
         }
-
         public async Task<bool> CheckUsersInTeam(List<User> users, int tournamentId)
         {
             var emptyList = await _SieGraSieMaContext.Tournaments.Where(t => t.Id == tournamentId)
@@ -453,7 +475,6 @@ namespace SieGraSieMa.Services.Tournaments
 
             return false;
         }
-
         public async Task<bool> AddTeamToTournament(int teamId, int tournamentId)
         {
             var team = await _SieGraSieMaContext.Teams.FindAsync(teamId);
@@ -464,6 +485,61 @@ namespace SieGraSieMa.Services.Tournaments
             _SieGraSieMaContext.TeamInTournaments.Add(new TeamInTournament { TeamId = teamId, TournamentId = tournamentId, Paid = false });
             await _SieGraSieMaContext.SaveChangesAsync();
             return true;
+        }
+        public List<ResponseTeamScoresDTO> GetTeamScoresInGroups(int tournamentId, int groupId)
+        {
+            List<TeamInGroup> tig = _SieGraSieMaContext.TeamInGroups.Include(t => t.Team).Include(t => t.Group)
+                .Where(t => t.Group.TournamentId == tournamentId && t.GroupId == groupId).ToList();
+            var list = new List<ResponseTeamScoresDTO>();
+            tig.ForEach(t =>
+            {
+                var team = new ResponseTeamScoresDTO();
+                team.Team = t.Team.Name;
+                var matches = _SieGraSieMaContext.Matches
+                            .Where(m => (m.TeamAwayId == t.Id || m.TeamHomeId == t.Id)
+                                    && m.TeamAwayScore != null && m.TeamHomeScore != null)
+                            .ToList();
+                matches.ForEach(m =>//dla każdego teamu wyliczamy jego statystyki
+                {
+                    team.PlayedMatches++;
+                    if (m.TeamHomeId.Value == t.Id && m.TeamHomeScore.Value > m.TeamAwayScore.Value)//jest home i wygrał
+                    {
+                        team.WonMatches++;
+                        team.Points += 3;
+                        team.GoalScored += m.TeamHomeScore.GetValueOrDefault();
+                        team.GoalConceded += m.TeamAwayScore.GetValueOrDefault();
+                    }
+                    else if (m.TeamAwayId.Value == t.Id && m.TeamHomeScore.Value < m.TeamAwayScore.Value)//jest away i wygrał
+                    {
+                        team.WonMatches++;
+                        team.Points += 3;
+                        team.GoalScored += m.TeamAwayScore.GetValueOrDefault();
+                        team.GoalConceded += m.TeamHomeScore.GetValueOrDefault();
+                    }
+                    else if (m.TeamHomeScore == m.TeamAwayScore)//remis
+                    {
+                        team.TiedMatches++;
+                        team.Points++;
+                        team.GoalScored += m.TeamAwayScore.GetValueOrDefault();
+                        team.GoalConceded += m.TeamAwayScore.GetValueOrDefault();
+                    }
+                    else if (m.TeamHomeId.Value == t.Id && m.TeamHomeScore.Value < m.TeamAwayScore.Value)//jest home i przegrał
+                    {
+                        team.LostMatches++;
+                        team.GoalScored += m.TeamHomeScore.GetValueOrDefault();
+                        team.GoalConceded += m.TeamAwayScore.GetValueOrDefault();
+                    }
+                    else if (m.TeamAwayId.Value == t.Id && m.TeamHomeScore.Value > m.TeamAwayScore.Value)//jest away i przegrał
+                    {
+                        team.LostMatches++;
+                        team.GoalScored += m.TeamHomeScore.GetValueOrDefault();
+                        team.GoalConceded += m.TeamAwayScore.GetValueOrDefault();
+                    }
+                    else throw new Exception("Error while counting results matches for team");
+                });
+                list.Add(team);
+            });
+            return list;
         }
     }
 }

@@ -2,6 +2,7 @@
 using SieGraSieMa.DTOs.ContestantDTO;
 using SieGraSieMa.DTOs.ContestDTO;
 using SieGraSieMa.DTOs.GroupDTO;
+using SieGraSieMa.DTOs.MatchDTO;
 using SieGraSieMa.DTOs.TeamInTournamentDTO;
 using SieGraSieMa.DTOs.TeamsDTO;
 using System;
@@ -22,7 +23,8 @@ namespace SieGraSieMa.DTOs.TournamentDTO
         public virtual IEnumerable<ResponseAlbumDTO> Albums { get; set; }
         public virtual IEnumerable<ResponseContestDTO> Contests { get; set; }
         public virtual IEnumerable<ResponseGroupDTO> Groups { get; set; }
-        public virtual IEnumerable<string> Teams { get; set; }
+        //public virtual IEnumerable<string> Teams { get; set; }
+        public GetLadderDTO Ladder { get; set; }
 
 
     }

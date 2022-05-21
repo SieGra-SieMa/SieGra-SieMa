@@ -25,6 +25,7 @@ using SieGraSieMa.Services.Albums;
 using SieGraSieMa.Services.Email;
 using SieGraSieMa.Services.Interfaces;
 using SieGraSieMa.Services.JWT;
+using SieGraSieMa.Services.Medias;
 using SieGraSieMa.Services.Tournaments;
 using System;
 using System.Collections.Generic;
@@ -86,6 +87,8 @@ namespace SieGraSieMa
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IAlbumService, AlbumService>();
             services.AddTransient<ITournamentsService, TournamentService>();
+            services.AddTransient<IContestService, ContestService>();
+            services.AddTransient<IMediaService, MediaService>();
             services.AddIdentity<User, IdentityRole<int>>()
             .AddEntityFrameworkStores<SieGraSieMaContext>()
             .AddDefaultTokenProviders();

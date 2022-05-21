@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import styles from './AccountEntry.module.css';
 import SyncLoader from 'react-spinners/SyncLoader';
-import InputField from '../form/InputField';
+import Input from '../form/Input';
 import { useApi } from '../api/ApiContext';
+import Button from '../form/Button';
 
 export default function CreateAccount() {
 
@@ -30,50 +31,43 @@ export default function CreateAccount() {
     };
 
     return (
-        <div className={styles.enterBlock}>
+        <form className={styles.block} onSubmit={createAccount}>
             <h3>Create account</h3>
-            <form onSubmit={createAccount}>
-                {error && <div className={styles.failed}>{error}</div>}
-                <InputField
-                    id='CreateAccount-email'
-                    label='Email'
-                    type='email'
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <InputField
-                    id='CreateAccount-name'
-                    label='Name'
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <InputField
-                    id='CreateAccount-surname'
-                    label='Surname'
-                    value={surname}
-                    onChange={(e) => setSurname(e.target.value)}
-                />
-                <InputField
-                    id='CreateAccount-password'
-                    label='Password'
-                    type='password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <div className={styles.spacing}></div>
-                {loading ? (
-                    <div className={styles.loader}>
-                        <SyncLoader loading={true} size={7} margin={20} />
-                    </div>
-                ) : (
-                    <button
-                        className={`${styles.enterButton} button`}
-                        type="submit"
-                    >
-                        Create account
-                    </button>
-                )}
-            </form>
-        </div>
+            {error && <div className={styles.failed}>{error}</div>}
+            <Input
+                id='CreateAccount-email'
+                label='Email'
+                type='email'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+                id='CreateAccount-name'
+                label='Name'
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+            />
+            <Input
+                id='CreateAccount-surname'
+                label='Surname'
+                value={surname}
+                onChange={(e) => setSurname(e.target.value)}
+            />
+            <Input
+                id='CreateAccount-password'
+                label='Password'
+                type='password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
+            <div className={styles.spacing}></div>
+            {loading ? (
+                <div className={styles.loader}>
+                    <SyncLoader loading={true} size={7} margin={20} />
+                </div>
+            ) : (
+                <Button value='Create account' />
+            )}
+        </form>
     );
 }

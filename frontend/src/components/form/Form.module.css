@@ -1,0 +1,79 @@
+@import '../../variables.css';
+
+.root {
+    display: grid;
+    row-gap: 5px;
+    grid-auto-rows: min-content;
+}
+
+.input {
+    min-width: 300px;
+    padding: 15px 20px;
+    box-sizing: border-box;
+    border-radius: 5px;
+    outline: none;
+    font-size: 18px;
+    border: none;
+    background-color: #fff;
+    transition: box-shadow .3s;
+}
+
+.input:hover {
+    box-shadow: 0 0 3px var(--box-shadow-color);
+}
+
+.primaryButton,
+.secondaryButton,
+.tertiaryButton {
+    appearance: none;
+    border: none;
+    padding: 15px 20px;
+    font-size: 17px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color .3s, box-shadow .3s;
+    font-weight: bold;
+}
+
+.primaryButton {
+    color: #fff;
+    background-color: #E3A084;
+}
+
+.primaryButton:hover {
+    background-color: #ca8c71;
+    box-shadow: 0 0 5px var(--box-shadow-color);
+}
+
+.primaryButton:active {
+    background-color: #9c664f;
+}
+
+.secondaryButton {
+    color: #000;
+    background-color: #ddd;
+}
+
+.secondaryButton:hover {
+    background-color: #cfcfcf;
+    box-shadow: 0 0 5px var(--box-shadow-color);
+}
+
+.secondaryButton:active {
+    background-color: #aaa;
+}
+
+.tertiaryButton {
+    color: #fff;
+    background-color: #3e555f;
+}
+
+.tertiaryButton:hover {
+    background-color: #2f424b;
+    box-shadow: 0 0 5px #2f424b;
+}
+
+.tertiaryButton:active {
+    background-color: #23343b;
+}

@@ -1,7 +1,7 @@
 import { ChangeEventHandler } from 'react';
-import styles from './InputField.module.css';
+import styles from './Form.module.css';
 
-interface InputFieldProp {
+type InputProp = {
     id?: string;
     label?: string;
     type?: string
@@ -11,7 +11,7 @@ interface InputFieldProp {
     onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
-export default function InputField({
+export default function Input({
     id,
     label,
     type = 'text',
@@ -19,7 +19,7 @@ export default function InputField({
     placeholder,
     value,
     onChange,
-}: InputFieldProp) {
+}: InputProp) {
     return (
         <div className={styles.root}>
             {label && (<label htmlFor={id} className={styles.label}>{label}</label>)}

@@ -1,3 +1,12 @@
+.root {
+    margin: 25px auto;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+}
+
 .title {
     font-size: 33px;
 }
@@ -15,6 +24,7 @@
     transition: box-shadow .3s;
     background-color: #fff;
     padding: 30px;
+    cursor: pointer;
 }
 
 .item:hover {

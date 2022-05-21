@@ -62,9 +62,6 @@
     width: calc(100% - 30px);
 }
 
-.logout {
-    margin: 0;
-}
 
 @media all and (max-width: 720px) {
     .container {

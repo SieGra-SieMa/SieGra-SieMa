@@ -1,0 +1,7 @@
+@import '../../variables.css';
+
+.root {
+    display: flex;
+    column-gap: 10px;
+    justify-content: flex-end;
+}

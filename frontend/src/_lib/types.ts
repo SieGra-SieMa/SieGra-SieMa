@@ -1,6 +1,7 @@
 import { ROLES } from './roles';
 
 export interface User {
+    id: number;
     name: string;
     surname: string;
     roles: ROLES[];
@@ -18,6 +19,7 @@ export interface Team {
     id: number;
     name: string;
     code: string;
+    captainId: number;
     players: Player[];
 }
 
@@ -39,10 +41,21 @@ export interface Session {
 // Tournaments
 
 export interface Tournament {
-    id: number;
+    id?: number;
     name: string;
-    startDate: Date,
-    endDate: Date,
+    startDate: string,
+    endDate: string,
     description: string;
     address: string;
+
+    groups?: Group[];
+}
+
+export interface Group {
+    id: number;
+    name: string;
+    tournamentId: number;
+    ladder: boolean;
+
+    teams: Team[]
 }

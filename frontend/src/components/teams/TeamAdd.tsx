@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import InputField from '../form/InputField';
+import Button from '../form/Button';
+import Input from '../form/Input';
 import styles from './TeamAdd.module.css';
 
 export default function TeamAdd() {
@@ -8,13 +9,13 @@ export default function TeamAdd() {
 
     return (
         <div className={styles.root}>
-            <InputField
+            <Input
                 id='TeamAdd-email'
                 label='Email'
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
             />
-            <button className="button">Add</button>
+            <Button value='Add' />
         </div>
     );
 }

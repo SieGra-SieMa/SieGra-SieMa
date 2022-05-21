@@ -17,7 +17,8 @@ export default function AccountPage() {
                     <ul className="container">
                         <li>
                             <NavLink
-                                to="./"
+                                to="."
+                                end
                                 className={({ isActive }) => isActive ? styles.activeLink : ''}
                             >
                                 Create / Join a team
@@ -25,18 +26,10 @@ export default function AccountPage() {
                         </li>
                         <li>
                             <NavLink
-                                to="myteams/"
+                                to="myteams"
                                 className={({ isActive }) => isActive ? styles.activeLink : ''}
                             >
                                 My teams
-                            </NavLink>
-                        </li>
-                        <li>
-                            <NavLink
-                                to="tournaments/"
-                                className={({ isActive }) => isActive ? styles.activeLink : ''}
-                            >
-                                Tournaments
                             </NavLink>
                         </li>
                     </ul>

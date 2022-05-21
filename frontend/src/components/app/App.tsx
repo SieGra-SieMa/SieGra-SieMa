@@ -12,12 +12,13 @@ import AccountPage from '../account-page/AccountPage';
 import AuthProvider from '../auth/AuthProvider';
 import AccountEntry from '../account-entry/AccountEntry';
 import TeamOptions from '../team-options/TeamOptions';
-import TeamsList from '../teams-list/TeamsList';
+import TeamsList from '../teams/TeamsList';
 import TournamentsPage from '../tournaments/TournamentsPage';
 import { ROLES } from '../../_lib/roles';
 import { ApiContext } from '../api/ApiContext';
 import ApiClient from '../../_services';
 import UserProvider from '../user/UserProvider';
+import TournamentPage from '../tournaments/TournamentPage';
 
 const apiClient = new ApiClient();
 
@@ -36,9 +37,12 @@ export default function App() {
                                 <Route element={<GuardRoute roles={[ROLES.User, ROLES.Admin]} />}>
                                     <Route index element={<TeamOptions />} />
                                     <Route path="myteams" element={<TeamsList />} />
-                                    <Route path="tournaments" element={<TournamentsPage />} />
                                     <Route path="*" element={<h2>404 NOT FOUND</h2>} />
                                 </Route>
+                            </Route>
+                            <Route path="tournaments">
+                                <Route index element={<TournamentsPage />} />
+                                <Route path=":id" element={<TournamentPage />} />
                             </Route>
                         </Routes>
                         <Footer />

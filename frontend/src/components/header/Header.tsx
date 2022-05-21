@@ -1,13 +1,13 @@
 import styles from './Header.module.css';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
-import GuardComponent from '../guard-components/GuardComponent';
 import { useUser } from '../user/UserContext';
 import { useCallback } from 'react';
+import Button from '../form/Button';
 
 export default function Header() {
 
-    const { setSession } = useAuth();
+    const { session, setSession } = useAuth();
     const { user } = useUser();
 
     const logout = useCallback(() => setSession(null), [setSession]);
@@ -27,46 +27,29 @@ export default function Header() {
                                 HOME
                             </Link>
                         </li>
-                        <GuardComponent
-                            element={
+                        <li>
+                            <Link to="/tournaments">
+                                TOURNAMENTS
+                            </Link>
+                        </li>
+                        {session ? (
+                            <>
                                 <li>
-                                    <Link to="/account/">
-                                        ACCOUNT
+                                    <Link to='/account'>
+                                        {user ? `${user.name} ${user.surname}` : 'USERNAME'}
                                     </Link>
                                 </li>
-                            }
-                            placeholder={
-                                <>
-                                    <li>
-                                        <Link to="/account/">
-                                            ACCOUNT
-                                        </Link>
-                                    </li>
-                                    <li>
-                                        <button
-                                            className={`button ${styles.logout}`}
-                                            onClick={logout}
-                                        >
-                                            Logout
-                                        </button>
-                                    </li>
-                                </>
-                            }
-                        >
+                                <li>
+                                    <Button value='Logout' type='button' onClick={logout} />
+                                </li>
+                            </>
+                        ) : (
                             <li>
-                                <Link to='/account/'>
-                                    {user?.name} {user?.surname}
+                                <Link to="/account">
+                                    ACCOUNT
                                 </Link>
                             </li>
-                            <li>
-                                <button
-                                    className={`button ${styles.logout}`}
-                                    onClick={logout}
-                                >
-                                    Logout
-                                </button>
-                            </li>
-                        </GuardComponent>
+                        )}
                     </ul>
                 </nav>
             </div>

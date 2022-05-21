@@ -176,5 +176,37 @@ namespace SieGraSieMa.Services
 
             return false;
         }*/
+
+        public async Task<bool> IsUserAbleToJoinTeam(User user, string code)
+        {
+            var team = _SieGraSieMaContext.Teams.Where(e => e.Code == code).SingleOrDefaultAsync();
+
+            if (await team == null)
+                return false;
+
+            var result = await _SieGraSieMaContext.Tournaments
+                .Where(t => t.StartDate > DateTime.Now)
+                .Include(t => t.TeamInTournaments)
+                .ThenInclude(t => t.Team)
+                .Where(t => t.TeamInTournaments.Any(t => t.Team.Players.Any(t => t.UserId == user.Id)))
+                .ToListAsync();
+
+            if (result.Count == 0)
+                return true;
+
+            var currentTeamTournaments = await _SieGraSieMaContext.Tournaments
+                .Where(t => t.StartDate > DateTime.Now)
+                .Include(t => t.TeamInTournaments)
+                .Where(t => t.TeamInTournaments
+                .Any(t => t.TeamId == team.Id))
+                .ToListAsync();
+
+            var res = result.Intersect(currentTeamTournaments).ToList();
+            if (res.Count == 0)
+                return true;
+
+            return false;
+        }
+
     }
 }

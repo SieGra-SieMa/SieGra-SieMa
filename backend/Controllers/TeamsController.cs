@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs;
+using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
 using SieGraSieMa.Services.Interfaces;
@@ -65,7 +66,7 @@ namespace SieGraSieMa.Controllers
 
         [HttpPost("join")]
         [Authorize(Roles = "User")]
-        public IActionResult Join(TeamCodeDTO teamCodeDTO)
+        public async Task<IActionResult> Join(TeamCodeDTO teamCodeDTO)
         {
             try
             {
@@ -73,6 +74,9 @@ namespace SieGraSieMa.Controllers
                 IEnumerable<Claim> claim = identity.Claims;
                 var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
                 var captain = _userService.GetUser(email);
+                var response = await _teamService.IsUserAbleToJoinTeam(captain, teamCodeDTO.Code);
+                if(!response)
+                    return BadRequest(new ResponseErrorDTO { Error = "Player already belongs to another team which is in the same tournament as this one" });
                 _teamService.JoinTeam(teamCodeDTO.Code, captain);
                 return Ok();
             }

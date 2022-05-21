@@ -453,9 +453,9 @@ namespace SieGraSieMa.Services.Tournaments
 
         public async Task<bool> AddTeamToTournament(int teamId, int tournamentId)
         {
-            var team = _SieGraSieMaContext.Teams.FindAsync(teamId);
-            var tournament = _SieGraSieMaContext.Tournaments.FindAsync(tournamentId);
-            if (await team != null && await tournament != null)
+            var team = await _SieGraSieMaContext.Teams.FindAsync(teamId);
+            var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(tournamentId);
+            if (team != null && tournament != null)
                 return false;
 
             _SieGraSieMaContext.TeamInTournaments.Add(new TeamInTournament { TeamId = teamId, TournamentId = tournamentId, Paid = false });

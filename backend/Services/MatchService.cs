@@ -14,7 +14,7 @@ namespace SieGraSieMa.Services
     public interface IMatchService
     {
         public enum MatchesEnum { All, NotPlayed, Played }
-        
+
         public Task<GetAvailableGroupMatchesDTO> GetAvailableGroupMatches(int tournamentId, MatchesEnum matchesEnum);
         public Task<Match> InsertMatchResult(MatchResultDTO matchResultDTO);
         public Task<GetLadderDTO> GetLadderMatches(int tournamentId);
@@ -28,7 +28,7 @@ namespace SieGraSieMa.Services
             _context = context;
             Configuration = configuration;
         }
-        
+
         public async Task<Match> InsertMatchResult(MatchResultDTO DTO)
         {
             var match = _context.Matches.Find(DTO.TournamentId, DTO.Phase, DTO.MatchId);
@@ -153,7 +153,8 @@ namespace SieGraSieMa.Services
         }
         public async Task<GetLadderDTO> GetLadderMatches(int tournamentId)
         {
-            List<GetPhasesWithMatchesDTO> Phases = await _context.Matches.GroupBy(m => m.Phase)
+            List<GetPhasesWithMatchesDTO> Phases = await _context.Matches.Where(m => m.TournamentId == tournamentId)
+                            .GroupBy(m => m.Phase)
                             .Where(m => m.Key != 0)
                             .Select(m => new GetPhasesWithMatchesDTO() { Phase = m.Key })
                             .ToListAsync();
@@ -161,7 +162,7 @@ namespace SieGraSieMa.Services
             {
                 phase.Matches = _context.Matches.Include(m => m.TeamAway).ThenInclude(t => t.Team)
                                 .Include(m => m.TeamHome).ThenInclude(t => t.Team)
-                                .Where(m => m.Phase == phase.Phase)
+                                .Where(m => m.Phase == phase.Phase && m.TournamentId == tournamentId)
                                 .Select(m => new GetMatchDTO()
                                 {
                                     TournamentId = m.TournamentId,

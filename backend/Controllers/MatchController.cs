@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.MatchDTO;
 using SieGraSieMa.Services;
 using System;
@@ -53,6 +54,7 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var response = await _matchService.GetLadderMatches(tournamentId);
+                if (!response.Phases.Any()) return NotFound(new ResponseErrorDTO { Error = "No matches found for this ladder" });
                 return Ok(response);
             }
             catch (Exception e)

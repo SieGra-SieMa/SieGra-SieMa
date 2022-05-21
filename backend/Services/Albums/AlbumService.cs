@@ -31,6 +31,10 @@ namespace SieGraSieMa.Services.Albums
         }
         public async Task<bool> CreateAlbum(Album album)
         {
+            var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(album.TournamentId);
+            if (tournament == null)
+                return false;
+
             await _SieGraSieMaContext.Albums.AddAsync(album);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return true;
@@ -66,6 +70,9 @@ namespace SieGraSieMa.Services.Albums
 
         public async Task<bool> UpdateAlbum(int id, Album album)
         {
+            var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(album.TournamentId);
+            if (tournament == null)
+                return false;
             var oldAlbum = await _SieGraSieMaContext.Albums.FindAsync(id);
             if (oldAlbum == null)
                 return false;

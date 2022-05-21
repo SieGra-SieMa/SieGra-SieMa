@@ -8,6 +8,7 @@ using SieGraSieMa.DTOs.GroupDTO;
 using SieGraSieMa.DTOs.MatchDTO;
 using SieGraSieMa.DTOs.MediumDTO;
 using SieGraSieMa.DTOs.TeamInTournamentDTO;
+using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.DTOs.TournamentDTO;
 using SieGraSieMa.Models;
 using static SieGraSieMa.Services.Tournaments.ITournamentsService;
@@ -69,6 +70,7 @@ namespace SieGraSieMa.Services.Tournaments
         {
             var tournament = await _SieGraSieMaContext.Tournaments
                 .Include(t => t.TeamInTournaments)
+                .ThenInclude(t => t.Team)
                 .Include(t => t.Groups)
                 .Include(t => t.Contests)
                 .Include(t => t.Albums)
@@ -90,7 +92,8 @@ namespace SieGraSieMa.Services.Tournaments
                         Media = a.Media.Select(m => new ResponseMediumDTO { Id = m.Id, AlbumId = m.AlbumId, Url = m.Url })
                     }),
                     Groups = t.Groups.Select(g => new ResponseGroupDTO { Id = g.Id, Name = g.Name, TournamentId = g.TournamentId, Ladder = g.Ladder }),
-                    TeamInTournaments = t.TeamInTournaments.Select(i => new ResponseTeamInTournamentDTO { TeamId = i.TeamId, TournamentId = i.TournamentId, Paid = i.Paid })
+                    Teams = t.TeamInTournaments.Select(t => t.Team.Name)
+                    //TeamInTournaments = t.TeamInTournaments.Select(i => new ResponseTeamInTournamentDTO { TeamId = i.TeamId, TournamentId = i.TournamentId, Paid = i.Paid })
                 })
                 .FirstOrDefaultAsync();
 

@@ -41,7 +41,7 @@ namespace SieGraSieMa.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
 
@@ -60,7 +60,7 @@ namespace SieGraSieMa.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
 
@@ -82,7 +82,7 @@ namespace SieGraSieMa.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
             
         }
@@ -101,7 +101,7 @@ namespace SieGraSieMa.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
 
         }

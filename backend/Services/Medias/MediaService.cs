@@ -32,6 +32,10 @@ namespace SieGraSieMa.Services.Medias
         }
         public async Task<bool> CreateMedia(Medium medium)
         {
+            var album = await _SieGraSieMaContext.Albums.FindAsync(medium.AlbumId);
+            if (album == null)
+                return false;
+            medium.Album = album;
             await _SieGraSieMaContext.Media.AddAsync(medium);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return true;
@@ -57,12 +61,15 @@ namespace SieGraSieMa.Services.Medias
 
         public async Task<Medium> GetMedia(int id)
         {
-            var media = await _SieGraSieMaContext.Media.FindAsync(id);
+            var media = await _SieGraSieMaContext.Media.Include(m => m.Album).SingleOrDefaultAsync(m => m.Id == id);
             return media;
         }
 
         public async Task<bool> UpdateMedia(int id, Medium medium)
         {
+            var album = await _SieGraSieMaContext.Albums.FindAsync(medium.AlbumId);
+            if (album == null)
+                return false;
             var oldMedia = await _SieGraSieMaContext.Media.FindAsync(id);
             if (oldMedia == null)
                 return false;

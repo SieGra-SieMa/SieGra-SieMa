@@ -479,7 +479,7 @@ namespace SieGraSieMa.Services.Tournaments
         {
             var team = await _SieGraSieMaContext.Teams.FindAsync(teamId);
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(tournamentId);
-            if (team != null && tournament != null)
+            if (team == null && tournament == null)
                 return false;
 
             _SieGraSieMaContext.TeamInTournaments.Add(new TeamInTournament { TeamId = teamId, TournamentId = tournamentId, Paid = false });
@@ -494,7 +494,7 @@ namespace SieGraSieMa.Services.Tournaments
             tig.ForEach(t =>
             {
                 var team = new ResponseTeamScoresDTO();
-                team.Team = t.Team.Name;
+                team.Name = t.Team.Name;
                 var matches = _SieGraSieMaContext.Matches
                             .Where(m => (m.TeamAwayId == t.Id || m.TeamHomeId == t.Id)
                                     && m.TeamAwayScore != null && m.TeamHomeScore != null)

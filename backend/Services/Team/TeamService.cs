@@ -161,5 +161,20 @@ namespace SieGraSieMa.Services
             return new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 5)
                 .Select(s => s[new Random().Next(s.Length)]).ToArray());
         }
+
+        /*public async Task<bool> CheckUsersInTeam(List<User> users, int tournamentId)
+        {
+            var emptyList = await _SieGraSieMaContext.Tournaments.Where(t => t.Id == tournamentId)
+                .Include(t => t.TeamInTournaments)
+                .ThenInclude(t => t.Team)
+                .ThenInclude(t => t.Players)
+                .Where(p => p.TeamInTournaments.Any(t => t.Team.Players.Any(p => users.Any(u => u == p.User))))
+                .ToListAsync();
+
+            if (emptyList.Count == 0)
+                return true;
+
+            return false;
+        }*/
     }
 }

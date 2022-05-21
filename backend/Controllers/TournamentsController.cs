@@ -1,12 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs.AlbumDTO;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.GroupDTO;
 using SieGraSieMa.DTOs.MediumDTO;
 using SieGraSieMa.DTOs.TeamInTournamentDTO;
+using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.DTOs.TournamentDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services.Tournaments;
@@ -23,12 +25,15 @@ namespace SieGraSieMa.Controllers
     {
         private readonly ITournamentsService _tournamentsService;
 
+        private readonly UserManager<User> _userManager;
+
         private readonly IMapper _mapper;
 
-        public TournamentsController(ITournamentsService tournamentsService, IMapper mapper)
+        public TournamentsController(ITournamentsService tournamentsService, IMapper mapper, UserManager<User> userManager)
         {
             _tournamentsService = tournamentsService;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         [AllowAnonymous]
@@ -133,6 +138,31 @@ namespace SieGraSieMa.Controllers
             {
                 var response = await _tournamentsService.ComposeLadderGroups(id);
                 return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [HttpPost("{id}/teams/join")]
+        public async Task<IActionResult> JoinTournament(int id, GetTeamsDTO team)
+        {
+            try
+            {
+                List<User> listOfUsers = new();
+                team.Players.ForEach(async p => listOfUsers.Add(await _userManager.FindByIdAsync(p.Id.ToString())));
+                var respone = await _tournamentsService.CheckUsersInTeam(listOfUsers, id);
+                if(respone)
+                {
+                    var resp = await _tournamentsService.AddTeamToTournament(team.Id, id);
+                    if(!resp)
+                        return BadRequest(new ResponseErrorDTO { Error = "Team or tournament does not exists" });
+
+                    return Ok("Tournament joined!");
+                }
+
+                return BadRequest(new ResponseErrorDTO { Error = "One of the players already belongs to another team" });
             }
             catch (Exception e)
             {

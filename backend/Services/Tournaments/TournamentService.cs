@@ -34,6 +34,9 @@ namespace SieGraSieMa.Services.Tournaments
         public Task<IEnumerable<TeamInGroup>> AddTeamsToGroup(int tournamentId);//do dodania zespołów do grup turniejowych
         public Task<IEnumerable<Match>> CreateMatchTemplates(int tournamentId);//do stworzenia wszystkich meczy oraz "teamInGroup" dla wszystkich meczy drabinkowych
         public Task<IEnumerable<GetMatchDTO>> ComposeLadderGroups(int tournamentId);//zbiera najlepsze teamy i wypełnia nimi drabinkę
+        public Task<bool> CheckUsersInTeam(List<User> users, int tournamentId);
+        public Task<bool> AddTeamToTournament(int teamId, int tournamentId);
+
 
     }
     public class TournamentService : ITournamentsService
@@ -431,6 +434,33 @@ namespace SieGraSieMa.Services.Tournaments
                                     TeamAwayScore = m.TeamAwayScore
                                 }).ToList();
             return result;
+        }
+
+        public async Task<bool> CheckUsersInTeam(List<User> users, int tournamentId)
+        {
+            var emptyList = await _SieGraSieMaContext.Tournaments.Where(t => t.Id == tournamentId)
+                .Include(t => t.TeamInTournaments)
+                .ThenInclude(t => t.Team)
+                .ThenInclude(t => t.Players)
+                .Where(p => p.TeamInTournaments.Any(t => t.Team.Players.Any(p => users.Any(u => u == p.User))))
+                .ToListAsync();
+
+            if (emptyList.Count == 0)
+                return true;
+
+            return false;
+        }
+
+        public async Task<bool> AddTeamToTournament(int teamId, int tournamentId)
+        {
+            var team = _SieGraSieMaContext.Teams.FindAsync(teamId);
+            var tournament = _SieGraSieMaContext.Tournaments.FindAsync(tournamentId);
+            if (await team != null && await tournament != null)
+                return false;
+
+            _SieGraSieMaContext.TeamInTournaments.Add(new TeamInTournament { TeamId = teamId, TournamentId = tournamentId, Paid = false });
+            await _SieGraSieMaContext.SaveChangesAsync();
+            return true;
         }
     }
 }

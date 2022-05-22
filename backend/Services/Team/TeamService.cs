@@ -208,5 +208,9 @@ namespace SieGraSieMa.Services
             return false;
         }
 
+        public Team GetTeamWithPlayers(int id)
+        {
+            return _SieGraSieMaContext.Teams.Include(t => t.Players).Where(t => t.Id == id).SingleOrDefault();
+        }
     }
 }

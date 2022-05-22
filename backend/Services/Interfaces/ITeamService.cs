@@ -16,6 +16,7 @@ namespace SieGraSieMa.Services.Interfaces
         void RemoveTeam(int id);
         void ChangeCaptain(int id, int userId);
         Team GetTeam(int id);
+        Team GetTeamWithPlayers(int id);
         IEnumerable<GetTeamsDTO> GetTeamsWithUser(string email);
         IEnumerable<Team> GetTeams();
         Task<bool> IsUserAbleToJoinTeam(User user, string code);

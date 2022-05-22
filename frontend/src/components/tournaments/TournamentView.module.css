@@ -21,28 +21,38 @@
 
 .group {
     background-color: #fff;
-    padding: 20px;
     border-radius: 5px;
+    overflow: hidden;
 }
 
 .group>table {
     border-collapse: collapse;
     width: 100%;
+    padding: 25px;
 }
 
 .group>table>caption {
-    padding: 5px 0 15px;
+    padding: 15px;
     font-size: 20px;
     font-weight: bold;
+    background-color: #666;
+    color: #fff;
 }
 
 .group>table th,
 .group>table td {
-    border: 1px solid #ccc;
     text-align: center;
-    padding: 5px;
+    padding: 10px;
 }
 
-.group>table>tbody>tr:nth-child(even) {
-    background-color: #eee;
+.group>table>tbody>tr {
+    transition: background-color .1s;
+}
+
+.group>table>tbody>tr:nth-child(odd) {
+    background-color: #eaeaea;
+}
+
+.group>table>tbody>tr:hover {
+    background-color: #ddd;
 }

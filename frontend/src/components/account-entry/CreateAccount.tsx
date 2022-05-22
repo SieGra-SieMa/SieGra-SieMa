@@ -4,6 +4,7 @@ import SyncLoader from 'react-spinners/SyncLoader';
 import Input from '../form/Input';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
+import VerticalSpacing from '../spacing/VerticalSpacing';
 
 export default function CreateAccount() {
 
@@ -64,7 +65,7 @@ export default function CreateAccount() {
                 required
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <div className={styles.spacing}></div>
+            <VerticalSpacing size={30} />
             {loading ? (
                 <div className={styles.loader}>
                     <SyncLoader loading={true} size={7} margin={20} />

@@ -1,7 +1,13 @@
 import Button, { ButtonStyle } from '../form/Button';
-import styles from './CancelLeave.module.css';
+import styles from './Confirm.module.css';
 
-export default function CancelLeave({ cancel, confirm }: { cancel: () => void, confirm: () => void }) {
+type ConfirmProps = {
+    cancel: () => void,
+    confirm: () => void,
+    label: string
+};
+
+export default function Confirm({ cancel, confirm, label }: ConfirmProps) {
     return (
         <div className={styles.root}>
             <Button
@@ -10,7 +16,7 @@ export default function CancelLeave({ cancel, confirm }: { cancel: () => void, c
                 style={ButtonStyle.Grey}
             />
             <Button
-                value='Leave'
+                value={label}
                 onClick={confirm}
                 style={ButtonStyle.Red}
             />

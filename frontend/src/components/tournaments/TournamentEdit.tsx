@@ -3,6 +3,7 @@ import { Tournament } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import Input from '../form/Input';
+import VerticalSpacing from '../spacing/VerticalSpacing';
 import styles from './TournamentEdit.module.css';
 
 type TournamentEditProps = {
@@ -79,7 +80,7 @@ export default function TournamentEdit({
                 required
                 onChange={(e) => setEndDate(e.target.value)}
             />
-            <div className={styles.spacing}></div>
+            <VerticalSpacing size={15} />
             <Button value='Save' />
         </form>
     );

@@ -79,7 +79,7 @@ export default function TournamentView() {
                             <tbody>
                                 {group.teams && group.teams.sort((a, b) => b.goalScored - a.goalScored)
                                     .sort((a, b) => b.points - a.points).map((team, index) => (
-                                        <tr>
+                                        <tr key={index}>
                                             <td>{index}</td>
                                             <td>{team.name}</td>
                                             <td>{team.playedMatches}</td>
@@ -96,6 +96,42 @@ export default function TournamentView() {
                     </li>
                 ))}
             </ul>
+            <div>
+                {tournament && tournament.ladder && tournament.ladder.phases.map((phase) => (
+                    <div key={phase.phase}>
+                        <div>{phase.phase}</div>
+                        <div>
+                            {phase.matches.map((match, index) => (
+                                <div key={index}>
+                                    <div>
+                                        matchId - {match.matchId}
+                                    </div>
+                                    <div>
+                                        phase - {match.phase}
+                                    </div>
+                                    <div>
+                                        tournamentId - {match.tournamentId}
+                                    </div>
+                                    <div>
+                                        teamAway.name - {match.teamAway.name}
+                                    </div>
+                                    <div>
+                                        teamAwayScore - {match.teamAwayScore}
+                                    </div>
+                                    <div>
+                                        teamHome.name - {match.teamHome.name}
+                                    </div>
+                                    <div>
+                                        teamAwayScore - {match.teamAwayScore}
+                                    </div>
+                                    <hr />
+                                </div>
+                            ))}
+                        </div>
+                        <hr />
+                    </div>
+                ))}
+            </div>
             {tournament && isEdit && (
                 <Modal
                     isClose

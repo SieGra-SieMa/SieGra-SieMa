@@ -49,6 +49,25 @@ export interface Tournament {
     address: string;
 
     groups?: Group[];
+
+    ladder?: {
+        phases: {
+            phase: number;
+            matches: {
+                tournamentId: number;
+                phase: number
+                matchId: number;
+                teamHome: {
+                    name: string;
+                }
+                teamAway: {
+                    name: string;
+                }
+                teamHomeScore: number | null;
+                teamAwayScore: number | null;
+            }[];
+        }[];
+    }
 }
 
 export interface Group {

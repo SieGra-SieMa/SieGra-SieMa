@@ -25,10 +25,11 @@ export default function JoinTeam() {
             <p>Enter code, which your friend gives you.</p>
             <Input
                 id={styles.codeInput}
-                type="text"
+                minLength={5}
                 maxLength={5}
                 placeholder="CODE"
                 value={code}
+                required
                 onChange={(e) => setCode(e.target.value)}
             />
             <Button

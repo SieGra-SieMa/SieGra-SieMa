@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import styles from './AccountEntry.module.css';
 import SyncLoader from 'react-spinners/SyncLoader';
 import { useAuth } from '../auth/AuthContext';
@@ -20,7 +20,7 @@ export default function SignIn() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const signIn = (e: React.FormEvent<HTMLFormElement>) => {
+    const signIn = (e: FormEvent) => {
         e.preventDefault();
         setError(null);
         setLoading(true);
@@ -46,6 +46,7 @@ export default function SignIn() {
                 label='Email'
                 type='email'
                 value={email}
+                required
                 onChange={(e) => setEmail(e.target.value)}
             />
             <Input
@@ -53,6 +54,7 @@ export default function SignIn() {
                 label='Password'
                 type='password'
                 value={password}
+                required
                 onChange={(e) => setPassword(e.target.value)}
             />
             <div className={styles.spacing}></div>

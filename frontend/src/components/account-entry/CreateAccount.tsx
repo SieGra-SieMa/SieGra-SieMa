@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import styles from './AccountEntry.module.css';
 import SyncLoader from 'react-spinners/SyncLoader';
 import Input from '../form/Input';
@@ -16,7 +16,7 @@ export default function CreateAccount() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const createAccount = (e: React.FormEvent<HTMLFormElement>) => {
+    const createAccount = (e: FormEvent) => {
         e.preventDefault();
         setError(null);
         setLoading(true);
@@ -39,18 +39,21 @@ export default function CreateAccount() {
                 label='Email'
                 type='email'
                 value={email}
+                required
                 onChange={(e) => setEmail(e.target.value)}
             />
             <Input
                 id='CreateAccount-name'
                 label='Name'
                 value={name}
+                required
                 onChange={(e) => setName(e.target.value)}
             />
             <Input
                 id='CreateAccount-surname'
                 label='Surname'
                 value={surname}
+                required
                 onChange={(e) => setSurname(e.target.value)}
             />
             <Input
@@ -58,6 +61,7 @@ export default function CreateAccount() {
                 label='Password'
                 type='password'
                 value={password}
+                required
                 onChange={(e) => setPassword(e.target.value)}
             />
             <div className={styles.spacing}></div>

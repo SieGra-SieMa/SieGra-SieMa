@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ROLES } from '../../_lib/roles';
 import { Tournament } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
+import Button from '../form/Button';
 import GuardComponent from '../guard-components/GuardComponent';
 import Modal from '../modal/Modal';
 import TournamentAdd from './TournamentAdd';
@@ -19,7 +20,8 @@ export default function TournamentsPage() {
     useEffect(() => {
         tournamentsService.getTournaments()
             .then((data) => {
-                setTournament(data);
+                setTournament(data.sort((a, b) => new Date(b.endDate).getTime() - new Date(a.endDate).getTime())
+                    .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime()));
             });
     }, [tournamentsService]);
 
@@ -30,7 +32,7 @@ export default function TournamentsPage() {
             <div className={styles.top}>
                 <h2 className={styles.title}>Tournaments</h2>
                 <GuardComponent roles={[ROLES.Admin]}>
-                    <button className="button" onClick={() => setIsAdd(true)}>Add</button>
+                    <Button value='Add' onClick={() => setIsAdd(true)} />
                 </GuardComponent>
             </div>
             <ul className={styles.content}>
@@ -64,7 +66,13 @@ export default function TournamentsPage() {
                     isClose
                     title={`Add tournament`}
                 >
-                    <TournamentAdd confirm={() => setIsAdd(false)} />
+                    <TournamentAdd confirm={() => {
+                        setIsAdd(false);
+                        tournamentsService.getTournaments()
+                            .then((data) => {
+                                setTournament(data);
+                            });
+                    }} />
                 </Modal>
             )}
         </div>

@@ -13,6 +13,7 @@ export default function TeamAdd() {
                 id='TeamAdd-email'
                 label='Email'
                 value={email}
+                required
                 onChange={(e) => setEmail(e.target.value)}
             />
             <Button value='Add' />

@@ -5,9 +5,11 @@ type InputProp = {
     id?: string;
     label?: string;
     type?: string
+    minLength?: number;
     maxLength?: number;
     placeholder?: string;
     value: string;
+    required?: boolean;
     onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
@@ -15,9 +17,11 @@ export default function Input({
     id,
     label,
     type = 'text',
+    minLength,
     maxLength,
     placeholder,
     value,
+    required = false,
     onChange,
 }: InputProp) {
     return (
@@ -27,9 +31,11 @@ export default function Input({
                 id={id}
                 className={styles.input}
                 type={type}
+                minLength={minLength}
                 maxLength={maxLength}
                 placeholder={placeholder}
                 value={value}
+                required={required}
                 onChange={onChange}
             />
         </div>

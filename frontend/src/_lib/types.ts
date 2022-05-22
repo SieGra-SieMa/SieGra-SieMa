@@ -57,5 +57,14 @@ export interface Group {
     tournamentId: number;
     ladder: boolean;
 
-    teams: Team[]
+    teams: {
+        team: string;
+        playedMatches: number;
+        wonMatches: number;
+        tiedMatches: number;
+        lostMatches: number;
+        goalScored: number;
+        goalConceded: number;
+        points: number;
+    }[]
 }

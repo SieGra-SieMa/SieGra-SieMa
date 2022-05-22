@@ -28,6 +28,7 @@ export default function CreateTeam() {
                 label="Team name"
                 type="text"
                 value={name}
+                required
                 onChange={(e) => setName(e.target.value)}
             />
             <Button

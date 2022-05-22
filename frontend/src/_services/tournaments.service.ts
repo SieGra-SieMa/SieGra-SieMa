@@ -20,7 +20,7 @@ export default class TournamentsService extends Service {
         return super.patch(`${Config.HOST}/api/tournaments/${tournament.id}`, tournament);
     };
 
-    removeTournament(id: number): Promise<Tournament> {
+    deleteTournament(id: string): Promise<{}> {
         return super.del(`${Config.HOST}/api/tournaments/${id}`);
     };
 }

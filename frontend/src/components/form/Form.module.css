@@ -22,9 +22,10 @@
     box-shadow: 0 0 3px var(--box-shadow-color);
 }
 
-.primaryButton,
-.secondaryButton,
-.tertiaryButton {
+.orangeButton,
+.greyButton,
+.greenButton,
+.redButton {
     appearance: none;
     border: none;
     padding: 15px 20px;
@@ -36,44 +37,58 @@
     font-weight: bold;
 }
 
-.primaryButton {
+.orangeButton {
     color: #fff;
     background-color: #E3A084;
 }
 
-.primaryButton:hover {
+.orangeButton:hover {
     background-color: #ca8c71;
     box-shadow: 0 0 5px var(--box-shadow-color);
 }
 
-.primaryButton:active {
+.orangeButton:active {
     background-color: #9c664f;
 }
 
-.secondaryButton {
+.greyButton {
     color: #000;
     background-color: #ddd;
 }
 
-.secondaryButton:hover {
+.greyButton:hover {
     background-color: #cfcfcf;
     box-shadow: 0 0 5px var(--box-shadow-color);
 }
 
-.secondaryButton:active {
+.greyButton:active {
     background-color: #aaa;
 }
 
-.tertiaryButton {
+.greenButton {
     color: #fff;
     background-color: #3e555f;
 }
 
-.tertiaryButton:hover {
+.greenButton:hover {
     background-color: #2f424b;
     box-shadow: 0 0 5px #2f424b;
 }
 
-.tertiaryButton:active {
+.greenButton:active {
     background-color: #23343b;
+}
+
+.redButton {
+    color: #fff;
+    background-color: #b53434;
+}
+
+.redButton:hover {
+    background-color: #9f3838;
+    box-shadow: 0 0 5px #873232;
+}
+
+.redButton:active {
+    background-color: #823131;
 }

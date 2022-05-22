@@ -58,7 +58,7 @@ export interface Group {
     ladder: boolean;
 
     teams: {
-        team: string;
+        name: string;
         playedMatches: number;
         wonMatches: number;
         tiedMatches: number;

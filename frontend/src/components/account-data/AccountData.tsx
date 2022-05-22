@@ -14,7 +14,7 @@ export default function AccountData() {
                 </div>
                 <div className={styles.dataBlock}>
                     <div className={styles.controls}>
-                        <Button value='Edit' style={ButtonStyle.Tertiary} />
+                        <Button value='Edit' style={ButtonStyle.DarkBlue} />
                     </div>
                     <h2>{user ? `${user.name} ${user.surname}` : 'Username'}</h2>
                 </div>

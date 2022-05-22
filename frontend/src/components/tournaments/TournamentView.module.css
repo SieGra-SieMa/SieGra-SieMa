@@ -1,10 +1,7 @@
-.root {
-    margin: 25px auto;
-}
-
 .top {
     display: flex;
     align-items: center;
+    column-gap: 25px;
 }
 
 .title {

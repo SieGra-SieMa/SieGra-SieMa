@@ -2,9 +2,10 @@ import { MouseEventHandler } from 'react';
 import styles from './Form.module.css';
 
 export enum ButtonStyle {
-    Primary,
-    Secondary,
-    Tertiary,
+    Orange,
+    Grey,
+    DarkBlue,
+    Red,
 }
 
 type ButtonProp = {
@@ -19,14 +20,16 @@ type ButtonProp = {
 
 const getStyleName = (style: ButtonStyle) => {
     switch (style) {
-        case ButtonStyle.Primary:
-            return styles.primaryButton;
-        case ButtonStyle.Secondary:
-            return styles.secondaryButton;
-        case ButtonStyle.Tertiary:
-            return styles.tertiaryButton;
+        case ButtonStyle.Orange:
+            return styles.orangeButton;
+        case ButtonStyle.Grey:
+            return styles.greyButton;
+        case ButtonStyle.DarkBlue:
+            return styles.greenButton;
+        case ButtonStyle.Red:
+            return styles.redButton;
         default:
-            return styles.primaryButton;
+            return styles.orangeButton;
     }
 };
 
@@ -37,7 +40,7 @@ export default function Button({
     type = 'submit',
     disabled = false,
     onClick,
-    style = ButtonStyle.Primary,
+    style = ButtonStyle.Orange,
 }: ButtonProp) {
 
     const styleName = getStyleName(style);

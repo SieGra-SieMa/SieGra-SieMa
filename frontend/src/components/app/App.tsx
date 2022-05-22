@@ -18,7 +18,8 @@ import { ROLES } from '../../_lib/roles';
 import { ApiContext } from '../api/ApiContext';
 import ApiClient from '../../_services';
 import UserProvider from '../user/UserProvider';
-import TournamentPage from '../tournaments/TournamentPage';
+import TournamentView from '../tournaments/TournamentView';
+import TournamentsList from '../tournaments/TournamentsList';
 
 const apiClient = new ApiClient();
 
@@ -40,9 +41,9 @@ export default function App() {
                                     <Route path="*" element={<h2>404 NOT FOUND</h2>} />
                                 </Route>
                             </Route>
-                            <Route path="tournaments">
-                                <Route index element={<TournamentsPage />} />
-                                <Route path=":id" element={<TournamentPage />} />
+                            <Route path="tournaments" element={<TournamentsPage />}>
+                                <Route index element={<TournamentsList />} />
+                                <Route path=":id" element={<TournamentView />} />
                             </Route>
                         </Routes>
                         <Footer />

@@ -6,28 +6,38 @@ import Confirm from '../modal/Confirm';
 import TeamAdd from './TeamAdd';
 import { useApi } from '../api/ApiContext';
 import Button, { ButtonStyle } from '../form/Button';
+import { useUser } from '../user/UserContext';
+import TeamEdit from './TeamEdit';
+import { useTeams } from './TeamsContext';
 
 type TeamsListItemProp = {
     team: Team,
-    onRemove: (id: number) => void,
 }
 
-export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
+export default function TeamsListItem({ team }: TeamsListItemProp) {
 
     const { teamsService } = useApi();
+    const { user } = useUser();
+    const { teams, setTeams } = useTeams();
 
     const [isAdd, setIsAdd] = useState(false);
-    const [isConfirm, setIsConfirm] = useState(false);
+    const [isEdit, setIsEdit] = useState(false);
+    const [isLeave, setIsLeave] = useState(false);
 
     const captain = team.players.find((player) => player.id === team.captainId);
 
     const leaveTeam = useCallback(() => {
         teamsService.leaveTeam(team.id)
             .then(() => {
-                setIsConfirm(false);
-                onRemove(team.id)
+                setIsLeave(false);
+                const data = teams ? [...teams] : [];
+                const index = data.findIndex(e => e.id === team.id) ?? -1;
+                if (index >= 0) {
+                    data.splice(index, 1);
+                    setTeams(data);
+                }
             })
-    }, [team.id, onRemove, teamsService]);
+    }, [team.id, teams, setTeams, teamsService]);
 
     return (
         <div className={styles.root}>
@@ -57,9 +67,16 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
                     onClick={() => setIsAdd(true)}
                     style={ButtonStyle.Orange}
                 />
+                {user && team.captainId === user.id && (
+                    <Button
+                        value='Edit'
+                        onClick={() => setIsEdit(true)}
+                        style={ButtonStyle.DarkBlue}
+                    />
+                )}
                 <Button
                     value='Leave'
-                    onClick={() => setIsConfirm(true)}
+                    onClick={() => setIsLeave(true)}
                     style={ButtonStyle.Red}
                 />
             </div>
@@ -72,13 +89,25 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
                     <TeamAdd />
                 </Modal>
             )}
-            {isConfirm && (
+            {isEdit && (
                 <Modal
-                    close={() => setIsConfirm(false)}
+                    isClose
+                    close={() => setIsEdit(false)}
+                    title={'Team edit'}
+                >
+                    <TeamEdit
+                        team={team}
+                        confirm={() => setIsEdit(false)}
+                    />
+                </Modal>
+            )}
+            {isLeave && (
+                <Modal
+                    close={() => setIsLeave(false)}
                     title={`Team "${team.name}" - Do you really want to leave?`}
                 >
                     <Confirm
-                        cancel={() => setIsConfirm(false)}
+                        cancel={() => setIsLeave(false)}
                         confirm={() => leaveTeam()}
                         label='Leave'
                     />

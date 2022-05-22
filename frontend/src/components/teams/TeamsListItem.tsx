@@ -2,9 +2,10 @@ import styles from './TeamsListItem.module.css';
 import { Team } from '../../_lib/types';
 import { useCallback, useState } from 'react';
 import Modal from '../modal/Modal';
-import TeamLeave from './TeamLeave';
+import CancelLeave from '../modal/CancelLeave';
 import TeamAdd from './TeamAdd';
 import { useApi } from '../api/ApiContext';
+import Button, { ButtonStyle } from '../form/Button';
 
 type TeamsListItemProp = {
     team: Team,
@@ -17,6 +18,8 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
 
     const [isAdd, setIsAdd] = useState(false);
     const [isConfirm, setIsConfirm] = useState(false);
+
+    const captain = team.players.find((player) => player.id === team.captainId);
 
     const leaveTeam = useCallback(() => {
         teamsService.leaveTeam(team.id)
@@ -34,8 +37,12 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
                     <span>Code: </span>
                     <h3>{team.code}</h3>
                 </div>
+                <div className={styles.codeBlock}>
+                    <span>Captain: </span>
+                    <h3>{captain ? `${captain.name} ${captain.surname}` : 'Username'}</h3>
+                </div>
                 <ul>
-                    {team.players.map((player, index) => (
+                    {team.players.filter((player) => player.id !== team.captainId).map((player, index) => (
                         <li
                             key={index}
                         >
@@ -45,24 +52,16 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
                 </ul>
             </div>
             <div className={styles.footer}>
-                <button
-                    className={styles.button}
+                <Button
+                    value='Add participants'
                     onClick={() => setIsAdd(true)}
-                >
-                    Add participants
-                </button>
-                <button
-                    className={styles.button}
-                    onClick={() => setIsAdd(true)}
-                >
-                    Edit team
-                </button>
-                <button
-                    className={styles.button}
+                    style={ButtonStyle.Orange}
+                />
+                <Button
+                    value='Leave'
                     onClick={() => setIsConfirm(true)}
-                >
-                    Leave
-                </button>
+                    style={ButtonStyle.Red}
+                />
             </div>
             {isAdd && (
                 <Modal
@@ -78,7 +77,7 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
                     close={() => setIsConfirm(false)}
                     title={`Team "${team.name}" - Do you really want to leave?`}
                 >
-                    <TeamLeave
+                    <CancelLeave
                         cancel={() => setIsConfirm(false)}
                         confirm={() => leaveTeam()}
                     />

@@ -4,7 +4,7 @@ import { useAuth } from '../auth/AuthContext';
 import { useUser } from '../user/UserContext';
 
 type GuardRouteProp = {
-    roles?: ROLES[];
+    roles: ROLES[];
 }
 
 export default function GuardRoute({
@@ -22,7 +22,7 @@ export default function GuardRoute({
         return null;
     }
 
-    if (!user.roles.some((role) => roles?.includes(role))) {
+    if (!user.roles.some((role) => roles.includes(role))) {
         return <Navigate to='/access-denied' />;
     }
 

@@ -18,7 +18,7 @@
     box-sizing: border-box;
 }
 
-.avatarBlock > img {
+.avatarBlock>img {
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -32,7 +32,7 @@
     flex-grow: 1;
 }
 
-.dataBlock > h2 {
+.dataBlock>h2 {
     font-size: 30px;
 }
 
@@ -40,17 +40,4 @@
     display: flex;
     justify-content: flex-end;
     padding: 5px 0 15px;
-}
-
-.editButton {
-    background-color: #3e555f;
-}
-
-.editButton:hover {
-    background-color: #2f424b;
-    box-shadow: 0 0 5px #2f424b;
-}
-
-.editButton:active {
-    background-color: #23343b;
 }

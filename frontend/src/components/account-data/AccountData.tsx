@@ -1,6 +1,10 @@
+import Button, { ButtonStyle } from '../form/Button';
+import { useUser } from '../user/UserContext';
 import styles from './AccountData.module.css';
 
 export default function AccountData() {
+
+    const { user } = useUser();
 
     return (
         <div className={styles.root}>
@@ -10,11 +14,9 @@ export default function AccountData() {
                 </div>
                 <div className={styles.dataBlock}>
                     <div className={styles.controls}>
-                        <button className={`${styles.editButton} button`}>
-                            Edit
-                        </button>
+                        <Button value='Edit' style={ButtonStyle.DarkBlue} />
                     </div>
-                    <h2>Username</h2>
+                    <h2>{user ? `${user.name} ${user.surname}` : 'Username'}</h2>
                 </div>
             </div>
         </div>

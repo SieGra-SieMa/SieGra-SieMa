@@ -2,7 +2,6 @@
     color: white;
 }
 
-.hero-wave,
 .hero-section,
 .news-section {
     background-color: #5F7B88;
@@ -10,7 +9,7 @@
 
 .hero-section h2,
 .dreamteam-section h2,
-.news-section h2  {
+.news-section h2 {
     font-size: 70px;
     padding: 25px;
     text-align: center;
@@ -33,7 +32,6 @@
     padding: 20px;
 }
 
-.dreamteam-wave,
 .dreamteam-section {
     background-color: #E3A084;
 }
@@ -55,13 +53,13 @@
     margin: 50px;
 }
 
-.dreamteam-member > h3 {
+.dreamteam-member>h3 {
     margin: 25px 0;
     text-align: center;
     font-size: 30px;
 }
 
-.dreamteam-member > p {
+.dreamteam-member>p {
     text-align: center;
 }
 
@@ -77,8 +75,6 @@
     margin: 0 25px 25px;
     border-radius: 30px;
 }
-
-
 
 @media all and (max-width: 1600px) {
     .dreamteam-member-list {
@@ -116,4 +112,3 @@
         width: 100%;
     }
 }
-

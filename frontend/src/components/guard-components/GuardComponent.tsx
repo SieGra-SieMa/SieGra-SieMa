@@ -3,15 +3,13 @@ import { useAuth } from '../auth/AuthContext';
 import { useUser } from '../user/UserContext';
 
 type GuardComponentProp = {
-    roles?: ROLES[];
-    element?: React.ReactNode;
+    roles: ROLES[];
     placeholder?: React.ReactNode;
     children: React.ReactNode;
 }
 
 export default function GuardComponent({
     roles,
-    element,
     placeholder,
     children,
 }: GuardComponentProp) {
@@ -19,16 +17,12 @@ export default function GuardComponent({
     const { session } = useAuth();
     const { user } = useUser();
 
-    if (!session) {
-        return <>{element}</>;
+    if (!session || !user) {
+        return <>{placeholder}</>;
     }
 
-    if (!user) {
-        return <>{placeholder || element}</>;
-    }
-
-    if (roles && !user.roles.some((role) => roles.includes(role))) {
-        return <>{element}</>;
+    if (!user.roles.some((role) => roles.includes(role))) {
+        return <>{placeholder}</>;
     }
 
     return <>{children}</>;

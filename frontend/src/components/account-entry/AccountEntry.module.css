@@ -5,21 +5,18 @@
     justify-content: space-evenly;
 }
 
-.enterBlock {
+.block {
     width: 400px;
     border-radius: 10px;
     padding: 20px;
+    display: grid;
+    row-gap: 15px;
 }
 
-.enterBlock>h3 {
+.block>h3 {
     text-align: center;
     padding: 20px;
     font-size: 33px;
-}
-
-.enterBlock>form {
-    display: grid;
-    row-gap: 15px;
 }
 
 .loader {

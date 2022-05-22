@@ -6,14 +6,14 @@ import { UserContext } from './UserContext';
 
 export default function UserProvider({ children }: { children: React.ReactNode }) {
 
-    const api = useApi();
+    const { usersService } = useApi();
     const { session } = useAuth();
 
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
         if (session) {
-            api.usersService.currentUser()
+            usersService.currentUser()
                 .then(
                     (user) => setUser(user),
                     (error) => {
@@ -23,7 +23,7 @@ export default function UserProvider({ children }: { children: React.ReactNode }
         } else {
             setUser(null);
         }
-    }, [session, setUser, api]);
+    }, [session, setUser, usersService]);
 
     const value = { user, setUser };
 

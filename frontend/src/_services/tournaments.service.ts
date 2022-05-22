@@ -4,7 +4,7 @@ import Service from './service';
 
 export default class TournamentsService extends Service {
 
-    getTournaments(): Promise<{}> {
+    getTournaments(): Promise<Tournament[]> {
         return super.get(`${Config.HOST}/api/tournaments`);
     };
 
@@ -12,7 +12,7 @@ export default class TournamentsService extends Service {
         return super.post(`${Config.HOST}/api/tournaments`, tournament);
     };
 
-    getTournamentbyId(id: number): Promise<Tournament> {
+    getTournamentbyId(id: string): Promise<Tournament> {
         return super.get(`${Config.HOST}/api/tournaments/${id}`);
     };
 
@@ -20,7 +20,7 @@ export default class TournamentsService extends Service {
         return super.patch(`${Config.HOST}/api/tournaments/${tournament.id}`, tournament);
     };
 
-    removeTournament(id: number): Promise<Tournament> {
+    deleteTournament(id: string): Promise<{}> {
         return super.del(`${Config.HOST}/api/tournaments/${id}`);
     };
 }

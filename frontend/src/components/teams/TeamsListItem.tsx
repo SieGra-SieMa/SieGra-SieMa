@@ -2,7 +2,7 @@ import styles from './TeamsListItem.module.css';
 import { Team } from '../../_lib/types';
 import { useCallback, useState } from 'react';
 import Modal from '../modal/Modal';
-import CancelLeave from '../modal/CancelLeave';
+import Confirm from '../modal/Confirm';
 import TeamAdd from './TeamAdd';
 import { useApi } from '../api/ApiContext';
 import Button, { ButtonStyle } from '../form/Button';
@@ -77,9 +77,10 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
                     close={() => setIsConfirm(false)}
                     title={`Team "${team.name}" - Do you really want to leave?`}
                 >
-                    <CancelLeave
+                    <Confirm
                         cancel={() => setIsConfirm(false)}
                         confirm={() => leaveTeam()}
+                        label='Leave'
                     />
                 </Modal>
             )}

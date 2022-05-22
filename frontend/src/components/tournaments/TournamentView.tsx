@@ -5,7 +5,7 @@ import { Tournament } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
 import Button, { ButtonStyle } from '../form/Button';
 import GuardComponent from '../guard-components/GuardComponent';
-import CancelLeave from '../modal/CancelLeave';
+import Confirm from '../modal/Confirm';
 import Modal from '../modal/Modal';
 import TournamentEdit from './TournamentEdit';
 import { useTournaments } from './TournamentsContext';
@@ -122,7 +122,7 @@ export default function TournamentView() {
                                         teamHome.name - {match.teamHome.name}
                                     </div>
                                     <div>
-                                        teamAwayScore - {match.teamAwayScore}
+                                        teamHomeScore - {match.teamHomeScore}
                                     </div>
                                     <hr />
                                 </div>
@@ -163,9 +163,10 @@ export default function TournamentView() {
                     close={() => setIsDelete(false)}
                     title={`Tournament "${tournament.name}" - Do you really want to delete?`}
                 >
-                    <CancelLeave
+                    <Confirm
                         cancel={() => setIsDelete(false)}
                         confirm={() => deleteTournament()}
+                        label='Delete'
                     />
                 </Modal>
             )}

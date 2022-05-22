@@ -4,7 +4,7 @@ import Service from './service';
 
 export default class UsersService extends Service {
 
-    updateUser(user: UserDetailsRequest): Promise<{}> {
+    updateUser(user: UserDetailsRequest): Promise<User> {
         return super.patch(`${Config.HOST}/api/users/change-details`, user);
     };
 

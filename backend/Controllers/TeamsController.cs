@@ -47,7 +47,7 @@ namespace SieGraSieMa.Controllers
 
         //[HttpPost("create")]
         [HttpPost()]
-        [Authorize(Roles = "User")]
+        [Authorize(Policy = "EveryOneAuthenticated")]
         public IActionResult Create(TeamDTO teamDTO)
         {
             try
@@ -65,7 +65,7 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpPost("join")]
-        [Authorize(Roles = "User")]
+        [Authorize(Policy = "EveryOneAuthenticated")]
         public async Task<IActionResult> Join(TeamCodeDTO teamCodeDTO)
         {
             try
@@ -88,7 +88,7 @@ namespace SieGraSieMa.Controllers
             
         }
         [HttpPost("leave")]
-        [Authorize(Roles = "User")]
+        [Authorize(Policy = "EveryOneAuthenticated")]
         public IActionResult Leave(TeamLeaveDTO teamLeaveDTO)
         {
             try

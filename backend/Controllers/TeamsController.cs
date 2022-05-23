@@ -29,15 +29,15 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "User")]
+        [Authorize(Policy = "EveryOneAuthenticated")]
         public IActionResult GetTeamByMail()
         {
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
                 IEnumerable<Claim> claim = identity.Claims;
-                //var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
-                return Ok(_teamService.GetTeamsWithUser("gracz@gmail.com"));
+                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                return Ok(_teamService.GetTeamsWithUser(email));
             }
             catch (Exception e)
             {

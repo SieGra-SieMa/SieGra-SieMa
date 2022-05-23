@@ -66,6 +66,16 @@ namespace SieGraSieMa
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))
                     };
                 });
+
+            services.AddAuthorization(options =>
+            {
+                //admin policy
+                options.AddPolicy("EveryOneAuthenticated", policy =>
+                      policy.RequireRole("User", "Admin", "Emp"));
+            });
+
+
+
             services.AddDbContext<SieGraSieMaContext>(options => options.UseMySQL(Configuration.GetConnectionString("SieGraSieMaDatabase")));
 
             //Configure Mapper

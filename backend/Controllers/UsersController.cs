@@ -30,15 +30,17 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpPatch("change-details")]
-        public ActionResult ChangeUserDetails(UserDetailsDTO userDetailsDTO)
+        public async Task<ActionResult> ChangeUserDetails(UserDetailsDTO userDetailsDTO)
         {
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
                 IEnumerable<Claim> claim = identity.Claims;
                 var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
-                _userService.UpdateUser(email, userDetailsDTO);
-                return Ok();
+                var newUser = _userService.UpdateUser(email, userDetailsDTO);
+                var roles =  await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(email));
+                newUser.Roles = roles;
+                return Ok(newUser);
             }
             catch (Exception e)
             {

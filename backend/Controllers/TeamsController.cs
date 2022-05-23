@@ -29,15 +29,15 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpGet]
-        //[Authorize(Roles = "User")]
+        [Authorize(Policy = "EveryOneAuthenticated")]
         public IActionResult GetTeamByMail()
         {
             try
             {
                 var identity = HttpContext.User.Identity as ClaimsIdentity;
                 IEnumerable<Claim> claim = identity.Claims;
-                //var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
-                return Ok(_teamService.GetTeamsWithUser("gracz@gmail.com"));
+                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                return Ok(_teamService.GetTeamsWithUser(email));
             }
             catch (Exception e)
             {
@@ -47,7 +47,7 @@ namespace SieGraSieMa.Controllers
 
         //[HttpPost("create")]
         [HttpPost()]
-        [Authorize(Roles = "User")]
+        [Authorize(Policy = "EveryOneAuthenticated")]
         public IActionResult Create(TeamDTO teamDTO)
         {
             try
@@ -65,7 +65,7 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpPost("join")]
-        [Authorize(Roles = "User")]
+        [Authorize(Policy = "EveryOneAuthenticated")]
         public async Task<IActionResult> Join(TeamCodeDTO teamCodeDTO)
         {
             try
@@ -88,7 +88,7 @@ namespace SieGraSieMa.Controllers
             
         }
         [HttpPost("leave")]
-        [Authorize(Roles = "User")]
+        [Authorize(Policy = "EveryOneAuthenticated")]
         public IActionResult Leave(TeamLeaveDTO teamLeaveDTO)
         {
             try

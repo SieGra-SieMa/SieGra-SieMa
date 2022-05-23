@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using SieGraSieMa.DTOs;
 using SieGraSieMa.DTOs.AlbumDTO;
 using SieGraSieMa.DTOs.ContestDTO;
 using SieGraSieMa.DTOs.ErrorDTO;
@@ -96,8 +97,8 @@ namespace SieGraSieMa.Controllers
 
             if (!result)
                 return NotFound(new ResponseErrorDTO { Error = "Tournament not found" });
-
-            return Ok(result);
+              
+            return Ok(new MessageDTO { Message =$"Tournament with {id} id succesfully deleted" });
         }
         [AllowAnonymous]
         [HttpGet("{id}/teams/count")]

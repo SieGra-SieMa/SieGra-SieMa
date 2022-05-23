@@ -23,7 +23,7 @@ namespace SieGraSieMa.Services.Tournaments
 
         public Task<TournamentListDTO> CreateTournament(Tournament tournament);
 
-        public Task<bool> UpdateTournament(int id, Tournament tournament);
+        public Task<ResponseTournamentDTO> UpdateTournament(int id, Tournament tournament);
 
         public Task<bool> DeleteTournament(int id);
         public enum TeamsEnum { All, Paid }
@@ -141,17 +141,21 @@ namespace SieGraSieMa.Services.Tournaments
 
             return tournaments;
         }
-        public async Task<bool> UpdateTournament(int id, Tournament tournament)
+        public async Task<ResponseTournamentDTO> UpdateTournament(int id, Tournament tournament)
         {
             var oldTournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
-            if (oldTournament == null) return false;
+            if (oldTournament == null)
+                throw new Exception("Tournament not found");
             oldTournament.Name = tournament.Name;
             oldTournament.StartDate = tournament.StartDate;
             oldTournament.EndDate = tournament.EndDate;
             oldTournament.Description = tournament.Description;
             oldTournament.Address = tournament.Address;
             _SieGraSieMaContext.Tournaments.Update(oldTournament);
-            return await _SieGraSieMaContext.SaveChangesAsync() > 0;
+            await _SieGraSieMaContext.SaveChangesAsync();
+            //TODO how to change this?
+            return await GetTournament(oldTournament.Id);
+
         }
         public async Task<int> CheckCountTeamsInTournament(int tournamentId, TeamsEnum teamsEnum)
         {

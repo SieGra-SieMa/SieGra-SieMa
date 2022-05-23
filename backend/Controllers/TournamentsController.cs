@@ -81,14 +81,19 @@ namespace SieGraSieMa.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateTournament(RequestTournamentDTO tournament, int id)
         {
-            var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
+            try
+            {
+                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
 
-            var result = await _tournamentsService.UpdateTournament(id, newTournament);
+                var result = await _tournamentsService.UpdateTournament(id, newTournament);
 
-            if (!result)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
 
-            return Ok();
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTournament(int id)

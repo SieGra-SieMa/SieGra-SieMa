@@ -10,7 +10,7 @@ namespace SieGraSieMa.Services.Interfaces
     public interface IUserService
     {
         void AddUser(User User);
-        void UpdateUser(string email, UserDetailsDTO userDetailsDTO);
+        UserDTO UpdateUser(string email, UserDetailsDTO userDetailsDTO);
         void DeleteUser(int Id);
         User GetUser(int Id);
         User GetUser(string Email);

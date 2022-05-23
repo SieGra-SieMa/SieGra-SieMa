@@ -43,13 +43,14 @@ namespace SieGraSieMa.Services
             return _SieGraSieMaContext.Users.ToList();
         }
 
-        public void UpdateUser(string email, UserDetailsDTO userDetails)
+        public UserDTO UpdateUser(string email, UserDetailsDTO userDetails)
         {
             var user = GetUser(email);
             user.Name = userDetails.Name;
             user.Surname = userDetails.Surname;
             _SieGraSieMaContext.Users.Update(user);
             _SieGraSieMaContext.SaveChanges();
+            return new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Surname = user.Surname };
         }
     }
 }

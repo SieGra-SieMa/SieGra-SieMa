@@ -21,7 +21,7 @@ namespace SieGraSieMa.Services.Tournaments
 
         public Task<ResponseTournamentDTO> GetTournament(int id);
 
-        public Task<bool> CreateTournament(Tournament tournament);
+        public Task<TournamentListDTO> CreateTournament(Tournament tournament);
 
         public Task<bool> UpdateTournament(int id, Tournament tournament);
 
@@ -52,13 +52,13 @@ namespace SieGraSieMa.Services.Tournaments
             _SieGraSieMaContext = SieGraSieMaContext;
             _matchService = matchService;
         }
-        public async Task<bool> CreateTournament(Tournament tournament)
+        public async Task<TournamentListDTO> CreateTournament(Tournament tournament)
         {
             await _SieGraSieMaContext.Tournaments.AddAsync(tournament);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
-                return true;
+                return new TournamentListDTO { Id = tournament.Id, Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
 
-            return false;
+            throw new Exception("Unable to add tournament");
         }
         public async Task<bool> DeleteTournament(int id)
         {

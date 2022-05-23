@@ -65,14 +65,17 @@ namespace SieGraSieMa.Controllers
         [HttpPost()]
         public async Task<IActionResult> CreateTournament(RequestTournamentDTO tournament)
         {
-            //var newTournament = _mapper.Map<Tournament>(tournament);
-            var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
-            var result = await _tournamentsService.CreateTournament(newTournament);
+            try
+            {
+                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
+                var result = await _tournamentsService.CreateTournament(newTournament);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
 
-            if (!result)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
-
-            return Ok();
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateTournament(RequestTournamentDTO tournament, int id)

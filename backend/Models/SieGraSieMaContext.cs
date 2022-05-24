@@ -29,6 +29,7 @@ namespace SieGraSieMa.Models
         public virtual DbSet<Log> Logs { get; set; }
         public virtual DbSet<Match> Matches { get; set; }
         public virtual DbSet<Medium> Media { get; set; }
+        public virtual DbSet<MediumInAlbum> MediumInAlbum { get; set; }
         public virtual DbSet<Newsletter> Newsletters { get; set; }
         public virtual DbSet<Player> Players { get; set; }
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }

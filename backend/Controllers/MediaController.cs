@@ -79,5 +79,33 @@ namespace SieGraSieMa.Controllers
 
             return Ok();
         }
+
+        [HttpPost("{id}/{albumId}")]
+        public async Task<IActionResult> AddToAlbum(int id, int albumId)
+        {
+            try
+            {
+                var result = await _mediaService.AddToAlbum(new MediumInAlbum { MediumId = id, AlbumId = albumId });
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [HttpDelete("{id}/{albumId}")]
+        public async Task<IActionResult> DeleteFromAlbum(int id, int albumId)
+        {
+            try
+            {
+                var result = await _mediaService.DeleteFromAlbum(id,albumId);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
     }
 }

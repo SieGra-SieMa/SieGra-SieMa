@@ -21,6 +21,8 @@ namespace SieGraSieMa.Services.Medias
         public Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO);
 
         public Task<bool> DeleteMedia(int id);
+        public Task<MediumInAlbum> AddToAlbum(MediumInAlbum mediumInAlbum);
+        public Task<bool> DeleteFromAlbum(int mediaId, int albumId);
     }
     public class MediaService : IMediaService
     {
@@ -30,6 +32,7 @@ namespace SieGraSieMa.Services.Medias
         {
             _SieGraSieMaContext = SieGraSieMaContext;
         }
+
         public async Task<bool> CreateMedia(RequestMediumDTO mediumDTO)
         {
             Medium medium = new (){ Url = mediumDTO.Url };
@@ -40,6 +43,7 @@ namespace SieGraSieMa.Services.Medias
             return false;
         }
 
+        
         public async Task<bool> DeleteMedia(int id)
         {
             var medium = await _SieGraSieMaContext.Media.FindAsync(id);
@@ -52,7 +56,7 @@ namespace SieGraSieMa.Services.Medias
 
         public async Task<IEnumerable<Medium>> GetMedia()
         {
-            var media = await _SieGraSieMaContext.Media.ToListAsync();
+            var media = await _SieGraSieMaContext.Media.Include(m => m.MediumInAlbums).ThenInclude(m => m.Album).ToListAsync();
             return media;
         }
 
@@ -74,5 +78,35 @@ namespace SieGraSieMa.Services.Medias
 
             return false;
         }
+
+        public async Task<MediumInAlbum> AddToAlbum(MediumInAlbum mediumInAlbum)
+        {
+            var medium = await _SieGraSieMaContext.Media.FindAsync(mediumInAlbum.MediumId);
+            var album = await _SieGraSieMaContext.Media.FindAsync(mediumInAlbum.AlbumId);
+            if (medium == null || album == null)
+            {
+                throw new Exception("Medium or album does not exist");
+            }
+            else if((await _SieGraSieMaContext.MediumInAlbum.FindAsync(mediumInAlbum.MediumId, mediumInAlbum.AlbumId)) != null)
+            {
+                throw new Exception("Medium already added to this album");
+            }
+            await _SieGraSieMaContext.MediumInAlbum.AddAsync(mediumInAlbum);
+            await _SieGraSieMaContext.SaveChangesAsync();
+            return mediumInAlbum;
+        }
+        public async Task<bool> DeleteFromAlbum(int mediaId, int albumId)
+        {
+            var mediumInAlbum = await _SieGraSieMaContext.MediumInAlbum.FindAsync(mediaId, albumId);
+            if (mediumInAlbum == null)
+            {
+                throw new Exception("Medium doesnt belong to this album");
+            }
+
+            _SieGraSieMaContext.MediumInAlbum.Remove(mediumInAlbum);
+            return await _SieGraSieMaContext.SaveChangesAsync()>0;
+        }
+
+
     }
 }

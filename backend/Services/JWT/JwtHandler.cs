@@ -15,13 +15,13 @@ namespace SieGraSieMa.Services.JWT
     public class JwtHandler
     {
         private readonly IConfiguration _configuration;
-        private readonly IConfigurationSection _jwtSettings;
+        //private readonly IConfigurationSection _jwtSettings;
         private readonly UserManager<User> _userManager;
         public JwtHandler(IConfiguration configuration, UserManager<User> userManager)
         {
             _userManager = userManager;
             _configuration = configuration;
-            _jwtSettings = _configuration.GetSection("JwtSettings");
+            //_jwtSettings = _configuration.GetSection("JwtSettings");
         }
 
         private SigningCredentials GetSigningCredentials()
@@ -49,7 +49,7 @@ namespace SieGraSieMa.Services.JWT
             return claims;
         }
 
-        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
+        private static JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials, List<Claim> claims)
         {
             var tokenOptions = new JwtSecurityToken(
                 issuer: "SieGraSieMa",

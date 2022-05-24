@@ -16,9 +16,9 @@ namespace SieGraSieMa.Services.Medias
 
         public Task<Medium> GetMedia(int id);
 
-        public Task<bool> CreateMedia(Medium medium);
+        public Task<bool> CreateMedia(RequestMediumDTO mediumDTO);
 
-        public Task<bool> UpdateMedia(int id, Medium medium);
+        public Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO);
 
         public Task<bool> DeleteMedia(int id);
     }
@@ -30,12 +30,9 @@ namespace SieGraSieMa.Services.Medias
         {
             _SieGraSieMaContext = SieGraSieMaContext;
         }
-        public async Task<bool> CreateMedia(Medium medium)
+        public async Task<bool> CreateMedia(RequestMediumDTO mediumDTO)
         {
-            var album = await _SieGraSieMaContext.Albums.FindAsync(medium.AlbumId);
-            if (album == null)
-                return false;
-            medium.Album = album;
+            Medium medium = new (){ Url = mediumDTO.Url };
             await _SieGraSieMaContext.Media.AddAsync(medium);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return true;
@@ -61,20 +58,16 @@ namespace SieGraSieMa.Services.Medias
 
         public async Task<Medium> GetMedia(int id)
         {
-            var media = await _SieGraSieMaContext.Media.Include(m => m.Album).SingleOrDefaultAsync(m => m.Id == id);
+            var media = await _SieGraSieMaContext.Media.Include(m => m.MediumInAlbums).ThenInclude(m=>m.Album).SingleOrDefaultAsync(m => m.Id == id);
             return media;
         }
 
-        public async Task<bool> UpdateMedia(int id, Medium medium)
+        public async Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO)
         {
-            var album = await _SieGraSieMaContext.Albums.FindAsync(medium.AlbumId);
-            if (album == null)
-                return false;
             var oldMedia = await _SieGraSieMaContext.Media.FindAsync(id);
             if (oldMedia == null)
                 return false;
-            oldMedia.Url = medium.Url;
-            oldMedia.AlbumId = medium.AlbumId;
+            oldMedia.Url = mediumDTO.Url;
             _SieGraSieMaContext.Media.Update(oldMedia);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return true;

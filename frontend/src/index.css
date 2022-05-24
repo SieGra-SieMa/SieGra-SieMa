@@ -8,6 +8,10 @@
 	-moz-osx-font-smoothing: grayscale;
 	text-decoration: none;
 	list-style: none;
+	--main-color: #0E181C;
+    --secondary-color: #282E31;
+    --accent-color: #E8AC3C;
+    --light-color: #C2C8CC;
 }
 
 html {
@@ -15,7 +19,7 @@ html {
 }
 
 body {
-	background-color: #eee;
+	background-color: var(--secondary-color);
 	height: 100%;
 }
 

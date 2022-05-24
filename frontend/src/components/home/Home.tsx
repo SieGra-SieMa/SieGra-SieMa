@@ -12,7 +12,7 @@ export default function Home() {
             <div className="hero-section">
                 <div className="container hero-container">
                     <div className="image-container hero-image">
-                        <img src="http://localhost:3000/hero.jpeg" alt="" />
+                        <img src="http://localhost:3000/hero.png" alt="" />
                     </div>
                     <div className="hero-block-info">
                         <h2>About us</h2>

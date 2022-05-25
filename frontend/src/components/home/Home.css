@@ -1,24 +1,29 @@
 .main-section {
-    color: white;
+    color: var(--light-color);
+}
+
+.hero-section {
+    height: 90vh;
 }
 
 .hero-section,
 .news-section {
-    background-color: #5F7B88;
+    background-color: var(--main-color);
 }
 
-.hero-section h2,
+/* .hero-section h2,
 .dreamteam-section h2,
 .news-section h2 {
     font-size: 70px;
     padding: 25px;
     text-align: center;
-}
+} */
 
 .hero-container {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
+    height: 100%;
 }
 
 .hero-image {

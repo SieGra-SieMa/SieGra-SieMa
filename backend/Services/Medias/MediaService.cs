@@ -5,6 +5,7 @@ using SieGraSieMa.DTOs.MediumDTO;
 using SieGraSieMa.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,10 +17,9 @@ namespace SieGraSieMa.Services.Medias
 
         public Task<Medium> GetMedia(int id);
 
-        public Task<bool> CreateMedia(RequestMediumDTO mediumDTO);
+        public Task<List<RequestMediumDTO>> CreateMedia(IFormFile[] files);
 
         public Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO);
-
         public Task<bool> DeleteMedia(int id);
         public Task<MediumInAlbum> AddToAlbum(MediumInAlbum mediumInAlbum);
         public Task<bool> DeleteFromAlbum(int mediaId, int albumId);
@@ -33,14 +33,28 @@ namespace SieGraSieMa.Services.Medias
             _SieGraSieMaContext = SieGraSieMaContext;
         }
 
-        public async Task<bool> CreateMedia(RequestMediumDTO mediumDTO)
+        public async Task<List<RequestMediumDTO>> CreateMedia(IFormFile[] files)
         {
-            Medium medium = new (){ Url = mediumDTO.Url };
-            await _SieGraSieMaContext.Media.AddAsync(medium);
-            if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
-                return true;
+            var year = DateTime.UtcNow.Year.ToString();
+            var month = DateTime.UtcNow.Month.ToString();
+            var list = new List<RequestMediumDTO>();
+            foreach (var file in files)
+            {
+                if (file != null && file.Length > 0)
+                {
+                    var fileName = Path.GetFileName(file.FileName);
+                    if(!Directory.Exists($@"wwwroot\photos\{year}\{month}"))
+                        Directory.CreateDirectory($@"wwwroot\photos\{year}\{month}");
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), $@"wwwroot\photos\{year}\{month}", fileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
 
-            return false;
+                    list.Add(new RequestMediumDTO { Url = new Uri($@"http://localhost:5000/photos/{year}/{month}/{fileName}").AbsolutePath });
+                }
+            }
+            return list;
         }
 
         

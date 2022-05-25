@@ -212,5 +212,82 @@ namespace SieGraSieMa.Services
         {
             return _SieGraSieMaContext.Teams.Include(t => t.Players).Where(t => t.Id == id).SingleOrDefault();
         }
+
+        public async Task ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO)
+        {
+            var team = await _SieGraSieMaContext.Teams.FindAsync(teamId);
+
+            if (team == null)
+                throw new Exception($"Team with {teamId} id does not exists");
+            
+            if(team.CaptainId != userId)
+                throw new Exception($"Current user is not a captain of this team");
+
+            team.Name = teamDetailsDTO.Name;
+
+            _SieGraSieMaContext.Teams.Update(team);
+            await _SieGraSieMaContext.SaveChangesAsync();
+        }
+
+        public async Task DeleteUserFromTeam(int userId, int captainId, int teamId)
+        {
+            var team = await ValidateTeam(teamId, captainId, userId);
+
+            var player = team.Players.Where(p => p.UserId == userId).SingleOrDefault();
+
+            team.Players.Remove(player);
+            await _SieGraSieMaContext.SaveChangesAsync();
+        }
+
+        public async Task SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId)
+        {
+            var team = await ValidateTeam(teamId, oldCaptainId, newCaptainId);
+
+            team.CaptainId = newCaptainId;
+            _SieGraSieMaContext.Teams.Update(team);
+            await _SieGraSieMaContext.SaveChangesAsync();
+        }
+
+        private async Task<Team> ValidateTeam(int teamId, int captainId, int playerId)
+        {
+            var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).Where(t => t.Id == teamId).SingleOrDefaultAsync();
+
+            if (team == null)
+                throw new Exception($"Team with {teamId} id does not exists");
+
+            if (team.CaptainId != captainId)
+                throw new Exception($"Current user is not a captain of this team");
+
+            var player = team.Players.Where(p => p.UserId == playerId).SingleOrDefault();
+
+            if (player == null)
+                throw new Exception($"User is not a part of this team");
+
+            return team;
+        }
+
+        public async Task DeleteTeam(int teamId, int captainId)
+        {
+            var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).Where(t => t.Id == teamId).SingleOrDefaultAsync();
+
+            if (team == null)
+                throw new Exception($"Team with {teamId} id does not exists");
+
+            if (team.CaptainId != captainId)
+                throw new Exception($"Current user is not a captain of this team");
+
+            if(_SieGraSieMaContext.Tournaments.Any(t => t.TeamInTournaments.Any(t => t.TeamId == team.Id)))
+            {
+                //Only delete players and captain
+                team.Players.Clear();
+                //TODO set captain nullable
+                //.CaptainId = null;
+                _SieGraSieMaContext.Update(team);
+                return;
+            }
+
+            _SieGraSieMaContext.Teams.Remove(team);
+            await _SieGraSieMaContext.SaveChangesAsync();
+        }
     }
 }

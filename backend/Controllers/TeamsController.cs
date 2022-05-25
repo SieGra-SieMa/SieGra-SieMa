@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs;
 using SieGraSieMa.DTOs.ErrorDTO;
+using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
 using SieGraSieMa.Services.Interfaces;
@@ -48,7 +49,7 @@ namespace SieGraSieMa.Controllers
         //[HttpPost("create")]
         [HttpPost()]
         [Authorize(Policy = "EveryOneAuthenticated")]
-        public IActionResult Create(TeamDTO teamDTO)
+        public IActionResult Create(TeamDTO teamDTO, IFormFile ufile)
         {
             try
             {
@@ -87,6 +88,7 @@ namespace SieGraSieMa.Controllers
             }
             
         }
+
         [HttpPost("leave")]
         [Authorize(Policy = "EveryOneAuthenticated")]
         public IActionResult Leave(TeamLeaveDTO teamLeaveDTO)
@@ -99,6 +101,82 @@ namespace SieGraSieMa.Controllers
                 var user = _userService.GetUser(email);
                 _teamService.LeaveTeam(teamLeaveDTO.Id, user);
                 return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
+
+        [HttpPatch("{id}/change-details")]
+        public async Task<IActionResult> ChangeTeamDetailsAsync(int id, TeamDetailsDTO teamDetailsDTO)
+        {
+            try
+            {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                IEnumerable<Claim> claim = identity.Claims;
+                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var user = _userService.GetUser(email);
+                await _teamService.ChangeTeamDetails(user.Id, id, teamDetailsDTO);
+                return Ok(new MessageDTO { Message = "Team details successfully changed" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
+
+        [HttpPost("{id}/remove-user/{userId}")]
+        public async Task<IActionResult> ChangeTeamDetailsAsync(int id, int userId)
+        {
+            try
+            {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                IEnumerable<Claim> claim = identity.Claims;
+                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var user = _userService.GetUser(email);
+                await _teamService.DeleteUserFromTeam(userId, user.Id, id);
+                return Ok(new MessageDTO { Message = $"User {userId} successfully deleted" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
+
+        [HttpPost("{id}/switch-captain/{userId}")]
+        public async Task<IActionResult> SwitchCaptainAsync(int id, int userId)
+        {
+            try
+            {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                IEnumerable<Claim> claim = identity.Claims;
+                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var user = _userService.GetUser(email);
+                await _teamService.SwitchCaptain(id, user.Id, userId);
+                return Ok(new MessageDTO { Message = $"Team captain successfully swapped" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            try
+            {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                IEnumerable<Claim> claim = identity.Claims;
+                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var user = _userService.GetUser(email);
+                await _teamService.DeleteTeam(id, user.Id);
+                return Ok(new MessageDTO { Message = $"Team successfully deleted" });
             }
             catch (Exception e)
             {

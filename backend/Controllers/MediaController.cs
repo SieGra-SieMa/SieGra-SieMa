@@ -47,14 +47,19 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> CreateMedium(RequestMediumDTO medium)
+        public async Task<IActionResult> CreateMedium(IFormFile[] files)
         {
-            var result = await _mediaService.CreateMedia(medium);
+            try
+            {
+                var list = await _mediaService.CreateMedia(files);
 
-            if (!result)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
+                return Ok(list);
+            }
+            catch (Exception ex)
+            {
 
-            return Ok();
+                return BadRequest(new ResponseErrorDTO { Error = ex.Message });
+            }
         }
 
         [HttpPatch("{id}")]

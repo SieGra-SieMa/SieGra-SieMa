@@ -153,6 +153,8 @@ namespace SieGraSieMa
         {
             app.UseHttpsRedirection();
 
+            app.UseStaticFiles();
+
             if (env.IsDevelopment())
             {
                 //app.UseDeveloperExceptionPage();

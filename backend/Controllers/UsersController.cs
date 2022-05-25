@@ -96,12 +96,12 @@ namespace SieGraSieMa.Controllers
             return Ok();
         }
 
-        [HttpGet]
+        /*[HttpGet]
         public ActionResult GetUsers()
         {
             var users = _userManager.Users.ToList();
             return Ok(users.Select(u => new UserDTO { Id = u.Id, Name = u.Name, Surname = u.Surname, Email = u.NormalizedEmail }));
-        }
+        }*/
 
         [HttpGet("newsletter/join")]
         public async Task<ActionResult> SubscribeToNewsletter()

@@ -265,5 +265,29 @@ namespace SieGraSieMa.Services
 
             return team;
         }
+
+        public async Task DeleteTeam(int teamId, int captainId)
+        {
+            var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).Where(t => t.Id == teamId).SingleOrDefaultAsync();
+
+            if (team == null)
+                throw new Exception($"Team with {teamId} id does not exists");
+
+            if (team.CaptainId != captainId)
+                throw new Exception($"Current user is not a captain of this team");
+
+            if(_SieGraSieMaContext.Tournaments.Any(t => t.TeamInTournaments.Any(t => t.TeamId == team.Id)))
+            {
+                //Only delete players and captain
+                team.Players.Clear();
+                //TODO set captain nullable
+                //.CaptainId = null;
+                _SieGraSieMaContext.Update(team);
+                return;
+            }
+
+            _SieGraSieMaContext.Teams.Remove(team);
+            await _SieGraSieMaContext.SaveChangesAsync();
+        }
     }
 }

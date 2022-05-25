@@ -129,7 +129,7 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpPost("{id}/remove-user/{userId}")]
-        public IActionResult ChangeTeamDetails(int id, int userId)
+        public async Task<IActionResult> ChangeTeamDetailsAsync(int id, int userId)
         {
             try
             {
@@ -137,7 +137,7 @@ namespace SieGraSieMa.Controllers
                 IEnumerable<Claim> claim = identity.Claims;
                 var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
                 var user = _userService.GetUser(email);
-                _teamService.DeleteUserFromTeam(userId, user.Id, id);
+                await _teamService.DeleteUserFromTeam(userId, user.Id, id);
                 return Ok(new MessageDTO { Message = $"User {userId} successfully deleted" });
             }
             catch (Exception e)
@@ -148,7 +148,7 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpPost("{id}/switch-captain/{userId}")]
-        public IActionResult SwitchCaptain(int id, int userId)
+        public async Task<IActionResult> SwitchCaptainAsync(int id, int userId)
         {
             try
             {
@@ -156,8 +156,27 @@ namespace SieGraSieMa.Controllers
                 IEnumerable<Claim> claim = identity.Claims;
                 var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
                 var user = _userService.GetUser(email);
-                _teamService.SwitchCaptain(id, user.Id, userId);
+                await _teamService.SwitchCaptain(id, user.Id, userId);
                 return Ok(new MessageDTO { Message = $"Team captain successfully swapped" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(int id)
+        {
+            try
+            {
+                var identity = HttpContext.User.Identity as ClaimsIdentity;
+                IEnumerable<Claim> claim = identity.Claims;
+                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var user = _userService.GetUser(email);
+                await _teamService.DeleteTeam(id, user.Id);
+                return Ok(new MessageDTO { Message = $"Team successfully deleted" });
             }
             catch (Exception e)
             {

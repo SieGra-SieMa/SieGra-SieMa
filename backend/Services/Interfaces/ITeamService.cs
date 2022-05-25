@@ -23,5 +23,7 @@ namespace SieGraSieMa.Services.Interfaces
         Task ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO);
         Task DeleteUserFromTeam(int userId, int captainId, int teamId);
         Task SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId);
+        Task DeleteTeam(int teamId, int captainId);
+
     }
 }

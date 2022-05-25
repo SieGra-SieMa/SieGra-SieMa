@@ -68,7 +68,8 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
+                //var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
+                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Address = tournament.Address };
                 var result = await _tournamentsService.CreateTournament(newTournament);
                 return Ok(result);
             }
@@ -83,7 +84,8 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
+                //var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
+                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Address = tournament.Address };
 
                 var result = await _tournamentsService.UpdateTournament(id, newTournament);
 
@@ -102,17 +104,88 @@ namespace SieGraSieMa.Controllers
 
             if (!result)
                 return NotFound(new ResponseErrorDTO { Error = "Tournament not found" });
-              
-            return Ok(new MessageDTO { Message =$"Tournament with {id} id succesfully deleted" });
+
+            return Ok(new MessageDTO { Message = $"Tournament with {id} id succesfully deleted" });
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet("{id}/summary")]
+        public async Task<IActionResult> GetSummary(int id)
+        {
+            var summary = await _tournamentsService.GetSummary(id);
+
+            if (summary == null)
+                return NotFound(new ResponseErrorDTO { Error = "Summary not found" });
+
+            return Ok(new MessageDTO { Message = summary });
+        }
+        [HttpPatch("{id}/summary")]
+        public async Task<IActionResult> SetSummary(int id, RequestTournamentDescription dto)
+        {
+            try
+            {
+                var response = await _tournamentsService.SetSummary(id, dto.data);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
         [AllowAnonymous]
+        [HttpGet("{id}/description")]
+        public async Task<IActionResult> GetDescription(int id)
+        {
+            var desc = await _tournamentsService.GetDescription(id);
+
+            if (desc == null)
+                return NotFound(new ResponseErrorDTO { Error = "Description not found" });
+
+            return Ok(new MessageDTO { Message = desc });
+        }
+        [HttpPatch("{id}/description")]
+        public async Task<IActionResult> SetDescription(int id, RequestTournamentDescription dto)
+        {
+            try
+            {
+                var response = await _tournamentsService.SetDescription(id, dto.data);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+
+        [AllowAnonymous]
         [HttpGet("{id}/teams/count")]
-        public async Task<IActionResult> CountTeams(int id, [FromQuery] ITournamentsService.TeamsEnum filter)
+        public async Task<IActionResult> CountTeams(int id, [FromQuery] ITournamentsService.TeamPaidEnum filter)
         {
             var response = await _tournamentsService.CheckCountTeamsInTournament(id, filter);
             if (response == 0) return BadRequest(new { message = "Bad tournament number or no teams registered for tournament" });
 
             return Ok(new { count = response });
+        }
+        [HttpGet("{id}/teams")]
+        public async Task<IActionResult> GetTeamsInTournament(int id, [FromQuery] ITournamentsService.TeamPaidEnum filter)
+        {
+            var response = await _tournamentsService.GetTeamsInTournament(id, filter);
+            return Ok(response);
+        }
+        [HttpPatch("{id}/teams/{teamId}")]
+        public async Task<IActionResult> SetPaidStatusTeamsInTournament(int id, int teamId, [FromQuery] ITournamentsService.TeamPaidEnum filter)
+        {
+            try
+            {
+                var response = await _tournamentsService.SetPaidStatusTeamsInTournament(id, teamId, filter);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
         [HttpGet("{id}/teams/checkCorrectness")]
         public async Task<IActionResult> CheckCorectnessOfTeams(int id)
@@ -128,6 +201,39 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
+        [HttpPost("{id}/teams/join")]
+        public async Task<IActionResult> JoinTournament(int id, int teamId)
+        {
+            try
+            {
+                var team = _teamService.GetTeamWithPlayers(teamId);
+                if (team == null)
+                    return BadRequest(new ResponseErrorDTO { Error = "Team does not exists" });
+                List<User> listOfUsers = new();
+                //team.Players.Select(async p => listOfUsers.Add(await _userManager.FindByIdAsync(p.UserId.ToString()))); zmienilem na foreach ponizej
+                team.Players.ToList().ForEach(async p =>
+                {
+                    listOfUsers.Add(await _userManager.FindByIdAsync(p.UserId.ToString()));
+                });
+                var respone = await _tournamentsService.CheckUsersInTeam(listOfUsers, id);
+                if (respone)
+                {
+                    var resp = await _tournamentsService.AddTeamToTournament(team.Id, id);
+                    if (!resp)
+                        return BadRequest(new ResponseErrorDTO { Error = "Tournament does not exists" });
+
+                    return Ok();
+                }
+
+                return BadRequest(new ResponseErrorDTO { Error = "One of the players already belongs to another team" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+
         [HttpPost("{id}/prepareTournament")]
         public async Task<IActionResult> PrepareTournament(int id)
         {
@@ -156,36 +262,14 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
-        [HttpPost("{id}/teams/join")]
-        public async Task<IActionResult> JoinTournament(int id, int teamId)
+
+
+        [AllowAnonymous]
+        [HttpGet("{id}/contests")]
+        public async Task<IActionResult> GetContests(int id)
         {
-            try
-            {
-                var team = _teamService.GetTeamWithPlayers(teamId);
-                if(team == null)
-                    return BadRequest(new ResponseErrorDTO { Error = "Team does not exists" });
-                List<User> listOfUsers = new();
-                //team.Players.Select(async p => listOfUsers.Add(await _userManager.FindByIdAsync(p.UserId.ToString()))); zmienilem na foreach ponizej
-                team.Players.ToList().ForEach(async p =>
-                {
-                    listOfUsers.Add(await _userManager.FindByIdAsync(p.UserId.ToString()));
-                });
-                var respone = await _tournamentsService.CheckUsersInTeam(listOfUsers, id);
-                if (respone)
-                {
-                    var resp = await _tournamentsService.AddTeamToTournament(team.Id, id);
-                    if (!resp)
-                        return BadRequest(new ResponseErrorDTO { Error = "Tournament does not exists" });
-
-                    return Ok();
-                }
-
-                return BadRequest(new ResponseErrorDTO { Error = "One of the players already belongs to another team" });
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new ResponseErrorDTO { Error = e.Message });
-            }
+            var contests = await _contestService.GetContests(id);
+            return Ok(contests);
         }
         [AllowAnonymous]
         [HttpGet("{id}/contests/{contestId}")]
@@ -197,13 +281,6 @@ namespace SieGraSieMa.Controllers
                 return NotFound(new ResponseErrorDTO { Error = "Contest not found" });
 
             return Ok(contest);
-        }
-        [AllowAnonymous]
-        [HttpGet("{id}/contests")]
-        public async Task<IActionResult> GetContests(int id)
-        {
-            var contests = await _contestService.GetContests(id);
-            return Ok(contests);
         }
         [HttpPost("{id}/contests")]
         public async Task<IActionResult> CreateContest(RequestContestDTO contest, int id)

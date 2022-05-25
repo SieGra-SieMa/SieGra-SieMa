@@ -93,7 +93,6 @@ namespace SieGraSieMa
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ITeamService, TeamService>();
             services.AddTransient<IGenerateService, GenerateService>();
-            services.AddTransient<IMatchService, MatchService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IAlbumService, AlbumService>();
             services.AddTransient<ITournamentsService, TournamentService>();

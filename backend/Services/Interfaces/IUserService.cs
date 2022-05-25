@@ -15,5 +15,8 @@ namespace SieGraSieMa.Services.Interfaces
         User GetUser(int Id);
         User GetUser(string Email);
         IEnumerable<User> GetUsers();
+        public void JoinNewsletter(int userId);
+        public void LeaveNewsletter(int userId);
+
     }
 }

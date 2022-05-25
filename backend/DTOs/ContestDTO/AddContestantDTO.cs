@@ -7,7 +7,7 @@ namespace SieGraSieMa.DTOs.ContestDTO
 {
     public class AddContestantDTO
     {
-        public string email { get; set; }
-        public int points { get; set; }
+        public string Email { get; set; }
+        public int Points { get; set; }
     }
 }

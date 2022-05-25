@@ -9,15 +9,16 @@ namespace SieGraSieMa.Models
     {
         public Album()
         {
-            Media = new HashSet<Medium>();
+            MediumInAlbums = new HashSet<MediumInAlbum>();
         }
 
         public int Id { get; set; }
         public string Name { get; set; }
-        public int CreateDate { get; set; }
+        public DateTime CreateDate { get; set; }
         public int? TournamentId { get; set; }
 
         public virtual Tournament Tournament { get; set; }
-        public virtual ICollection<Medium> Media { get; set; }
+        public virtual ICollection<MediumInAlbum> MediumInAlbums { get; set; }
+        //public virtual ICollection<Medium> Media { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using SieGraSieMa.DTOs.MediumDTO;
 using SieGraSieMa.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,11 +17,12 @@ namespace SieGraSieMa.Services.Medias
 
         public Task<Medium> GetMedia(int id);
 
-        public Task<bool> CreateMedia(Medium medium);
+        public Task<List<RequestMediumDTO>> CreateMedia(IFormFile[] files);
 
-        public Task<bool> UpdateMedia(int id, Medium medium);
-
+        public Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO);
         public Task<bool> DeleteMedia(int id);
+        public Task<MediumInAlbum> AddToAlbum(MediumInAlbum mediumInAlbum);
+        public Task<bool> DeleteFromAlbum(int mediaId, int albumId);
     }
     public class MediaService : IMediaService
     {
@@ -30,19 +32,34 @@ namespace SieGraSieMa.Services.Medias
         {
             _SieGraSieMaContext = SieGraSieMaContext;
         }
-        public async Task<bool> CreateMedia(Medium medium)
-        {
-            var album = await _SieGraSieMaContext.Albums.FindAsync(medium.AlbumId);
-            if (album == null)
-                return false;
-            medium.Album = album;
-            await _SieGraSieMaContext.Media.AddAsync(medium);
-            if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
-                return true;
 
-            return false;
+        public async Task<List<RequestMediumDTO>> CreateMedia(IFormFile[] files)
+        {
+            var year = DateTime.UtcNow.Year.ToString();
+            var month = DateTime.UtcNow.Month.ToString();
+            var list = new List<RequestMediumDTO>();
+            foreach (var file in files)
+            {
+                if (file != null && file.Length > 0)
+                {
+                    var fileName = Path.GetFileName(file.FileName);
+                    if(!Directory.Exists($@"wwwroot\photos\{year}\{month}"))
+                        Directory.CreateDirectory($@"wwwroot\photos\{year}\{month}");
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), $@"wwwroot\photos\{year}\{month}", fileName);
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(fileStream);
+                    }
+                    var absPath = new Uri($@"http://localhost:5000/photos/{year}/{month}/{fileName}").AbsolutePath;
+                    list.Add(new RequestMediumDTO { Url = absPath });
+                    _SieGraSieMaContext.Media.Add(new Medium { Url = absPath });
+                }
+            }
+            await _SieGraSieMaContext.SaveChangesAsync();
+            return list;
         }
 
+        
         public async Task<bool> DeleteMedia(int id)
         {
             var medium = await _SieGraSieMaContext.Media.FindAsync(id);
@@ -55,31 +72,57 @@ namespace SieGraSieMa.Services.Medias
 
         public async Task<IEnumerable<Medium>> GetMedia()
         {
-            var media = await _SieGraSieMaContext.Media.ToListAsync();
+            var media = await _SieGraSieMaContext.Media.Include(m => m.MediumInAlbums).ThenInclude(m => m.Album).ToListAsync();
             return media;
         }
 
         public async Task<Medium> GetMedia(int id)
         {
-            var media = await _SieGraSieMaContext.Media.Include(m => m.Album).SingleOrDefaultAsync(m => m.Id == id);
+            var media = await _SieGraSieMaContext.Media.Include(m => m.MediumInAlbums).ThenInclude(m=>m.Album).SingleOrDefaultAsync(m => m.Id == id);
             return media;
         }
 
-        public async Task<bool> UpdateMedia(int id, Medium medium)
+        public async Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO)
         {
-            var album = await _SieGraSieMaContext.Albums.FindAsync(medium.AlbumId);
-            if (album == null)
-                return false;
             var oldMedia = await _SieGraSieMaContext.Media.FindAsync(id);
             if (oldMedia == null)
                 return false;
-            oldMedia.Url = medium.Url;
-            oldMedia.AlbumId = medium.AlbumId;
+            oldMedia.Url = mediumDTO.Url;
             _SieGraSieMaContext.Media.Update(oldMedia);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return true;
 
             return false;
         }
+
+        public async Task<MediumInAlbum> AddToAlbum(MediumInAlbum mediumInAlbum)
+        {
+            var medium = await _SieGraSieMaContext.Media.FindAsync(mediumInAlbum.MediumId);
+            var album = await _SieGraSieMaContext.Media.FindAsync(mediumInAlbum.AlbumId);
+            if (medium == null || album == null)
+            {
+                throw new Exception("Medium or album does not exist");
+            }
+            else if((await _SieGraSieMaContext.MediumInAlbum.FindAsync(mediumInAlbum.MediumId, mediumInAlbum.AlbumId)) != null)
+            {
+                throw new Exception("Medium already added to this album");
+            }
+            await _SieGraSieMaContext.MediumInAlbum.AddAsync(mediumInAlbum);
+            await _SieGraSieMaContext.SaveChangesAsync();
+            return mediumInAlbum;
+        }
+        public async Task<bool> DeleteFromAlbum(int mediaId, int albumId)
+        {
+            var mediumInAlbum = await _SieGraSieMaContext.MediumInAlbum.FindAsync(mediaId, albumId);
+            if (mediumInAlbum == null)
+            {
+                throw new Exception("Medium doesnt belong to this album");
+            }
+
+            _SieGraSieMaContext.MediumInAlbum.Remove(mediumInAlbum);
+            return await _SieGraSieMaContext.SaveChangesAsync()>0;
+        }
+
+
     }
 }

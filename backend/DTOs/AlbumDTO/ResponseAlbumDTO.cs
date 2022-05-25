@@ -10,7 +10,7 @@ namespace SieGraSieMa.DTOs.AlbumDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int CreateDate { get; set; }
+        public DateTime CreateDate { get; set; }
         public int? TournamentId { get; set; }
         public IEnumerable<ResponseMediumDTO> Media { get; set; }
     }

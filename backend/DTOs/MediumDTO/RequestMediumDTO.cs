@@ -8,6 +8,6 @@ namespace SieGraSieMa.DTOs.MediumDTO
     public class RequestMediumDTO
     {
         public string Url { get; set; }
-        public int AlbumId { get; set; }
+        //public int DefaultAlbumId { get; set; }
     }
 }

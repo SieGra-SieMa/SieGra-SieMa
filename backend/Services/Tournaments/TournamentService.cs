@@ -94,30 +94,43 @@ namespace SieGraSieMa.Services.Tournaments
                         Name = a.Name,
                         CreateDate = a.CreateDate,
                         TournamentId = a.TournamentId,
-                        Media = a.Media.Select(m => new ResponseMediumDTO
+                        Media = a.MediumInAlbums.Select(m => new ResponseMediumDTO
                         {
-                            Id = m.Id,
-                            AlbumId = m.AlbumId,
-                            Url = m.Url
+                            Id = m.MediumId,
+                            Url = m.Medium.Url
                         })
                     }),
-                    Groups = t.Groups.Where(g => g.Ladder == false).Select(g => new ResponseGroupDTO
+                    Groups = t.Groups.Where(g => g.Ladder == false && g.TeamInGroups.Count > 1).Select(g => new ResponseGroupDTO
                     {
                         Id = g.Id,
                         Name = g.Name,
-                        TournamentId = g.TournamentId,
-                        //Teams = GetTeamScoresInGroups(g.TournamentId,g.Id)
-                        //TODO team punktacja
+                        TournamentId = g.TournamentId
                     }),
                     Ladder = ladder
-                    //Teams = t.TeamInTournaments.Select(t => t.Team.Name)
-                    //TeamInTournaments = t.TeamInTournaments.Select(i => new ResponseTeamInTournamentDTO { TeamId = i.TeamId, TournamentId = i.TournamentId, Paid = i.Paid })
                 })
                 .FirstOrDefaultAsync();
             tournament.Groups.ToList().ForEach(g =>
             {
                 g.Teams = GetTeamScoresInGroups(g.TournamentId, g.Id);
             });
+            if (await _SieGraSieMaContext.Groups.Include(g => g.TeamInGroups).Where(g => g.TeamInGroups.Count == 1 && g.TournamentId == tournament.Id).AnyAsync())
+            {
+                tournament.Groups = tournament.Groups.Append(new ResponseGroupDTO
+                {
+                    Id = 0,
+                    Name = "Wolne losy",
+                    TournamentId = tournament.Id,
+                    Teams = _SieGraSieMaContext.Teams
+                        .Include(g => g.TeamInGroups)
+                        .ThenInclude(t => t.Group)
+                        .Where(t => t.TeamInGroups.Any(tg => tg.Group.TournamentId == tournament.Id && tg.Group.TeamInGroups.Count == 1))
+                        .Select(t => new ResponseTeamScoresDTO
+                        {
+                            Name = t.Name
+                        }
+                        ).ToList()
+                });
+            }
 
             return tournament;
         }
@@ -367,12 +380,12 @@ namespace SieGraSieMa.Services.Tournaments
                 int matches = 1;
                 groupsLadder.Where(g => g.Phase == i).ToList().ForEach(g =>
                 {
-                    TeamInGroup homes = new TeamInGroup
+                    TeamInGroup homes = new()
                     {
                         Group = g
                     };
                     teamInGroups.Add(homes);
-                    TeamInGroup aways = new TeamInGroup
+                    TeamInGroup aways = new()
                     {
                         Group = g
                     };
@@ -497,7 +510,7 @@ namespace SieGraSieMa.Services.Tournaments
             var list = new List<ResponseTeamScoresDTO>();
             tig.ForEach(t =>
             {
-                var team = new ResponseTeamScoresDTO();
+                ResponseTeamScoresDTO team = new();
                 team.Name = t.Team.Name;
                 var matches = _SieGraSieMaContext.Matches
                             .Where(m => (m.TeamAwayId == t.Id || m.TeamHomeId == t.Id)
@@ -543,8 +556,7 @@ namespace SieGraSieMa.Services.Tournaments
                 });
                 list.Add(team);
             });
-            //TODO Sortowanie listy po ilosci
-            return list;
+            return list.OrderBy(t => t.Points).ThenBy(t => t.GoalScored).ToList();
         }
     }
 }

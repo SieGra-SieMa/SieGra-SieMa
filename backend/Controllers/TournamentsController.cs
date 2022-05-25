@@ -34,12 +34,12 @@ namespace SieGraSieMa.Controllers
 
         private readonly UserManager<User> _userManager;
 
-        private readonly IMapper _mapper;
+        //private readonly IMapper _mapper;
 
-        public TournamentsController(ITournamentsService tournamentsService, IMapper mapper, UserManager<User> userManager, IContestService contestService, ITeamService teamService)
+        public TournamentsController(ITournamentsService tournamentsService, UserManager<User> userManager, IContestService contestService, ITeamService teamService)
         {
             _tournamentsService = tournamentsService;
-            _mapper = mapper;
+            //_mapper = mapper;
             _userManager = userManager;
             _contestService = contestService;
             _teamService = teamService;
@@ -165,7 +165,11 @@ namespace SieGraSieMa.Controllers
                 if(team == null)
                     return BadRequest(new ResponseErrorDTO { Error = "Team does not exists" });
                 List<User> listOfUsers = new();
-                team.Players.Select(async p => listOfUsers.Add(await _userManager.FindByIdAsync(p.UserId.ToString())));
+                //team.Players.Select(async p => listOfUsers.Add(await _userManager.FindByIdAsync(p.UserId.ToString()))); zmienilem na foreach ponizej
+                team.Players.ToList().ForEach(async p =>
+                {
+                    listOfUsers.Add(await _userManager.FindByIdAsync(p.UserId.ToString()));
+                });
                 var respone = await _tournamentsService.CheckUsersInTeam(listOfUsers, id);
                 if (respone)
                 {
@@ -234,7 +238,7 @@ namespace SieGraSieMa.Controllers
         [HttpPost("{id}/contests/{contestId}/setScore")]
         public async Task<IActionResult> AddContestant(int contestId, AddContestantDTO addContestantDTO)
         {
-            var result = await _contestService.setScore(contestId, addContestantDTO);
+            var result = await _contestService.SetScore(contestId, addContestantDTO);
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
             return Ok();

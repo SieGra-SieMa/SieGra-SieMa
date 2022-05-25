@@ -49,7 +49,7 @@ namespace SieGraSieMa.Controllers
         [HttpPost()]
         public async Task<IActionResult> CreateMedium(RequestMediumDTO medium)
         {
-            var result = await _mediaService.CreateMedia(new Medium { Url = medium.Url, AlbumId = medium.AlbumId });
+            var result = await _mediaService.CreateMedia(medium);
 
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
@@ -60,9 +60,9 @@ namespace SieGraSieMa.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateMedium(RequestMediumDTO medium, int id)
         {
-            var newMedium = new Models.Medium { Url = medium.Url, AlbumId = medium.AlbumId };
+            //var newMedium = new Medium { Url = medium.Url, AlbumId = medium.AlbumId };
 
-            var result = await _mediaService.UpdateMedia(id, newMedium);
+            var result = await _mediaService.UpdateMedia(id, medium);
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
@@ -78,6 +78,34 @@ namespace SieGraSieMa.Controllers
                 return NotFound(new ResponseErrorDTO { Error = "Medium not found" });
 
             return Ok();
+        }
+
+        [HttpPost("{id}/{albumId}")]
+        public async Task<IActionResult> AddToAlbum(int id, int albumId)
+        {
+            try
+            {
+                var result = await _mediaService.AddToAlbum(new MediumInAlbum { MediumId = id, AlbumId = albumId });
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [HttpDelete("{id}/{albumId}")]
+        public async Task<IActionResult> DeleteFromAlbum(int id, int albumId)
+        {
+            try
+            {
+                var result = await _mediaService.DeleteFromAlbum(id,albumId);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
     }
 }

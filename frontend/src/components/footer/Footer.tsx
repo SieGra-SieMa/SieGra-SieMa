@@ -8,11 +8,11 @@ export default function Footer() {
                 <div className="footer-container">
                     <div className="footer-block">
                         <Link to="/">
-                            <img className="footer-icon" src="/logo.png" alt="" />
+                            <img className="footer-icon" src="/logo_w.png" alt="" />
                         </Link>
                     </div>
                     <div className="footer-block">
-                        <a className="contact-button" href="mailto:siegrasiema.inicjatywa@gmail.com"><h3>Get in touch</h3></a>
+                        <a className="contact-button" href="mailto:siegrasiema.inicjatywa@gmail.com"><h4>Get in touch</h4></a>
                     </div>
                     <div className="footer-block">
                         <div>Phone: 796 688 795</div>

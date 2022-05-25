@@ -46,23 +46,19 @@
 }
 
 .footer-section {
-    background-color: #3e555f;
+    background-color: var(--main-color);
     color: white;
-}
-
-svg {
-    height: 100%;
-    width: 100%;
 }
 
 .footer-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 50px 50px;
+    width: 80vw;
+    height: 10vh;
+    margin: 2rem auto;
 }
 
 .footer-icon {
-    width: 150px;
-    height: 150px;
+    height: 8vh;
 }

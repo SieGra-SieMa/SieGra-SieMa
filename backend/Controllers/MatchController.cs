@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.MatchDTO;
-using SieGraSieMa.Services;
+using SieGraSieMa.Services.Tournaments;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,11 +14,11 @@ namespace SieGraSieMa.Controllers
     [ApiController]
     public class MatchController : ControllerBase
     {
-        private readonly IMatchService _matchService;
+        private readonly ITournamentsService _tournamentsService;
 
-        public MatchController(IMatchService matchService)
+        public MatchController(ITournamentsService tournamentService)
         {
-            _matchService = matchService;
+            _tournamentsService = tournamentService;
         }
 
         [HttpPatch("insertMatchResults")]
@@ -27,7 +26,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var response=await _matchService.InsertMatchResult(matchResultDTO);
+                var response=await _tournamentsService.InsertMatchResult(matchResultDTO);
                 return Ok(response);
             }
             catch (Exception e)
@@ -36,11 +35,11 @@ namespace SieGraSieMa.Controllers
             }
         }
         [HttpGet("getGroupMatches/{tournamentId}")]
-        public async Task<IActionResult> GetAvailableMatchesInGroup(int tournamentId,[FromQuery]IMatchService.MatchesEnum filter)
+        public async Task<IActionResult> GetAvailableMatchesInGroup(int tournamentId,[FromQuery]ITournamentsService.MatchesEnum filter)
         {
             try
             {
-                var response = await _matchService.GetAvailableGroupMatches(tournamentId, filter);
+                var response = await _tournamentsService.GetAvailableGroupMatches(tournamentId, filter);
                 return Ok(response);
             }
             catch (Exception e)
@@ -53,7 +52,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var response = await _matchService.GetLadderMatches(tournamentId);
+                var response = await _tournamentsService.GetLadderMatches(tournamentId);
                 if (!response.Phases.Any()) return NotFound(new ResponseErrorDTO { Error = "No matches found for this ladder" });
                 return Ok(response);
             }

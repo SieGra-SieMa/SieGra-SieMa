@@ -11,13 +11,13 @@
     background-color: var(--main-color);
 }
 
-/* .hero-section h2,
-.dreamteam-section h2,
-.news-section h2 {
-    font-size: 70px;
-    padding: 25px;
-    text-align: center;
-} */
+.dreamteam-container {
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
 
 .hero-container {
     display: flex;
@@ -35,10 +35,13 @@
 .hero-block-info {
     max-width: 600px;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .dreamteam-section {
-    background-color: #E3A084;
+    background-color: var(--secondary-color);
 }
 
 .dreamteam-member-list {

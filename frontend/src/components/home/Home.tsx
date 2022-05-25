@@ -23,12 +23,12 @@ export default function Home() {
                 </div>
             </div>
             <div className="dreamteam-section">
-                <div className="container">
+                <div className="container dreamteam-container">
                     <h2>Meet our dream team!</h2>
                     <ul className="dreamteam-member-list">
                         <li className="dreamteam-member">
                             <div className="image-container dreamteam-member-image">
-                                <img src="http://localhost:3000/hero.jpeg" alt="" />
+                                <img src="http://localhost:3000/card_kamila.png" alt="" />
                             </div>
                             <h3>Kamila</h3>
                             <p>
@@ -50,7 +50,7 @@ export default function Home() {
                         </li>
                         <li className="dreamteam-member">
                             <div className="image-container dreamteam-member-image">
-                                <img src="http://localhost:3000/hero.jpeg" alt="" />
+                                <img src="http://localhost:3000/card_olek.png" alt="" />
                             </div>
                             <h3>Olek</h3>
                             <p>
@@ -74,7 +74,7 @@ export default function Home() {
                         </li>
                         <li className="dreamteam-member">
                             <div className="image-container dreamteam-member-image">
-                                <img src="http://localhost:3000/hero.jpeg" alt="" />
+                                <img src="http://localhost:3000/card_mateusz.png" alt="" />
                             </div>
                             <h3>Mateusz</h3>
                             <p>

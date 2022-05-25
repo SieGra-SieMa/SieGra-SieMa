@@ -25,12 +25,27 @@ body {
 }
 
 h2 {
-	font-size: 70px;
+	font-size: 60px;
+	font-weight: 300;
     text-align: center;
 	width: fit-content;
 }
 
-h2::after{
+h3 {
+	font-size: 48px;
+	font-weight: 300;
+	text-align: center;
+	width: fit-content;
+}
+
+p {
+	font-size: 16px;
+	font-weight: 300;
+	text-align: center;
+	width: fit-content;
+}
+
+h2::after, h3::after{
 	content: '';
     display: block;
     position: relative;

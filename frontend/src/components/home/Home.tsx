@@ -16,9 +16,7 @@ export default function Home() {
                     </div>
                     <div className="hero-block-info">
                         <h2>About us</h2>
-                        <h3>Take part in a new tournament, join now, create team and invite your friends.</h3>
-                        <br />
-                        <p>Together more fun.</p>
+                        <p>Take part in a new tournament, join now, create team and invite your friends.</p>
                     </div>
                 </div>
             </div>

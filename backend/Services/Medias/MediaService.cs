@@ -50,10 +50,12 @@ namespace SieGraSieMa.Services.Medias
                     {
                         await file.CopyToAsync(fileStream);
                     }
-
-                    list.Add(new RequestMediumDTO { Url = new Uri($@"http://localhost:5000/photos/{year}/{month}/{fileName}").AbsolutePath });
+                    var absPath = new Uri($@"http://localhost:5000/photos/{year}/{month}/{fileName}").AbsolutePath;
+                    list.Add(new RequestMediumDTO { Url = absPath });
+                    _SieGraSieMaContext.Media.Add(new Medium { Url = absPath });
                 }
             }
+            await _SieGraSieMaContext.SaveChangesAsync();
             return list;
         }
 

@@ -113,22 +113,24 @@ namespace SieGraSieMa.Services.Tournaments
             {
                 g.Teams = GetTeamScoresInGroups(g.TournamentId, g.Id);
             });
-            tournament.Groups=tournament.Groups.Append(new ResponseGroupDTO
+            if (await _SieGraSieMaContext.Groups.Include(g => g.TeamInGroups).Where(g => g.TeamInGroups.Count == 1 && g.TournamentId == tournament.Id).AnyAsync())
             {
-                Id = 0,
-                Name = "Wolne losy",
-                TournamentId = tournament.Id,
-                Teams = _SieGraSieMaContext.Teams
-                    .Include(g=>g.TeamInGroups)
-                    .ThenInclude(t => t.Group)
-                    //.Where(t => t.TournamentId == tournament.Id && t.TeamInGroups.Count == 1)
-                    .Where(t=>t.TeamInGroups.Any(tg=>tg.Group.TournamentId==tournament.Id && tg.Group.TeamInGroups.Count == 1))
-                    .Select(t=> new ResponseTeamScoresDTO
+                tournament.Groups = tournament.Groups.Append(new ResponseGroupDTO
+                {
+                    Id = 0,
+                    Name = "Wolne losy",
+                    TournamentId = tournament.Id,
+                    Teams = _SieGraSieMaContext.Teams
+                        .Include(g => g.TeamInGroups)
+                        .ThenInclude(t => t.Group)
+                        .Where(t => t.TeamInGroups.Any(tg => tg.Group.TournamentId == tournament.Id && tg.Group.TeamInGroups.Count == 1))
+                        .Select(t => new ResponseTeamScoresDTO
                         {
                             Name = t.Name
                         }
-                    ).ToList()
-            });
+                        ).ToList()
+                });
+            }
 
             return tournament;
         }

@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
 {
-    /*[Authorize(AuthenticationSchemes = "Bearer")]*/
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -36,9 +36,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                IEnumerable<Claim> claim = identity.Claims;
-                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var newUser = _userService.UpdateUser(email, userDetailsDTO);
                 var roles = await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(email));
                 newUser.Roles = roles;
@@ -53,9 +51,7 @@ namespace SieGraSieMa.Controllers
         [HttpGet("current")]
         public async Task<ActionResult> GetCurrentUserAsync()
         {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            IEnumerable<Claim> claim = identity.Claims;
-            var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
             var user = _userService.GetUser(email);
             var roles = await _userManager.GetRolesAsync(user);
             return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = roles });
@@ -65,9 +61,7 @@ namespace SieGraSieMa.Controllers
         [HttpPost("change-password")]
         public async Task<ActionResult> GetCurrentUserAsync(UserPasswordDTO passwordDTO)
         {
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            IEnumerable<Claim> claim = identity.Claims;
-            var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
             var user = _userService.GetUser(email);
             var response = await _userManager.ChangePasswordAsync(user, passwordDTO.OldPassword, passwordDTO.NewPassword);
             if (response.Succeeded)
@@ -132,9 +126,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                IEnumerable<Claim> claim = identity.Claims;
-                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 _userService.JoinNewsletter(user.Id);
                 return Ok(new MessageDTO { Message = "Newsletter joined"});
@@ -151,9 +143,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                IEnumerable<Claim> claim = identity.Claims;
-                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 _userService.LeaveNewsletter(user.Id);
                 return Ok(new MessageDTO { Message = "Newsletter unsubscribed" });

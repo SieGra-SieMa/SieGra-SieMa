@@ -24,9 +24,18 @@ body {
 	height: 100%;
 }
 
+h1 {
+	font-size: 96px;
+	font-weight: 100;
+	letter-spacing: -1.5px;
+    text-align: center;
+	width: fit-content;
+}
+
 h2 {
 	font-size: 60px;
-	font-weight: 300;
+	font-weight: 200;
+	letter-spacing: -.5px;
     text-align: center;
 	width: fit-content;
 }
@@ -34,6 +43,31 @@ h2 {
 h3 {
 	font-size: 48px;
 	font-weight: 300;
+	letter-spacing: 0px;
+	text-align: center;
+	width: fit-content;
+}
+
+h4 {
+	font-size: 34px;
+	font-weight: 300;
+	letter-spacing: .25px;
+	text-align: center;
+	width: fit-content;
+}
+
+h5 {
+	font-size: 24px;
+	font-weight: 300;
+	letter-spacing: 0px;
+	text-align: center;
+	width: fit-content;
+}
+
+h6 {
+	font-size: 20px;
+	font-weight: 300;
+	letter-spacing: .15px;
 	text-align: center;
 	width: fit-content;
 }
@@ -41,11 +75,12 @@ h3 {
 p {
 	font-size: 16px;
 	font-weight: 300;
+	letter-spacing: .15px;
 	text-align: center;
 	width: fit-content;
 }
 
-h2::after, h3::after{
+h1::after, h2::after, h3::after, h4::after, h5::after, h6::after {
 	content: '';
     display: block;
     position: relative;

@@ -15,20 +15,33 @@ export default function Home() {
                         <img src="http://localhost:3000/hero.png" alt="" />
                     </div>
                     <div className="hero-block-info">
-                        <h2>About us</h2>
-                        <p>Take part in a new tournament, join now, create team and invite your friends.</p>
+                        <h2>Pasja pomagania</h2>
+                        <p>
+                            <i>
+                                "W końcu nikt nie jest większy od koszykówki. 
+                                Ani Wilt, ani Doktor J, ani Michael, ani Larry, 
+                                ani Magic, ani LeBron. Nikt. Każdy z nas musiał 
+                                coś przezwyciężyć, żeby zajść tak daleko - swoje 
+                                pochodzenie, swoje ograniczenia, swoje wątpliwości. 
+                                Coś, co powstrzymało tak wielu innych i pewnie mogło 
+                                zatrzymać i nas, ale jednak nie zatrzymało."
+                            </i> - Ray Allen
+                            <br/><br/>
+                            Każdy z nas ma przed sobą swoją drogę, a naszym celem jest pomoc
+                            w jej przejściu. Dołącz do nas i poprzez pasję do koszykówki pomagaj razem z nami!
+                        </p>
                     </div>
                 </div>
             </div>
             <div className="dreamteam-section">
                 <div className="container dreamteam-container">
-                    <h2>Meet our dream team!</h2>
+                    <h2>Poznaj naszą drużynę!</h2>
                     <ul className="dreamteam-member-list">
                         <li className="dreamteam-member">
                             <div className="image-container dreamteam-member-image">
                                 <img src="http://localhost:3000/card_kamila.png" alt="" />
                             </div>
-                            <h3>Kamila</h3>
+                            <h4>Kamila</h4>
                             <p>
                                 Pierwszy raz w projekcie społecznym wzięłam udział
                                 przeszło 4 lata temu. Od tego czasu wraz z moimi
@@ -50,7 +63,7 @@ export default function Home() {
                             <div className="image-container dreamteam-member-image">
                                 <img src="http://localhost:3000/card_olek.png" alt="" />
                             </div>
-                            <h3>Olek</h3>
+                            <h4>Olek</h4>
                             <p>
                                 Większość z nas całe życie szuka pasji i próbuje obrać własną
                                 ścieżkę. Ja miałem to szczęście ze odkryłem to wszystko za
@@ -74,7 +87,7 @@ export default function Home() {
                             <div className="image-container dreamteam-member-image">
                                 <img src="http://localhost:3000/card_mateusz.png" alt="" />
                             </div>
-                            <h3>Mateusz</h3>
+                            <h4>Mateusz</h4>
                             <p>
                                 Organizowałem Szlachetna Paczkę na Białołęce, dalej pozostaję tam wolontariuszem, ale chciałem zrobić coś swojego.
                                 Po finale Paczki czułem dziką satysfakcję.

@@ -32,6 +32,10 @@
     align-items: center;
 }
 
+.hero-block-info>p {
+    text-align: justify;
+}
+
 .dreamteam-section {
     background-color: var(--secondary-color);
 }

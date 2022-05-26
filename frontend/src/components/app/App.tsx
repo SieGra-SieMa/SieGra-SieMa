@@ -7,6 +7,7 @@ import {
 import Header from '../header/Header';
 import Footer from '../footer/Footer';
 import Home from '../home/Home';
+import AboutUs from '../about-us/AboutUs'
 import GuardRoute from '../guard-components/GuardRoute';
 import AccountPage from '../account-page/AccountPage';
 import AuthProvider from '../auth/AuthProvider';
@@ -21,6 +22,7 @@ import UserProvider from '../user/UserProvider';
 import TournamentView from '../tournaments/TournamentView';
 import TournamentsList from '../tournaments/TournamentsList';
 
+
 const apiClient = new ApiClient();
 
 export default function App() {
@@ -32,6 +34,7 @@ export default function App() {
                         <Header />
                         <Routes>
                             <Route index element={<Home />} />
+                            <Route path="about-us" element={<AboutUs />} />
                             <Route path="entry" element={<AccountEntry />} />
                             <Route path="access-denied" element={<div>ACCESS DENIED</div>} />
                             <Route path="account/*" element={<AccountPage />}>

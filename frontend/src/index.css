@@ -9,10 +9,7 @@
 	text-decoration: none;
 	list-style: none;
 
-	--main-color: #0E181C;
-    --secondary-color: #282E31;
-    --accent-color: #E8AC3C;
-    --light-color: #fbfeff;
+	color: white;
 }
 
 html {

@@ -87,7 +87,7 @@ namespace SieGraSieMa.Controllers
             var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
 
             //https://ethereal.email/
-            await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
+            //await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
 
             return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email"});
         }

@@ -5,6 +5,7 @@ using SieGraSieMa.DTOs.AlbumDTO;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.MediumDTO;
 using SieGraSieMa.Models;
+using SieGraSieMa.Services.Email;
 using SieGraSieMa.Services.Medias;
 using System;
 using System.Collections.Generic;
@@ -18,10 +19,11 @@ namespace SieGraSieMa.Controllers
     public class MediaController : ControllerBase
     {
         private readonly IMediaService _mediaService;
-
-        public MediaController(IMediaService mediaService)
+        private readonly IEmailService _emailService;
+        public MediaController(IMediaService mediaService, IEmailService emailService)
         {
             _mediaService = mediaService;
+            _emailService = emailService;
         }
 
 
@@ -30,6 +32,7 @@ namespace SieGraSieMa.Controllers
         public async Task<IActionResult> GetMedia()
         {
             var media = await _mediaService.GetMedia();
+            //await _emailService.SendAsync("jan.biniek@gmail.com", "Logowanie dwuetapowe", "acb");
 
             return Ok(media);
         }

@@ -13,6 +13,7 @@ namespace SieGraSieMa.Models
             Contests = new HashSet<Contest>();
             Groups = new HashSet<Group>();
             TeamInTournaments = new HashSet<TeamInTournament>();
+            Matches = new HashSet<Match>();
         }
 
         public int Id { get; set; }
@@ -20,6 +21,7 @@ namespace SieGraSieMa.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Description { get; set; }
+        public string Summary { get; set; }
         public string Address { get; set; }
 
         public virtual ICollection<Album> Albums { get; set; }

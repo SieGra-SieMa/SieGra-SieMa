@@ -43,13 +43,33 @@ namespace SieGraSieMa.Services
             return _SieGraSieMaContext.Users.ToList();
         }
 
-        public void UpdateUser(string email, UserDetailsDTO userDetails)
+        public void JoinNewsletter(int userId)
+        {
+            var currentNewsletter = _SieGraSieMaContext.Newsletters.SingleOrDefault(n => n.UserId == userId);
+            if (currentNewsletter == null)
+                throw new Exception("User is already subscribed to newsletter");
+            _SieGraSieMaContext.Newsletters.Add(new Newsletter { UserId = userId });
+            _SieGraSieMaContext.SaveChanges();
+        }
+
+        public void LeaveNewsletter(int userId)
+        {
+            var currentNewsletter = _SieGraSieMaContext.Newsletters.SingleOrDefault(n => n.UserId == userId);
+            if (currentNewsletter == null)
+                throw new Exception("User currently not in any newsletter");
+
+            _SieGraSieMaContext.Newsletters.Remove(currentNewsletter);
+            _SieGraSieMaContext.SaveChanges();
+        }
+
+        public UserDTO UpdateUser(string email, UserDetailsDTO userDetails)
         {
             var user = GetUser(email);
             user.Name = userDetails.Name;
             user.Surname = userDetails.Surname;
             _SieGraSieMaContext.Users.Update(user);
             _SieGraSieMaContext.SaveChanges();
+            return new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Surname = user.Surname };
         }
     }
 }

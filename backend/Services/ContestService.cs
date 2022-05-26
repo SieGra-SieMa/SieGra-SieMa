@@ -16,7 +16,7 @@ namespace SieGraSieMa.Services
         public Task<bool> DeleteContest(int id);
         public Task<ICollection<ResponseContestDTO>> GetContests(int tournamentId);
         public Task<ResponseContestDTO> GetContest(int id);
-        public Task<bool> setScore(int id, AddContestantDTO addContestantDTO);
+        public Task<bool> SetScore(int id, AddContestantDTO addContestantDTO);
     }
     public class ContestService : IContestService
     {
@@ -84,9 +84,9 @@ namespace SieGraSieMa.Services
                 }).ToListAsync();
             return await result;
         }
-        public async Task<bool> setScore(int id, AddContestantDTO addContestantDTO)
+        public async Task<bool> SetScore(int id, AddContestantDTO addContestantDTO)
         {
-            User user = await _SieGraSieMaContext.Users.Where(t => t.Email == addContestantDTO.email).FirstOrDefaultAsync();
+            User user = await _SieGraSieMaContext.Users.Where(t => t.Email == addContestantDTO.Email).FirstOrDefaultAsync();
             if (user == null) throw new Exception("User with that email does not exist");
             Contest contest = await _SieGraSieMaContext.Contests.FindAsync(id);
             if (contest == null) throw new Exception("Contest with that id does not exist");
@@ -96,14 +96,14 @@ namespace SieGraSieMa.Services
                 contestant = new Contestant
                 {
                     User = user,
-                    Points = addContestantDTO.points,
+                    Points = addContestantDTO.Points,
                     ContestId = id
                 };
                 await _SieGraSieMaContext.Contestants.AddAsync(contestant);
             }
             else
             {
-                contestant.Points = addContestantDTO.points;
+                contestant.Points = addContestantDTO.Points;
                 _SieGraSieMaContext.Contestants.Update(contestant);
             }
             

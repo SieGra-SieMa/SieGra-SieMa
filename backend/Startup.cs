@@ -66,6 +66,16 @@ namespace SieGraSieMa
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))
                     };
                 });
+
+            services.AddAuthorization(options =>
+            {
+                //admin policy
+                options.AddPolicy("EveryOneAuthenticated", policy =>
+                      policy.RequireRole("User", "Admin", "Emp"));
+            });
+
+
+
             services.AddDbContext<SieGraSieMaContext>(options => options.UseMySQL(Configuration.GetConnectionString("SieGraSieMaDatabase")));
 
             //Configure Mapper
@@ -83,7 +93,6 @@ namespace SieGraSieMa
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ITeamService, TeamService>();
             services.AddTransient<IGenerateService, GenerateService>();
-            services.AddTransient<IMatchService, MatchService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IAlbumService, AlbumService>();
             services.AddTransient<ITournamentsService, TournamentService>();
@@ -142,6 +151,8 @@ namespace SieGraSieMa
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseHttpsRedirection();
+
+            app.UseStaticFiles();
 
             if (env.IsDevelopment())
             {

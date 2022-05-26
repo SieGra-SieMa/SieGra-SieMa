@@ -28,16 +28,16 @@ namespace SieGraSieMa.Controllers
 
         private readonly UserManager<User> _userManager;
 
-        private readonly IMapper _mapper;
+        //private readonly IMapper _mapper;
 
         private readonly IEmailService _emailService;
 
-        public AccountsController(UserManager<User> userManager, JwtHandler jwtHandler, IEmailService emailService, IAccountIdentityServices accountServices, IMapper mapper)
+        public AccountsController(UserManager<User> userManager, JwtHandler jwtHandler, IEmailService emailService, IAccountIdentityServices accountServices)
         {
             _accountService = accountServices;
             _userManager = userManager;
             _jwtHandler = jwtHandler;
-            _mapper = mapper;
+            //_mapper = mapper;
             _emailService = emailService;
         }
 

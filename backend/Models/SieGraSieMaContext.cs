@@ -29,6 +29,7 @@ namespace SieGraSieMa.Models
         public virtual DbSet<Log> Logs { get; set; }
         public virtual DbSet<Match> Matches { get; set; }
         public virtual DbSet<Medium> Media { get; set; }
+        public virtual DbSet<MediumInAlbum> MediumInAlbum { get; set; }
         public virtual DbSet<Newsletter> Newsletters { get; set; }
         public virtual DbSet<Player> Players { get; set; }
         public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
@@ -41,9 +42,12 @@ namespace SieGraSieMa.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                //#warning To protect potentially sensitive information in your connection string, you should move it out of source code.
+                //You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration
+                //- see https://go.microsoft.com/fwlink/?linkid=2131148.
+                //For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseMySQL("Server=localhost;database=SieGraSieMa;user=siegra;password=siema");
-                
+
             }
         }
 
@@ -67,65 +71,72 @@ namespace SieGraSieMa.Models
             {
                 entity.ToTable("album");
 
-                entity.HasIndex(e => e.TournamentId, "album_tournament");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.CreateDate).HasColumnName("create_date");
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(256)
                     .HasColumnName("name");
 
-                entity.Property(e => e.TournamentId).HasColumnName("tournament_id");
+                entity.Property(e => e.CreateDate)
+                    .HasColumnName("create_date");
+
+                entity.Property(e => e.TournamentId)
+                    .HasColumnName("tournament_id");
 
                 entity.HasOne(d => d.Tournament)
                     .WithMany(p => p.Albums)
                     .HasForeignKey(d => d.TournamentId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("album_tournament");
+
+                entity.HasIndex(e => e.TournamentId, "album_tournament");
             });
 
             modelBuilder.Entity<Contest>(entity =>
             {
                 entity.ToTable("contest");
 
-                entity.HasIndex(e => e.TournamentId, "contest_tournament");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(64)
                     .HasColumnName("name");
 
-                entity.Property(e => e.TournamentId).HasColumnName("tournament_id");
+                entity.Property(e => e.TournamentId)
+                    .HasColumnName("tournament_id");
 
                 entity.HasOne(d => d.Tournament)
                     .WithMany(p => p.Contests)
                     .HasForeignKey(d => d.TournamentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("contest_tournament");
+
+                entity.HasIndex(e => e.TournamentId, "contest_tournament");
             });
 
             modelBuilder.Entity<Contestant>(entity =>
             {
+                entity.ToTable("contestants");
+
                 entity.HasKey(e => new { e.ContestId, e.UserId })
                     .HasName("PRIMARY");
 
-                entity.ToTable("contestants");
-
-                entity.HasIndex(e => e.UserId, "contestants_user");
-
-                entity.Property(e => e.ContestId).HasColumnName("contest_id");
+                entity.Property(e => e.ContestId)
+                    .HasColumnName("contest_id");
 
                 entity.Property(e => e.UserId)
-                    .HasColumnName("user_id")
-                    .HasDefaultValueSql("'1'");
+                    .HasColumnName("user_id");
+                //.HasDefaultValueSql("'1'");
 
                 entity.Property(e => e.Points).HasColumnName("points");
 
@@ -140,104 +151,113 @@ namespace SieGraSieMa.Models
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("contestants_user");
+
+                entity.HasIndex(e => e.ContestId, "contestants_contest");
             });
 
             modelBuilder.Entity<Group>(entity =>
             {
                 entity.ToTable("group");
 
-                entity.HasIndex(e => e.TournamentId, "group_tournament");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
-                entity.HasIndex(e => new { e.Name, e.TournamentId }, "name_in_tournament")
-                    .IsUnique();
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Ladder).HasColumnName("ladder");
-
-                entity.Property(e => e.Phase)
-                    .HasColumnName("phase");
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(2)
                     .HasColumnName("name");
 
-                entity.Property(e => e.TournamentId).HasColumnName("tournament_id");
+                entity.Property(e => e.TournamentId)
+                    .HasColumnName("tournament_id");
+
+                entity.Property(e => e.Ladder)
+                    .HasColumnName("ladder");
+
+                entity.Property(e => e.Phase)
+                    .HasColumnName("phase");
 
                 entity.HasOne(d => d.Tournament)
                     .WithMany(p => p.Groups)
                     .HasForeignKey(d => d.TournamentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("group_tournament");
+
+                entity.HasIndex(e => new { e.Name, e.TournamentId }, "name_in_tournament")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.TournamentId, "group_tournament");
             });
 
             modelBuilder.Entity<Log>(entity =>
             {
                 entity.ToTable("logs");
 
-                entity.HasIndex(e => e.UserId, "logs_user");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id");
 
                 entity.Property(e => e.Action)
                     .IsRequired()
                     .HasMaxLength(256)
                     .HasColumnName("action");
 
-                entity.Property(e => e.Time).HasColumnName("time");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.Time)
+                    .HasColumnName("time");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Logs)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("logs_user");
+
+                entity.HasIndex(e => e.UserId, "logs_user");
             });
 
             modelBuilder.Entity<Match>(entity =>
             {
+                entity.ToTable("match");
+
                 entity.HasKey(e => new { e.TournamentId, e.Phase, e.MatchId })
                     .HasName("PRIMARY");
 
-                entity.ToTable("match");
+                entity.Property(e => e.TournamentId)
+                    .HasColumnName("tournament_id");
 
-                entity.HasIndex(e => e.TeamAwayId, "match_away");
+                entity.Property(e => e.Phase)
+                    .HasColumnName("phase");
 
-                entity.HasIndex(e => new { e.TeamHomeId, e.TeamAwayId }, "meet")
-                    .IsUnique();
+                entity.Property(e => e.MatchId)
+                    .HasColumnName("match_id");
 
-                entity.Property(e => e.MatchId).HasColumnName("match_id");
+                entity.Property(e => e.TeamHomeScore)
+                    .HasColumnName("team_home_score")
+                    .IsRequired(false);
 
-                //entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.TeamAwayScore)
+                    .HasColumnName("team_away_score")
+                    .IsRequired(false);
+
+                entity.Property(e => e.TeamHomeId)
+                    .HasColumnName("team_home_id")
+                    .IsRequired(false);
+
+                entity.Property(e => e.TeamAwayId)
+                    .HasColumnName("team_away_id")
+                    .IsRequired(false);
 
                 entity.HasOne(d => d.Tournament)
                     .WithMany(p => p.Matches)
                     .HasForeignKey(d => d.TournamentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("tournament");
-
-                //entity.Property(e => e.EndDate).HasColumnName("end_date");
-
-                //entity.Property(e => e.Referee)
-                //    .IsRequired()
-                //    .HasMaxLength(128)
-                //    .HasColumnName("referee");
-
-                //entity.Property(e => e.StartDate).HasColumnName("start_date");
-
-                entity.Property(e => e.TeamAwayId).HasColumnName("team_away_id").IsRequired(false);
-
-                entity.Property(e => e.TeamAwayScore).HasColumnName("team_away_score").IsRequired(false);
-
-                entity.Property(e => e.TeamHomeId).HasColumnName("team_home_id").IsRequired(false);
-
-                entity.Property(e => e.TeamHomeScore).HasColumnName("team_home_score").IsRequired(false);
 
                 entity.HasOne(d => d.TeamAway)
                     .WithMany(p => p.MatchTeamAways)
@@ -250,49 +270,75 @@ namespace SieGraSieMa.Models
                     .HasForeignKey(d => d.TeamHomeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("match_home");
+
+                entity.HasIndex(e => new { e.TeamHomeId, e.TeamAwayId }, "meet").IsUnique();
             });
 
             modelBuilder.Entity<Medium>(entity =>
             {
                 entity.ToTable("media");
 
-                entity.HasIndex(e => e.AlbumId, "media_album");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.AlbumId).HasColumnName("album_id");
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Url)
                     .IsRequired()
                     .HasMaxLength(256)
                     .HasColumnName("url");
 
+            });
+
+            modelBuilder.Entity<MediumInAlbum>(entity =>
+            {
+                entity.ToTable("medium_in_album");
+
+                entity.HasKey(e => new { e.AlbumId, e.MediumId })
+                    .HasName("PRIMARY");
+
+                entity.Property(e => e.AlbumId)
+                    .HasColumnName("album_id");
+
+                entity.Property(e => e.MediumId)
+                    .HasColumnName("medium_id");
+
                 entity.HasOne(d => d.Album)
-                    .WithMany(p => p.Media)
+                    .WithMany(p => p.MediumInAlbums)
                     .HasForeignKey(d => d.AlbumId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("media_album");
+                    .HasConstraintName("medium_in_album_album");
+
+                entity.HasOne(d => d.Medium)
+                    .WithMany(p => p.MediumInAlbums)
+                    .HasForeignKey(d => d.MediumId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("medium_in_album_media");
+
+                entity.HasIndex(e => e.MediumId, "medium_in_album_media");
             });
 
             modelBuilder.Entity<Newsletter>(entity =>
             {
                 entity.ToTable("newsletter");
 
-                entity.HasIndex(e => e.UserId, "Table_28_user");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Newsletters)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("newsletter_user");
+
+                entity.HasIndex(e => e.UserId, "newsletter_user");
             });
 
             modelBuilder.Entity<Player>(entity =>
@@ -302,11 +348,11 @@ namespace SieGraSieMa.Models
 
                 entity.ToTable("player");
 
-                entity.HasIndex(e => e.UserId, "player_user");
+                entity.Property(e => e.TeamId)
+                    .HasColumnName("team_id");
 
-                entity.Property(e => e.TeamId).HasColumnName("team_id");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.UserId)
+                    .HasColumnName("user_id");
 
                 entity.HasOne(d => d.Team)
                     .WithMany(p => p.Players)
@@ -317,16 +363,21 @@ namespace SieGraSieMa.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Players)
                     .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("player_user");
+
+                entity.HasIndex(e => e.UserId, "player_user");
             });
 
             modelBuilder.Entity<RefreshToken>(entity =>
             {
-                entity.HasIndex(e => e.Id, "Id")
-                    .IsUnique();
                 entity.ToTable("refresh_token");
-                entity.Property(e => e.Id).HasColumnName("id");
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
+
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Token)
                     .IsRequired()
@@ -354,30 +405,34 @@ namespace SieGraSieMa.Models
 
                 entity.Property(e => e.ReplacedByToken)
                     .HasColumnName("replacedByToken");
+
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.RefreshTokens)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("refresh_token_user");
 
+                //entity.HasIndex(e => e.Id, "Id").IsUnique();
             });
 
             modelBuilder.Entity<Team>(entity =>
             {
                 entity.ToTable("team");
 
-                entity.HasIndex(e => e.CaptainId, "captain");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
-                entity.HasIndex(e => e.Code, "code")
-                    .IsUnique();
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(64)
+                    .HasColumnName("name");
 
                 entity.Property(e => e.CaptainId)
-                    .HasColumnName("captain_id")
-                    .HasDefaultValueSql("'1'");
+                    .HasColumnName("captain_id");
+                //.HasDefaultValueSql("'1'");
 
                 entity.Property(e => e.Code)
                     .IsRequired()
@@ -385,33 +440,33 @@ namespace SieGraSieMa.Models
                     .HasColumnName("code")
                     .IsFixedLength(true);
 
-                entity.Property(e => e.Name)
-                    .IsRequired()
-                    .HasMaxLength(64)
-                    .HasColumnName("name");
-
                 entity.HasOne(d => d.Captain)
                     .WithMany(p => p.Teams)
                     .HasForeignKey(d => d.CaptainId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("captain");
+
+                entity.HasIndex(e => e.CaptainId, "captain");
+
+                entity.HasIndex(e => e.Code, "code")
+                    .IsUnique();
             });
 
             modelBuilder.Entity<TeamInGroup>(entity =>
             {
                 entity.ToTable("team_in_group");
 
-                entity.HasIndex(e => e.TeamId, "Table_25_team");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
-                entity.HasIndex(e => e.GroupId, "team_group");
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.GroupId)
+                    .HasColumnName("group_id");
 
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.GroupId).HasColumnName("group_id");
-
-                entity.Property(e => e.TeamId).HasColumnName("team_id");
+                entity.Property(e => e.TeamId)
+                    .HasColumnName("team_id");
 
                 entity.HasOne(d => d.Group)
                     .WithMany(p => p.TeamInGroups)
@@ -424,22 +479,27 @@ namespace SieGraSieMa.Models
                     .HasForeignKey(d => d.TeamId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("team_in_group_team");
+
+                //entity.HasIndex(e => e.TeamId, "team_in_group_team");
+
+                entity.HasIndex(e => e.GroupId, "team_in_group_group");
             });
 
             modelBuilder.Entity<TeamInTournament>(entity =>
             {
-                entity.HasKey(e => new { e.TeamId, e.TournamentId })
-                    .HasName("PRIMARY");
-
                 entity.ToTable("team_in_tournament");
 
-                entity.HasIndex(e => e.TournamentId, "Table_27_tournament");
+                entity.HasKey(e => new { e.TournamentId, e.TeamId })
+                    .HasName("PRIMARY");
 
-                entity.Property(e => e.TeamId).HasColumnName("team_id");
+                entity.Property(e => e.TeamId)
+                    .HasColumnName("team_id");
 
-                entity.Property(e => e.TournamentId).HasColumnName("tournament_id");
+                entity.Property(e => e.TournamentId)
+                    .HasColumnName("tournament_id");
 
-                entity.Property(e => e.Paid).HasColumnName("paid");
+                entity.Property(e => e.Paid)
+                    .HasColumnName("paid");
 
                 entity.HasOne(d => d.Team)
                     .WithMany(p => p.TeamInTournaments)
@@ -452,44 +512,52 @@ namespace SieGraSieMa.Models
                     .HasForeignKey(d => d.TournamentId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("team_in_tournament_tournament");
+
+                entity.HasIndex(e => e.TournamentId, "team_in_tournament_tournament");
             });
 
             modelBuilder.Entity<Tournament>(entity =>
             {
                 entity.ToTable("tournament");
 
-                entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
-
-                entity.Property(e => e.Address)
-                    .IsRequired()
-                    .HasMaxLength(256)
-                    .HasColumnName("address");
-
-                entity.Property(e => e.Description)
-                    .HasColumnName("description");
-
-                entity.Property(e => e.EndDate).HasColumnName("end_date");
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(128)
                     .HasColumnName("name");
 
-                entity.Property(e => e.StartDate).HasColumnName("start_date");
+                entity.Property(e => e.StartDate)
+                    .HasColumnName("start_date");
+
+                entity.Property(e => e.EndDate)
+                    .HasColumnName("end_date");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description");
+
+                entity.Property(e => e.Summary)
+                    .HasColumnName("summary");
+
+                entity.Property(e => e.Address)
+                    .IsRequired()
+                    .HasMaxLength(256)
+                    .HasColumnName("address");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("user");
 
-                entity.HasIndex(e => e.Email, "email")
-                    .IsUnique();
+                entity.Property(e => e.Id)
+                    .HasColumnName("id");
 
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
 
                 entity.Property(e => e.Email)
                     .IsRequired()
@@ -501,20 +569,13 @@ namespace SieGraSieMa.Models
                     .HasMaxLength(32)
                     .HasColumnName("name");
 
-               /* entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(256)
-                    .HasColumnName("password");*/
-
-                /*entity.Property(e => e.Salt)
-                    .IsRequired()
-                    .HasMaxLength(256)
-                    .HasColumnName("salt");*/
-
                 entity.Property(e => e.Surname)
                     .IsRequired()
                     .HasMaxLength(64)
                     .HasColumnName("surname");
+
+                entity.HasIndex(e => e.Email, "email")
+                    .IsUnique();
             });
 
             ModelBuilderExtensions.Seed(modelBuilder);
@@ -528,17 +589,14 @@ namespace SieGraSieMa.Models
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            //var salt = CreateSalt();
-
             var hasher = new PasswordHasher<User>();
 
-            //hasher.HashPassword();
-
             modelBuilder.Entity<IdentityRole<int>>().HasData(
-                new IdentityRole<int>() { Id = 1, Name = "Admin", NormalizedName="Admin" },
+                new IdentityRole<int>() { Id = 1, Name = "Admin", NormalizedName = "Admin" },
                 new IdentityRole<int>() { Id = 2, Name = "Emp", NormalizedName = "Emp" },
                 new IdentityRole<int>() { Id = 3, Name = "User", NormalizedName = "User" }
                 );
+
             modelBuilder.Entity<User>().HasData(
             new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", NormalizedEmail = "admin@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
             new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", NormalizedEmail = "pracownik@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
@@ -568,9 +626,9 @@ namespace SieGraSieMa.Models
             modelBuilder.Entity<Newsletter>().HasData(
             new Newsletter() { Id = 1, UserId = 3 });
 
-            modelBuilder.Entity<Tournament>().HasData(new Tournament() { Name = "Turniej testowy numer 1" , Id=1, Address="Zbożowa -1"});
+            modelBuilder.Entity<Tournament>().HasData(new Tournament() { Name = "Turniej testowy numer 1", Id = 1, Address = "Zbożowa -1" });
 
-            
+
 
 
         }

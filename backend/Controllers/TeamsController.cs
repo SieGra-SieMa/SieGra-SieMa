@@ -6,6 +6,7 @@ using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
+using SieGraSieMa.Services.Email;
 using SieGraSieMa.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -22,11 +23,14 @@ namespace SieGraSieMa.Controllers
     {
         private readonly ITeamService _teamService;
         private readonly IUserService _userService;
+        private readonly IEmailService _emailService;
 
-        public TeamsController(ITeamService teamService, IUserService userService)
+
+        public TeamsController(ITeamService teamService, IUserService userService, IEmailService emailService)
         {
             _teamService = teamService;
             _userService = userService;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -35,9 +39,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                IEnumerable<Claim> claim = identity.Claims;
-                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 return Ok(_teamService.GetTeamsWithUser(email));
             }
             catch (Exception e)
@@ -53,9 +55,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                IEnumerable<Claim> claim = identity.Claims;
-                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var captain = _userService.GetUser(email);
                 return Ok(_teamService.CreateTeam(teamDTO.Name, captain));
             }
@@ -71,9 +71,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                IEnumerable<Claim> claim = identity.Claims;
-                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var captain = _userService.GetUser(email);
                 //TODO change exception types
                 var response = await _teamService.IsUserAbleToJoinTeam(captain, teamCodeDTO.Code);
@@ -95,9 +93,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                IEnumerable<Claim> claim = identity.Claims;
-                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 _teamService.LeaveTeam(teamLeaveDTO.Id, user);
                 return Ok();
@@ -114,9 +110,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                IEnumerable<Claim> claim = identity.Claims;
-                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 await _teamService.ChangeTeamDetails(user.Id, id, teamDetailsDTO);
                 return Ok(new MessageDTO { Message = "Team details successfully changed" });
@@ -133,9 +127,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                IEnumerable<Claim> claim = identity.Claims;
-                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 await _teamService.DeleteUserFromTeam(userId, user.Id, id);
                 return Ok(new MessageDTO { Message = $"User {userId} successfully deleted" });
@@ -152,9 +144,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                IEnumerable<Claim> claim = identity.Claims;
-                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 await _teamService.SwitchCaptain(id, user.Id, userId);
                 return Ok(new MessageDTO { Message = $"Team captain successfully swapped" });
@@ -171,12 +161,29 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var identity = HttpContext.User.Identity as ClaimsIdentity;
-                IEnumerable<Claim> claim = identity.Claims;
-                var email = claim.Where(e => e.Type == ClaimTypes.Name).First().Value;
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 await _teamService.DeleteTeam(id, user.Id);
                 return Ok(new MessageDTO { Message = $"Team successfully deleted" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
+
+        [HttpPost("{id}/send-invite")]
+        public async Task<IActionResult> SendInvite(string emailAdress)
+        {
+            try
+            {
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = _userService.GetUser(email);
+                //await _teamService.DeleteUserFromTeam(userId, user.Id, id);
+                //TODO check if team exists and if user is captain
+                await _emailService.SendAsync(emailAdress, "Zaproszenie do zespołu SiegraSiema", "Treść zaproszenia");
+                return Ok(new MessageDTO { Message = $"Mail already sent" });
             }
             catch (Exception e)
             {

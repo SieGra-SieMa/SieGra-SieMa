@@ -13,16 +13,23 @@
 
 .groups {
     margin: 25px 0;
-    display: grid;
-    gap: 25px;
+    display: flex;
+    gap: 20px;
     flex-wrap: wrap;
-    grid-template-columns: 1fr 1fr;
 }
 
 .group {
+    width: calc(50% - 10px);
+    min-width: 700px;
+    flex: 1 1;
     background-color: #fff;
     border-radius: 5px;
     overflow: hidden;
+    transition: box-shadow .3s;
+}
+
+.group:hover {
+    box-shadow: 0 0 5px var(--box-shadow-color);
 }
 
 .group>table {
@@ -35,8 +42,6 @@
     padding: 15px;
     font-size: 20px;
     font-weight: bold;
-    background-color: #666;
-    color: #fff;
 }
 
 .group>table th,
@@ -46,13 +51,14 @@
 }
 
 .group>table>tbody>tr {
-    transition: background-color .1s;
+    transition: background-color .1s, color .1s;
 }
 
 .group>table>tbody>tr:nth-child(odd) {
-    background-color: #eaeaea;
+    background-color: #f7f7f7;
 }
 
 .group>table>tbody>tr:hover {
-    background-color: #ddd;
+    background-color: #1a1d2e;
+    color: #fff;
 }

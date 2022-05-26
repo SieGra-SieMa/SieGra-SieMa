@@ -26,7 +26,7 @@
 }
 
 .item:hover {
-    box-shadow: 0 0 5px #aaa;
+    box-shadow: 0 0 5px var(--box-shadow-color);
 }
 
 .header {

@@ -1,46 +1,46 @@
 import { ROLES } from './roles';
 
-export interface User {
+export type User = {
     id: number;
     name: string;
     surname: string;
     roles: ROLES[];
-}
+};
 
-export interface Account extends User {
+export type Account = User & {
     email: string;
     accessToken: string;
     refreshToken: string;
-}
+};
 
-export interface Player extends User { }
+export type Player = User;
 
-export interface Team {
+export type Team = {
     id: number;
     name: string;
     code: string;
     captainId: number;
     players: Player[];
-}
+};
 
-export interface UserDetailsRequest {
+export type UserDetailsRequest = {
     name: string;
     surname: string;
-}
+};
 
-export interface Tokens {
+export type Tokens = {
     token: string;
     refreshToken: string;
-}
+};
 
-export interface Session {
+export type Session = {
     accessToken: string;
     refreshToken: string;
-}
+};
 
 // Tournaments
 
-export interface Tournament {
+export type Tournament = {
     id?: number;
     name: string;
     startDate: string,
@@ -50,27 +50,10 @@ export interface Tournament {
 
     groups?: Group[];
 
-    ladder?: {
-        phases: {
-            phase: number;
-            matches: {
-                tournamentId: number;
-                phase: number
-                matchId: number;
-                teamHome: {
-                    name: string;
-                }
-                teamAway: {
-                    name: string;
-                }
-                teamHomeScore: number | null;
-                teamAwayScore: number | null;
-            }[];
-        }[];
-    }
-}
+    ladder?: Ladder
+};
 
-export interface Group {
+export type Group = {
     id: number;
     name: string;
     tournamentId: number;
@@ -85,5 +68,37 @@ export interface Group {
         goalScored: number;
         goalConceded: number;
         points: number;
-    }[]
+    }[];
+};
+
+export type Match = {
+    tournamentId: number;
+    phase: number
+    matchId: number;
+    teamHome: {
+        name: string;
+    }
+    teamAway: {
+        name: string;
+    }
+    teamHomeScore: number | null;
+    teamAwayScore: number | null;
+};
+
+export type Phase = {
+    phase: number;
+    matches: Match[];
+};
+
+export type Ladder = {
+    phases: Phase[];
+};
+
+
+export type MatchResult = {
+    tournamentId: number;
+    phase: number;
+    matchId: number;
+    homeTeamPoints: number;
+    awayTeamPoints: number;
 }

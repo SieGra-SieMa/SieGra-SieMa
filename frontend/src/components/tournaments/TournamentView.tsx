@@ -5,6 +5,7 @@ import { Tournament } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
 import Button, { ButtonStyle } from '../form/Button';
 import GuardComponent from '../guard-components/GuardComponent';
+import LadderComponent from '../ladder/LadderComponent';
 import Confirm from '../modal/Confirm';
 import Modal from '../modal/Modal';
 import TournamentEdit from './TournamentEdit';
@@ -56,6 +57,7 @@ export default function TournamentView() {
                     <Button value='Delete' onClick={() => setIsDelete(true)} style={ButtonStyle.Red} />
                 </GuardComponent>
             </div>
+            {tournament && tournament.ladder && <LadderComponent ladder={tournament.ladder} />}
             <ul className={styles.groups}>
                 {tournament && tournament.groups && tournament.groups.filter((group) => !group.ladder).map((group) => (
                     <li className={styles.group} key={group.id}>
@@ -96,80 +98,48 @@ export default function TournamentView() {
                     </li>
                 ))}
             </ul>
-            <div>
-                {tournament && tournament.ladder && tournament.ladder.phases.map((phase) => (
-                    <div key={phase.phase}>
-                        <div>{phase.phase}</div>
-                        <div>
-                            {phase.matches.map((match, index) => (
-                                <div key={index}>
-                                    <div>
-                                        matchId - {match.matchId}
-                                    </div>
-                                    <div>
-                                        phase - {match.phase}
-                                    </div>
-                                    <div>
-                                        tournamentId - {match.tournamentId}
-                                    </div>
-                                    <div>
-                                        teamAway.name - {match.teamAway.name}
-                                    </div>
-                                    <div>
-                                        teamAwayScore - {match.teamAwayScore}
-                                    </div>
-                                    <div>
-                                        teamHome.name - {match.teamHome.name}
-                                    </div>
-                                    <div>
-                                        teamHomeScore - {match.teamHomeScore}
-                                    </div>
-                                    <hr />
-                                </div>
-                            ))}
-                        </div>
-                        <hr />
-                    </div>
-                ))}
-            </div>
-            {tournament && isEdit && (
-                <Modal
-                    isClose
-                    close={() => setIsEdit(false)}
-                    title={`Edit tournament - "${tournament.name}"`}
-                >
-                    <TournamentEdit
-                        tournament={tournament}
-                        confirm={(updatedTournament) => {
-                            setTournament({ ...tournament, ...updatedTournament });
-                            if (tournaments) {
-                                const filtered = tournaments.filter((e) => e.id !== updatedTournament.id);
-                                const edited = tournaments.find((e) => e.id === updatedTournament.id)!;
-                                edited.name = updatedTournament.name;
-                                edited.description = updatedTournament.description;
-                                edited.address = updatedTournament.address;
-                                edited.startDate = updatedTournament.startDate;
-                                edited.endDate = updatedTournament.endDate;
-                                const newData = [...filtered, edited];
-                                setTournaments(newData);
-                            }
-                            setIsEdit(false);
-                        }}
-                    />
-                </Modal>
-            )}
-            {tournament && isDelete && (
-                <Modal
-                    close={() => setIsDelete(false)}
-                    title={`Tournament "${tournament.name}" - Do you really want to delete?`}
-                >
-                    <Confirm
-                        cancel={() => setIsDelete(false)}
-                        confirm={() => deleteTournament()}
-                        label='Delete'
-                    />
-                </Modal>
-            )}
+            {
+                tournament && isEdit && (
+                    <Modal
+                        isClose
+                        close={() => setIsEdit(false)}
+                        title={`Edit tournament - "${tournament.name}"`}
+                    >
+                        <TournamentEdit
+                            tournament={tournament}
+                            confirm={(updatedTournament) => {
+                                setTournament({ ...tournament, ...updatedTournament });
+                                if (tournaments) {
+                                    const filtered = tournaments.filter((e) => e.id !== updatedTournament.id);
+                                    const edited = tournaments.find((e) => e.id === updatedTournament.id)!;
+                                    edited.name = updatedTournament.name;
+                                    edited.description = updatedTournament.description;
+                                    edited.address = updatedTournament.address;
+                                    edited.startDate = updatedTournament.startDate;
+                                    edited.endDate = updatedTournament.endDate;
+                                    const newData = [...filtered, edited];
+                                    setTournaments(newData);
+                                }
+                                setIsEdit(false);
+                            }}
+                        />
+                    </Modal>
+                )
+            }
+            {
+                tournament && isDelete && (
+                    <Modal
+                        close={() => setIsDelete(false)}
+                        title={`Tournament "${tournament.name}" - Do you really want to delete?`}
+                    >
+                        <Confirm
+                            cancel={() => setIsDelete(false)}
+                            confirm={() => deleteTournament()}
+                            label='Delete'
+                        />
+                    </Modal>
+                )
+            }
         </>
     );
 }

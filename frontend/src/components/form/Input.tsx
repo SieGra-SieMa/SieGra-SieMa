@@ -10,6 +10,7 @@ type InputProp = {
     placeholder?: string;
     value: string;
     required?: boolean;
+    disabled?: boolean;
     onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
@@ -22,6 +23,7 @@ export default function Input({
     placeholder,
     value,
     required = false,
+    disabled = false,
     onChange,
 }: InputProp) {
     return (
@@ -36,6 +38,7 @@ export default function Input({
                 placeholder={placeholder}
                 value={value}
                 required={required}
+                disabled={disabled}
                 onChange={onChange}
             />
         </div>

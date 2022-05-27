@@ -12,7 +12,7 @@ export default function Footer() {
                         </Link>
                     </div>
                     <div className="footer-block">
-                        <a className="contact-button" href="mailto:siegrasiema.inicjatywa@gmail.com"><h4>Get in touch</h4></a>
+                        <a className="slide-button" href="mailto:siegrasiema.inicjatywa@gmail.com"><p>Get in touch</p></a>
                     </div>
                     <div className="footer-block">
                         <div>Phone: 796 688 795</div>

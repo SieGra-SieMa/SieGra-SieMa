@@ -21,6 +21,18 @@
     padding: 30px;
     display: grid;
     row-gap: 25px;
+    animation: showup .3s ease-out;
+    box-shadow: 0 0 5px #333;
+}
+
+@keyframes showup {
+    from {
+        transform: scale(0);
+    }
+
+    to {
+        transform: scale(1);
+    }
 }
 
 .header {

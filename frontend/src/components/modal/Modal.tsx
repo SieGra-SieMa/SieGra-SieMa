@@ -1,8 +1,8 @@
 import styles from './Modal.module.css';
 
-export default function Modal({ 
+export default function Modal({
     title, close, isClose = false, children
-}: { 
+}: {
     title: string, close: () => void, isClose?: boolean, children: JSX.Element
 }) {
     return (

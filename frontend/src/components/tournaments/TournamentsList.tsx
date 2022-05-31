@@ -4,7 +4,7 @@ import { ROLES } from '../../_lib/roles';
 import Button from '../form/Button';
 import GuardComponent from '../guard-components/GuardComponent';
 import Modal from '../modal/Modal';
-import TournamentAdd from './TournamentAdd';
+import CreateTournament from './CreateTournament';
 import { useTournaments } from './TournamentsContext';
 import styles from './TournamentsList.module.css';
 
@@ -41,9 +41,6 @@ export default function TournamentsList() {
                         </div>
                         <div>
                             <div>
-                                Description: {tournament.description}
-                            </div>
-                            <div>
                                 Address: {tournament.address}
                             </div>
                         </div>
@@ -56,7 +53,7 @@ export default function TournamentsList() {
                     isClose
                     title={`Add tournament`}
                 >
-                    <TournamentAdd confirm={(tournament) => {
+                    <CreateTournament confirm={(tournament) => {
                         setIsAdd(false);
                         setTournaments(tournaments ? [...tournaments, tournament] : [tournament]);
                     }} />

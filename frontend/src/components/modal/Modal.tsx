@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import styles from './Modal.module.css';
 
 export default function Modal({
@@ -5,7 +6,7 @@ export default function Modal({
 }: {
     title: string, close: () => void, isClose?: boolean, children: JSX.Element
 }) {
-    return (
+    return createPortal((
         <div className={styles.root} onClick={close}>
             <div className={styles.container} onClick={(e) => e.stopPropagation()}>
                 <div className={styles.header}>
@@ -17,5 +18,5 @@ export default function Modal({
                 </div>
             </div>
         </div>
-    )
+    ), document.getElementById('modal')!);
 }

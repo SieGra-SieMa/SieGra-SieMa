@@ -4,30 +4,39 @@ import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
-import styles from './TournamentAdd.module.css';
+import styles from './EditTournament.module.css';
 
-export default function TournamentAdd({ confirm }: { confirm: (tournament: Tournament) => void }) {
+type EditTournamentProps = {
+    tournament: Tournament;
+    confirm: (tournament: Tournament) => void;
+}
+
+export default function EditTournament({
+    tournament,
+    confirm,
+}: EditTournamentProps) {
 
     const { tournamentsService } = useApi();
 
-    const [name, setName] = useState('');
-    const [description, setDescription] = useState('');
-    const [address, setAddress] = useState('');
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
+    const [name, setName] = useState(tournament.name);
+    const [address, setAddress] = useState(tournament.address);
+
+    const [startDate, setStartDate] = useState(new Date(tournament.startDate).toISOString().split('T')[0]);
+    const [endDate, setEndDate] = useState(new Date(tournament.endDate).toISOString().split('T')[0]);
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        const tournament: Tournament = {
+        const updatedTournament: Tournament = {
+            id: tournament.id,
             name,
-            startDate: startDate,
-            endDate: endDate,
-            description,
+            startDate,
+            endDate,
             address
         };
-        tournamentsService.createTournament(tournament)
+        tournamentsService.updateTournament(updatedTournament)
             .then((data) => {
-                confirm(data);
+                // TODO check update endpoint response
+                confirm(updatedTournament);
             })
     }
 
@@ -39,12 +48,6 @@ export default function TournamentAdd({ confirm }: { confirm: (tournament: Tourn
                 value={name}
                 required
                 onChange={(e) => setName(e.target.value)}
-            />
-            <Input
-                id='TournamentAdd-description'
-                label='Description'
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
             />
             <Input
                 id='TournamentAdd-address'
@@ -70,7 +73,7 @@ export default function TournamentAdd({ confirm }: { confirm: (tournament: Tourn
                 onChange={(e) => setEndDate(e.target.value)}
             />
             <VerticalSpacing size={15} />
-            <Button value='Add' />
+            <Button value='Save' />
         </form>
     );
 }

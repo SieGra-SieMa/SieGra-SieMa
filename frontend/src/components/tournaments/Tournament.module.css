@@ -1,14 +1,17 @@
 .top {
     display: flex;
-    align-items: center;
+    column-gap: 25px;
+    justify-content: space-between;
+}
+
+.adminControls {
+    display: flex;
     column-gap: 25px;
 }
 
 .title {
     font-size: 33px;
-    margin: 0 25px;
-    flex: 1;
-    text-align: center;
+    padding: 25px 0;
 }
 
 .groups {

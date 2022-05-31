@@ -1,19 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ROLES } from '../../_lib/roles';
-import { Tournament } from '../../_lib/types';
+import { Tournament as TournamentType } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
 import Button, { ButtonStyle } from '../form/Button';
 import GuardComponent from '../guard-components/GuardComponent';
-import LadderComponent from '../ladder/LadderComponent';
+import Ladder from '../ladder/Ladder';
 import Confirm from '../modal/Confirm';
 import Modal from '../modal/Modal';
-import TournamentEdit from './TournamentEdit';
+import EditTournament from './EditTournament';
 import { useTournaments } from './TournamentsContext';
-import styles from './TournamentView.module.css';
+import styles from './Tournament.module.css';
 
-
-export default function TournamentView() {
+export default function Tournament() {
 
     const navigate = useNavigate();
 
@@ -22,7 +21,7 @@ export default function TournamentView() {
     const { tournamentsService } = useApi();
     const { tournaments, setTournaments } = useTournaments();
 
-    const [tournament, setTournament] = useState<Tournament | null>(null);
+    const [tournament, setTournament] = useState<TournamentType | null>(null);
 
     const [isEdit, setIsEdit] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
@@ -49,15 +48,20 @@ export default function TournamentView() {
         <>
             <div className={styles.top}>
                 <Button value='Back' onClick={() => navigate('..')} />
-                <h1 className={styles.title}>
-                    {tournament && tournament.name}
-                </h1>
                 <GuardComponent roles={[ROLES.Admin]}>
-                    <Button value='Edit' onClick={() => setIsEdit(true)} style={ButtonStyle.DarkBlue} />
-                    <Button value='Delete' onClick={() => setIsDelete(true)} style={ButtonStyle.Red} />
+                    <div className={styles.adminControls}>
+                        <Button value='Edit' onClick={() => setIsEdit(true)} style={ButtonStyle.DarkBlue} />
+                        <Button value='Delete' onClick={() => setIsDelete(true)} style={ButtonStyle.Red} />
+                    </div>
                 </GuardComponent>
             </div>
-            {tournament && tournament.ladder && <LadderComponent ladder={tournament.ladder} />}
+            <h1 className={styles.title}>
+                {tournament && tournament.name}
+            </h1>
+            <h2>Ladder</h2>
+            {tournament && tournament.ladder && <Ladder ladder={tournament.ladder} />}
+            <h2>Groups</h2>
+
             <ul className={styles.groups}>
                 {tournament && tournament.groups && tournament.groups.filter((group) => !group.ladder).map((group) => (
                     <li className={styles.group} key={group.id}>
@@ -98,48 +102,45 @@ export default function TournamentView() {
                     </li>
                 ))}
             </ul>
-            {
-                tournament && isEdit && (
-                    <Modal
-                        isClose
-                        close={() => setIsEdit(false)}
-                        title={`Edit tournament - "${tournament.name}"`}
-                    >
-                        <TournamentEdit
-                            tournament={tournament}
-                            confirm={(updatedTournament) => {
-                                setTournament({ ...tournament, ...updatedTournament });
-                                if (tournaments) {
-                                    const filtered = tournaments.filter((e) => e.id !== updatedTournament.id);
-                                    const edited = tournaments.find((e) => e.id === updatedTournament.id)!;
-                                    edited.name = updatedTournament.name;
-                                    edited.description = updatedTournament.description;
-                                    edited.address = updatedTournament.address;
-                                    edited.startDate = updatedTournament.startDate;
-                                    edited.endDate = updatedTournament.endDate;
-                                    const newData = [...filtered, edited];
-                                    setTournaments(newData);
-                                }
-                                setIsEdit(false);
-                            }}
-                        />
-                    </Modal>
-                )
-            }
-            {
-                tournament && isDelete && (
-                    <Modal
-                        close={() => setIsDelete(false)}
-                        title={`Tournament "${tournament.name}" - Do you really want to delete?`}
-                    >
-                        <Confirm
-                            cancel={() => setIsDelete(false)}
-                            confirm={() => deleteTournament()}
-                            label='Delete'
-                        />
-                    </Modal>
-                )
-            }
+
+            <h2>Matches</h2>
+            {tournament && isEdit && (
+                <Modal
+                    isClose
+                    close={() => setIsEdit(false)}
+                    title={`Edit tournament - "${tournament.name}"`}
+                >
+                    <EditTournament
+                        tournament={tournament}
+                        confirm={(updatedTournament) => {
+                            setTournament({ ...tournament, ...updatedTournament });
+                            if (tournaments) {
+                                const filtered = tournaments.filter((e) => e.id !== updatedTournament.id);
+                                const edited = tournaments.find((e) => e.id === updatedTournament.id)!;
+                                edited.name = updatedTournament.name;
+                                edited.address = updatedTournament.address;
+                                edited.startDate = updatedTournament.startDate;
+                                edited.endDate = updatedTournament.endDate;
+                                const newData = [...filtered, edited];
+                                setTournaments(newData);
+                            }
+                            setIsEdit(false);
+                        }}
+                    />
+                </Modal>
+            )}
+            {tournament && isDelete && (
+                <Modal
+                    close={() => setIsDelete(false)}
+                    title={`Tournament "${tournament.name}" - Do you really want to delete?`}
+                >
+                    <Confirm
+                        cancel={() => setIsDelete(false)}
+                        confirm={() => deleteTournament()}
+                        label='Delete'
+                    />
+                </Modal>
+            )}
         </>
     );
 }

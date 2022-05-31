@@ -3,9 +3,9 @@ import { Outlet } from 'react-router-dom';
 import { Tournament } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
 import { TournamentsContext } from './TournamentsContext';
-import styles from './TournamentsPage.module.css';
+import styles from './Tournaments.module.css';
 
-export default function TournamentsPage() {
+export default function Tournaments() {
 
     const { tournamentsService } = useApi();
 
@@ -28,8 +28,10 @@ export default function TournamentsPage() {
 
     return (
         <TournamentsContext.Provider value={value}>
-            <div className={['container', styles.root].join(' ')}>
-                <Outlet />
+            <div>
+                <div className={['container', styles.root].join(' ')}>
+                    <Outlet />
+                </div>
             </div>
         </TournamentsContext.Provider>
     );

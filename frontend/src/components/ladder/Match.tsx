@@ -1,14 +1,14 @@
 import { useState } from 'react';
-import { Match } from '../../_lib/types';
+import { Match as MatchType } from '../../_lib/types';
 import Modal from '../modal/Modal';
 import styles from './Ladder.module.css';
-import MatchResultComponentProps from './MatchResultComponentProps';
+import MatchResult from './MatchResult';
 
-type MatchComponentProps = {
-    match: Match
+type MatchProps = {
+    match: MatchType;
 }
 
-export default function MatchComponent({ match }: MatchComponentProps) {
+export default function Match({ match }: MatchProps) {
 
     const [isEdit, setIsEdit] = useState(false);
 
@@ -37,7 +37,7 @@ export default function MatchComponent({ match }: MatchComponentProps) {
                     isClose
                     close={() => setIsEdit(false)}
                     title={'Match result'}>
-                    <MatchResultComponentProps
+                    <MatchResult
                         match={match}
                         confirm={() => setIsEdit(false)}
                     />

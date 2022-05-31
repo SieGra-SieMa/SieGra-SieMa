@@ -45,7 +45,6 @@ export type Tournament = {
     name: string;
     startDate: string,
     endDate: string,
-    description: string;
     address: string;
 
     groups?: Group[];

@@ -1,18 +1,18 @@
-import { Phase } from '../../_lib/types';
+import { Phase as PhaseType } from '../../_lib/types';
 import styles from './Ladder.module.css';
-import MatchComponent from './MatchComponent';
+import Match from './Match';
 
-type PhaseComponentProps = {
-    phase: Phase
+type PhaseProps = {
+    phase: PhaseType;
 }
 
-export default function PhaseComponent({ phase }: PhaseComponentProps) {
+export default function Phase({ phase }: PhaseProps) {
     return (
         <div className={styles.phase}>
             <div className={styles.phaseTitle}>{phase.phase}</div>
             <div className={styles.matches}>
                 {phase.matches.map((match, index) => (
-                    <MatchComponent key={index} match={match} />
+                    <Match key={index} match={match} />
                 ))}
             </div>
         </div>

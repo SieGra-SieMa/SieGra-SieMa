@@ -7,7 +7,6 @@ using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
 using SieGraSieMa.Services.Email;
-using SieGraSieMa.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

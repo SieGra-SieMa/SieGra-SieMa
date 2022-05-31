@@ -646,21 +646,71 @@ namespace SieGraSieMa.Services.Tournaments
         public async Task<Match> InsertMatchResult(MatchResultDTO DTO)
         {
             var match = _SieGraSieMaContext.Matches.Find(DTO.TournamentId, DTO.Phase, DTO.MatchId);
+            _SieGraSieMaContext.Entry(match).Reference(m => m.TeamHome).Load();
+            _SieGraSieMaContext.Entry(match).Reference(m => m.TeamAway).Load();
+            _SieGraSieMaContext.Entry(match.TeamHome).Reference(tt => tt.Team).Load();
+            _SieGraSieMaContext.Entry(match.TeamAway).Reference(tt => tt.Team).Load();
             if (match == null) throw new Exception("No match found with this PKs");
-            if (match.TeamHomeId == null || match.TeamAwayId == null) throw new Exception("Match has no teams");
+            if (match.TeamHome.Team == null || match.TeamAway.Team == null) throw new Exception("Match has no teams");
+            if (DTO.Phase == 0 && (await _SieGraSieMaContext.Matches.FindAsync(DTO.TournamentId, 1, 1)).IsMatchPlayed ||
+                DTO.Phase > 0 && (await _SieGraSieMaContext.Matches.FindAsync(DTO.TournamentId, DTO.Phase + 1, (int)Math.Ceiling(DTO.MatchId / 2.0))).IsMatchPlayed)
+                throw new Exception("Match cannot be edited, because next match is already played");
             match.TeamHomeScore = DTO.HomeTeamPoints;
             match.TeamAwayScore = DTO.AwayTeamPoints;
+            {
+                /*
+                            if (DTO.Phase != 0)//jeśli w drabince
+                            {
+                                int phases = _SieGraSieMaContext.Groups.Where(g => g.TournamentId == DTO.TournamentId).Select(g => g.Phase).Max();
+                                if (DTO.Phase < phases - 1)//jeśli nie finał i nie 3 miejsce
+                                {
+                                    _SieGraSieMaContext.Entry(match).Reference(m => m.TeamHome).Load();
+                                    _SieGraSieMaContext.Entry(match).Reference(m => m.TeamAway).Load();
+                                    _SieGraSieMaContext.Entry(match.TeamHome).Reference(tt => tt.Team).Load();
+                                    _SieGraSieMaContext.Entry(match.TeamAway).Reference(tt => tt.Team).Load();
+                                    Team winner = DTO.HomeTeamPoints > DTO.AwayTeamPoints ? match.TeamHome.Team : match.TeamAway.Team;
 
+                                    IQueryable<Match> query = _SieGraSieMaContext.Matches.Include(m => m.TeamHome).Include(m => m.TeamAway)
+                                                        .Where(m => m.TournamentId == DTO.TournamentId);
+                                    if (DTO.Phase < phases - 2)//jeśli wcześniej niż półfinał
+                                    {
+                                        query = query.Where(m => m.Phase == DTO.Phase + 1 && m.MatchId == (int)Math.Ceiling(DTO.MatchId / 2.0));
+                                    }
+                                    else if (DTO.Phase == phases - 2)//jeśli półfinał
+                                    {
+                                        query = query.Where(m => m.Phase == DTO.Phase + 2 && m.MatchId == 1);
+                                    }
+
+                                    Match nextMatch = query.FirstOrDefault();
+                                    if (nextMatch.TeamHome.TeamId == null) nextMatch.TeamHome.Team = winner;
+                                    else if (nextMatch.TeamAway.TeamId == null) nextMatch.TeamAway.Team = winner;
+                                    //else throw new Exception("Trying update next match, which already have both teams");
+                                    //TODO: Zastanowić się nad końcówką pozwalającą ręcznie zaktualizować zespoły na wypadek błędu podczas wpisywania
+                                    _SieGraSieMaContext.Matches.Update(nextMatch);
+
+                                    if (DTO.Phase == phases - 2)//jeśli półfinał
+                                    {
+                                        Match thirdPlace = _SieGraSieMaContext.Matches.Include(m => m.TeamHome).Include(m => m.TeamAway)
+                                                        .Where(m => m.TournamentId == DTO.TournamentId && m.Phase == DTO.Phase + 1 && m.MatchId == 1)
+                                                        .FirstOrDefault();
+                                        Team looser = DTO.HomeTeamPoints < DTO.AwayTeamPoints ? match.TeamHome.Team : match.TeamAway.Team;
+
+                                        if (thirdPlace.TeamHome.TeamId == null) thirdPlace.TeamHome.Team = looser;
+                                        else if (thirdPlace.TeamAway.TeamId == null) thirdPlace.TeamAway.Team = looser;
+                                        //else throw new Exception("Trying update next match, which already have both teams");
+                                        //TODO: Zastanowić się nad końcówką pozwalającą ręcznie zaktualizować zespoły na wypadek błędu podczas wpisywania
+                                        _SieGraSieMaContext.Matches.Update(thirdPlace);
+                                    }
+                                }
+                            }*/
+            }//komentarz
             if (DTO.Phase != 0)//jeśli w drabince
             {
                 int phases = _SieGraSieMaContext.Groups.Where(g => g.TournamentId == DTO.TournamentId).Select(g => g.Phase).Max();
                 if (DTO.Phase < phases - 1)//jeśli nie finał i nie 3 miejsce
                 {
-                    _SieGraSieMaContext.Entry(match).Reference(m => m.TeamHome).Load();
-                    _SieGraSieMaContext.Entry(match).Reference(m => m.TeamAway).Load();
-                    _SieGraSieMaContext.Entry(match.TeamHome).Reference(tt => tt.Team).Load();
-                    _SieGraSieMaContext.Entry(match.TeamAway).Reference(tt => tt.Team).Load();
-                    Team winner = DTO.HomeTeamPoints > DTO.AwayTeamPoints ? match.TeamHome.Team : match.TeamAway.Team;
+                    
+                    Team winner = match.Winner;
 
                     IQueryable<Match> query = _SieGraSieMaContext.Matches.Include(m => m.TeamHome).Include(m => m.TeamAway)
                                         .Where(m => m.TournamentId == DTO.TournamentId);
@@ -671,28 +721,20 @@ namespace SieGraSieMa.Services.Tournaments
                     else if (DTO.Phase == phases - 2)//jeśli półfinał
                     {
                         query = query.Where(m => m.Phase == DTO.Phase + 2 && m.MatchId == 1);
-                    }
-
-                    Match nextMatch = query.FirstOrDefault();
-                    if (nextMatch.TeamHome.TeamId == null) nextMatch.TeamHome.Team = winner;
-                    else if (nextMatch.TeamAway.TeamId == null) nextMatch.TeamAway.Team = winner;
-                    //else throw new Exception("Trying update next match, which already have both teams");
-                    //TODO: Zastanowić się nad końcówką pozwalającą ręcznie zaktualizować zespoły na wypadek błędu podczas wpisywania
-                    _SieGraSieMaContext.Matches.Update(nextMatch);
-
-                    if (DTO.Phase == phases - 2)//jeśli półfinał
-                    {
                         Match thirdPlace = _SieGraSieMaContext.Matches.Include(m => m.TeamHome).Include(m => m.TeamAway)
                                         .Where(m => m.TournamentId == DTO.TournamentId && m.Phase == DTO.Phase + 1 && m.MatchId == 1)
                                         .FirstOrDefault();
-                        Team looser = DTO.HomeTeamPoints < DTO.AwayTeamPoints ? match.TeamHome.Team : match.TeamAway.Team;
-
-                        if (thirdPlace.TeamHome.TeamId == null) thirdPlace.TeamHome.Team = looser;
-                        else if (thirdPlace.TeamAway.TeamId == null) thirdPlace.TeamAway.Team = looser;
-                        //else throw new Exception("Trying update next match, which already have both teams");
-                        //TODO: Zastanowić się nad końcówką pozwalającą ręcznie zaktualizować zespoły na wypadek błędu podczas wpisywania
+                        Team looser = match.Looser;
+                        
+                        if (match.IsNextTeamHome) thirdPlace.TeamHome.Team = looser;
+                        else thirdPlace.TeamAway.Team = looser;
                         _SieGraSieMaContext.Matches.Update(thirdPlace);
                     }
+
+                    Match nextMatch = query.FirstOrDefault();
+                    if (match.IsNextTeamHome) nextMatch.TeamHome.Team = winner;
+                    else nextMatch.TeamAway.Team = winner;
+                    _SieGraSieMaContext.Matches.Update(nextMatch);
                 }
             }
             else

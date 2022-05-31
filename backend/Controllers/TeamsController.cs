@@ -50,7 +50,7 @@ namespace SieGraSieMa.Controllers
         //[HttpPost("create")]
         [HttpPost()]
         [Authorize(Policy = "EveryOneAuthenticated")]
-        public IActionResult Create(TeamDTO teamDTO, IFormFile ufile)
+        public IActionResult Create(TeamDTO teamDTO)
         {
             try
             {

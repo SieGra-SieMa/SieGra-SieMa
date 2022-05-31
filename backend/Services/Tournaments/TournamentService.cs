@@ -49,6 +49,7 @@ namespace SieGraSieMa.Services.Tournaments
         public enum MatchesEnum { All, NotPlayed, Played }
 
         public Task<GetAvailableGroupMatchesDTO> GetAvailableGroupMatches(int tournamentId, MatchesEnum matchesEnum);
+        public Task<ICollection<GetGroupMatchDTO>> GetGroupsMatches(int tournamentId);
         public Task<Match> InsertMatchResult(MatchResultDTO matchResultDTO);
         public Task<GetLadderDTO> GetLadderMatches(int tournamentId);
 
@@ -66,6 +67,7 @@ namespace SieGraSieMa.Services.Tournaments
 
         public async Task<TournamentListDTO> CreateTournament(Tournament tournament)
         {
+            if(tournament.EndDate<tournament.StartDate || tournament.StartDate<DateTime.Now) throw new Exception("Unable to add because of invalid dates");
             await _SieGraSieMaContext.Tournaments.AddAsync(tournament);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return new TournamentListDTO { Id = tournament.Id, Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
@@ -99,6 +101,7 @@ namespace SieGraSieMa.Services.Tournaments
         public async Task<ResponseTournamentDTO> GetTournament(int id)
         {
             GetLadderDTO ladder = await GetLadderMatches(id);
+            IEnumerable<GetGroupMatchDTO> matches = await GetGroupsMatches(id);
 
             var tournament = await _SieGraSieMaContext.Tournaments
                 .Include(t => t.TeamInTournaments)
@@ -139,6 +142,7 @@ namespace SieGraSieMa.Services.Tournaments
             tournament.Groups.ToList().ForEach(g =>
             {
                 g.Teams = GetTeamScoresInGroups(g.TournamentId, g.Id);
+                g.Matches = matches.Where(m => m.GroupId == g.Id).ToList();
             });
             if (await _SieGraSieMaContext.Groups.Include(g => g.TeamInGroups).Where(g => g.TeamInGroups.Count == 1 && g.TournamentId == tournament.Id).AnyAsync())
             {
@@ -203,7 +207,6 @@ namespace SieGraSieMa.Services.Tournaments
             if (tournament == null) throw new Exception("Tournament not found");
             return tournament.Summary;
         }
-
         public async Task<string> SetSummary(int id, string data)
         {
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
@@ -213,14 +216,12 @@ namespace SieGraSieMa.Services.Tournaments
             await _SieGraSieMaContext.SaveChangesAsync();
             return tournament.Summary;
         }
-
         public async Task<string> GetDescription(int id)
         {
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
             if (tournament == null) throw new Exception("Tournament not found");
             return tournament.Description;
         }
-
         public async Task<string> SetDescription(int id, string data)
         {
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
@@ -230,6 +231,7 @@ namespace SieGraSieMa.Services.Tournaments
             await _SieGraSieMaContext.SaveChangesAsync();
             return tournament.Description;
         }
+
         public async Task<int> CheckCountTeamsInTournament(int tournamentId, TeamPaidEnum teamsEnum)
         {
             IQueryable<Team> query = _SieGraSieMaContext.Teams.Include(t => t.TeamInTournaments).ThenInclude(tr => tr.Tournament)
@@ -555,8 +557,8 @@ namespace SieGraSieMa.Services.Tournaments
                                     TournamentId = m.TournamentId,
                                     Phase = m.Phase,
                                     MatchId = m.MatchId,
-                                    TeamHome = new DTOs.TeamDTO() { Name = m.TeamHome.Team.Name },
-                                    TeamAway = new DTOs.TeamDTO() { Name = m.TeamAway.Team.Name },
+                                    TeamHome = m.TeamHome.Team.Name,
+                                    TeamAway = m.TeamAway.Team.Name,
                                     TeamHomeScore = m.TeamHomeScore,
                                     TeamAwayScore = m.TeamAwayScore
                                 }).ToList();
@@ -652,7 +654,8 @@ namespace SieGraSieMa.Services.Tournaments
             _SieGraSieMaContext.Entry(match.TeamAway).Reference(tt => tt.Team).Load();
             if (match == null) throw new Exception("No match found with this PKs");
             if (match.TeamHome.Team == null || match.TeamAway.Team == null) throw new Exception("Match has no teams");
-            if (DTO.Phase == 0 && (await _SieGraSieMaContext.Matches.FindAsync(DTO.TournamentId, 1, 1)).IsMatchPlayed ||
+            if (//DTO.Phase == 0 && (await _SieGraSieMaContext.Matches.FindAsync(DTO.TournamentId, 1, 1)).IsMatchPlayed ||//todo ziemniak .ToList().Where(m=>m.IsMatchPlayed).Any()
+                DTO.Phase == 0 && (_SieGraSieMaContext.Matches.Where(m=>m.TournamentId==DTO.TournamentId && m.Phase==1).Any(m=>m.IsMatchPlayed)) || 
                 DTO.Phase > 0 && (await _SieGraSieMaContext.Matches.FindAsync(DTO.TournamentId, DTO.Phase + 1, (int)Math.Ceiling(DTO.MatchId / 2.0))).IsMatchPlayed)
                 throw new Exception("Match cannot be edited, because next match is already played");
             match.TeamHomeScore = DTO.HomeTeamPoints;
@@ -709,9 +712,7 @@ namespace SieGraSieMa.Services.Tournaments
                 int phases = _SieGraSieMaContext.Groups.Where(g => g.TournamentId == DTO.TournamentId).Select(g => g.Phase).Max();
                 if (DTO.Phase < phases - 1)//jeśli nie finał i nie 3 miejsce
                 {
-                    
                     Team winner = match.Winner;
-
                     IQueryable<Match> query = _SieGraSieMaContext.Matches.Include(m => m.TeamHome).Include(m => m.TeamAway)
                                         .Where(m => m.TournamentId == DTO.TournamentId);
                     if (DTO.Phase < phases - 2)//jeśli wcześniej niż półfinał
@@ -725,7 +726,7 @@ namespace SieGraSieMa.Services.Tournaments
                                         .Where(m => m.TournamentId == DTO.TournamentId && m.Phase == DTO.Phase + 1 && m.MatchId == 1)
                                         .FirstOrDefault();
                         Team looser = match.Looser;
-                        
+
                         if (match.IsNextTeamHome) thirdPlace.TeamHome.Team = looser;
                         else thirdPlace.TeamAway.Team = looser;
                         _SieGraSieMaContext.Matches.Update(thirdPlace);
@@ -774,8 +775,8 @@ namespace SieGraSieMa.Services.Tournaments
                     TournamentId = m.TournamentId,
                     Phase = m.Phase,
                     MatchId = m.MatchId,
-                    TeamHome = new DTOs.TeamDTO() { Name = m.TeamHome.Team.Name },
-                    TeamAway = new DTOs.TeamDTO() { Name = m.TeamAway.Team.Name },
+                    TeamHome = m.TeamHome.Team.Name,
+                    TeamAway = m.TeamAway.Team.Name,
                     TeamHomeScore = m.TeamHomeScore,
                     TeamAwayScore = m.TeamAwayScore
                 }).ToListAsync();
@@ -807,8 +808,8 @@ namespace SieGraSieMa.Services.Tournaments
                                     TournamentId = m.TournamentId,
                                     Phase = m.Phase,
                                     MatchId = m.MatchId,
-                                    TeamHome = new DTOs.TeamDTO() { Name = m.TeamHome.Team.Name },
-                                    TeamAway = new DTOs.TeamDTO() { Name = m.TeamAway.Team.Name },
+                                    TeamHome = m.TeamHome.Team.Name,
+                                    TeamAway = m.TeamAway.Team.Name,
                                     TeamHomeScore = m.TeamHomeScore,
                                     TeamAwayScore = m.TeamAwayScore
                                 }).ToList();
@@ -821,5 +822,23 @@ namespace SieGraSieMa.Services.Tournaments
 
         }
 
+        public async Task<ICollection<GetGroupMatchDTO>> GetGroupsMatches(int tournamentId)
+        {
+            ICollection<GetGroupMatchDTO> matches = await _SieGraSieMaContext.Matches.Include(m => m.TeamHome).ThenInclude(t => t.Team)
+                                .Include(m => m.TeamAway).ThenInclude(t => t.Team)
+                                .Where(m => m.TournamentId == tournamentId && m.Phase == 0)
+                                .Select(m => new GetGroupMatchDTO()
+                                {
+                                    TournamentId = m.TournamentId,
+                                    Phase = m.Phase,
+                                    MatchId = m.MatchId,
+                                    GroupId = m.TeamHome.GroupId,
+                                    TeamHome = m.TeamHome.Team.Name,
+                                    TeamAway = m.TeamAway.Team.Name,
+                                    TeamHomeScore = m.TeamHomeScore,
+                                    TeamAwayScore = m.TeamAwayScore
+                                }).ToListAsync();
+            return matches;
+        }
     }
 }

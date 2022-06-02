@@ -7,7 +7,6 @@ using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
 using SieGraSieMa.Services.Email;
-using SieGraSieMa.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +50,7 @@ namespace SieGraSieMa.Controllers
         //[HttpPost("create")]
         [HttpPost()]
         [Authorize(Policy = "EveryOneAuthenticated")]
-        public IActionResult Create(TeamDTO teamDTO, IFormFile ufile)
+        public IActionResult Create(TeamDTO teamDTO)
         {
             try
             {

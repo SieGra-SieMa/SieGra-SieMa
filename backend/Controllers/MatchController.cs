@@ -31,7 +31,7 @@ namespace SieGraSieMa.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
         [HttpGet("getGroupMatches/{tournamentId}")]
@@ -44,7 +44,7 @@ namespace SieGraSieMa.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
         [HttpGet("getLadderMatches/{tournamentId}")]
@@ -58,7 +58,7 @@ namespace SieGraSieMa.Controllers
             }
             catch (Exception e)
             {
-                return BadRequest(e);
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
         

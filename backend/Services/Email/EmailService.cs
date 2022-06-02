@@ -19,7 +19,7 @@ namespace SieGraSieMa.Services.Email
     public class EmailService : IEmailService
     {
         //https://ethereal.email/messages
-        public IConfiguration _Configuration { get; set; }
+        public IConfiguration Configuration { get; set; }
         private readonly ILogger<EmailService> _logger;
 
 
@@ -29,14 +29,14 @@ namespace SieGraSieMa.Services.Email
 
         public EmailService(IConfiguration Configuration, ILogger<EmailService> logger)
         {
-            _Configuration = Configuration;
+            this.Configuration = Configuration;
             _logger = logger;
 
-            smtpServer = _Configuration.GetValue<string>("EmailService:SmtpServer");
-            username = _Configuration.GetValue<string>("EmailService:Username");
-            password = _Configuration.GetValue<string>("EmailService:Password");
-            from = _Configuration.GetValue<string>("EmailService:From");
-            port = _Configuration.GetValue<int>("EmailService:Port");
+            smtpServer = this.Configuration.GetValue<string>("EmailService:SmtpServer");
+            username = this.Configuration.GetValue<string>("EmailService:Username");
+            password = this.Configuration.GetValue<string>("EmailService:Password");
+            from = this.Configuration.GetValue<string>("EmailService:From");
+            port = this.Configuration.GetValue<int>("EmailService:Port");
 
         }
 

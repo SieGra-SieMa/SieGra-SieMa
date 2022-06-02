@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using SieGraSieMa.Models;
-using SieGraSieMa.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,7 +104,7 @@ namespace SieGraSieMa.Services
             });
             _context.Matches.UpdateRange(Matches);
             await _context.SaveChangesAsync();
-            return Matches;
+            return Matches.Select(m=>new Match {TournamentId=m.TournamentId,Phase=m.Phase, MatchId=m.MatchId});
         }
     }
 }

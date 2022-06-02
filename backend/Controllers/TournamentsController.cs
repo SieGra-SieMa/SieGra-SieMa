@@ -14,7 +14,6 @@ using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.DTOs.TournamentDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
-using SieGraSieMa.Services.Interfaces;
 using SieGraSieMa.Services.Tournaments;
 using System;
 using System.Collections.Generic;

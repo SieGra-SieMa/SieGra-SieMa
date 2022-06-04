@@ -41,6 +41,7 @@ namespace SieGraSieMa.Services.Tournaments
         public Task<IEnumerable<Group>> CreateLadderGroups(int tournamentId, int groupCount);//do stworzenia grup fazy drabinkowej
         public Task<IEnumerable<TeamInGroup>> AddTeamsToGroup(int tournamentId);//do dodania zespołów do grup turniejowych
         public Task<IEnumerable<Match>> CreateMatchTemplates(int tournamentId);//do stworzenia wszystkich meczy oraz "teamInGroup" dla wszystkich meczy drabinkowych
+        public Task<bool> ResetTournament(int id);//do usunięcia grup i meczy gdyby trzeba było je zresetować
         public Task<IEnumerable<GetMatchDTO>> ComposeLadderGroups(int tournamentId);//zbiera najlepsze teamy i wypełnia nimi drabinkę
         public Task<bool> CheckUsersInTeam(List<User> users, int tournamentId);
         public Task<bool> AddTeamToTournament(int teamId, int tournamentId);
@@ -52,8 +53,6 @@ namespace SieGraSieMa.Services.Tournaments
         public Task<ICollection<GetGroupMatchDTO>> GetGroupsMatches(int tournamentId);
         public Task<Match> InsertMatchResult(MatchResultDTO matchResultDTO);
         public Task<List<GetLadderDTO>> GetLadderMatches(int tournamentId);
-
-
     }
     public class TournamentService : ITournamentsService
     {
@@ -67,7 +66,7 @@ namespace SieGraSieMa.Services.Tournaments
 
         public async Task<TournamentListDTO> CreateTournament(Tournament tournament)
         {
-            if(tournament.EndDate<tournament.StartDate || tournament.StartDate<DateTime.Now) throw new Exception("Unable to add because of invalid dates");
+            if (tournament.EndDate < tournament.StartDate || tournament.StartDate < DateTime.Now) throw new Exception("Unable to add because of invalid dates");
             await _SieGraSieMaContext.Tournaments.AddAsync(tournament);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return new TournamentListDTO { Id = tournament.Id, Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
@@ -566,6 +565,16 @@ namespace SieGraSieMa.Services.Tournaments
                                 }).ToList();
             return result;
         }
+        public async Task<bool> ResetTournament(int tournamentId)
+        {
+            var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(tournamentId);
+            if (tournament == null) throw new Exception("Tournament with this id not found");
+            _SieGraSieMaContext.RemoveRange(await _SieGraSieMaContext.Matches.Where(m => m.TournamentId == tournamentId).ToListAsync());
+            var groups = await _SieGraSieMaContext.Groups.Include(g => g.TeamInGroups).Where(g => g.TournamentId == tournamentId).ToListAsync();
+            groups.ToList().ForEach(g => _SieGraSieMaContext.RemoveRange(g.TeamInGroups));
+            _SieGraSieMaContext.RemoveRange(groups);
+            return await _SieGraSieMaContext.SaveChangesAsync() > 0;
+        }
         public async Task<bool> CheckUsersInTeam(List<User> users, int tournamentId)
         {
             var emptyList = await _SieGraSieMaContext.Tournaments.Where(t => t.Id == tournamentId)
@@ -657,7 +666,7 @@ namespace SieGraSieMa.Services.Tournaments
             if (match == null) throw new Exception("No match found with this PKs");
             if (match.TeamHome.Team == null || match.TeamAway.Team == null) throw new Exception("Match has no teams");
             if (//DTO.Phase == 0 && (await _SieGraSieMaContext.Matches.FindAsync(DTO.TournamentId, 1, 1)).IsMatchPlayed ||//todo ziemniak .ToList().Where(m=>m.IsMatchPlayed).Any()
-                DTO.Phase == 0 && (_SieGraSieMaContext.Matches.Where(m=>m.TournamentId==DTO.TournamentId && m.Phase==1).Any(m=>m.IsMatchPlayed)) || 
+                DTO.Phase == 0 && (_SieGraSieMaContext.Matches.Where(m => m.TournamentId == DTO.TournamentId && m.Phase == 1).Any(m => m.IsMatchPlayed)) ||
                 DTO.Phase > 0 && (await _SieGraSieMaContext.Matches.FindAsync(DTO.TournamentId, DTO.Phase + 1, (int)Math.Ceiling(DTO.MatchId / 2.0))).IsMatchPlayed)
                 throw new Exception("Match cannot be edited, because next match is already played");
             match.TeamHomeScore = DTO.HomeTeamPoints;

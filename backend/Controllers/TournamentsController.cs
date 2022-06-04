@@ -248,6 +248,19 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
+        [HttpPost("{id}/resetTournament")]
+        public async Task<IActionResult> ResetTournament(int id)
+        {
+            try
+            {
+                var result = await _tournamentsService.ResetTournament(id);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
         [HttpPost("{id}/groups/composeLadder")]
         public async Task<IActionResult> ComposeLadderGroups(int id)
         {

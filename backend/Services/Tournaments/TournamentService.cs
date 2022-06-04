@@ -51,7 +51,7 @@ namespace SieGraSieMa.Services.Tournaments
         public Task<GetAvailableGroupMatchesDTO> GetAvailableGroupMatches(int tournamentId, MatchesEnum matchesEnum);
         public Task<ICollection<GetGroupMatchDTO>> GetGroupsMatches(int tournamentId);
         public Task<Match> InsertMatchResult(MatchResultDTO matchResultDTO);
-        public Task<GetLadderDTO> GetLadderMatches(int tournamentId);
+        public Task<List<GetLadderDTO>> GetLadderMatches(int tournamentId);
 
 
     }
@@ -81,7 +81,8 @@ namespace SieGraSieMa.Services.Tournaments
             var albums = await _SieGraSieMaContext.Albums.Where(a => a.TournamentId == id).ToListAsync();
             albums.ForEach(a =>
             {
-                a.TournamentId = null;
+                _SieGraSieMaContext.Remove(a);
+                //a.TournamentId = null;
             });
             _SieGraSieMaContext.UpdateRange(albums);
             _SieGraSieMaContext.RemoveRange(await _SieGraSieMaContext.Matches.Where(m => m.TournamentId == id).ToListAsync());
@@ -100,7 +101,7 @@ namespace SieGraSieMa.Services.Tournaments
         }
         public async Task<ResponseTournamentDTO> GetTournament(int id)
         {
-            GetLadderDTO ladder = await GetLadderMatches(id);
+            List<GetLadderDTO> ladder = await GetLadderMatches(id);
             IEnumerable<GetGroupMatchDTO> matches = await GetGroupsMatches(id);
 
             var tournament = await _SieGraSieMaContext.Tournaments
@@ -179,7 +180,8 @@ namespace SieGraSieMa.Services.Tournaments
                     StartDate = t.StartDate,
                     EndDate = t.EndDate,
                     Description = t.Description,
-                    Address = t.Address
+                    Address = t.Address,
+                    Status = t.Groups.Any()
                 })
                 .ToListAsync();
 
@@ -791,12 +793,12 @@ namespace SieGraSieMa.Services.Tournaments
             GetAvailableGroupMatchesDTO result = new() { GroupsMatches = Groups };
             return result;
         }
-        public async Task<GetLadderDTO> GetLadderMatches(int tournamentId)
+        public async Task<List<GetLadderDTO>> GetLadderMatches(int tournamentId)
         {
-            List<GetPhasesWithMatchesDTO> Phases = await _SieGraSieMaContext.Matches.Where(m => m.TournamentId == tournamentId)
+            List<GetLadderDTO> Phases = await _SieGraSieMaContext.Matches.Where(m => m.TournamentId == tournamentId)
                             .GroupBy(m => m.Phase)
                             .Where(m => m.Key != 0)
-                            .Select(m => new GetPhasesWithMatchesDTO() { Phase = m.Key })
+                            .Select(m => new GetLadderDTO() { Phase = m.Key })
                             .ToListAsync();
             Phases.ForEach(phase =>
             {
@@ -814,11 +816,11 @@ namespace SieGraSieMa.Services.Tournaments
                                     TeamAwayScore = m.TeamAwayScore
                                 }).ToList();
             });
-            GetLadderDTO result = new()
+            /*GetLadderDTO result = new()
             {
                 Phases = Phases
-            };
-            return result;
+            };*/
+            return Phases;
 
         }
 

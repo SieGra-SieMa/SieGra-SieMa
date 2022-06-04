@@ -7,11 +7,25 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 80vw;
     height: 10vh;
     margin: 2rem auto;
 }
 
 .footer-icon {
     height: 8vh;
+}
+
+.icon-text {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.icon-text>p {
+    margin: auto 1rem;
+}
+
+#designed-by {
+    margin: 1rem auto;
+    font-size: 12px;
 }

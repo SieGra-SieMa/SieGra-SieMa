@@ -26,7 +26,7 @@ export default function Home() {
                                 pochodzenie, swoje ograniczenia, swoje wątpliwości. 
                                 Coś, co powstrzymało tak wielu innych i pewnie mogło 
                                 zatrzymać i nas, ale jednak nie zatrzymało."
-                            </i> - Ray Allen
+                            </i><b> - Ray Allen</b>
                             <br/><br/>
                             Każdy z nas ma przed sobą swoją drogę, a naszym celem jest pomoc
                             w jej przejściu. Dołącz do nas i poprzez pasję do koszykówki pomagaj razem z nami!
@@ -60,24 +60,21 @@ export default function Home() {
                     <Link className='slide-button' to="/about-us">
                         Poznaj nas bliżej!
                     </Link>
-                    {/* <a className="slide-button" href=""><p>Poznaj nas bliżej!</p></a> */}
                 </div>
             </div>
             <div className="news-section">
-                <div className="container">
-                    <h2>News feed</h2>
-                    <ul className="news-list">
-                        <li className="news-post">
+                <h2>News feed</h2>
+                <ul className="news-list">
+                    <li className="news-post">
 
-                        </li>
-                        <li className="news-post">
+                    </li>
+                    <li className="news-post">
 
-                        </li>
-                        <li className="news-post">
+                    </li>
+                    <li className="news-post">
 
-                        </li>
-                    </ul>
-                </div>
+                    </li>
+                </ul>
             </div>
         </section>
     );

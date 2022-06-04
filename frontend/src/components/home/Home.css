@@ -72,6 +72,12 @@
     min-width: 10vw;
 }
 
+.news-section {
+    display: inline-block;
+    width: 80vw;
+    margin: auto;
+}
+
 .news-list {
     display: flex;
     justify-content: center;

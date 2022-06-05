@@ -5,6 +5,7 @@ using SieGraSieMa.DTOs.AlbumDTO;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services.Albums;
+using SieGraSieMa.Services.Medias;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +19,15 @@ namespace SieGraSieMa.Controllers
     {
 
         private readonly IAlbumService _albumService;
+        private readonly IMediaService _mediaService;
 
-        public AlbumsController(IAlbumService albumService)
+
+        public AlbumsController(IAlbumService albumService, IMediaService mediaService)
         {
             _albumService = albumService;
+            _mediaService = mediaService;
         }
 
-        [AllowAnonymous]
         [HttpGet()]
         public async Task<IActionResult> GetAlbums()
         {
@@ -33,7 +36,6 @@ namespace SieGraSieMa.Controllers
             return Ok(albums);
         }
 
-        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAlbum(int id)
         {
@@ -45,16 +47,21 @@ namespace SieGraSieMa.Controllers
             return Ok(album);
         }
 
-       /* [HttpPost()]
-        public async Task<IActionResult> CreateAlbum(RequestAlbumDTO album)
+        [HttpPost("{id}/media")]
+        public async Task<IActionResult> AddMediaToAlbum(int id, IFormFile[] files)
         {
-            var result = await _albumService.CreateAlbum(new Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = album.TournamentId });
+            try
+            {
+                var list = await _mediaService.CreateMedia(id, files);
 
-            if (!result)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
+                return Ok(list);
+            }
+            catch (Exception ex)
+            {
 
-            return Ok();
-        }*/
+                return BadRequest(new ResponseErrorDTO { Error = ex.Message });
+            }
+        }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateAlbum(UpdateAlbumDTO album, int id)

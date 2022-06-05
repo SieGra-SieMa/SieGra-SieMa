@@ -125,7 +125,7 @@ namespace SieGraSieMa.Services.Tournaments
                         Name = a.Name,
                         CreateDate = a.CreateDate,
                         TournamentId = a.TournamentId,
-                        Media = a.MediumInAlbums.Select(m => new ResponseMediumDTO
+                        MediaList = a.MediumInAlbums.Select(m => new ResponseMediumDTO
                         {
                             Id = m.MediumId,
                             Url = m.Medium.Url
@@ -846,6 +846,8 @@ namespace SieGraSieMa.Services.Tournaments
         {
             var tournament = await _SieGraSieMaContext.Tournaments
                 .Include(t => t.Albums)
+                .ThenInclude(a => a.MediumInAlbums)
+                .ThenInclude(a => a.Medium)
                 .Where(t => t.Id == id)
                 .Select(t => new ResponseTournamentWithAlbumDTO
                 {
@@ -859,6 +861,7 @@ namespace SieGraSieMa.Services.Tournaments
                         Id = a.Id,
                         Name = a.Name,
                         CreateDate = a.CreateDate,
+                        ProfilePicture = a.MediumInAlbums.Select(m => m.Medium.Url).FirstOrDefault()
                     })
                 })
                 .FirstOrDefaultAsync();

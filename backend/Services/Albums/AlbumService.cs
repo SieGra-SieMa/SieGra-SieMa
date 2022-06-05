@@ -58,12 +58,15 @@ namespace SieGraSieMa.Services.Albums
             if (album == null)
                 return null;
                 
-            return new ResponseAlbumDTO { Id = album.Id, Name = album.Name, CreateDate = album.CreateDate, TournamentId = album.TournamentId, Media = album.MediumInAlbums.Select(a => new DTOs.MediumDTO.ResponseMediumDTO { Id = a.Medium.Id, Url = a.Medium.Url})};
+            return new ResponseAlbumDTO { Id = album.Id, 
+                Name = album.Name, CreateDate = album.CreateDate, TournamentId = album.TournamentId, 
+                ProfilePicture = album.MediumInAlbums.Select(a => new DTOs.MediumDTO.ResponseMediumDTO { Id = a.Medium.Id, Url = a.Medium.Url }).ToList().FirstOrDefault() != null ? album.MediumInAlbums.Select(a => new DTOs.MediumDTO.ResponseMediumDTO { Id = a.Medium.Id, Url = a.Medium.Url }).ToList().FirstOrDefault().Url : null, 
+                MediaList = album.MediumInAlbums.Select(a => new DTOs.MediumDTO.ResponseMediumDTO { Id = a.Medium.Id, Url = a.Medium.Url})};
         }
 
         public async Task<IEnumerable<ResponseAlbumDTO>> GetAlbums()
         {
-            var albums = await _SieGraSieMaContext.Albums.Select(a => new ResponseAlbumDTO { Id = a.Id, Name = a.Name, CreateDate = a.CreateDate, TournamentId = a.TournamentId }).ToListAsync();
+            var albums = await _SieGraSieMaContext.Albums.Include(a => a.MediumInAlbums).ThenInclude(a => a.Album).Select(a => new ResponseAlbumDTO { Id = a.Id, Name = a.Name, CreateDate = a.CreateDate, TournamentId = a.TournamentId, ProfilePicture = a.MediumInAlbums.Select(m => m.Medium.Url).FirstOrDefault() }).ToListAsync();
 
             return albums;
         }

@@ -17,7 +17,7 @@ namespace SieGraSieMa.Services.Medias
 
         public Task<Medium> GetMedia(int id);
 
-        public Task<List<RequestMediumDTO>> CreateMedia(IFormFile[] files);
+        public Task<List<RequestMediumDTO>> CreateMedia(int id, IFormFile[] files);
 
         public Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO);
         public Task<bool> DeleteMedia(int id);
@@ -33,7 +33,7 @@ namespace SieGraSieMa.Services.Medias
             _SieGraSieMaContext = SieGraSieMaContext;
         }
 
-        public async Task<List<RequestMediumDTO>> CreateMedia(IFormFile[] files)
+        public async Task<List<RequestMediumDTO>> CreateMedia(int id, IFormFile[] files)
         {
             var year = DateTime.UtcNow.Year.ToString();
             var month = DateTime.UtcNow.Month.ToString();
@@ -52,7 +52,9 @@ namespace SieGraSieMa.Services.Medias
                     }
                     var absPath = new Uri($@"http://localhost:5000/photos/{year}/{month}/{fileName}").AbsolutePath;
                     list.Add(new RequestMediumDTO { Url = absPath });
-                    _SieGraSieMaContext.Media.Add(new Medium { Url = absPath });
+                    var addedMedium = new Medium { Url = absPath };
+                    _SieGraSieMaContext.Media.Add(addedMedium);
+                    _SieGraSieMaContext.MediumInAlbum.Add(new MediumInAlbum { AlbumId = id, Medium = addedMedium });
                 }
             }
             await _SieGraSieMaContext.SaveChangesAsync();

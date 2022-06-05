@@ -16,6 +16,7 @@
     border: none;
     background-color: #fff;
     transition: box-shadow .3s;
+    color: #000;
 }
 
 .input:hover {

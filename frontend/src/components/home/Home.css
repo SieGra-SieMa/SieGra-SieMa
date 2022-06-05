@@ -2,6 +2,10 @@
     color: var(--light-color);
 }
 
+.main-section h2 {
+    text-align: center;
+}
+
 .hero-section {
     height: 90vh;
 }
@@ -67,11 +71,6 @@
     text-align: center;
 }
 
-.dreamteam-member-image {
-    max-width: 20vw;
-    min-width: 10vw;
-}
-
 .news-section {
     display: flex;
     flex-direction: column;
@@ -109,16 +108,6 @@
     .hero-container {
         flex-direction: column;
         justify-content: center;
-    }
-}
-
-@media all and (max-width: 960px) {
-    .footer-container {
-        flex-direction: column;
-    }
-
-    .footer-block {
-        margin: 10px 0;
     }
 }
 

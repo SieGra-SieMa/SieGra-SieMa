@@ -74,10 +74,7 @@ p {
 
 h1::after,
 h2::after,
-h3::after,
-h4::after,
-h5::after,
-h6::after {
+h3::after {
 	content: '';
 	display: block;
 	position: relative;

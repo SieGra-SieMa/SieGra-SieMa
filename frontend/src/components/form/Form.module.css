@@ -14,13 +14,8 @@
     outline: none;
     font-size: 18px;
     border: none;
-    background-color: #fff;
-    transition: box-shadow .3s;
     color: #000;
-}
-
-.input:hover {
-    box-shadow: 0 0 3px var(--box-shadow-color);
+    background-color: #fff;
 }
 
 .orangeButton,
@@ -34,7 +29,7 @@
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
-    transition: background-color .3s, box-shadow .3s;
+    transition: background-color .3s;
     font-weight: bold;
 }
 
@@ -45,7 +40,6 @@
 
 .orangeButton:hover {
     background-color: #ca8c71;
-    box-shadow: 0 0 5px var(--box-shadow-color);
 }
 
 .orangeButton:active {
@@ -59,7 +53,6 @@
 
 .greyButton:hover {
     background-color: #cfcfcf;
-    box-shadow: 0 0 5px var(--box-shadow-color);
 }
 
 .greyButton:active {
@@ -73,7 +66,6 @@
 
 .greenButton:hover {
     background-color: #2f424b;
-    box-shadow: 0 0 5px #2f424b;
 }
 
 .greenButton:active {
@@ -87,7 +79,6 @@
 
 .redButton:hover {
     background-color: #9f3838;
-    box-shadow: 0 0 5px #873232;
 }
 
 .redButton:active {

@@ -58,7 +58,6 @@ export default function SignIn() {
                 required
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <div className={styles.spacing}></div>
             <VerticalSpacing size={30} />
             {loading ? (
                 <div className={styles.loader}>

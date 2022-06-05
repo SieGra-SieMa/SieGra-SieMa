@@ -34,6 +34,10 @@
     justify-content: space-between;
 }
 
+.dreamteam-member-image {
+    max-width: 20vw;
+    min-width: 10vw;
+}
 
 .slide-button {
     display: inline-block;

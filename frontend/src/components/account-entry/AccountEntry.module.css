@@ -33,7 +33,7 @@
 
 .root>span {
     text-align: center;
-    color: #808080;
+    color: #fff;
     font-size: 20px;
     display: flex;
     flex-direction: column;
@@ -47,8 +47,8 @@
     display: block;
     width: 0;
     height: 100%;
-    border-left: 1px dashed #808080;
-    border-right: 1px dashed #808080;
+    border-left: 1px dashed #fff;
+    border-right: 1px dashed #fff;
 }
 
 .root>span::after {

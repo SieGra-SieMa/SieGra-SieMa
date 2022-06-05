@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { createPortal } from 'react-dom';
 import styles from './Modal.module.css';
 
@@ -6,9 +7,27 @@ export default function Modal({
 }: {
     title: string, close: () => void, isClose?: boolean, children: JSX.Element
 }) {
+
+    const isMouseDown = useRef(false);
+
     return createPortal((
-        <div className={styles.root} onClick={close}>
-            <div className={styles.container} onClick={(e) => e.stopPropagation()}>
+        <div
+            className={styles.root}
+            onMouseDown={() => {
+                isMouseDown.current = true;
+            }}
+            onClick={() => {
+                if (isMouseDown.current) {
+                    close();
+                }
+                isMouseDown.current = false;
+            }}
+        >
+            <div
+                className={styles.container}
+                onClick={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+            >
                 <div className={styles.header}>
                     <h3>{title}</h3>
                     {isClose && <button className={styles.close} onClick={close}></button>}

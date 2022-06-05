@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react';
-import { Tournament } from '../../_lib/types';
+import { Tournament, TournamentRequest } from '../../_lib/_types/tournament';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import Input from '../form/Input';
@@ -26,18 +26,16 @@ export default function EditTournament({
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        const updatedTournament: Tournament = {
-            id: tournament.id,
+        const updatedTournament: TournamentRequest = {
             name,
             startDate,
             endDate,
             address
         };
-        tournamentsService.updateTournament(updatedTournament)
+        tournamentsService.updateTournament(tournament.id, updatedTournament)
             .then((data) => {
-                // TODO check update endpoint response
-                confirm(updatedTournament);
-            })
+                confirm(data);
+            });
     }
 
     return (

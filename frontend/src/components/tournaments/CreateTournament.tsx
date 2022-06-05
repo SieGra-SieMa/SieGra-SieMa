@@ -1,12 +1,16 @@
 import { FormEvent, useState } from 'react';
-import { Tournament } from '../../_lib/types';
+import { TournamentList, TournamentRequest } from '../../_lib/_types/tournament';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
 import styles from './CreateTournament.module.css';
 
-export default function CreateTournament({ confirm }: { confirm: (tournament: Tournament) => void }) {
+type CreateTournamentType = {
+    confirm: (tournament: TournamentList) => void;
+};
+
+export default function CreateTournament({ confirm }: CreateTournamentType) {
 
     const { tournamentsService } = useApi();
 
@@ -17,11 +21,11 @@ export default function CreateTournament({ confirm }: { confirm: (tournament: To
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        const tournament: Tournament = {
+        const tournament: TournamentRequest = {
             name,
             startDate: startDate,
             endDate: endDate,
-            address
+            address,
         };
         tournamentsService.createTournament(tournament)
             .then((data) => {

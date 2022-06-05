@@ -1,4 +1,4 @@
-import { Phase as PhaseType } from '../../_lib/types';
+import { Phase as PhaseType } from '../../_lib/_types/tournament';
 import styles from './Ladder.module.css';
 import Match from './Match';
 

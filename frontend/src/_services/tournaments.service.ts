@@ -1,5 +1,6 @@
 import Config from '../config.json';
-import { Tournament } from '../_lib/types';
+import { Message } from '../_lib/_types/response';
+import { Tournament, TournamentList, TournamentRequest } from '../_lib/_types/tournament';
 import Service from './service';
 
 export default class TournamentsService extends Service {
@@ -8,7 +9,7 @@ export default class TournamentsService extends Service {
         return super.get(`${Config.HOST}/api/tournaments`);
     };
 
-    createTournament(tournament: Tournament): Promise<Tournament> {
+    createTournament(tournament: TournamentRequest): Promise<TournamentList> {
         return super.post(`${Config.HOST}/api/tournaments`, tournament);
     };
 
@@ -16,11 +17,11 @@ export default class TournamentsService extends Service {
         return super.get(`${Config.HOST}/api/tournaments/${id}`);
     };
 
-    updateTournament(tournament: Tournament): Promise<Tournament> {
-        return super.patch(`${Config.HOST}/api/tournaments/${tournament.id}`, tournament);
+    updateTournament(id: number, tournament: TournamentRequest): Promise<Tournament> {
+        return super.patch(`${Config.HOST}/api/tournaments/${id}`, tournament);
     };
 
-    deleteTournament(id: string): Promise<{}> {
+    deleteTournament(id: string): Promise<Message> {
         return super.del(`${Config.HOST}/api/tournaments/${id}`);
     };
 }

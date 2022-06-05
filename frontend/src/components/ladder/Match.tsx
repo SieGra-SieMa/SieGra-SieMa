@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Match as MatchType } from '../../_lib/types';
+import { Match as MatchType } from '../../_lib/_types/tournament';
 import Modal from '../modal/Modal';
 import styles from './Ladder.module.css';
 import MatchResult from './MatchResult';
@@ -17,7 +17,7 @@ export default function Match({ match }: MatchProps) {
             <div className={styles.match} onClick={() => setIsEdit(true)}>
                 <div className={styles.team}>
                     <div>
-                        {match.teamHome.name ?? '---------'}
+                        {match.teamHome ?? '---------'}
                     </div>
                     <div>
                         {match.teamHomeScore ?? '-'}
@@ -25,7 +25,7 @@ export default function Match({ match }: MatchProps) {
                 </div>
                 <div className={styles.team}>
                     <div>
-                        {match.teamAway.name ?? '---------'}
+                        {match.teamAway ?? '---------'}
                     </div>
                     <div>
                         {match.teamAwayScore ?? '-'}

@@ -8,6 +8,8 @@
 	-moz-osx-font-smoothing: grayscale;
 	text-decoration: none;
 	list-style: none;
+
+	color: white;
 }
 
 html {
@@ -15,8 +17,122 @@ html {
 }
 
 body {
-	background-color: #eee;
+	background-color: var(--main-color);
 	height: 100%;
+}
+
+h1 {
+	font-size: 96px;
+	font-weight: 100;
+	letter-spacing: -1.5px;
+    text-align: center;
+	width: fit-content;
+}
+
+h2 {
+	font-size: 60px;
+	font-weight: 200;
+	letter-spacing: -.5px;
+    text-align: center;
+	width: fit-content;
+}
+
+h3 {
+	font-size: 48px;
+	font-weight: 300;
+	letter-spacing: 0px;
+	text-align: center;
+	width: fit-content;
+}
+
+h4 {
+	font-size: 34px;
+	font-weight: 300;
+	letter-spacing: .25px;
+	text-align: center;
+	width: fit-content;
+}
+
+h5 {
+	font-size: 24px;
+	font-weight: 300;
+	letter-spacing: 0px;
+	text-align: center;
+	width: fit-content;
+}
+
+h6 {
+	font-size: 20px;
+	font-weight: 300;
+	letter-spacing: .15px;
+	text-align: center;
+	width: fit-content;
+}
+
+p {
+	font-size: 16px;
+	font-weight: 300;
+	letter-spacing: .15px;
+	text-align: center;
+	width: fit-content;
+}
+
+h1::after, h2::after, h3::after, h4::after, h5::after, h6::after {
+	content: '';
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 3px;
+	margin: 10px 0;
+	border-radius: 3px;
+    background-color: var(--accent-color);
+}
+
+.slide-button {
+    display: inline-block;
+    padding: .75rem 1.25rem;
+    border-radius: 10rem;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 1rem;
+    letter-spacing: .15rem;
+    transition: all .3s;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.slide-button:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--main-color);
+    border-radius: 10rem;
+    z-index: -2;
+}
+
+.slide-button:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0%;
+    height: 100%;
+    background-color: var(--accent-color);
+    transition: all .3s;
+    border-radius: 10rem;
+    z-index: -1;
+}
+
+.slide-button:hover {
+    color: #fff;
+}
+
+.slide-button:hover:before {
+    width: 100%;
 }
 
 #root {

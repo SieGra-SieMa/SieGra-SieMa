@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace SieGraSieMa.DTOs.AlbumDTO
 {
-    public class RequestAlbumDTO
+    public class UpdateAlbumDTO
     {
         public string Name { get; set; }
         public DateTime CreateDate { get; set; }
+        public int TournamentId { get; set; }
     }
 }

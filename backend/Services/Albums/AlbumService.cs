@@ -32,14 +32,14 @@ namespace SieGraSieMa.Services.Albums
         public async Task<bool> CreateAlbum(Album album)
         {
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(album.TournamentId);
-            if (tournament == null)
-                return false;
+            if(tournament == null)
+                throw new Exception("Tournament not found!");
 
             await _SieGraSieMaContext.Albums.AddAsync(album);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return true;
 
-            return false;
+            throw new Exception("Album not added!");
         }
 
         public async Task<bool> DeleteAlbum(int id)

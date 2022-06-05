@@ -20,6 +20,7 @@ namespace SieGraSieMa.Services.Tournaments
 
         public Task<ResponseTournamentDTO> GetTournament(int id);
 
+        public Task<ResponseTournamentWithAlbumDTO> GetTournamentWithAlbums(int id);
         public Task<TournamentListDTO> CreateTournament(Tournament tournament);
 
         public Task<ResponseTournamentDTO> UpdateTournament(int id, Tournament tournament);
@@ -839,6 +840,30 @@ namespace SieGraSieMa.Services.Tournaments
                                     TeamAwayScore = m.TeamAwayScore
                                 }).ToListAsync();
             return matches;
+        }
+
+        public async Task<ResponseTournamentWithAlbumDTO> GetTournamentWithAlbums(int id)
+        {
+            var tournament = await _SieGraSieMaContext.Tournaments
+                .Include(t => t.Albums)
+                .Where(t => t.Id == id)
+                .Select(t => new ResponseTournamentWithAlbumDTO
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    StartDate = t.StartDate,
+                    EndDate = t.EndDate,
+                    Address = t.Address,
+                    Albums = t.Albums.Select(a => new ResponseAlbumWithoutMediaDTO
+                    {
+                        Id = a.Id,
+                        Name = a.Name,
+                        CreateDate = a.CreateDate,
+                    })
+                })
+                .FirstOrDefaultAsync();
+
+            return tournament;
         }
     }
 }

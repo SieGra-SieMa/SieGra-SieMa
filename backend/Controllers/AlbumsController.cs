@@ -45,7 +45,7 @@ namespace SieGraSieMa.Controllers
             return Ok(album);
         }
 
-        [HttpPost()]
+       /* [HttpPost()]
         public async Task<IActionResult> CreateAlbum(RequestAlbumDTO album)
         {
             var result = await _albumService.CreateAlbum(new Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = album.TournamentId });
@@ -54,10 +54,10 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
             return Ok();
-        }
+        }*/
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateAlbum(RequestAlbumDTO album, int id)
+        public async Task<IActionResult> UpdateAlbum(UpdateAlbumDTO album, int id)
         {
             var newAlbum = new Models.Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = album.TournamentId };
 

@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace SieGraSieMa.DTOs.AlbumDTO
 {
-    public class RequestAlbumDTO
+    public class ResponseAlbumWithoutMediaDTO
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public DateTime CreateDate { get; set; }
     }

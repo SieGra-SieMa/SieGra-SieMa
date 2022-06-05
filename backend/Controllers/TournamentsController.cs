@@ -14,6 +14,7 @@ using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.DTOs.TournamentDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
+using SieGraSieMa.Services.Albums;
 using SieGraSieMa.Services.Tournaments;
 using System;
 using System.Collections.Generic;
@@ -29,19 +30,21 @@ namespace SieGraSieMa.Controllers
         private readonly ITournamentsService _tournamentsService;
         private readonly IContestService _contestService;
         private readonly ITeamService _teamService;
+        private readonly IAlbumService _albumService;
 
 
         private readonly UserManager<User> _userManager;
 
         //private readonly IMapper _mapper;
 
-        public TournamentsController(ITournamentsService tournamentsService, UserManager<User> userManager, IContestService contestService, ITeamService teamService)
+        public TournamentsController(ITournamentsService tournamentsService, UserManager<User> userManager, IContestService contestService, ITeamService teamService, IAlbumService albumService)
         {
             _tournamentsService = tournamentsService;
             //_mapper = mapper;
             _userManager = userManager;
             _contestService = contestService;
             _teamService = teamService;
+            _albumService = albumService;
         }
         [AllowAnonymous]
         [HttpGet()]
@@ -318,6 +321,38 @@ namespace SieGraSieMa.Controllers
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
             return Ok();
+        }
+        [HttpGet("{id}/albums")]
+        public async Task<IActionResult> GetAlbum(int id)
+        {
+            try
+            {
+                var result = await _tournamentsService.GetTournamentWithAlbums(id);
+                if (result == null)
+                    return BadRequest(new ResponseErrorDTO { Error = "Tournament not found!" });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [HttpPost("{id}/albums")]
+        public async Task<IActionResult> CreateAlbum(int id, RequestAlbumDTO album)
+        {
+            try
+            {
+                var result = await _albumService.CreateAlbum(new Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = id });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+            
         }
     }
 }

@@ -26,8 +26,6 @@ namespace SieGraSieMa.Services.Tournaments
         public Task<ResponseTournamentDTO> UpdateTournament(int id, Tournament tournament);
 
         public Task<bool> DeleteTournament(int id);
-        public Task<string> GetSummary(int id);
-        public Task<string> SetSummary(int id, string data);
         public Task<string> GetDescription(int id);
         public Task<string> SetDescription(int id, string data);
 
@@ -201,21 +199,6 @@ namespace SieGraSieMa.Services.Tournaments
             //TODO how to change this?
             return await GetTournament(oldTournament.Id);
 
-        }
-        public async Task<string> GetSummary(int id)
-        {
-            var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
-            if (tournament == null) throw new Exception("Tournament not found");
-            return tournament.Summary;
-        }
-        public async Task<string> SetSummary(int id, string data)
-        {
-            var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
-            if (tournament == null) throw new Exception("Tournament not found");
-            tournament.Summary = data;
-            _SieGraSieMaContext.Update(tournament);
-            await _SieGraSieMaContext.SaveChangesAsync();
-            return tournament.Summary;
         }
         public async Task<string> GetDescription(int id)
         {

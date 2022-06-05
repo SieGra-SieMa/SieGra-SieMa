@@ -110,31 +110,6 @@ namespace SieGraSieMa.Controllers
             return Ok(new MessageDTO { Message = $"Tournament with {id} id succesfully deleted" });
         }
 
-
-        [AllowAnonymous]
-        [HttpGet("{id}/summary")]
-        public async Task<IActionResult> GetSummary(int id)
-        {
-            var summary = await _tournamentsService.GetSummary(id);
-
-            if (summary == null)
-                return NotFound(new ResponseErrorDTO { Error = "Summary not found" });
-
-            return Ok(new MessageDTO { Message = summary });
-        }
-        [HttpPatch("{id}/summary")]
-        public async Task<IActionResult> SetSummary(int id, RequestTournamentDescription dto)
-        {
-            try
-            {
-                var response = await _tournamentsService.SetSummary(id, dto.data);
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new ResponseErrorDTO { Error = e.Message });
-            }
-        }
         [AllowAnonymous]
         [HttpGet("{id}/description")]
         public async Task<IActionResult> GetDescription(int id)

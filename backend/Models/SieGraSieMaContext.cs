@@ -547,9 +547,6 @@ namespace SieGraSieMa.Models
                 entity.Property(e => e.Description)
                     .HasColumnName("description");
 
-                entity.Property(e => e.Summary)
-                    .HasColumnName("summary");
-
                 entity.Property(e => e.Address)
                     .IsRequired()
                     .HasMaxLength(256)

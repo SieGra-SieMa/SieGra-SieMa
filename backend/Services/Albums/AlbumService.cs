@@ -54,11 +54,11 @@ namespace SieGraSieMa.Services.Albums
 
         public async Task<ResponseAlbumDTO> GetAlbum(int id)
         {
-            var album = await _SieGraSieMaContext.Albums.FindAsync(id);
+            var album = await _SieGraSieMaContext.Albums.Include(a => a.MediumInAlbums).ThenInclude(a => a.Medium).Where(a => a.Id == id).SingleOrDefaultAsync();
             if (album == null)
                 return null;
                 
-            return new ResponseAlbumDTO { Id = album.Id, Name = album.Name, CreateDate = album.CreateDate, TournamentId = album.TournamentId};
+            return new ResponseAlbumDTO { Id = album.Id, Name = album.Name, CreateDate = album.CreateDate, TournamentId = album.TournamentId, Media = album.MediumInAlbums.Select(a => new DTOs.MediumDTO.ResponseMediumDTO { Id = a.Medium.Id, Url = a.Medium.Url})};
         }
 
         public async Task<IEnumerable<ResponseAlbumDTO>> GetAlbums()

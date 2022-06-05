@@ -446,6 +446,13 @@ namespace SieGraSieMa.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("captain");
 
+                entity.HasOne(t => t.Medium)
+                    .WithMany(m => m.Team)
+                    .HasForeignKey(t => t.MediumId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("team_medium")
+                    .IsRequired(false);
+
                 entity.HasIndex(e => e.CaptainId, "captain");
 
                 entity.HasIndex(e => e.Code, "code")
@@ -547,6 +554,13 @@ namespace SieGraSieMa.Models
                     .IsRequired()
                     .HasMaxLength(256)
                     .HasColumnName("address");
+
+                entity.HasOne(t => t.Medium)
+                    .WithMany(m => m.Tournament)
+                    .HasForeignKey(t => t.MediumId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("tournament_medium")
+                    .IsRequired(false);
             });
 
             modelBuilder.Entity<User>(entity =>

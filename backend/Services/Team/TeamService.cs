@@ -20,6 +20,7 @@ namespace SieGraSieMa.Services
         Team GetTeam(int id);
         Team GetTeamWithPlayers(int id);
         IEnumerable<GetTeamsDTO> GetTeamsWithUser(string email);
+        Task<IEnumerable<GetTeamsDTO>> GetTeamsWhichUserIsCaptain(string email);
         IEnumerable<Team> GetTeams();
         Task<bool> IsUserAbleToJoinTeam(User user, string code);
         Task ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO);
@@ -156,6 +157,37 @@ namespace SieGraSieMa.Services
                         }).ToList()
                 })
                 .ToList();
+        }
+        
+        public async Task<IEnumerable<GetTeamsDTO>> GetTeamsWhichUserIsCaptain(string email)
+        {
+            return await _SieGraSieMaContext.Teams
+                .Where(e => e.Captain.Email == email)
+                .Include(e => e.Players)
+                .ThenInclude(e => e.User)
+                .Select(t => new GetTeamsDTO
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    CaptainId = t.CaptainId,
+                    Captain = new PlayerDTO
+                    {
+                        Id = t.CaptainId,
+                        Name = t.Captain.Name,
+                        Surname = t.Captain.Surname
+
+                    },
+                    Code = t.Code,
+                    Players = t.Players
+                        .Select(p => new PlayerDTO
+                        {
+                            Id = p.UserId,
+                            Name = p.User.Name,
+                            Surname = p.User.Surname
+
+                        }).ToList()
+                })
+                .ToListAsync();
         }
 
         public IEnumerable<Team> GetTeams()

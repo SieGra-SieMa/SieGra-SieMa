@@ -49,7 +49,21 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
-
+        
+        [HttpGet("teamsIAmCaptain")]
+        [Authorize(Policy = "EveryOneAuthenticated")]
+        public IActionResult GetTeamByMailForCaptain()
+        {
+            try
+            {
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                return Ok(_teamService.GetTeamsWhichUserIsCaptain(email));
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
         //[HttpPost("create")]
         [HttpPost()]
         [Authorize(Policy = "EveryOneAuthenticated")]

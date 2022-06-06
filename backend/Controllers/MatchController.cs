@@ -53,7 +53,7 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var response = await _tournamentsService.GetLadderMatches(tournamentId);
-                if (!response.Phases.Any()) return NotFound(new ResponseErrorDTO { Error = "No matches found for this ladder" });
+                if (!response.Any()) return NotFound(new ResponseErrorDTO { Error = "No matches found for this ladder" });
                 return Ok(response);
             }
             catch (Exception e)

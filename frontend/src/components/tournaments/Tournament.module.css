@@ -11,7 +11,6 @@
 
 .title {
     font-size: 33px;
-    padding: 25px 0;
 }
 
 .groups {
@@ -25,14 +24,11 @@
     width: calc(50% - 10px);
     min-width: 700px;
     flex: 1 1;
-    background-color: #fff;
+    background-color: var(--secondary-color);
     border-radius: 5px;
     overflow: hidden;
-    transition: box-shadow .3s;
-}
+    color: #fff;
 
-.group:hover {
-    box-shadow: 0 0 5px var(--box-shadow-color);
 }
 
 .group>table {
@@ -58,10 +54,5 @@
 }
 
 .group>table>tbody>tr:nth-child(odd) {
-    background-color: #f7f7f7;
-}
-
-.group>table>tbody>tr:hover {
-    background-color: #1a1d2e;
-    color: #fff;
+    background-color: #313c41;
 }

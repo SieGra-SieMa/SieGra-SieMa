@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 import { createPortal } from 'react-dom';
+import Button, { ButtonStyle } from '../form/Button';
 import styles from './Modal.module.css';
 
 export default function Modal({
@@ -30,7 +31,7 @@ export default function Modal({
             >
                 <div className={styles.header}>
                     <h3>{title}</h3>
-                    {isClose && <button className={styles.close} onClick={close}></button>}
+                    {isClose && <Button className={styles.close} value='' onClick={close} style={ButtonStyle.Red} />}
                 </div>
                 <div>
                     {children}

@@ -18,7 +18,7 @@
     background-color: #fff;
 }
 
-.orangeButton,
+.yellowButton,
 .greyButton,
 .greenButton,
 .redButton {
@@ -33,17 +33,17 @@
     font-weight: bold;
 }
 
-.orangeButton {
+.yellowButton {
     color: #fff;
-    background-color: #E3A084;
+    background-color: var(--accent-color);
 }
 
-.orangeButton:hover {
-    background-color: #ca8c71;
+.yellowButton:hover {
+    background-color: #a8833e;
 }
 
-.orangeButton:active {
-    background-color: #9c664f;
+.yellowButton:active {
+    background-color: #755f36;
 }
 
 .greyButton {

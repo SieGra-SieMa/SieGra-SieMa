@@ -20,9 +20,9 @@ export default function TournamentsList() {
     return (
         <>
             <div className={styles.top}>
-                <h2 className={styles.title}>Tournaments</h2>
+                <h1>Turnieje</h1>
                 <GuardComponent roles={[ROLES.Admin]}>
-                    <Button value='Add' onClick={() => setIsAdd(true)} />
+                    <Button value='Dodaj turniej' onClick={() => setIsAdd(true)} />
                 </GuardComponent>
             </div>
             <ul className={styles.content}>

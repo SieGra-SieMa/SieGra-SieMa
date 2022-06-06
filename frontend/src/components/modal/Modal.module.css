@@ -15,14 +15,14 @@
 
 .container {
     min-width: 400px;
-    background-color: #eee;
+    background-color: var(--main-color);
     position: fixed;
     border-radius: 10px;
     padding: 30px;
     display: grid;
     row-gap: 25px;
     animation: showup .3s ease-out;
-    box-shadow: 0 0 5px #333;
+    box-shadow: 0 0 15px #000;
 }
 
 @keyframes showup {
@@ -47,27 +47,12 @@
 }
 
 .close {
-    appearance: none;
-    background-color: #ddd;
-    border: none;
     width: 50px;
     height: 50px;
     padding: 10px;
     position: relative;
-    border-radius: 5px;
-    transition: box-shadow .3s, background-color .3s;
-    cursor: pointer;
-    flex-shrink: 0;
     align-self: flex-start;
-}
-
-.close:hover {
-    background-color: #ccc;
-    box-shadow: 0 0 5px var(--box-shadow-color);
-}
-
-.close:active {
-    background-color: #aaa;
+    flex-shrink: 0;
 }
 
 .close:before,
@@ -77,7 +62,7 @@
     top: 5px;
     height: 40px;
     width: 2px;
-    background-color: #000;
+    background-color: #fff;
 }
 
 .close:before {

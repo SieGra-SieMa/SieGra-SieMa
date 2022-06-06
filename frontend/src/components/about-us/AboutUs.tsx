@@ -4,7 +4,7 @@ export default function AboutUs() {
     return (
         <div className="container">
             <div className="description">
-                <h2>O nas</h2>
+                <h1>O nas</h1>
                 <p>
                     Cześć! Miło, że nas odwiedziłeś! Jesteśmy paczką przyjaciół i wspólnie dzielimy pasje do koszykówki i pomagania. Poznaj nas bliżej!
                 </p>

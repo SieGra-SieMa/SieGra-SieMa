@@ -15,8 +15,7 @@
 
 .block>h3 {
     text-align: center;
-    padding: 20px;
-    font-size: 33px;
+    padding: 20px 0;
 }
 
 .loader {

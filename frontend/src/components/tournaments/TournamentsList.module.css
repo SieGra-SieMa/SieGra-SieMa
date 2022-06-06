@@ -1,12 +1,8 @@
 .top {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    row-gap: 25px;
     align-items: center;
-    column-gap: 25px;
-}
-
-.title {
-    font-size: 33px;
 }
 
 .content {
@@ -14,25 +10,23 @@
     flex-direction: column;
     row-gap: 25px;
     margin: 20px 0;
+    color: #fff;
+
 }
 
 .item {
     border-radius: 15px;
     overflow: hidden;
-    transition: box-shadow .3s;
-    background-color: #fff;
+    background-color: var(--secondary-color);
     padding: 30px;
     cursor: pointer;
-}
-
-.item:hover {
-    box-shadow: 0 0 5px var(--box-shadow-color);
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: #fff;
 }
 
 .header>h3 {

@@ -14,7 +14,7 @@ export default function AboutUs() {
                 <ul className="member-list">
                     <li className="member">
                         <div className="image-container dreamteam-member-image">
-                            <img src="http://localhost:3000/card_kamila.png" alt="" />
+                            <img src="/card_kamila.png" alt="" />
                         </div>
                         <h4>Kamila</h4>
                         <p>
@@ -36,7 +36,7 @@ export default function AboutUs() {
                     </li>
                     <li className="member">
                         <div className="image-container dreamteam-member-image">
-                            <img src="http://localhost:3000/card_olek.png" alt="" />
+                            <img src="/card_olek.png" alt="" />
                         </div>
                         <h4>Olek</h4>
                         <p>
@@ -60,7 +60,7 @@ export default function AboutUs() {
                     </li>
                     <li className="member">
                         <div className="image-container dreamteam-member-image">
-                            <img src="http://localhost:3000/card_mateusz.png" alt="" />
+                            <img src="/card_mateusz.png" alt="" />
                         </div>
                         <h4>Mateusz</h4>
                         <p>

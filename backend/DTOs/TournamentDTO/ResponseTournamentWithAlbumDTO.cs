@@ -14,6 +14,7 @@ namespace SieGraSieMa.DTOs.TournamentDTO
         public DateTime EndDate { get; set; }
         public string Description { get; set; }
         public string Address { get; set; }
+        public string ProfilePicture { get; set; }
         public virtual IEnumerable<ResponseAlbumWithoutMediaDTO> Albums { get; set; }
     }
 }

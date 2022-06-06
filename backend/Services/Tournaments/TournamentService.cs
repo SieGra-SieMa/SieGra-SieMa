@@ -101,7 +101,6 @@ namespace SieGraSieMa.Services.Tournaments
         {
             GetLadderDTO ladder = await GetLadderMatches(id);
             IEnumerable<GetGroupMatchDTO> matches = await GetGroupsMatches(id);
-
             var tournament = await _SieGraSieMaContext.Tournaments
                 .Include(t => t.TeamInTournaments)
                 .ThenInclude(t => t.Team)
@@ -117,6 +116,7 @@ namespace SieGraSieMa.Services.Tournaments
                     EndDate = t.EndDate,
                     //Description = t.Description,
                     Address = t.Address,
+                    ProfilePicture = t.Medium == null ? null : t.Medium.Url,
                     Albums = t.Albums.Select(a => new ResponseAlbumDTO
                     {
                         Id = a.Id,
@@ -162,6 +162,7 @@ namespace SieGraSieMa.Services.Tournaments
                 });
             }
 
+            
             return tournament;
         }
         public async Task<IEnumerable<TournamentListDTO>> GetTournaments()
@@ -178,7 +179,8 @@ namespace SieGraSieMa.Services.Tournaments
                     StartDate = t.StartDate,
                     EndDate = t.EndDate,
                     Description = t.Description,
-                    Address = t.Address
+                    Address = t.Address,
+                    ProfilePicture = t.Medium == null ? null : t.Medium.Url
                 })
                 .ToListAsync();
 

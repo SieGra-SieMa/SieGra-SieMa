@@ -49,7 +49,7 @@ namespace SieGraSieMa.Controllers
             return Ok(medium);
         }
 
-        [HttpPost()]
+        /*[HttpPost()]
         public async Task<IActionResult> CreateMedium(IFormFile[] files)
         {
             try
@@ -63,7 +63,7 @@ namespace SieGraSieMa.Controllers
 
                 return BadRequest(new ResponseErrorDTO { Error = ex.Message });
             }
-        }
+        }*/
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateMedium(RequestMediumDTO medium, int id)

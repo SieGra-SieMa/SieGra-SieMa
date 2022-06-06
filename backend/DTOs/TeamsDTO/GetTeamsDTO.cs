@@ -14,6 +14,7 @@ namespace SieGraSieMa.DTOs.TeamsDTO
         //public string CaptainName { get; set; }
         //public string CaptainSurname { get; set; }
         public string Code { get; set; }
+        public string ProfilePicture { get; set; }
         public List<PlayerDTO> Players { get; set; }
     }
 }

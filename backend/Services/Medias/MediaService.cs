@@ -8,17 +8,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static SieGraSieMa.Services.Medias.IMediaService;
 
 namespace SieGraSieMa.Services.Medias
 {
     public interface IMediaService
     {
         public Task<IEnumerable<Medium>> GetMedia();
-
         public Task<Medium> GetMedia(int id);
-
-        public Task<List<RequestMediumDTO>> CreateMedia(IFormFile[] files);
-
+        public Task<List<RequestMediumDTO>> CreateMedia(int? albumId, int? id, IFormFile[] files, MediaTypeEnum mediaType);
+        public enum MediaTypeEnum { photos, teams, tournaments }
         public Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO);
         public Task<bool> DeleteMedia(int id);
         public Task<MediumInAlbum> AddToAlbum(MediumInAlbum mediumInAlbum);
@@ -33,7 +32,7 @@ namespace SieGraSieMa.Services.Medias
             _SieGraSieMaContext = SieGraSieMaContext;
         }
 
-        public async Task<List<RequestMediumDTO>> CreateMedia(IFormFile[] files)
+        public async Task<List<RequestMediumDTO>> CreateMedia(int? albumId, int? id, IFormFile[] files, MediaTypeEnum mediaType)
         {
             var year = DateTime.UtcNow.Year.ToString();
             var month = DateTime.UtcNow.Month.ToString();
@@ -43,16 +42,39 @@ namespace SieGraSieMa.Services.Medias
                 if (file != null && file.Length > 0)
                 {
                     var fileName = Path.GetFileName(file.FileName);
-                    if(!Directory.Exists($@"wwwroot\photos\{year}\{month}"))
-                        Directory.CreateDirectory($@"wwwroot\photos\{year}\{month}");
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), $@"wwwroot\photos\{year}\{month}", fileName);
+
+                    var result = mediaType switch
+                    {
+                        MediaTypeEnum.photos => $@"{year}\{month}",
+                        MediaTypeEnum.teams => $@"{id}",
+                        MediaTypeEnum.tournaments => $@"{id}"
+                    };
+
+                    if (!Directory.Exists($@"wwwroot\{mediaType}\{result}"))
+                        Directory.CreateDirectory($@"wwwroot\{mediaType}\{result}");
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), $@"wwwroot\{mediaType}\{result}", fileName);
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(fileStream);
                     }
-                    var absPath = new Uri($@"http://localhost:5000/photos/{year}/{month}/{fileName}").AbsolutePath;
+                    var absPath = new Uri($@"http://localhost:5000/{mediaType}/{result}/{fileName}").AbsolutePath;
                     list.Add(new RequestMediumDTO { Url = absPath });
-                    _SieGraSieMaContext.Media.Add(new Medium { Url = absPath });
+                    var addedMedium = new Medium { Url = absPath };
+                    _SieGraSieMaContext.Media.Add(addedMedium);
+                    if(mediaType == MediaTypeEnum.photos)
+                        _SieGraSieMaContext.MediumInAlbum.Add(new MediumInAlbum { AlbumId = (int)albumId, Medium = addedMedium });
+                    if(mediaType == MediaTypeEnum.teams)
+                    {
+                        var team = await _SieGraSieMaContext.Teams.FindAsync(id);
+                        team.Medium = addedMedium;
+                        _SieGraSieMaContext.Update(team);
+                    }
+                    if (mediaType == MediaTypeEnum.tournaments)
+                    {
+                        var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
+                        tournament.Medium = addedMedium;
+                        _SieGraSieMaContext.Update(tournament);
+                    }
                 }
             }
             await _SieGraSieMaContext.SaveChangesAsync();

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using SieGraSieMa.DTOs.AlbumDTO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SieGraSieMa.DTOs.TournamentDTO
 {
-    public class TournamentListDTO
+    public class ResponseTournamentWithAlbumDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,6 +15,6 @@ namespace SieGraSieMa.DTOs.TournamentDTO
         public string Description { get; set; }
         public string Address { get; set; }
         public string ProfilePicture { get; set; }
-        public bool Status { get; set; }
+        public virtual IEnumerable<ResponseAlbumWithoutMediaDTO> Albums { get; set; }
     }
 }

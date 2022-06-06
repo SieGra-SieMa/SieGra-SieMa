@@ -107,7 +107,7 @@ namespace SieGraSieMa.Controllers
 
         }
 
-        [HttpPatch("{id}/change-details")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> ChangeTeamDetailsAsync(int id, TeamDetailsDTO teamDetailsDTO)
         {
             try
@@ -125,7 +125,7 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpPost("{id}/remove-user/{userId}")]
-        public async Task<IActionResult> ChangeTeamDetailsAsync(int id, int userId)
+        public async Task<IActionResult> RemoveUserFromTeam(int id, int userId)
         {
             try
             {

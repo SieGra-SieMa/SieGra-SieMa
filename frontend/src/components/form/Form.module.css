@@ -18,6 +18,15 @@
     background-color: #fff;
 }
 
+.datepickerLabel {
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+.datepicker {
+    width: 100%;
+}
+
 .yellowButton,
 .greyButton,
 .greenButton,

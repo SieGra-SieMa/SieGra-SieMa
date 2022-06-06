@@ -5,12 +5,14 @@ export type TournamentRequest = {
     address: string;
 };
 
-export type TournamentList = {
+export type TournamentListItem = {
     id: number;
     name: string;
     startDate: string,
     endDate: string,
     address: string;
+    profilePicture: string;
+    status: boolean;
 };
 
 export type Tournament = {
@@ -19,8 +21,10 @@ export type Tournament = {
     startDate: string,
     endDate: string,
     address: string;
+    profilePicture: string;
+    status: boolean;
     groups: Group[];
-    ladder: Ladder;
+    ladder: Phase[];
 };
 
 export type Group = {
@@ -28,7 +32,6 @@ export type Group = {
     name: string;
     tournamentId: number;
     ladder: boolean;
-
     teams: {
         name: string;
         playedMatches: number;
@@ -54,10 +57,6 @@ export type Match = {
 export type Phase = {
     phase: number;
     matches: Match[];
-};
-
-export type Ladder = {
-    phases: Phase[];
 };
 
 export type MatchResult = {

@@ -44,7 +44,7 @@ export default function MatchResult({ match, confirm }: MatchResultProps) {
         }
         matchService.insertResults(result)
             .then(() => {
-                const phase = tournament!.ladder.phases[result.phase - 1];
+                const phase = tournament!.ladder[result.phase - 1];
                 const updatedMatch = phase.matches.find(
                     (match) => match.matchId === result.matchId
                 )!;
@@ -57,10 +57,10 @@ export default function MatchResult({ match, confirm }: MatchResultProps) {
                 const teamWin = result.awayTeamPoints > result.homeTeamPoints ? match.teamAway : match.teamHome;
                 const teamLose = result.awayTeamPoints < result.homeTeamPoints ? match.teamAway : match.teamHome;
 
-                if (result.phase === tournament!.ladder.phases.length - 2) {
-                    const thirdPlacePhase = tournament!.ladder.phases[result.phase];
+                if (result.phase === tournament!.ladder.length - 2) {
+                    const thirdPlacePhase = tournament!.ladder[result.phase];
                     const thirdPlaceMatch = thirdPlacePhase.matches[0];
-                    const finalPhase = tournament!.ladder.phases[result.phase + 1];
+                    const finalPhase = tournament!.ladder[result.phase + 1];
                     const finalMatch = finalPhase.matches[0];
                     if (result.matchId % 2 === 0) {
                         thirdPlaceMatch.teamAway = teamLose;
@@ -70,7 +70,7 @@ export default function MatchResult({ match, confirm }: MatchResultProps) {
                         finalMatch.teamHome = teamWin;
                     }
                 } else {
-                    const nextPhase = tournament!.ladder.phases[result.phase];
+                    const nextPhase = tournament!.ladder[result.phase];
                     const nextMatch = nextPhase.matches[Math.ceil(result.matchId / 2) - 1];
                     if (result.matchId % 2 === 0) {
                         nextMatch.teamAway = teamWin;

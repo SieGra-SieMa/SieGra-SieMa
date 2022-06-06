@@ -1,6 +1,6 @@
 import Config from '../config.json';
 import { Message } from '../_lib/_types/response';
-import { Tournament, TournamentList, TournamentRequest } from '../_lib/_types/tournament';
+import { Tournament, TournamentListItem, TournamentRequest } from '../_lib/_types/tournament';
 import Service from './service';
 
 export default class TournamentsService extends Service {
@@ -9,7 +9,7 @@ export default class TournamentsService extends Service {
         return super.get(`${Config.HOST}/api/tournaments`);
     };
 
-    createTournament(tournament: TournamentRequest): Promise<TournamentList> {
+    createTournament(tournament: TournamentRequest): Promise<TournamentListItem> {
         return super.post(`${Config.HOST}/api/tournaments`, tournament);
     };
 

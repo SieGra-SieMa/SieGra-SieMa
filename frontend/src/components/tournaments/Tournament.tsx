@@ -67,17 +67,17 @@ export default function Tournament() {
     return (
         <TournamentContext.Provider value={{ tournament, setTournament }}>
             <div className={styles.top}>
-                <Button value='Back' onClick={() => navigate('..')} />
+                <Button value='Wstecz' onClick={() => navigate('..')} />
                 {tournament && (
                     <GuardComponent roles={[ROLES.Admin]}>
                         <div className={styles.adminControls}>
                             <Button
-                                value='Edit'
+                                value='Edytuj'
                                 onClick={() => setIsEdit(true)}
                                 style={ButtonStyle.DarkBlue}
                             />
                             <Button
-                                value='Delete'
+                                value='Usuń'
                                 onClick={() => setIsDelete(true)}
                                 style={ButtonStyle.Red}
                             />
@@ -139,7 +139,7 @@ export default function Tournament() {
                 <Modal
                     isClose
                     close={() => setIsEdit(false)}
-                    title={`Edit tournament - "${tournament.name}"`}
+                    title={`Edytuj turniej  - "${tournament.name}"`}
                 >
                     <EditTournament
                         tournament={tournament}
@@ -150,12 +150,12 @@ export default function Tournament() {
             {tournament && isDelete && (
                 <Modal
                     close={() => setIsDelete(false)}
-                    title={`Tournament "${tournament.name}" - Do you really want to delete?`}
+                    title={`Czy na pewno chcesz usunąć turniej - "${tournament.name}"?`}
                 >
                     <Confirm
                         cancel={() => setIsDelete(false)}
                         confirm={deleteTournament}
-                        label='Delete'
+                        label='Usuń'
                     />
                 </Modal>
             )}

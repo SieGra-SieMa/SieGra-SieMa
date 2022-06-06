@@ -23,6 +23,7 @@
     row-gap: 25px;
     animation: showup .3s ease-out;
     box-shadow: 0 0 15px #000;
+    margin: 15px;
 }
 
 @keyframes showup {
@@ -39,11 +40,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    column-gap: 10px;
+    column-gap: 25px;
 }
 
 .header>h3 {
-    padding: 10px 0;
+    padding: 0;
 }
 
 .close {

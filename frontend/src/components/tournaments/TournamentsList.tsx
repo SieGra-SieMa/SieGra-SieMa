@@ -51,7 +51,7 @@ export default function TournamentsList() {
                 <Modal
                     close={() => setIsAdd(false)}
                     isClose
-                    title={`Add tournament`}
+                    title={`Dodaj turniej`}
                 >
                     <CreateTournament confirm={(tournament) => {
                         setIsAdd(false);

@@ -839,6 +839,7 @@ namespace SieGraSieMa.Services.Tournaments
                     StartDate = t.StartDate,
                     EndDate = t.EndDate,
                     Address = t.Address,
+                    Description = t.Description,
                     Albums = t.Albums.Select(a => new ResponseAlbumWithoutMediaDTO
                     {
                         Id = a.Id,

@@ -52,7 +52,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var list = await _mediaService.CreateMedia(id, files);
+                var list = await _mediaService.CreateMedia(id, null, files, IMediaService.MediaTypeEnum.photos);
 
                 return Ok(list);
             }

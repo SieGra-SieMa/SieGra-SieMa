@@ -15,11 +15,13 @@ using SieGraSieMa.DTOs.TournamentDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
 using SieGraSieMa.Services.Albums;
+using SieGraSieMa.Services.Medias;
 using SieGraSieMa.Services.Tournaments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static SieGraSieMa.Services.Medias.IMediaService;
 
 namespace SieGraSieMa.Controllers
 {
@@ -31,13 +33,15 @@ namespace SieGraSieMa.Controllers
         private readonly IContestService _contestService;
         private readonly ITeamService _teamService;
         private readonly IAlbumService _albumService;
+        private readonly IMediaService _mediaService;
+
 
 
         private readonly UserManager<User> _userManager;
 
         //private readonly IMapper _mapper;
 
-        public TournamentsController(ITournamentsService tournamentsService, UserManager<User> userManager, IContestService contestService, ITeamService teamService, IAlbumService albumService)
+        public TournamentsController(ITournamentsService tournamentsService, UserManager<User> userManager, IContestService contestService, ITeamService teamService, IAlbumService albumService, IMediaService mediaService)
         {
             _tournamentsService = tournamentsService;
             //_mapper = mapper;
@@ -45,6 +49,7 @@ namespace SieGraSieMa.Controllers
             _contestService = contestService;
             _teamService = teamService;
             _albumService = albumService;
+            _mediaService = mediaService;
         }
         [AllowAnonymous]
         [HttpGet()]
@@ -328,6 +333,29 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
             
+        }
+
+        [HttpPost("{id}/add-profile-photo")]
+        public async Task<IActionResult> AddPhoto(int id, IFormFile[] file)
+        {
+            try
+            {
+                var tournament = await _tournamentsService.GetTournament(id);
+                if (tournament == null)
+                    return NotFound("Tournament not found!");
+                
+                if (file.Length != 1)
+                    return BadRequest("There should be only one photo sent!");
+
+                var list = await _mediaService.CreateMedia(null, tournament.Id, file, MediaTypeEnum.tournaments);
+
+                return Ok(list);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
         }
     }
 }

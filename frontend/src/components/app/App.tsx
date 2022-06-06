@@ -10,6 +10,7 @@ import Home from '../home/Home';
 import AboutUs from '../about-us/AboutUs';
 import GalleryPage from '../gallery/GalleryPage';
 import GalleryList from '../gallery/GalleryList';
+import GalleryDetails from '../gallery/GalleryDetails';
 import GuardRoute from '../guard-components/GuardRoute';
 import AccountPage from '../account-page/AccountPage';
 import AuthProvider from '../auth/AuthProvider';
@@ -52,6 +53,7 @@ export default function App() {
                             </Route>
                             <Route path="gallery" element={<GalleryPage />}>
                                 <Route index element={<GalleryList />} />
+                                <Route path=":id" element={<GalleryDetails />} />
                             </Route>
                         </Routes>
                         <Footer />

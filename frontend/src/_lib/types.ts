@@ -70,6 +70,34 @@ export interface Tournament {
     }
 }
 
+// Tournament with album
+export interface TournamentWithAlbums {
+    id?: number;
+    name: string;
+    startDate: string,
+    endDate: string,
+    description: string;
+    address: string;
+    profilePicture?: string;
+
+    albums?: Album[];
+}
+
+//Album
+export interface Album {
+    id: number;
+    name: string;
+    createDate: string;
+    profilePicture?: string;
+    mediaList?: Media[];
+}
+
+//Media
+export interface Media{
+    id: number;
+    url: string;
+}
+
 export interface Group {
     id: number;
     name: string;

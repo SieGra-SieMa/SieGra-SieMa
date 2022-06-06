@@ -18,10 +18,8 @@ export default function GalleryList() {
                 <h2 className={styles.title}>Gallery</h2>
             </div>
             <ul className={styles.content}>
-                {tournaments && tournaments.map((tournament, index) => (
-                    <li key={index} className={styles.item} style={{backgroundImage: `url(http://localhost:5000/${tournament.profilePicture})`, backgroundPosition: 'center',
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat'}}>
+                {tournaments && tournaments?.map((tournament, index) => (
+                    <li key={index} className={styles.item} onClick={() => navigate(`${tournament.id!}`)} style={{backgroundImage: `url(http://localhost:5000/${tournament.profilePicture})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}>
                         <div className={styles.header} >
                             <div className={styles.dates}>
                                 {new Date(tournament.startDate).toLocaleDateString()}

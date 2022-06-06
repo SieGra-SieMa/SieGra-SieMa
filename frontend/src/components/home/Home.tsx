@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Home.css';
+import NewsFeed from '../facebook/NewsFeed'
 
 export default function Home() {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        
     }, []);
 
     return (
@@ -13,7 +15,7 @@ export default function Home() {
             <div className="hero-section">
                 <div className="container hero-container">
                     <div className="image-container hero-image">
-                        <img src="http://localhost:3000/hero.png" alt="" />
+                        <img src="/hero.png" alt="" />
                     </div>
                     <div className="hero-block-info">
                         <h2>Pasja pomagania</h2>
@@ -40,19 +42,19 @@ export default function Home() {
                     <ul className="dreamteam-member-list">
                         <li className="dreamteam-member">
                             <div className="image-container dreamteam-member-image">
-                                <img src="http://localhost:3000/card_kamila.png" alt="" />
+                                <img src="/card_kamila.png" alt="" />
                             </div>
                             <h4>Kamila</h4>
                         </li>
                         <li className="dreamteam-member">
                             <div className="image-container dreamteam-member-image">
-                                <img src="http://localhost:3000/card_olek.png" alt="" />
+                                <img src="/card_olek.png" alt="" />
                             </div>
                             <h4>Olek</h4>
                         </li>
                         <li className="dreamteam-member">
                             <div className="image-container dreamteam-member-image">
-                                <img src="http://localhost:3000/card_mateusz.png" alt="" />
+                                <img src="/card_mateusz.png" alt="" />
                             </div>
                             <h4>Mateusz</h4>
                         </li>
@@ -62,20 +64,7 @@ export default function Home() {
                     </Link>
                 </div>
             </div>
-            <div className="news-section">
-                <h2>News feed</h2>
-                <ul className="news-list">
-                    <li className="news-post">
-
-                    </li>
-                    <li className="news-post">
-
-                    </li>
-                    <li className="news-post">
-
-                    </li>
-                </ul>
-            </div>
+            <NewsFeed/>
         </section>
     );
 }

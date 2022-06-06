@@ -27,6 +27,30 @@
     <title>React App</title>
   </head>
   <body>
+  <script>
+      window.fbAsyncInit = function() {
+      FB.init({
+      appId            : '2875621466071847',
+      autoLogAppEvents : true,
+      xfbml            : true,
+      version          : 'v14.0'
+      })
+  };
+</script>
+<script async defer crossOrigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+<!-- <script>
+  (function (d, s, id) {
+      var js, fjs = d.getElementsByTagName(s)[0];
+      if (d.getElementById(id)) {
+          return;
+      }
+      js = d.createElement(s);
+      js.id = id;
+      js.src = "//connect.facebook.net/en_US/sdk.js";
+      fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script> -->
+
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <!--

@@ -87,3 +87,30 @@ export interface Group {
         points: number;
     }[]
 }
+
+// export interface FacebookFeed {
+//     post: {
+//         id: number;
+//         createdTime: string;
+//         message: string;
+//         imageURL: string; 
+//     }[]
+// }
+
+
+
+export interface FacebookFeed {
+    data: {
+        created_time: string;
+        full_picture: string;
+        id: string;
+        message: string;
+    }[]
+    paging: {
+        cursor: {
+            after: string;
+            before: string;
+        }
+    }
+}
+        

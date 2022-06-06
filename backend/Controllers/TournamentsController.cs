@@ -14,11 +14,14 @@ using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.DTOs.TournamentDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
+using SieGraSieMa.Services.Albums;
+using SieGraSieMa.Services.Medias;
 using SieGraSieMa.Services.Tournaments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static SieGraSieMa.Services.Medias.IMediaService;
 
 namespace SieGraSieMa.Controllers
 {
@@ -29,19 +32,24 @@ namespace SieGraSieMa.Controllers
         private readonly ITournamentsService _tournamentsService;
         private readonly IContestService _contestService;
         private readonly ITeamService _teamService;
+        private readonly IAlbumService _albumService;
+        private readonly IMediaService _mediaService;
+
 
 
         private readonly UserManager<User> _userManager;
 
         //private readonly IMapper _mapper;
 
-        public TournamentsController(ITournamentsService tournamentsService, UserManager<User> userManager, IContestService contestService, ITeamService teamService)
+        public TournamentsController(ITournamentsService tournamentsService, UserManager<User> userManager, IContestService contestService, ITeamService teamService, IAlbumService albumService, IMediaService mediaService)
         {
             _tournamentsService = tournamentsService;
             //_mapper = mapper;
             _userManager = userManager;
             _contestService = contestService;
             _teamService = teamService;
+            _albumService = albumService;
+            _mediaService = mediaService;
         }
         [AllowAnonymous]
         [HttpGet()]
@@ -107,31 +115,6 @@ namespace SieGraSieMa.Controllers
             return Ok(new MessageDTO { Message = $"Tournament with {id} id succesfully deleted" });
         }
 
-
-        [AllowAnonymous]
-        [HttpGet("{id}/summary")]
-        public async Task<IActionResult> GetSummary(int id)
-        {
-            var summary = await _tournamentsService.GetSummary(id);
-
-            if (summary == null)
-                return NotFound(new ResponseErrorDTO { Error = "Summary not found" });
-
-            return Ok(new MessageDTO { Message = summary });
-        }
-        [HttpPatch("{id}/summary")]
-        public async Task<IActionResult> SetSummary(int id, RequestTournamentDescription dto)
-        {
-            try
-            {
-                var response = await _tournamentsService.SetSummary(id, dto.data);
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new ResponseErrorDTO { Error = e.Message });
-            }
-        }
         [AllowAnonymous]
         [HttpGet("{id}/description")]
         public async Task<IActionResult> GetDescription(int id)
@@ -331,6 +314,61 @@ namespace SieGraSieMa.Controllers
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
             return Ok();
+        }
+        [HttpGet("{id}/albums")]
+        public async Task<IActionResult> GetAlbum(int id)
+        {
+            try
+            {
+                var result = await _tournamentsService.GetTournamentWithAlbums(id);
+                if (result == null)
+                    return BadRequest(new ResponseErrorDTO { Error = "Tournament not found!" });
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [HttpPost("{id}/albums")]
+        public async Task<IActionResult> CreateAlbum(int id, RequestAlbumDTO album)
+        {
+            try
+            {
+                var result = await _albumService.CreateAlbum(new Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = id });
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+            
+        }
+
+        [HttpPost("{id}/add-profile-photo")]
+        public async Task<IActionResult> AddPhoto(int id, IFormFile[] file)
+        {
+            try
+            {
+                var tournament = await _tournamentsService.GetTournament(id);
+                if (tournament == null)
+                    return NotFound("Tournament not found!");
+                
+                if (file.Length != 1)
+                    return BadRequest("There should be only one photo sent!");
+
+                var list = await _mediaService.CreateMedia(null, tournament.Id, file, MediaTypeEnum.tournaments);
+
+                return Ok(list);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
         }
     }
 }

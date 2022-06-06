@@ -7,6 +7,7 @@ using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
 using SieGraSieMa.Services.Email;
+using SieGraSieMa.Services.Medias;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,14 +23,16 @@ namespace SieGraSieMa.Controllers
     {
         private readonly ITeamService _teamService;
         private readonly IUserService _userService;
+        private readonly IMediaService _mediaService;
         private readonly IEmailService _emailService;
 
 
-        public TeamsController(ITeamService teamService, IUserService userService, IEmailService emailService)
+        public TeamsController(ITeamService teamService, IUserService userService, IEmailService emailService, IMediaService mediaService)
         {
             _teamService = teamService;
             _userService = userService;
             _emailService = emailService;
+            _mediaService = mediaService;
         }
 
         [HttpGet]
@@ -118,7 +121,7 @@ namespace SieGraSieMa.Controllers
 
         }
 
-        [HttpPatch("{id}/change-details")]
+        [HttpPatch("{id}")]
         public async Task<IActionResult> ChangeTeamDetailsAsync(int id, TeamDetailsDTO teamDetailsDTO)
         {
             try
@@ -136,7 +139,7 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpPost("{id}/remove-user/{userId}")]
-        public async Task<IActionResult> ChangeTeamDetailsAsync(int id, int userId)
+        public async Task<IActionResult> RemoveUserFromTeam(int id, int userId)
         {
             try
             {
@@ -197,6 +200,31 @@ namespace SieGraSieMa.Controllers
                 //TODO check if team exists and if user is captain
                 await _emailService.SendAsync(emailAdress, "Zaproszenie do zespołu SiegraSiema", "Treść zaproszenia");
                 return Ok(new MessageDTO { Message = $"Mail already sent" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
+
+        [HttpPost("{id}/add-profile-photo")]
+        public async Task<IActionResult> AddPhoto(int id, IFormFile[] file)
+        {
+            try
+            {
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = _userService.GetUser(email);
+                var team = _teamService.GetTeam(id);
+                if (team.CaptainId != user.Id)
+                    return Unauthorized(new ResponseErrorDTO { Error = "You are not the captain!" });
+
+                if (file.Length != 1)
+                    return BadRequest("There should be only one photo sent!");
+
+                var list = await _mediaService.CreateMedia(null, team.Id, file, IMediaService.MediaTypeEnum.teams);
+
+                return Ok(list);
             }
             catch (Exception e)
             {

@@ -20,13 +20,12 @@ namespace SieGraSieMa.Services.Tournaments
 
         public Task<ResponseTournamentDTO> GetTournament(int id);
 
+        public Task<ResponseTournamentWithAlbumDTO> GetTournamentWithAlbums(int id);
         public Task<TournamentListDTO> CreateTournament(Tournament tournament);
 
         public Task<ResponseTournamentDTO> UpdateTournament(int id, Tournament tournament);
 
         public Task<bool> DeleteTournament(int id);
-        public Task<string> GetSummary(int id);
-        public Task<string> SetSummary(int id, string data);
         public Task<string> GetDescription(int id);
         public Task<string> SetDescription(int id, string data);
 
@@ -102,7 +101,6 @@ namespace SieGraSieMa.Services.Tournaments
         {
             List<GetLadderDTO> ladder = await GetLadderMatches(id);
             IEnumerable<GetGroupMatchDTO> matches = await GetGroupsMatches(id);
-
             var tournament = await _SieGraSieMaContext.Tournaments
                 .Include(t => t.TeamInTournaments)
                 .ThenInclude(t => t.Team)
@@ -118,13 +116,14 @@ namespace SieGraSieMa.Services.Tournaments
                     EndDate = t.EndDate,
                     //Description = t.Description,
                     Address = t.Address,
+                    ProfilePicture = t.Medium == null ? null : t.Medium.Url,
                     Albums = t.Albums.Select(a => new ResponseAlbumDTO
                     {
                         Id = a.Id,
                         Name = a.Name,
                         CreateDate = a.CreateDate,
                         TournamentId = a.TournamentId,
-                        Media = a.MediumInAlbums.Select(m => new ResponseMediumDTO
+                        MediaList = a.MediumInAlbums.Select(m => new ResponseMediumDTO
                         {
                             Id = m.MediumId,
                             Url = m.Medium.Url
@@ -163,6 +162,7 @@ namespace SieGraSieMa.Services.Tournaments
                 });
             }
 
+            
             return tournament;
         }
         public async Task<IEnumerable<TournamentListDTO>> GetTournaments()
@@ -180,6 +180,7 @@ namespace SieGraSieMa.Services.Tournaments
                     EndDate = t.EndDate,
                     Description = t.Description,
                     Address = t.Address,
+                    ProfilePicture = t.Medium == null ? null : t.Medium.Url,
                     Status = t.Groups.Any()
                 })
                 .ToListAsync();
@@ -201,21 +202,6 @@ namespace SieGraSieMa.Services.Tournaments
             //TODO how to change this?
             return await GetTournament(oldTournament.Id);
 
-        }
-        public async Task<string> GetSummary(int id)
-        {
-            var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
-            if (tournament == null) throw new Exception("Tournament not found");
-            return tournament.Summary;
-        }
-        public async Task<string> SetSummary(int id, string data)
-        {
-            var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
-            if (tournament == null) throw new Exception("Tournament not found");
-            tournament.Summary = data;
-            _SieGraSieMaContext.Update(tournament);
-            await _SieGraSieMaContext.SaveChangesAsync();
-            return tournament.Summary;
         }
         public async Task<string> GetDescription(int id)
         {
@@ -850,6 +836,35 @@ namespace SieGraSieMa.Services.Tournaments
                                     TeamAwayScore = m.TeamAwayScore
                                 }).ToListAsync();
             return matches;
+        }
+
+        public async Task<ResponseTournamentWithAlbumDTO> GetTournamentWithAlbums(int id)
+        {
+            var tournament = await _SieGraSieMaContext.Tournaments
+                .Include(t => t.Albums)
+                .ThenInclude(a => a.MediumInAlbums)
+                .ThenInclude(a => a.Medium)
+                .Where(t => t.Id == id)
+                .Select(t => new ResponseTournamentWithAlbumDTO
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    StartDate = t.StartDate,
+                    EndDate = t.EndDate,
+                    Address = t.Address,
+                    Description = t.Description,
+                    ProfilePicture = t.Medium == null ? null : t.Medium.Url,
+                    Albums = t.Albums.Select(a => new ResponseAlbumWithoutMediaDTO
+                    {
+                        Id = a.Id,
+                        Name = a.Name,
+                        CreateDate = a.CreateDate,
+                        ProfilePicture = a.MediumInAlbums.Select(m => m.Medium.Url).FirstOrDefault()
+                    })
+                })
+                .FirstOrDefaultAsync();
+
+            return tournament;
         }
     }
 }

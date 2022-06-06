@@ -47,7 +47,7 @@ export interface Tournament {
     endDate: string,
     description: string;
     address: string;
-
+    profilePicture?: string;
     groups?: Group[];
 
     ladder?: {

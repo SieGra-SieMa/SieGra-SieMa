@@ -7,7 +7,9 @@ import {
 import Header from '../header/Header';
 import Footer from '../footer/Footer';
 import Home from '../home/Home';
-import AboutUs from '../about-us/AboutUs'
+import AboutUs from '../about-us/AboutUs';
+import GalleryPage from '../gallery/GalleryPage';
+import GalleryList from '../gallery/GalleryList';
 import GuardRoute from '../guard-components/GuardRoute';
 import AccountPage from '../account-page/AccountPage';
 import AuthProvider from '../auth/AuthProvider';
@@ -47,6 +49,9 @@ export default function App() {
                             <Route path="tournaments" element={<TournamentsPage />}>
                                 <Route index element={<TournamentsList />} />
                                 <Route path=":id" element={<TournamentView />} />
+                            </Route>
+                            <Route path="gallery" element={<GalleryPage />}>
+                                <Route index element={<GalleryList />} />
                             </Route>
                         </Routes>
                         <Footer />

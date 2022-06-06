@@ -33,6 +33,11 @@ export default function Header() {
                             </Link>
                         </li>
                         <li>
+                            <Link to="/gallery">
+                                Galeria
+                            </Link>
+                        </li>
+                        <li>
                             <Link to="/about-us">
                                 O nas
                             </Link>

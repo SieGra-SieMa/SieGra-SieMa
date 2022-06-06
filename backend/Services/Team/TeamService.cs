@@ -143,11 +143,10 @@ namespace SieGraSieMa.Services
                         Surname = t.Captain.Surname
 
                     },
-                    //CaptainName=t.Captain.Name,
-                    //CaptainSurname=t.Captain.Surname,
                     Code =t.Code,
                     //Players=t.Players.Select(p=>_mapper.Map<PlayerDTO>(p.User)).ToList()
-                    Players=t.Players
+                    ProfilePicture = t.Medium == null ? null : t.Medium.Url,
+                    Players =t.Players
                         .Select(p=>new PlayerDTO
                         {
                             Id=p.UserId,
@@ -155,10 +154,6 @@ namespace SieGraSieMa.Services
                             Surname=p.User.Surname
 
                         }).ToList()
-                    //Players = t.Players.FirstOrDefault().Select(p=>_mapper.Map<PlayerDTO>(p))
-                    //Players=t.Players.AsEnumerable().Select(player=>_mapper.Map<PlayerDTO>(player)).ToList()
-                    //Players=t.Players.Select(player=>_mapper.Map<PlayerDTO>(player))
-                    //Players=_mapper.Map<List<Player>>(t.Players)
                 })
                 .ToList();
         }

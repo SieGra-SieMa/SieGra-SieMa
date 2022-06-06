@@ -105,6 +105,7 @@ export interface FacebookFeed {
         full_picture: string;
         id: string;
         message: string;
+        permalink_url: string;
     }[]
     paging: {
         cursor: {

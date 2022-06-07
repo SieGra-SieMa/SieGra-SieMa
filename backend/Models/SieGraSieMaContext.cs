@@ -307,13 +307,13 @@ namespace SieGraSieMa.Models
                 entity.HasOne(d => d.Album)
                     .WithMany(p => p.MediumInAlbums)
                     .HasForeignKey(d => d.AlbumId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("medium_in_album_album");
 
                 entity.HasOne(d => d.Medium)
                     .WithMany(p => p.MediumInAlbums)
                     .HasForeignKey(d => d.MediumId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("medium_in_album_media");
 
                 entity.HasIndex(e => e.MediumId, "medium_in_album_media");

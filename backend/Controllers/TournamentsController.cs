@@ -20,12 +20,14 @@ using SieGraSieMa.Services.Tournaments;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using static SieGraSieMa.Services.Medias.IMediaService;
 
 namespace SieGraSieMa.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [ApiController]
     public class TournamentsController : ControllerBase
     {
@@ -34,8 +36,6 @@ namespace SieGraSieMa.Controllers
         private readonly ITeamService _teamService;
         private readonly IAlbumService _albumService;
         private readonly IMediaService _mediaService;
-
-
 
         private readonly UserManager<User> _userManager;
 
@@ -51,11 +51,14 @@ namespace SieGraSieMa.Controllers
             _albumService = albumService;
             _mediaService = mediaService;
         }
+
         [AllowAnonymous]
         [HttpGet()]
         public async Task<IActionResult> GetTournaments()
         {
-            var tournaments = await _tournamentsService.GetTournaments();
+            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+            var user = email!=null?await _userManager.FindByEmailAsync(email):null;
+            var tournaments = await _tournamentsService.GetTournaments(user);
 
             return Ok(tournaments);
         }
@@ -150,6 +153,7 @@ namespace SieGraSieMa.Controllers
 
             return Ok(new { count = response });
         }
+        [AllowAnonymous]
         [HttpGet("{id}/teams")]
         public async Task<IActionResult> GetTeamsInTournament(int id, [FromQuery] ITournamentsService.TeamPaidEnum filter)
         {
@@ -315,6 +319,7 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
             return Ok();
         }
+        [AllowAnonymous]
         [HttpGet("{id}/albums")]
         public async Task<IActionResult> GetAlbum(int id)
         {
@@ -345,7 +350,7 @@ namespace SieGraSieMa.Controllers
             {
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
-            
+
         }
 
         [HttpPost("{id}/add-profile-photo")]
@@ -356,7 +361,7 @@ namespace SieGraSieMa.Controllers
                 var tournament = await _tournamentsService.GetTournament(id);
                 if (tournament == null)
                     return NotFound("Tournament not found!");
-                
+
                 if (file.Length != 1)
                     return BadRequest("There should be only one photo sent!");
 

@@ -16,7 +16,7 @@ namespace SieGraSieMa.Services.Medias
     {
         public Task<IEnumerable<Medium>> GetMedia();
         public Task<Medium> GetMedia(int id);
-        public Task<List<RequestMediumDTO>> CreateMedia(int? albumId, int? id, IFormFile[] files, MediaTypeEnum mediaType);
+        public Task<List<ResponseMediumDTO>> CreateMedia(int? albumId, int? id, IFormFile[] files, MediaTypeEnum mediaType);
         public enum MediaTypeEnum { photos, teams, tournaments }
         public Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO);
         public Task<bool> DeleteMedia(int id);
@@ -32,11 +32,11 @@ namespace SieGraSieMa.Services.Medias
             _SieGraSieMaContext = SieGraSieMaContext;
         }
 
-        public async Task<List<RequestMediumDTO>> CreateMedia(int? albumId, int? id, IFormFile[] files, MediaTypeEnum mediaType)
+        public async Task<List<ResponseMediumDTO>> CreateMedia(int? albumId, int? id, IFormFile[] files, MediaTypeEnum mediaType)
         {
             var year = DateTime.UtcNow.Year.ToString();
             var month = DateTime.UtcNow.Month.ToString();
-            var list = new List<RequestMediumDTO>();
+            var list = new List<ResponseMediumDTO>();
             foreach (var file in files)
             {
                 if (file != null && file.Length > 0)
@@ -58,7 +58,6 @@ namespace SieGraSieMa.Services.Medias
                         await file.CopyToAsync(fileStream);
                     }
                     var absPath = new Uri($@"http://localhost:5000/{mediaType}/{result}/{fileName}").AbsolutePath;
-                    list.Add(new RequestMediumDTO { Url = absPath });
                     var addedMedium = new Medium { Url = absPath };
                     _SieGraSieMaContext.Media.Add(addedMedium);
                     if(mediaType == MediaTypeEnum.photos)
@@ -75,9 +74,12 @@ namespace SieGraSieMa.Services.Medias
                         tournament.Medium = addedMedium;
                         _SieGraSieMaContext.Update(tournament);
                     }
+                    await _SieGraSieMaContext.SaveChangesAsync();
+                    list.Add(new ResponseMediumDTO { Id = addedMedium.Id, Url = absPath });
+
                 }
             }
-            await _SieGraSieMaContext.SaveChangesAsync();
+            
             return list;
         }
 

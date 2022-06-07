@@ -95,7 +95,7 @@ export interface Album {
 
 //Media
 export interface Media{
-    id: number;
+    id?: number;
     url: string;
 }
 

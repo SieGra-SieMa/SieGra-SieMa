@@ -162,7 +162,7 @@ namespace SieGraSieMa.Services.Tournaments
                 });
             }
 
-            
+
             return tournament;
         }
         public async Task<IEnumerable<TournamentListDTO>> GetTournaments()
@@ -529,11 +529,26 @@ namespace SieGraSieMa.Services.Tournaments
                                           .Include(m => m.TeamHome)
                                           .Where(m => m.Phase == 1 && m.TournamentId == tournamentId)
                                           .OrderBy(m => m.MatchId).ToList();
-            for (int i = 0; i < list.Count / 2; i++)
+            matches.ForEach(m =>
+            {
+                m.TeamHome.Team = list[order[m.MatchId * 2 - 2] - 1].team;
+                m.TeamAway.Team = list[order[m.MatchId * 2 - 1] - 1].team;
+            });
+
+            /*1:2 0,1
+            2:4 2,3
+            3:6 4,5
+            4:8 6,7
+            5:10 8,9
+            6:12 10,11
+            7:14 12,13
+            8:16 14,15*///wyliczanka
+
+            /*for (int i = 0; i < list.Count / 2; i++)
             {
                 matches[i].TeamHome.Team = list[i].team;
                 matches[i].TeamAway.Team = list[list.Count - 1 - i].team;
-            }
+            }*/
             _SieGraSieMaContext.UpdateRange(matches);
             _SieGraSieMaContext.SaveChanges();
             var result = _SieGraSieMaContext.Matches.Include(m => m.TeamAway).ThenInclude(t => t.Team)

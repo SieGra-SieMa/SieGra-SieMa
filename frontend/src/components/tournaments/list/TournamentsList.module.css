@@ -26,20 +26,20 @@
     border-radius: 15px;
     overflow: hidden;
     cursor: pointer;
-    transition: opacity .3s;
+    transition: box-shadow .3s;
 }
 
 .item:hover {
-    opacity: 0.75;
+    box-shadow: 0 5px 15px #000;
 }
 
 .item:active {
-    opacity: 0.5;
+    box-shadow: 0 5px 10px #000;
 }
 
 .pictureBlock {
     background-color: #3e555f;
-    min-height: 100px;
+    min-height: 250px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -53,6 +53,14 @@
 
 .itemContent {
     padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    row-gap: 10px;
+    align-items: flex-start;
+}
+
+.itemDetails {
     display: flex;
     flex-direction: column;
     row-gap: 10px;

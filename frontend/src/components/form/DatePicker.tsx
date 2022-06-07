@@ -7,7 +7,8 @@ type InputProp = {
     label: string;
     date: Date | null;
     onChange: (date: Date | null) => void;
-    filterDate: (date: Date) => boolean;
+    minDate?: Date;
+    maxDate?: Date;
     filterTime: (date: Date) => boolean;
 }
 
@@ -16,24 +17,29 @@ export default function Input({
     label,
     date,
     onChange,
-    filterDate,
+    minDate,
+    maxDate,
     filterTime,
 }: InputProp) {
     return (
         <div>
             {label && (<label htmlFor={id} className={styles.datepickerLabel}>{label}</label>)}
-            <DatePicker
-                id={id}
-                className={[styles.input, styles.datepicker].join(' ')}
-                required
-                isClearable
-                selected={date}
-                showTimeSelect
-                onChange={onChange}
-                filterDate={filterDate}
-                filterTime={filterTime}
-                dateFormat='MMMM d, yyyy h:mm aa'
-            />
+            <div>
+                <DatePicker
+                    id={id}
+                    className={[styles.input, styles.datepicker].join(' ')}
+                    required
+                    isClearable
+                    popperPlacement='top'
+                    selected={date}
+                    showTimeSelect
+                    onChange={onChange}
+                    minDate={minDate}
+                    maxDate={maxDate}
+                    filterTime={filterTime}
+                    dateFormat='MMMM d, yyyy h:mm aa'
+                />
+            </div>
         </div>
     );
 }

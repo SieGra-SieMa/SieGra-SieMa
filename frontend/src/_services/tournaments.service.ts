@@ -29,4 +29,8 @@ export default class TournamentsService extends Service {
         const headers = new Headers();
         return super.post(`${Config.HOST}/api/tournaments/${id}/add-profile-photo`, data, headers, false);
     };
+
+    getTeamsInTournament(id: string): Promise<Tournament[]> {
+        return super.get(`${Config.HOST}/api/tournaments/${id}/teams`);
+    };
 }

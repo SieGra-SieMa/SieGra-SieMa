@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Phase as PhaseType } from '../../_lib/_types/tournament';
+import { Phase as PhaseType } from '../../../_lib/_types/tournament';
 import Phase from './Phase';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import styles from './Ladder.module.css';

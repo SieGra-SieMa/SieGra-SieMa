@@ -1,0 +1,23 @@
+.top {
+    display: flex;
+    column-gap: 25px;
+    justify-content: space-between;
+}
+
+.adminControls {
+    display: flex;
+    column-gap: 25px;
+}
+
+.title {
+    width: fit-content;
+}
+
+.dates {
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.line {
+    color: #fff;
+}

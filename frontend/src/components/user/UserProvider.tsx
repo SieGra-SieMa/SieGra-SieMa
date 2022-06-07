@@ -17,7 +17,7 @@ export default function UserProvider({ children }: { children: React.ReactNode }
                 .then(
                     (user) => setUser(user),
                     (error) => {
-                        alert(error); // TODO
+                        alert(error);
                     }
                 );
         } else {

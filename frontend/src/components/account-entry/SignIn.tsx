@@ -58,11 +58,10 @@ export default function SignIn() {
                 required
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <div className={styles.spacing}></div>
             <VerticalSpacing size={30} />
             {loading ? (
                 <div className={styles.loader}>
-                    <SyncLoader loading={true} size={7} margin={20} />
+                    <SyncLoader loading={true} size={7} margin={20} color='#fff' />
                 </div>
             ) : (
                 <Button value='Sign in' />

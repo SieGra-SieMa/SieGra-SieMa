@@ -27,7 +27,6 @@ export default function AccountDataEdit({ confirm }: AccountDataEditProps) {
         };
         usersService.updateUser(updatedUser)
             .then((data) => {
-                // TODO check updated response
                 confirm({ ...user!, ...updatedUser });
             });
     };

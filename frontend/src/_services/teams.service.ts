@@ -16,6 +16,10 @@ export default class TeamsService extends Service {
         return super.get<Team[]>(`${Config.HOST}/api/teams`);
     };
 
+    getTeamsIAmCaptain(): Promise<Team[]> {
+        return super.get<Team[]>(`${Config.HOST}/api/teams/teamsiamcaptain`);
+    };
+
     leaveTeam(id: number): Promise<{}> {
         return super.post(`${Config.HOST}/api/teams/leave`, { id });
     };

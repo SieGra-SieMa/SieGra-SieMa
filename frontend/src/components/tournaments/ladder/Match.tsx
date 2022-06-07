@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Match as MatchType } from '../../_lib/_types/tournament';
-import Modal from '../modal/Modal';
+import { Match as MatchType } from '../../../_lib/_types/tournament';
+import Modal from '../../modal/Modal';
 import styles from './Ladder.module.css';
 import MatchResult from './MatchResult';
 

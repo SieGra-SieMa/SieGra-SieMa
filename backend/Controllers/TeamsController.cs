@@ -52,12 +52,12 @@ namespace SieGraSieMa.Controllers
         
         [HttpGet("teamsIAmCaptain")]
         [Authorize(Policy = "EveryOneAuthenticated")]
-        public IActionResult GetTeamByMailForCaptain()
+        public async Task<IActionResult> GetTeamByMailForCaptain()
         {
             try
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
-                return Ok(_teamService.GetTeamsWhichUserIsCaptain(email));
+                return Ok(await _teamService.GetTeamsWhichUserIsCaptain(email));
             }
             catch (Exception e)
             {

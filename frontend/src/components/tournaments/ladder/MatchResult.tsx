@@ -1,12 +1,12 @@
 import { FormEvent, useState } from 'react';
-import { ROLES } from '../../_lib/roles';
-import { Match as MatchType, MatchResult as MatchResultType, Tournament } from '../../_lib/_types/tournament';
-import { useApi } from '../api/ApiContext';
-import Button from '../form/Button';
-import Input from '../form/Input';
-import GuardComponent from '../guard-components/GuardComponent';
-import VerticalSpacing from '../spacing/VerticalSpacing';
-import { useTournament } from '../tournaments/TournamentContext';
+import { ROLES } from '../../../_lib/roles';
+import { Match as MatchType, MatchResult as MatchResultType, Tournament } from '../../../_lib/_types/tournament';
+import { useApi } from '../../api/ApiContext';
+import Button from '../../form/Button';
+import Input from '../../form/Input';
+import GuardComponent from '../../guard-components/GuardComponent';
+import VerticalSpacing from '../../spacing/VerticalSpacing';
+import { useTournament } from '../TournamentContext';
 import styles from './Ladder.module.css';
 
 type MatchResultProps = {

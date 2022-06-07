@@ -69,14 +69,7 @@ export default function EditTournament({
                 label='Czas rozpoczęcia'
                 date={startDate}
                 onChange={(date) => setStartDate(date)}
-                filterDate={(date) => {
-                    if (!endDate) return true;
-                    if (date.getFullYear() - endDate.getFullYear() > 0) return false;
-                    if (date.getFullYear() - endDate.getFullYear() < 0) return true;
-                    if (date.getMonth() - endDate.getMonth() > 0) return false;
-                    if (date.getMonth() - endDate.getMonth() < 0) return true;
-                    return date.getDate() - endDate.getDate() <= 0;
-                }}
+                maxDate={endDate ?? undefined}
                 filterTime={(date) => endDate ? date.getTime() - endDate.getTime() <= 0 : true}
             />
             <DatePicker
@@ -84,14 +77,7 @@ export default function EditTournament({
                 label='Czas końca'
                 date={endDate}
                 onChange={(date) => setEndDate(date)}
-                filterDate={(date) => {
-                    if (!startDate) return true;
-                    if (date.getFullYear() - startDate.getFullYear() < 0) return false;
-                    if (date.getFullYear() - startDate.getFullYear() > 0) return true;
-                    if (date.getMonth() - startDate.getMonth() < 0) return false;
-                    if (date.getMonth() - startDate.getMonth() > 0) return true;
-                    return date.getDate() - startDate.getDate() >= 0;
-                }}
+                minDate={startDate ?? undefined}
                 filterTime={(date) => startDate ? date.getTime() - startDate.getTime() >= 0 : true}
             />
             <VerticalSpacing size={15} />

@@ -6,26 +6,13 @@ export type TournamentRequest = {
     description: string;
 };
 
-export type TournamentListItem = {
+export type TournamentListItem = TournamentRequest & {
     id: number;
-    name: string;
-    startDate: string,
-    endDate: string,
-    address: string;
-    description: string;
     profilePicture: string;
     status: boolean;
 };
 
-export type Tournament = {
-    id: number;
-    name: string;
-    startDate: string,
-    endDate: string,
-    address: string;
-    description: string;
-    profilePicture: string;
-    status: boolean;
+export type Tournament = TournamentListItem & {
     groups: Group[];
     ladder: Phase[];
 };

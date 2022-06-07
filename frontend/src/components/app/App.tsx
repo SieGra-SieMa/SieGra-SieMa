@@ -19,9 +19,8 @@ import { ROLES } from '../../_lib/roles';
 import { ApiContext } from '../api/ApiContext';
 import ApiClient from '../../_services';
 import UserProvider from '../user/UserProvider';
-import TournamentsList from '../tournaments/TournamentsList';
+import TournamentsList from '../tournaments/list/TournamentsList';
 import Tournament from '../tournaments/Tournament';
-
 
 const apiClient = new ApiClient();
 
@@ -55,4 +54,4 @@ export default function App() {
             </AuthProvider>
         </ApiContext.Provider>
     );
-}
+};

@@ -21,6 +21,7 @@ export default function EditTournament({
 
     const [name, setName] = useState(tournament.name);
     const [address, setAddress] = useState(tournament.address);
+    const [description, setDescription] = useState(tournament.description);
 
     const [startDate, setStartDate] = useState<Date | null>(new Date(tournament.startDate));
     const [endDate, setEndDate] = useState<Date | null>(new Date(tournament.endDate));
@@ -32,6 +33,7 @@ export default function EditTournament({
             startDate: startDate!.toISOString(),
             endDate: endDate!.toISOString(),
             address,
+            description,
         };
         tournamentsService.updateTournament(tournament.id, updatedTournament)
             .then((data) => {
@@ -43,17 +45,24 @@ export default function EditTournament({
         <form className={styles.root} onSubmit={onSubmit}>
             <Input
                 id='TournamentAdd-name'
-                label='Name'
+                label='Nazwa'
                 value={name}
                 required
                 onChange={(e) => setName(e.target.value)}
             />
             <Input
                 id='TournamentAdd-address'
-                label='Address'
+                label='Adres'
                 value={address}
                 required
                 onChange={(e) => setAddress(e.target.value)}
+            />
+            <Input
+                id='TournamentAdd-description'
+                label='Opis'
+                value={description}
+                required
+                onChange={(e) => setDescription(e.target.value)}
             />
             <DatePicker
                 id='DatePicker-startDate'

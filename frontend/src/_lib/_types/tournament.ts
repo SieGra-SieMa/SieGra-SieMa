@@ -3,6 +3,7 @@ export type TournamentRequest = {
     startDate: string,
     endDate: string,
     address: string;
+    description: string;
 };
 
 export type TournamentListItem = {
@@ -11,6 +12,7 @@ export type TournamentListItem = {
     startDate: string,
     endDate: string,
     address: string;
+    description: string;
     profilePicture: string;
     status: boolean;
 };
@@ -21,6 +23,7 @@ export type Tournament = {
     startDate: string,
     endDate: string,
     address: string;
+    description: string;
     profilePicture: string;
     status: boolean;
     groups: Group[];

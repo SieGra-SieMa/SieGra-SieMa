@@ -11,12 +11,13 @@
 }
 
 html {
-	height: 100%;
+	display: flex;
+	min-height: 100%;
 }
 
 body {
+	width: 100%;
 	background-color: var(--main-color);
-	height: 100%;
 }
 
 h1,
@@ -73,10 +74,7 @@ p {
 
 h1::after,
 h2::after,
-h3::after,
-h4::after,
-h5::after,
-h6::after {
+h3::after {
 	content: '';
 	display: block;
 	position: relative;
@@ -88,7 +86,7 @@ h6::after {
 }
 
 #root {
-	height: 100%;
+	min-height: 100%;
 	display: grid;
 	grid-template-rows: auto 1fr auto;
 	grid-template-columns: 100%;

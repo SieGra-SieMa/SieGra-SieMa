@@ -1,10 +1,10 @@
 import { FormEvent, useState } from 'react';
-import { TournamentListItem, TournamentRequest } from '../../_lib/_types/tournament';
-import { useApi } from '../api/ApiContext';
-import Button from '../form/Button';
-import DatePicker from '../form/DatePicker';
-import Input from '../form/Input';
-import VerticalSpacing from '../spacing/VerticalSpacing';
+import { TournamentListItem, TournamentRequest } from '../../../_lib/_types/tournament';
+import { useApi } from '../../api/ApiContext';
+import Button from '../../form/Button';
+import DatePicker from '../../form/DatePicker';
+import Input from '../../form/Input';
+import VerticalSpacing from '../../spacing/VerticalSpacing';
 import styles from './CreateTournament.module.css';
 
 type CreateTournamentType = {
@@ -17,6 +17,8 @@ export default function CreateTournament({ confirm }: CreateTournamentType) {
 
     const [name, setName] = useState('');
     const [address, setAddress] = useState('');
+    const [description, setDescription] = useState('');
+
     const [startDate, setStartDate] = useState<Date | null>(null);
     const [endDate, setEndDate] = useState<Date | null>(null);
 
@@ -24,9 +26,10 @@ export default function CreateTournament({ confirm }: CreateTournamentType) {
         e.preventDefault();
         const tournament: TournamentRequest = {
             name,
+            address,
+            description,
             startDate: startDate!.toISOString(),
             endDate: endDate!.toISOString(),
-            address,
         };
         tournamentsService.createTournament(tournament)
             .then((data) => {
@@ -49,6 +52,13 @@ export default function CreateTournament({ confirm }: CreateTournamentType) {
                 value={address}
                 required
                 onChange={(e) => setAddress(e.target.value)}
+            />
+            <Input
+                id='TournamentAdd-description'
+                label='Opis'
+                value={description}
+                required
+                onChange={(e) => setDescription(e.target.value)}
             />
             <DatePicker
                 id='DatePicker-startDate'

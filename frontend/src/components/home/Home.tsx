@@ -63,18 +63,20 @@ export default function Home() {
                 </div>
             </div>
             <div className="news-section">
-                <h2>News feed</h2>
-                <ul className="news-list">
-                    <li className="news-post">
+                <div className="container news-container">
+                    <h2>News feed</h2>
+                    <ul className="news-list">
+                        <li className="news-post">
 
-                    </li>
-                    <li className="news-post">
+                        </li>
+                        <li className="news-post">
 
-                    </li>
-                    <li className="news-post">
+                        </li>
+                        <li className="news-post">
 
-                    </li>
-                </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </section>
     );

@@ -1,6 +1,12 @@
+import { useEffect } from 'react'
 import './AboutUs.css'
 
 export default function AboutUs() {
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <div className="container">
             <div className="description">

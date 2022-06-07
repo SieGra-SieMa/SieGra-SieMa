@@ -27,6 +27,10 @@ export default function Tournament() {
     const [isDelete, setIsDelete] = useState(false);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
         tournamentsService.getTournamentbyId(id!)
             .then((data) => {
                 setTournament(data);

@@ -87,7 +87,7 @@ namespace SieGraSieMa.Services.Medias
             var medium = await _SieGraSieMaContext.Media.FindAsync(id);
             if (medium == null)
                 throw new Exception("Medium not found!");
-
+ 
             _SieGraSieMaContext.Media.Remove(medium);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
             {
@@ -145,14 +145,22 @@ namespace SieGraSieMa.Services.Medias
         }
         public async Task<bool> DeleteFromAlbum(int mediaId, int albumId)
         {
-            var mediumInAlbum = await _SieGraSieMaContext.MediumInAlbum.FindAsync(mediaId, albumId);
+            var mediumInAlbum = await _SieGraSieMaContext.MediumInAlbum.FindAsync(albumId, mediaId);
             if (mediumInAlbum == null)
-            {
                 throw new Exception("Medium doesnt belong to this album");
-            }
 
             _SieGraSieMaContext.MediumInAlbum.Remove(mediumInAlbum);
-            return await _SieGraSieMaContext.SaveChangesAsync()>0;
+            var medium = await _SieGraSieMaContext.Media.FindAsync(mediaId);
+            if(medium != null && await _SieGraSieMaContext.MediumInAlbum.AnyAsync(m => m.MediumId == mediaId))
+            {
+                if (!_SieGraSieMaContext.Teams.Include(m => m.TeamInTournaments).ThenInclude(t => t.Tournament).GroupBy(m => m.MediumId).Any(m => m.Key == medium.Id))
+                    await DeleteMedia(mediaId);
+            }
+            
+
+            await _SieGraSieMaContext.SaveChangesAsync();
+
+            return true;
         }
 
 

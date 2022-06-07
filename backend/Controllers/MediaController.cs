@@ -116,7 +116,7 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var result = await _mediaService.DeleteFromAlbum(id, albumId);
-                return Ok(result);
+                return Ok(new MessageDTO { Message = "Photo deleted from album" });
             }
             catch (Exception e)
             {

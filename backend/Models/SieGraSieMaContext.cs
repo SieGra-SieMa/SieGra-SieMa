@@ -431,7 +431,8 @@ namespace SieGraSieMa.Models
                     .HasColumnName("name");
 
                 entity.Property(e => e.CaptainId)
-                    .HasColumnName("captain_id");
+                    .HasColumnName("captain_id")
+                    .IsRequired(false);
                 //.HasDefaultValueSql("'1'");
 
                 entity.Property(e => e.Code)

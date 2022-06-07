@@ -2,8 +2,14 @@
     color: var(--light-color);
 }
 
+.main-section h2 {
+    text-align: center;
+}
+
 .hero-section {
     height: 90vh;
+    max-height: 900px;
+    min-height: 450px;
 }
 
 .hero-section,
@@ -37,11 +43,11 @@
 }
 
 .dreamteam-section {
+    padding: 50px 0;
     background-color: var(--secondary-color);
 }
 
 .dreamteam-container {
-    padding: 50px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -52,6 +58,7 @@
     display: flex;
     justify-content: space-evenly;
     align-items: flex-start;
+    column-gap: 50px;
 }
 
 .dreamteam-member {
@@ -67,18 +74,14 @@
     text-align: center;
 }
 
-.dreamteam-member-image {
-    max-width: 20vw;
-    min-width: 10vw;
+.news-section {
+    padding: 50px 0;
 }
 
-.news-section {
+.news-container {
     display: flex;
     flex-direction: column;
-    width: 80vw;
-    margin: 2rem auto;
     align-items: center;
-    justify-content: center;
 }
 
 .news-list {
@@ -109,16 +112,6 @@
     .hero-container {
         flex-direction: column;
         justify-content: center;
-    }
-}
-
-@media all and (max-width: 960px) {
-    .footer-container {
-        flex-direction: column;
-    }
-
-    .footer-block {
-        margin: 10px 0;
     }
 }
 

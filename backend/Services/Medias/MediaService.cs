@@ -37,6 +37,9 @@ namespace SieGraSieMa.Services.Medias
             var year = DateTime.UtcNow.Year.ToString();
             var month = DateTime.UtcNow.Month.ToString();
             var list = new List<RequestMediumDTO>();
+
+            var separator = OperatingSystem.IsWindows() ? '\\' : '/';
+
             foreach (var file in files)
             {
                 if (file != null && file.Length > 0)
@@ -45,14 +48,14 @@ namespace SieGraSieMa.Services.Medias
 
                     var result = mediaType switch
                     {
-                        MediaTypeEnum.photos => $@"{year}\{month}",
+                        MediaTypeEnum.photos => $@"{year}{separator}{month}",
                         MediaTypeEnum.teams => $@"{id}",
                         MediaTypeEnum.tournaments => $@"{id}"
                     };
 
-                    if (!Directory.Exists($@"wwwroot\{mediaType}\{result}"))
-                        Directory.CreateDirectory($@"wwwroot\{mediaType}\{result}");
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), $@"wwwroot\{mediaType}\{result}", fileName);
+                    if (!Directory.Exists($@"wwwroot{separator}{mediaType}{separator}{result}"))
+                        Directory.CreateDirectory($@"wwwroot{separator}{mediaType}{separator}{result}");
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), $@"wwwroot{separator}{mediaType}{separator}{result}", fileName);
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(fileStream);

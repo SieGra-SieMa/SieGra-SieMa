@@ -21,7 +21,7 @@ type ButtonProp = {
 const getStyleName = (style: ButtonStyle) => {
     switch (style) {
         case ButtonStyle.Orange:
-            return styles.orangeButton;
+            return styles.yellowButton;
         case ButtonStyle.Grey:
             return styles.greyButton;
         case ButtonStyle.DarkBlue:
@@ -29,7 +29,7 @@ const getStyleName = (style: ButtonStyle) => {
         case ButtonStyle.Red:
             return styles.redButton;
         default:
-            return styles.orangeButton;
+            return styles.yellowButton;
     }
 };
 

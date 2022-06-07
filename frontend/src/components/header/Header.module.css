@@ -6,15 +6,12 @@
     opacity: 95%;
     width: 100%;
     top: 0;
-    backdrop-filter: blur(50px);
     z-index: 9999;
 }
 
 .container {
     display: flex;
     justify-content: space-between;
-    width: 80vw;
-    height: 10vh;
 }
 
 .logo {

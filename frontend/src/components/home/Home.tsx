@@ -19,15 +19,15 @@ export default function Home() {
                         <h2>Pasja pomagania</h2>
                         <p>
                             <i>
-                                "W końcu nikt nie jest większy od koszykówki. 
-                                Ani Wilt, ani Doktor J, ani Michael, ani Larry, 
-                                ani Magic, ani LeBron. Nikt. Każdy z nas musiał 
-                                coś przezwyciężyć, żeby zajść tak daleko - swoje 
-                                pochodzenie, swoje ograniczenia, swoje wątpliwości. 
-                                Coś, co powstrzymało tak wielu innych i pewnie mogło 
+                                "W końcu nikt nie jest większy od koszykówki.
+                                Ani Wilt, ani Doktor J, ani Michael, ani Larry,
+                                ani Magic, ani LeBron. Nikt. Każdy z nas musiał
+                                coś przezwyciężyć, żeby zajść tak daleko - swoje
+                                pochodzenie, swoje ograniczenia, swoje wątpliwości.
+                                Coś, co powstrzymało tak wielu innych i pewnie mogło
                                 zatrzymać i nas, ale jednak nie zatrzymało."
                             </i><b> - Ray Allen</b>
-                            <br/><br/>
+                            <br /><br />
                             Każdy z nas ma przed sobą swoją drogę, a naszym celem jest pomoc
                             w jej przejściu. Dołącz do nas i poprzez pasję do koszykówki pomagaj razem z nami!
                         </p>
@@ -63,18 +63,20 @@ export default function Home() {
                 </div>
             </div>
             <div className="news-section">
-                <h2>News feed</h2>
-                <ul className="news-list">
-                    <li className="news-post">
+                <div className="container news-container">
+                    <h2>News feed</h2>
+                    <ul className="news-list">
+                        <li className="news-post">
 
-                    </li>
-                    <li className="news-post">
+                        </li>
+                        <li className="news-post">
 
-                    </li>
-                    <li className="news-post">
+                        </li>
+                        <li className="news-post">
 
-                    </li>
-                </ul>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </section>
     );

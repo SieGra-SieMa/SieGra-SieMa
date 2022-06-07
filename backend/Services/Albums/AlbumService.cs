@@ -14,7 +14,7 @@ namespace SieGraSieMa.Services.Albums
 
         public Task<ResponseAlbumDTO> GetAlbum(int id);
 
-        public Task<bool> CreateAlbum(Album album);
+        public Task<Album> CreateAlbum(Album album);
 
         public Task<bool> UpdateAlbum(int id, Album album);
 
@@ -29,7 +29,7 @@ namespace SieGraSieMa.Services.Albums
         {
             _SieGraSieMaContext = SieGraSieMaContext;
         }
-        public async Task<bool> CreateAlbum(Album album)
+        public async Task<Album> CreateAlbum(Album album)
         {
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(album.TournamentId);
             if(tournament == null)
@@ -37,7 +37,7 @@ namespace SieGraSieMa.Services.Albums
 
             await _SieGraSieMaContext.Albums.AddAsync(album);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
-                return true;
+                return album;
 
             throw new Exception("Album not added!");
         }

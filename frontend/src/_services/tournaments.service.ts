@@ -1,5 +1,5 @@
 import Config from '../config.json';
-import { Tournament, TournamentWithAlbums } from '../_lib/types';
+import { Album, Tournament, TournamentWithAlbums } from '../_lib/types';
 import Service from './service';
 
 export default class TournamentsService extends Service {
@@ -26,5 +26,9 @@ export default class TournamentsService extends Service {
 
     getTournamentWithAlbums(id: string): Promise<TournamentWithAlbums> {
         return super.get(`${Config.HOST}/api/tournaments/${id}/albums`);
+    };
+
+    addAlbumToTournament(id: string, album: Album): Promise<Album> {
+        return super.post(`${Config.HOST}/api/tournaments/${id}/albums`, album);
     };
 }

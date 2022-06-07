@@ -85,11 +85,12 @@ export interface TournamentWithAlbums {
 
 //Album
 export interface Album {
-    id: number;
+    id?: number;
     name: string;
     createDate: string;
     profilePicture?: string;
     mediaList?: Media[];
+    tournamentId?: string;
 }
 
 //Media

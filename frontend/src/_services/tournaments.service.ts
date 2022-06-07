@@ -1,5 +1,5 @@
 import Config from '../config.json';
-import { Message } from '../_lib/_types/response';
+import { Media, Message } from '../_lib/_types/response';
 import { Tournament, TournamentListItem, TournamentRequest } from '../_lib/_types/tournament';
 import Service from './service';
 
@@ -23,5 +23,10 @@ export default class TournamentsService extends Service {
 
     deleteTournament(id: string): Promise<Message> {
         return super.del(`${Config.HOST}/api/tournaments/${id}`);
+    };
+
+    addProfilePhoto(id: number, data: FormData): Promise<Media[]> {
+        const headers = new Headers();
+        return super.post(`${Config.HOST}/api/tournaments/${id}/add-profile-photo`, data, headers, false);
     };
 }

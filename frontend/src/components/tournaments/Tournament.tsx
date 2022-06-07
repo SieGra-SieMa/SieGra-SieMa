@@ -12,6 +12,7 @@ import EditTournament from './EditTournament';
 import { useTournaments } from './TournamentsContext';
 import styles from './Tournament.module.css';
 import { TournamentContext } from './TournamentContext';
+import EditTournamentPicture from './EditTournamentPicture';
 
 export default function Tournament() {
 
@@ -25,6 +26,8 @@ export default function Tournament() {
     const [tournament, setTournament] = useState<TournamentType | null>(null);
     const [isEdit, setIsEdit] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
+
+    const [isPicture, setIsPicture] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -50,7 +53,7 @@ export default function Tournament() {
 
     const deleteTournament = useCallback(() => {
         tournamentsService.deleteTournament(id!)
-            .then((data) => { // TODO
+            .then((data) => {
                 setIsDelete(false);
                 navigate('..');
                 if (tournaments) {
@@ -76,12 +79,17 @@ export default function Tournament() {
                     <GuardComponent roles={[ROLES.Admin]}>
                         <div className={styles.adminControls}>
                             <Button
-                                value='Edytuj'
+                                value='Edytuj zdjęcie profilowe'
+                                onClick={() => setIsPicture(true)}
+                                style={ButtonStyle.DarkBlue}
+                            />
+                            <Button
+                                value='Edytuj turniej'
                                 onClick={() => setIsEdit(true)}
                                 style={ButtonStyle.DarkBlue}
                             />
                             <Button
-                                value='Usuń'
+                                value='Usuń turniej'
                                 onClick={() => setIsDelete(true)}
                                 style={ButtonStyle.Red}
                             />
@@ -160,6 +168,18 @@ export default function Tournament() {
                         cancel={() => setIsDelete(false)}
                         confirm={deleteTournament}
                         label='Usuń'
+                    />
+                </Modal>
+            )}
+            {tournament && isPicture && (
+                <Modal
+                    isClose
+                    close={() => setIsPicture(false)}
+                    title={`Edytuj zdjęcie profilowe - "${tournament.name}"`}
+                >
+                    <EditTournamentPicture
+                        tournament={tournament}
+                        confirm={() => setIsPicture(false)}
                     />
                 </Modal>
             )}

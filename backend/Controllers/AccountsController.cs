@@ -8,8 +8,6 @@ using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.IdentityDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
-using SieGraSieMa.Services.Email;
-using SieGraSieMa.Services.JWT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,14 +29,16 @@ namespace SieGraSieMa.Controllers
         //private readonly IMapper _mapper;
 
         private readonly IEmailService _emailService;
+        private readonly ILogService _logService;
 
-        public AccountsController(UserManager<User> userManager, JwtHandler jwtHandler, IEmailService emailService, IAccountIdentityServices accountServices)
+        public AccountsController(UserManager<User> userManager, JwtHandler jwtHandler, IEmailService emailService, IAccountIdentityServices accountServices, ILogService logService)
         {
             _accountService = accountServices;
             _userManager = userManager;
             _jwtHandler = jwtHandler;
             //_mapper = mapper;
             _emailService = emailService;
+            _logService = logService;
         }
 
         [AllowAnonymous]
@@ -159,6 +159,8 @@ namespace SieGraSieMa.Controllers
             //TODO change role
             await _userManager.AddToRoleAsync(user, "User");
 
+            await _logService.AddLog(new Log(user, "Register succesfully"));
+
             return Ok(token);
         }
 
@@ -217,7 +219,7 @@ namespace SieGraSieMa.Controllers
             {
                 return BadRequest(new ResponseErrorDTO { Error = "Email not confirmed" });
             }
-
+            await _logService.AddLog(new Log(userFound, "Email confirmed succesfully"));
             return Ok();
         }
 

@@ -10,9 +10,9 @@ using SieGraSieMa.DTOs.MediumDTO;
 using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.DTOs.TournamentDTO;
 using SieGraSieMa.Models;
-using static SieGraSieMa.Services.Tournaments.ITournamentsService;
+using static SieGraSieMa.Services.ITournamentsService;
 
-namespace SieGraSieMa.Services.Tournaments
+namespace SieGraSieMa.Services
 {
     public interface ITournamentsService
     {

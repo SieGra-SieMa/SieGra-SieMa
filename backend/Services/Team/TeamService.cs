@@ -27,6 +27,7 @@ namespace SieGraSieMa.Services
         Task DeleteUserFromTeam(int userId, int captainId, int teamId);
         Task SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId);
         Task DeleteTeam(int teamId, int captainId);
+        Task DeleteTeamByAdmin(int teamId);
 
     }
     public class TeamService : ITeamService
@@ -324,6 +325,24 @@ namespace SieGraSieMa.Services
 
             if (team.CaptainId != captainId)
                 throw new Exception($"Current user is not a captain of this team");
+
+            if (_SieGraSieMaContext.Tournaments.Any(t => t.TeamInTournaments.Any(t => t.TeamId == team.Id)))
+            {
+                var tt = _SieGraSieMaContext.TeamInTournaments.Where(t => t.TeamId == team.Id).ToList();
+                tt.ForEach(tt => tt.Paid = false);
+                _SieGraSieMaContext.TeamInTournaments.UpdateRange(tt);
+                team.Players.Clear();
+                team.Captain = null;
+                _SieGraSieMaContext.Update(team);
+            }
+            else _SieGraSieMaContext.Teams.Remove(team);
+            await _SieGraSieMaContext.SaveChangesAsync();
+        }
+        public async Task DeleteTeamByAdmin(int teamId)
+        {
+            var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).Where(t => t.Id == teamId).SingleOrDefaultAsync();
+
+            if (team == null) throw new Exception($"Team with {teamId} id does not exists");
 
             if (_SieGraSieMaContext.Tournaments.Any(t => t.TeamInTournaments.Any(t => t.TeamId == team.Id)))
             {

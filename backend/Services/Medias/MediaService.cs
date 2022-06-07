@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using static SieGraSieMa.Services.Medias.IMediaService;
+using static SieGraSieMa.Services.IMediaService;
 
-namespace SieGraSieMa.Services.Medias
+namespace SieGraSieMa.Services
 {
     public interface IMediaService
     {
@@ -18,7 +18,7 @@ namespace SieGraSieMa.Services.Medias
         public Task<Medium> GetMedia(int id);
         public Task<List<RequestMediumDTO>> CreateMedia(int? albumId, int? id, IFormFile[] files, MediaTypeEnum mediaType);
         public enum MediaTypeEnum { photos, teams, tournaments }
-        public Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO);
+        /*public Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO);*/
         public Task<bool> DeleteMedia(int id);
         public Task<MediumInAlbum> AddToAlbum(MediumInAlbum mediumInAlbum);
         public Task<bool> DeleteFromAlbum(int mediaId, int albumId);
@@ -117,7 +117,7 @@ namespace SieGraSieMa.Services.Medias
             return media;
         }
 
-        public async Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO)
+        /*public async Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO)
         {
             var oldMedia = await _SieGraSieMaContext.Media.FindAsync(id);
             if (oldMedia == null)
@@ -128,7 +128,7 @@ namespace SieGraSieMa.Services.Medias
                 return true;
 
             return false;
-        }
+        }*/
 
         public async Task<MediumInAlbum> AddToAlbum(MediumInAlbum mediumInAlbum)
         {

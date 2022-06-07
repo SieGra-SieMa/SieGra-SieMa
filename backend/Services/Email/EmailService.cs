@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SieGraSieMa.Services.Email
+namespace SieGraSieMa.Services
 {
     public interface IEmailService
     {

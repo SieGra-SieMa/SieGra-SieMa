@@ -203,7 +203,6 @@ namespace SieGraSieMa.Services
             oldTournament.Address = tournament.Address;
             _SieGraSieMaContext.Tournaments.Update(oldTournament);
             await _SieGraSieMaContext.SaveChangesAsync();
-            //TODO how to change this?
             return await GetTournament(oldTournament.Id);
 
         }

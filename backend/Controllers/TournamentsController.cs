@@ -23,8 +23,8 @@ using static SieGraSieMa.Services.IMediaService;
 
 namespace SieGraSieMa.Controllers
 {
-    [Route("api/[controller]")]
     [Authorize(AuthenticationSchemes = "Bearer")]
+    [Route("api/[controller]")]
     [ApiController]
     public class TournamentsController : ControllerBase
     {
@@ -54,11 +54,12 @@ namespace SieGraSieMa.Controllers
         public async Task<IActionResult> GetTournaments()
         {
             var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
-            var user = email!=null?await _userManager.FindByEmailAsync(email):null;
+            var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
             var tournaments = await _tournamentsService.GetTournaments(user);
 
             return Ok(tournaments);
         }
+
         [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTournament(int id)
@@ -69,50 +70,6 @@ namespace SieGraSieMa.Controllers
                 return NotFound(new ResponseErrorDTO { Error = "Tournament not found" });
 
             return Ok(tournament);
-        }
-        [HttpPost()]
-        public async Task<IActionResult> CreateTournament(RequestTournamentDTO tournament)
-        {
-            try
-            {
-                //var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
-                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Address = tournament.Address };
-                var result = await _tournamentsService.CreateTournament(newTournament);
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-
-                return BadRequest(new ResponseErrorDTO { Error = e.Message });
-            }
-        }
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateTournament(RequestTournamentDTO tournament, int id)
-        {
-            try
-            {
-                //var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
-                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Address = tournament.Address };
-
-                var result = await _tournamentsService.UpdateTournament(id, newTournament);
-
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-
-                return BadRequest(new ResponseErrorDTO { Error = e.Message });
-            }
-        }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTournament(int id)
-        {
-            var result = await _tournamentsService.DeleteTournament(id);
-
-            if (!result)
-                return NotFound(new ResponseErrorDTO { Error = "Tournament not found" });
-
-            return Ok(new MessageDTO { Message = $"Tournament with {id} id succesfully deleted" });
         }
 
         [AllowAnonymous]
@@ -126,30 +83,7 @@ namespace SieGraSieMa.Controllers
 
             return Ok(new MessageDTO { Message = desc });
         }
-        [HttpPatch("{id}/description")]
-        public async Task<IActionResult> SetDescription(int id, RequestTournamentDescription dto)
-        {
-            try
-            {
-                var response = await _tournamentsService.SetDescription(id, dto.data);
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new ResponseErrorDTO { Error = e.Message });
-            }
-        }
 
-
-        [AllowAnonymous]
-        [HttpGet("{id}/teams/count")]
-        public async Task<IActionResult> CountTeams(int id, [FromQuery] ITournamentsService.TeamPaidEnum filter)
-        {
-            var response = await _tournamentsService.CheckCountTeamsInTournament(id, filter);
-            if (response == 0) return BadRequest(new { message = "Bad tournament number or no teams registered for tournament" });
-
-            return Ok(new { count = response });
-        }
         [AllowAnonymous]
         [HttpGet("{id}/teams")]
         public async Task<IActionResult> GetTeamsInTournament(int id, [FromQuery] ITournamentsService.TeamPaidEnum filter)
@@ -157,33 +91,48 @@ namespace SieGraSieMa.Controllers
             var response = await _tournamentsService.GetTeamsInTournament(id, filter);
             return Ok(response);
         }
-        [HttpPatch("{id}/teams/{teamId}")]
-        public async Task<IActionResult> SetPaidStatusTeamsInTournament(int id, int teamId, [FromQuery] ITournamentsService.TeamPaidEnum filter)
+
+        [AllowAnonymous]
+        [HttpGet("{id}/contests")]
+        public async Task<IActionResult> GetContests(int id)
+        {
+            var contests = await _contestService.GetContests(id);
+            return Ok(contests);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}/contests/{contestId}")]
+        public async Task<IActionResult> GetContest(int contestId)
+        {
+            var contest = await _contestService.GetContest(contestId);
+
+            if (contest == null)
+                return NotFound(new ResponseErrorDTO { Error = "Contest not found" });
+
+            return Ok(contest);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("{id}/albums")]
+        public async Task<IActionResult> GetAlbum(int id)
         {
             try
             {
-                var response = await _tournamentsService.SetPaidStatusTeamsInTournament(id, teamId, filter);
-                return Ok(response);
+                var result = await _tournamentsService.GetTournamentWithAlbums(id);
+                if (result == null)
+                    return BadRequest(new ResponseErrorDTO { Error = "Tournament not found!" });
+
+                return Ok(result);
             }
             catch (Exception e)
             {
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
-        [HttpGet("{id}/teams/checkCorrectness")]
-        public async Task<IActionResult> CheckCorectnessOfTeams(int id)
-        {
-            try
-            {
-                var response = await _tournamentsService.CheckCorectnessOfTeams(id); ;
-                if (response.Any()) return BadRequest(response);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new ResponseErrorDTO { Error = e.Message });
-            }
-        }
+
+        //-------------------------------------------------users functions
+
+        [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpPost("{id}/teams/join")]
         public async Task<IActionResult> JoinTournament(int id, int teamId)
         {
@@ -216,7 +165,142 @@ namespace SieGraSieMa.Controllers
             }
         }
 
+        //-------------------------------------------------employee functions
 
+        [Authorize(Policy = "OnlyEmployeesAuthenticated")]
+        [HttpGet("{id}/teams/count")]
+        public async Task<IActionResult> CountTeams(int id, [FromQuery] ITournamentsService.TeamPaidEnum filter)
+        {
+            var response = await _tournamentsService.CheckCountTeamsInTournament(id, filter);
+            if (response == 0) return BadRequest(new { message = "Bad tournament number or no teams registered for tournament" });
+
+            return Ok(new { count = response });
+        }
+
+        [Authorize(Policy = "OnlyEmployeesAuthenticated")]
+        [HttpPatch("{id}/teams/{teamId}")]
+        public async Task<IActionResult> SetPaidStatusTeamsInTournament(int id, int teamId, [FromQuery] ITournamentsService.TeamPaidEnum filter)
+        {
+            try
+            {
+                var response = await _tournamentsService.SetPaidStatusTeamsInTournament(id, teamId, filter);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [Authorize(Policy = "OnlyEmployeesAuthenticated")]
+        [HttpGet("{id}/teams/checkCorrectness")]
+        public async Task<IActionResult> CheckCorectnessOfTeams(int id)
+        {
+            try
+            {
+                var response = await _tournamentsService.CheckCorectnessOfTeams(id); ;
+                if (response.Any()) return BadRequest(response);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [Authorize(Policy = "OnlyEmployeesAuthenticated")]
+        [HttpPost("{id}/groups/composeLadder")]
+        public async Task<IActionResult> ComposeLadderGroups(int id)
+        {
+            try
+            {
+                var response = await _tournamentsService.ComposeLadderGroups(id);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [Authorize(Policy = "OnlyEmployeesAuthenticated")]
+        [HttpPost("{id}/contests/{contestId}/setScore")]
+        public async Task<IActionResult> AddContestant(int contestId, AddContestantDTO addContestantDTO)
+        {
+            var result = await _contestService.SetScore(contestId, addContestantDTO);
+            if (!result)
+                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
+            return Ok();
+        }
+
+        //-------------------------------------------------admin functions
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
+        [HttpPost()]
+        public async Task<IActionResult> CreateTournament(RequestTournamentDTO tournament)
+        {
+            try
+            {
+                //var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
+                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Address = tournament.Address };
+                var result = await _tournamentsService.CreateTournament(newTournament);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> UpdateTournament(RequestTournamentDTO tournament, int id)
+        {
+            try
+            {
+                //var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
+                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Address = tournament.Address };
+
+                var result = await _tournamentsService.UpdateTournament(id, newTournament);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTournament(int id)
+        {
+            var result = await _tournamentsService.DeleteTournament(id);
+
+            if (!result)
+                return NotFound(new ResponseErrorDTO { Error = "Tournament not found" });
+
+            return Ok(new MessageDTO { Message = $"Tournament with {id} id succesfully deleted" });
+        }
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
+        [HttpPatch("{id}/description")]
+        public async Task<IActionResult> SetDescription(int id, RequestTournamentDescription dto)
+        {
+            try
+            {
+                var response = await _tournamentsService.SetDescription(id, dto.data);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPost("{id}/prepareTournament")]
         public async Task<IActionResult> PrepareTournament(int id)
         {
@@ -232,6 +316,8 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPost("{id}/resetTournament")]
         public async Task<IActionResult> ResetTournament(int id)
         {
@@ -245,39 +331,8 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
-        [HttpPost("{id}/groups/composeLadder")]
-        public async Task<IActionResult> ComposeLadderGroups(int id)
-        {
-            try
-            {
-                var response = await _tournamentsService.ComposeLadderGroups(id);
-                return Ok();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new ResponseErrorDTO { Error = e.Message });
-            }
-        }
 
-
-        [AllowAnonymous]
-        [HttpGet("{id}/contests")]
-        public async Task<IActionResult> GetContests(int id)
-        {
-            var contests = await _contestService.GetContests(id);
-            return Ok(contests);
-        }
-        [AllowAnonymous]
-        [HttpGet("{id}/contests/{contestId}")]
-        public async Task<IActionResult> GetContest(int contestId)
-        {
-            var contest = await _contestService.GetContest(contestId);
-
-            if (contest == null)
-                return NotFound(new ResponseErrorDTO { Error = "Contest not found" });
-
-            return Ok(contest);
-        }
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPost("{id}/contests")]
         public async Task<IActionResult> CreateContest(RequestContestDTO contest, int id)
         {
@@ -289,6 +344,8 @@ namespace SieGraSieMa.Controllers
 
             return Ok();
         }
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPatch("{id}/contests/{contestId}")]
         public async Task<IActionResult> UpdateContest(RequestContestDTO contest, int id, int contestId)
         {
@@ -301,6 +358,8 @@ namespace SieGraSieMa.Controllers
 
             return Ok();
         }
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpDelete("{id}/contests/{contestId}")]
         public async Task<IActionResult> DeleteContest(int contestId)
         {
@@ -308,32 +367,8 @@ namespace SieGraSieMa.Controllers
             if (!result) return NotFound(new ResponseErrorDTO { Error = "Contest not found" });
             return Ok(result);
         }
-        [HttpPost("{id}/contests/{contestId}/setScore")]
-        public async Task<IActionResult> AddContestant(int contestId, AddContestantDTO addContestantDTO)
-        {
-            var result = await _contestService.SetScore(contestId, addContestantDTO);
-            if (!result)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
-            return Ok();
-        }
-        [AllowAnonymous]
-        [HttpGet("{id}/albums")]
-        public async Task<IActionResult> GetAlbum(int id)
-        {
-            try
-            {
-                var result = await _tournamentsService.GetTournamentWithAlbums(id);
-                if (result == null)
-                    return BadRequest(new ResponseErrorDTO { Error = "Tournament not found!" });
 
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new ResponseErrorDTO { Error = e.Message });
-            }
-        }
-
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPost("{id}/albums")]
         public async Task<IActionResult> CreateAlbum(int id, RequestAlbumDTO album)
         {
@@ -350,6 +385,7 @@ namespace SieGraSieMa.Controllers
 
         }
 
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPost("{id}/add-profile-photo")]
         public async Task<IActionResult> AddPhoto(int id, IFormFile[] file)
         {

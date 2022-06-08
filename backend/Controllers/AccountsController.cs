@@ -43,6 +43,30 @@ namespace SieGraSieMa.Controllers
             _emailService = emailService;
             _logService = logService;
         }
+        private async Task<IActionResult> GenerateOTPFor2StepVerification(User user)
+        {
+            var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
+            if (!providers.Contains("Email"))
+            {
+                return Unauthorized(new ResponseErrorDTO { Error = "Wrong provider" });
+            }
+
+            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+
+            //https://ethereal.email/
+            //await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
+
+            return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email" });
+        }
+        private void SetRefreshTokenInCookie(string refreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(10),
+            };
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+        }
 
         [AllowAnonymous]
         [HttpPost("Authenticate")]
@@ -78,22 +102,6 @@ namespace SieGraSieMa.Controllers
             await _userManager.ResetAccessFailedCountAsync(user);
 
             return Ok(new AuthenticateResponseDTO { AccessToken = token, RefreshToken = refreshToken.Token });
-        }
-
-        private async Task<IActionResult> GenerateOTPFor2StepVerification(User user)
-        {
-            var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
-            if (!providers.Contains("Email"))
-            {
-                return Unauthorized(new ResponseErrorDTO { Error = "Wrong provider" });
-            }
-
-            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-
-            //https://ethereal.email/
-            //await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
-
-            return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email" });
         }
 
         [AllowAnonymous]
@@ -168,17 +176,6 @@ namespace SieGraSieMa.Controllers
             return Ok(new MessageDTO { Message = "A verification link has been sent to your email!" });
 
         }
-
-        private void SetRefreshTokenInCookie(string refreshToken)
-        {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(10),
-            };
-            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
-        }
-
         //refresh token
         [AllowAnonymous]
         [HttpPost("Refresh-Token")]
@@ -195,7 +192,6 @@ namespace SieGraSieMa.Controllers
 
             return Ok(response);
         }
-
         //revoke token
         [AllowAnonymous]
         [HttpPost("Revoke-Token")]
@@ -229,7 +225,7 @@ namespace SieGraSieMa.Controllers
         }
 
 
-        [HttpGet("users")]
+        /*[HttpGet("users")]
         public async Task<IActionResult> GetAll()
         {
             var users = await _accountService.GetAll();
@@ -243,6 +239,6 @@ namespace SieGraSieMa.Controllers
             if (user == null) return NotFound();
 
             return Ok("user");
-        }
+        }*/
     }
 }

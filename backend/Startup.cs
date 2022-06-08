@@ -68,6 +68,8 @@ namespace SieGraSieMa
                 //admin policy
                 options.AddPolicy("EveryOneAuthenticated", policy =>
                       policy.RequireRole("User", "Admin", "Emp"));
+                options.AddPolicy("OnlyEmployeesAuthenticated", policy =>
+                      policy.RequireRole("Admin","Emp"));
                 options.AddPolicy("OnlyAdminAuthenticated", policy =>
                       policy.RequireRole("Admin"));
             });
@@ -97,14 +99,13 @@ namespace SieGraSieMa
             services.AddTransient<IContestService, ContestService>();
             services.AddTransient<IMediaService, MediaService>();
             services.AddTransient<ILogService, LogService>();
-            services.AddIdentity<User, IdentityRole<int>>(options=>
+            services.AddIdentity<User, IdentityRole<int>>(options =>
                 {
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(125);
-                })
-                .AddEntityFrameworkStores<SieGraSieMaContext>()
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(125);
+                }).AddEntityFrameworkStores<SieGraSieMaContext>()
                 .AddDefaultTokenProviders();
-            
-            
+
+
 
             /*services.AddIdentity<User, IdentityRole<int>>()
             .AddEntityFrameworkStores<SieGraSieMaContext>()

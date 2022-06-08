@@ -85,7 +85,6 @@ namespace SieGraSieMa.Services
         {
             return _SieGraSieMaContext.Users.Where(t => t.Email == Email).SingleOrDefault();
         }
-
         public IEnumerable<User> GetUsers()
         {
             return _SieGraSieMaContext.Users.ToList();

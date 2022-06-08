@@ -160,7 +160,6 @@ namespace SieGraSieMa.Controllers
 
             await _emailService.SendAsync(user.Email, "Potwierdź konto email", callback);
 
-            //TODO change role
             await _userManager.AddToRoleAsync(user, "User");
 
             await _logService.AddLog(new Log(user, "Register succesfully"));

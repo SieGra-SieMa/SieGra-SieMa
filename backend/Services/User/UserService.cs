@@ -19,6 +19,7 @@ namespace SieGraSieMa.Services
         public void JoinNewsletter(int userId);
         public void LeaveNewsletter(int userId);
         public Task<IEnumerable<User>> GetNewsletterSubscribers(int? id);
+        public Task ChangingCaptainTeamsForDelete(int Id);
     }
     public class UserService : IUserService
     {
@@ -32,6 +33,31 @@ namespace SieGraSieMa.Services
         {
             _SieGraSieMaContext.Users.Add(User);
             _SieGraSieMaContext.SaveChanges();
+        }
+
+        public async Task ChangingCaptainTeamsForDelete(int Id)
+        {
+            var teams = await _SieGraSieMaContext.Teams
+                .Include(e => e.Players)
+                .ThenInclude(e => e.User)
+                .Where(e => e.CaptainId == Id)
+                .ToListAsync();
+            if (teams.Any())
+            {
+                teams.ForEach(t =>
+                {
+                    if (t.Players.Count > 1)
+                    {
+                        t.CaptainId = t.Players.Where(p => p.UserId != Id).Select(p => p.UserId).First();
+                    }
+                    else
+                    {
+                        t.CaptainId = null;
+                    }
+                });
+                _SieGraSieMaContext.UpdateRange(teams);
+                await _SieGraSieMaContext.SaveChangesAsync();
+            }
         }
 
         public void DeleteUser(int Id)

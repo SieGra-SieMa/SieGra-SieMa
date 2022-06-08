@@ -169,9 +169,9 @@ namespace SieGraSieMa.Services
         {
             var tournaments = await _SieGraSieMaContext.Tournaments
                 .Include(t => t.TeamInTournaments)
-                .ThenInclude(tt=>tt.Team)
-                .ThenInclude(ttt=>ttt.Players)
-                .ThenInclude(p=>p.User)
+                .ThenInclude(tt => tt.Team)
+                .ThenInclude(ttt => ttt.Players)
+                .ThenInclude(p => p.User)
                 .Include(t => t.Groups)
                 .Include(t => t.Contests)
                 .Include(t => t.Albums)
@@ -185,7 +185,7 @@ namespace SieGraSieMa.Services
                     Address = t.Address,
                     ProfilePicture = t.Medium == null ? null : t.Medium.Url,
                     Status = t.Groups.Any(),
-                    isUserEnroll = t.TeamInTournaments.Any(tt=>tt.Team.Players.Any(p=>p.User.Id==(user==null?null:user.Id)))
+                    isUserEnroll = t.TeamInTournaments.Any(tt => tt.Team.Players.Any(p => p.User.Id == (user == null ? null : user.Id)))
                 })
                 .ToListAsync();
 
@@ -237,7 +237,8 @@ namespace SieGraSieMa.Services
             query = teamsEnum switch
             {
                 TeamPaidEnum.Paid => query.Where(t => t.Paid == true),
-                _ => query.Where(t => t.Paid == false)
+                TeamPaidEnum.Unpaid => query.Where(t => t.Paid == false),
+                _ => query
             };
             return await query.ToListAsync();
         }

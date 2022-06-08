@@ -35,5 +35,11 @@ namespace SieGraSieMa.Controllers
 
             return Ok(matches);
         }
+        [HttpPost("resetDatabase")]
+        public async Task<IActionResult> ResetDatabase()
+        {
+            await _generateService.SeedBasicData();
+            return Ok();
+        }
     }
 }

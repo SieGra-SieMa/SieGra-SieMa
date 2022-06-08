@@ -190,7 +190,7 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpPost("{id}/send-invite")]
-        public async Task<IActionResult> SendInvite(string emailAdress)
+        public async Task<IActionResult> SendInvite(int id, string emailAdress)
         {
             try
             {
@@ -198,7 +198,12 @@ namespace SieGraSieMa.Controllers
                 var user = _userService.GetUser(email);
                 //await _teamService.DeleteUserFromTeam(userId, user.Id, id);
                 //TODO check if team exists and if user is captain
-                await _emailService.SendAsync(emailAdress, "Zaproszenie do zespołu SiegraSiema", "Treść zaproszenia");
+                var team = _teamService.GetTeam(id);
+                if (team == null)
+                    return NotFound(new ResponseErrorDTO { Error = "Team not found" });
+                if(team.CaptainId != user.Id)
+                    return BadRequest(new ResponseErrorDTO { Error = "You are not a captain" });
+                await _emailService.SendAsync(emailAdress, "Zaproszenie do zespołu SiegraSiema", $"Dołącz do naszego teamu, użyj tego kodu {team.Code} na stronie SiegraSiema");
                 return Ok(new MessageDTO { Message = $"Mail already sent" });
             }
             catch (Exception e)

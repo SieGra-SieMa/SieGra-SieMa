@@ -1,10 +1,10 @@
 import { FormEvent, useState } from 'react';
-import { Tournament, TournamentRequest } from '../../_lib/_types/tournament';
-import { useApi } from '../api/ApiContext';
-import Button from '../form/Button';
-import DatePicker from '../form/DatePicker';
-import Input from '../form/Input';
-import VerticalSpacing from '../spacing/VerticalSpacing';
+import { Tournament, TournamentRequest } from '../../../_lib/_types/tournament';
+import { useApi } from '../../api/ApiContext';
+import Button from '../../form/Button';
+import DatePicker from '../../form/DatePicker';
+import Input from '../../form/Input';
+import VerticalSpacing from '../../spacing/VerticalSpacing';
 import styles from './EditTournament.module.css';
 
 type EditTournamentProps = {

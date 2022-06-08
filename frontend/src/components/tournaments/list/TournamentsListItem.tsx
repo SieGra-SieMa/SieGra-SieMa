@@ -8,6 +8,7 @@ import { useState } from 'react';
 import Modal from '../../modal/Modal';
 import TeamAssign from './TeamAssign';
 import { useTournaments } from '../TournamentsContext';
+import { useUser } from '../../user/UserContext';
 
 
 type TournamentsListItemProps = {
@@ -20,6 +21,7 @@ export default function TournamentsListItem({
 
     const navigate = useNavigate();
 
+    const { user } = useUser();
     const { tournaments, setTournaments } = useTournaments();
 
     const [isTeamAssign, setIsTeamAssign] = useState(false);
@@ -45,7 +47,7 @@ export default function TournamentsListItem({
                         {tournament.description}
                     </p>
                 </div>
-                {(!tournament.status) && (<>
+                {user && (!tournament.status && !tournament.isUserEnroll) && (<>
                     <Button
                         value='Zapisz zespół'
                         onClick={(e) => {
@@ -56,9 +58,9 @@ export default function TournamentsListItem({
                 </>)}
             </div>
         </li>
-        {(!tournament.status) && isTeamAssign && (
+        {user && (!tournament.status && !tournament.isUserEnroll) && isTeamAssign && (
             <Modal
-                title='Zapisz zespół'
+                title={`Zapisz zespół - "${tournament.name}"`}
                 isClose
                 close={() => setIsTeamAssign(false)}
             >
@@ -68,7 +70,8 @@ export default function TournamentsListItem({
                         setIsTeamAssign(false);
                         const updatedTournament = {
                             ...tournament,
-                            status: false
+                            status: false,
+                            isUserEnroll: true,
                         };
                         const filtered = tournaments!.filter(
                             (e) => e.id !== updatedTournament.id

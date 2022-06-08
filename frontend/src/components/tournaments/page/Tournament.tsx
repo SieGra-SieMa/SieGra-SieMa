@@ -1,19 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ROLES } from '../../_lib/roles';
-import { Tournament as TournamentType } from '../../_lib/_types/tournament';
-import { useApi } from '../api/ApiContext';
-import Button, { ButtonStyle } from '../form/Button';
-import GuardComponent from '../guard-components/GuardComponent';
-import Ladder from './ladder/Ladder';
-import Confirm from '../modal/Confirm';
-import Modal from '../modal/Modal';
+import { ROLES } from '../../../_lib/roles';
+import { Tournament as TournamentType } from '../../../_lib/_types/tournament';
+import { useApi } from '../../api/ApiContext';
+import Button, { ButtonStyle } from '../../form/Button';
+import GuardComponent from '../../guard-components/GuardComponent';
+import Ladder from '../ladder/Ladder';
+import Confirm from '../../modal/Confirm';
+import Modal from '../../modal/Modal';
 import EditTournament from './EditTournament';
-import { useTournaments } from './TournamentsContext';
+import { useTournaments } from '../TournamentsContext';
 import styles from './Tournament.module.css';
-import { TournamentContext } from './TournamentContext';
+import { TournamentContext } from '../TournamentContext';
 import EditTournamentPicture from './EditTournamentPicture';
-import Groups from './groups/Groups';
+import Groups from '../groups/Groups';
 
 export default function Tournament() {
 

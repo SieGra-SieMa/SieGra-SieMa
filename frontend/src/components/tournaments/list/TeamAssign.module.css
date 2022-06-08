@@ -5,13 +5,12 @@
 }
 
 .list {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 15px;
 }
 
 .item {
-    min-width: 250px;
     padding: 20px;
     background-color: var(--secondary-color);
     border-radius: 5px;
@@ -29,4 +28,15 @@
 
 .selected {
     border: 2px solid var(--accent-color);
+}
+
+.loader {
+    padding: 50px;
+    margin: auto;
+}
+
+@media all and (max-width: 720px) {
+    .list {
+        grid-template-columns: 1fr;
+    }
 }

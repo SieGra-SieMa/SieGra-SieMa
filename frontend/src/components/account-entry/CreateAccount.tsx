@@ -25,7 +25,7 @@ export default function CreateAccount() {
             .then(
                 () => { },
                 (e) => {
-                    setError(e.message || e);
+                    setError(e);
                     setLoading(false);
                 }
             );

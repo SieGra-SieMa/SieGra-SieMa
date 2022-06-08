@@ -20,7 +20,7 @@ import { ApiContext } from '../api/ApiContext';
 import ApiClient from '../../_services';
 import UserProvider from '../user/UserProvider';
 import TournamentsList from '../tournaments/list/TournamentsList';
-import Tournament from '../tournaments/Tournament';
+import Tournament from '../tournaments/page/Tournament';
 
 const apiClient = new ApiClient();
 

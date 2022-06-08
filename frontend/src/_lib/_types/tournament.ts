@@ -10,6 +10,7 @@ export type TournamentListItem = TournamentRequest & {
     id: number;
     profilePicture: string;
     status: boolean;
+    isUserEnroll: boolean;
 };
 
 export type Tournament = TournamentListItem & {

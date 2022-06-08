@@ -1,4 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
+import { SyncLoader } from 'react-spinners';
 import { Team } from '../../../_lib/types';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
@@ -37,7 +38,7 @@ export default function TeamAssign({ id, confirm }: TeamAssignProps) {
     return (
         <form className={styles.root} onSubmit={onSubmit}>
             <ul className={styles.list}>
-                {teams && teams.map((team, index) => (
+                {teams ? teams.map((team, index) => (
                     <li
                         key={index}
                         className={[
@@ -50,10 +51,14 @@ export default function TeamAssign({ id, confirm }: TeamAssignProps) {
                             {team.name}
                         </p>
                     </li>
-                ))}
+                )) : (
+                    <div className={styles.loader}>
+                        <SyncLoader loading={true} size={7} margin={20} color='#fff' />
+                    </div>
+                )}
             </ul>
             <VerticalSpacing size={15} />
-            <Button value='Zapisz' disabled={selectedTeam === null} />
+            <Button className={styles.button} value='Zapisz' disabled={selectedTeam === null} />
         </form>
     );
 };

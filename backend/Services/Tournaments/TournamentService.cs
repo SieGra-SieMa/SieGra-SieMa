@@ -65,7 +65,7 @@ namespace SieGraSieMa.Services
 
         public async Task<TournamentListDTO> CreateTournament(Tournament tournament)
         {
-            if (tournament.EndDate < tournament.StartDate || tournament.StartDate < DateTime.Now) throw new Exception("Unable to add because of invalid dates");
+            if (tournament.EndDate < tournament.StartDate || tournament.StartDate < DateTime.UtcNow) throw new Exception("Unable to add because of invalid dates");
             await _SieGraSieMaContext.Tournaments.AddAsync(tournament);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return new TournamentListDTO { Id = tournament.Id, Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };

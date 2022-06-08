@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SieGraSieMa.DTOs;
 using SieGraSieMa.DTOs.AlbumDTO;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.MediumDTO;
@@ -80,12 +81,19 @@ namespace SieGraSieMa.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMedium(int id)
         {
-            var result = await _mediaService.DeleteMedia(id);
+            try
+            {
+                var result = await _mediaService.DeleteMedia(id);
 
-            if (!result)
-                return NotFound(new ResponseErrorDTO { Error = "Medium not found" });
+                if (!result)
+                    return NotFound(new ResponseErrorDTO { Error = "Medium not found" });
 
-            return Ok();
+                return Ok(new MessageDTO { Message = "Medium deleted!"});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
 
         [HttpPost("{id}/{albumId}")]
@@ -107,8 +115,8 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var result = await _mediaService.DeleteFromAlbum(id,albumId);
-                return Ok(result);
+                var result = await _mediaService.DeleteFromAlbum(id, albumId);
+                return Ok(new MessageDTO { Message = "Photo deleted from album" });
             }
             catch (Exception e)
             {

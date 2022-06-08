@@ -8,7 +8,6 @@ using SieGraSieMa.DTOs.Newsletter;
 using SieGraSieMa.DTOs.Users;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
-using SieGraSieMa.Services.Email;
 using System;
 using System.Collections.Generic;
 using System.Linq;

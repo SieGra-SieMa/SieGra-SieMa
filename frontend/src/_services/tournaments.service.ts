@@ -31,6 +31,10 @@ export default class TournamentsService extends Service {
     };
 
     getTeamsInTournament(id: string): Promise<Tournament[]> {
-        return super.get(`${Config.HOST}/api/tournaments/${id}/teams`);
+        return super.get(`${Config.HOST}/api/tournaments/${id}/teams?filter=0`);
+    };
+
+    addTeam(tournamentId: number, teamId: number): Promise<any> {
+        return super.post(`${Config.HOST}/api/Tournaments/${tournamentId}/teams/join?teamId=${teamId}`, {});
     };
 }

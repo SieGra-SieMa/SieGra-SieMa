@@ -3,3 +3,30 @@
     flex-direction: column;
     row-gap: 15px;
 }
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.item {
+    min-width: 250px;
+    padding: 20px;
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.item:hover {
+    opacity: 0.75;
+}
+
+.item:active {
+    opacity: 0.5;
+}
+
+.selected {
+    border: 2px solid var(--accent-color);
+}

@@ -7,6 +7,7 @@ import Button from '../../form/Button';
 import { useState } from 'react';
 import Modal from '../../modal/Modal';
 import TeamAssign from './TeamAssign';
+import { useTournaments } from '../TournamentsContext';
 
 
 type TournamentsListItemProps = {
@@ -18,6 +19,8 @@ export default function TournamentsListItem({
 }: TournamentsListItemProps) {
 
     const navigate = useNavigate();
+
+    const { tournaments, setTournaments } = useTournaments();
 
     const [isTeamAssign, setIsTeamAssign] = useState(false);
 
@@ -61,7 +64,17 @@ export default function TournamentsListItem({
             >
                 <TeamAssign
                     id={tournament.id}
-                    confirm={() => setIsTeamAssign(false)}
+                    confirm={() => {
+                        setIsTeamAssign(false);
+                        const updatedTournament = {
+                            ...tournament,
+                            status: false
+                        };
+                        const filtered = tournaments!.filter(
+                            (e) => e.id !== updatedTournament.id
+                        );
+                        setTournaments([...filtered, updatedTournament]);
+                    }}
                 />
             </Modal>
         )}

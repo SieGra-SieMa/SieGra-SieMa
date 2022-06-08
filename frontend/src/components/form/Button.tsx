@@ -49,7 +49,11 @@ export default function Button({
         <button
             id={id}
             type={type}
-            className={[styleName, className].filter((c) => c).join(' ')}
+            className={[
+                styleName,
+                className,
+                (disabled ? styles.disabled : undefined)
+            ].filter((c) => c).join(' ')}
             disabled={disabled}
             onClick={onClick}
         >

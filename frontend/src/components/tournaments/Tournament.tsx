@@ -179,7 +179,21 @@ export default function Tournament() {
                 >
                     <EditTournamentPicture
                         tournament={tournament}
-                        confirm={() => setIsPicture(false)}
+                        confirm={(url) => {
+                            setIsPicture(false);
+                            const updatedTournament = {
+                                ...tournament,
+                                profilePicture: url,
+                            };
+                            setTournament(updatedTournament);
+                            setIsEdit(false);
+                            if (tournaments) {
+                                const filtered = tournaments.filter(
+                                    (e) => e.id !== updatedTournament.id
+                                );
+                                setTournaments([...filtered, updatedTournament]);
+                            }
+                        }}
                     />
                 </Modal>
             )}

@@ -93,3 +93,8 @@
 .redButton:active {
     background-color: #823131;
 }
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

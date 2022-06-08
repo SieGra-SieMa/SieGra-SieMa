@@ -4,16 +4,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using SieGraSieMa.DTOs;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.IdentityDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
-using SieGraSieMa.Services.Email;
-using SieGraSieMa.Services.JWT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AuthenticateResponseDTO = SieGraSieMa.DTOs.IdentityDTO.AuthenticateResponseDTO;
+using RevokeTokenDTO = SieGraSieMa.DTOs.IdentityDTO.RevokeTokenDTO;
 
 namespace SieGraSieMa.Controllers
 {
@@ -31,14 +32,16 @@ namespace SieGraSieMa.Controllers
         //private readonly IMapper _mapper;
 
         private readonly IEmailService _emailService;
+        private readonly ILogService _logService;
 
-        public AccountsController(UserManager<User> userManager, JwtHandler jwtHandler, IEmailService emailService, IAccountIdentityServices accountServices)
+        public AccountsController(UserManager<User> userManager, JwtHandler jwtHandler, IEmailService emailService, IAccountIdentityServices accountServices, ILogService logService)
         {
             _accountService = accountServices;
             _userManager = userManager;
             _jwtHandler = jwtHandler;
             //_mapper = mapper;
             _emailService = emailService;
+            _logService = logService;
         }
 
         [AllowAnonymous]
@@ -47,10 +50,10 @@ namespace SieGraSieMa.Controllers
         {
             var user = await _userManager.FindByEmailAsync(login.Email);
             if (user == null)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request"});
+                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password"});
 
             if (!await _userManager.IsEmailConfirmedAsync(user))
-                return Unauthorized(new ResponseErrorDTO { Error = "Email is not confirmed" });
+                return BadRequest(new ResponseErrorDTO { Error = "Email is not confirmed" });
 
             if (!await _userManager.CheckPasswordAsync(user, login.Password))
             {
@@ -58,10 +61,10 @@ namespace SieGraSieMa.Controllers
 
                 if (await _userManager.IsLockedOutAsync(user))
                 {
-                    return Unauthorized(new ResponseErrorDTO { Error = "Account is locked out" });
+                    return BadRequest(new ResponseErrorDTO { Error = "Account is locked out" });
                 }
 
-                return Unauthorized(new ResponseErrorDTO { Error = "Incorrect password" });
+                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
             }
 
             if (await _userManager.GetTwoFactorEnabledAsync(user))
@@ -138,9 +141,10 @@ namespace SieGraSieMa.Controllers
             var result = await _userManager.CreateAsync(user, registerRequest.Password);
             if (!result.Succeeded)
             {
-                 var errors = result.Errors.Select(e => e.Description);
-            
-                 return BadRequest(new ResponseErrorDTO { Error = errors.ToString() });
+                var errors = string.Join(" ", result.Errors.Select(e => e.Description));
+
+         
+                 return BadRequest(new ResponseErrorDTO { Error = errors });
             }
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -156,10 +160,12 @@ namespace SieGraSieMa.Controllers
 
             await _emailService.SendAsync(user.Email, "Potwierdź konto email", callback);
 
-            //TODO change role
             await _userManager.AddToRoleAsync(user, "User");
 
-            return Ok(token);
+            await _logService.AddLog(new Log(user, "Register succesfully"));
+
+            return Ok(new MessageDTO { Message = "A verification link has been sent to your email!" });
+
         }
 
         private void SetRefreshTokenInCookie(string refreshToken)
@@ -217,7 +223,7 @@ namespace SieGraSieMa.Controllers
             {
                 return BadRequest(new ResponseErrorDTO { Error = "Email not confirmed" });
             }
-
+            await _logService.AddLog(new Log(userFound, "Email confirmed succesfully"));
             return Ok();
         }
 

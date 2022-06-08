@@ -1,12 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SieGraSieMa.DTOs;
 using SieGraSieMa.DTOs.AlbumDTO;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.MediumDTO;
 using SieGraSieMa.Models;
-using SieGraSieMa.Services.Email;
-using SieGraSieMa.Services.Medias;
+using SieGraSieMa.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +65,7 @@ namespace SieGraSieMa.Controllers
             }
         }*/
 
-        [HttpPatch("{id}")]
+        /*[HttpPatch("{id}")]
         public async Task<IActionResult> UpdateMedium(RequestMediumDTO medium, int id)
         {
             //var newMedium = new Medium { Url = medium.Url, AlbumId = medium.AlbumId };
@@ -75,17 +75,24 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
             return Ok();
-        }
+        }*/
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMedium(int id)
         {
-            var result = await _mediaService.DeleteMedia(id);
+            try
+            {
+                var result = await _mediaService.DeleteMedia(id);
 
-            if (!result)
-                return NotFound(new ResponseErrorDTO { Error = "Medium not found" });
+                if (!result)
+                    return NotFound(new ResponseErrorDTO { Error = "Medium not found" });
 
-            return Ok();
+                return Ok(new MessageDTO { Message = "Medium deleted!"});
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
 
         [HttpPost("{id}/{albumId}")]
@@ -107,8 +114,8 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var result = await _mediaService.DeleteFromAlbum(id,albumId);
-                return Ok(result);
+                var result = await _mediaService.DeleteFromAlbum(id, albumId);
+                return Ok(new MessageDTO { Message = "Photo deleted from album" });
             }
             catch (Exception e)
             {

@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SieGraSieMa.Services.JWT
+namespace SieGraSieMa.Services
 {
     public class JwtHandler
     {

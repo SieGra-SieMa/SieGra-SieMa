@@ -21,11 +21,7 @@ using SieGraSieMa.DTOs.ResponseWrapper;
 using SieGraSieMa.Mappers;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
-using SieGraSieMa.Services.Albums;
-using SieGraSieMa.Services.Email;
-using SieGraSieMa.Services.JWT;
-using SieGraSieMa.Services.Medias;
-using SieGraSieMa.Services.Tournaments;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -47,7 +43,8 @@ namespace SieGraSieMa
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication(options => {
+            services.AddAuthentication(options =>
+            {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -71,6 +68,8 @@ namespace SieGraSieMa
                 //admin policy
                 options.AddPolicy("EveryOneAuthenticated", policy =>
                       policy.RequireRole("User", "Admin", "Emp"));
+                options.AddPolicy("OnlyAdminAuthenticated", policy =>
+                      policy.RequireRole("Admin"));
             });
 
 
@@ -97,6 +96,7 @@ namespace SieGraSieMa
             services.AddTransient<ITournamentsService, TournamentService>();
             services.AddTransient<IContestService, ContestService>();
             services.AddTransient<IMediaService, MediaService>();
+            services.AddTransient<ILogService, LogService>();
             services.AddIdentity<User, IdentityRole<int>>()
             .AddEntityFrameworkStores<SieGraSieMaContext>()
             .AddDefaultTokenProviders();
@@ -111,7 +111,8 @@ namespace SieGraSieMa
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
-                    builder => {
+                    builder =>
+                    {
                         builder.WithOrigins("http://localhost:3000");
                         builder.AllowAnyHeader();
                         builder.AllowAnyMethod();

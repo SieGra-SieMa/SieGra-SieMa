@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.MatchDTO;
-using SieGraSieMa.Services.Tournaments;
+using SieGraSieMa.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

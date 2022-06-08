@@ -6,8 +6,6 @@ using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
-using SieGraSieMa.Services.Email;
-using SieGraSieMa.Services.Medias;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -189,8 +187,24 @@ namespace SieGraSieMa.Controllers
 
         }
 
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
+        [HttpDelete("admin/{id}")]
+        public async Task<IActionResult> DeleteByAdminAsync(int id)
+        {
+            try
+            {
+                await _teamService.DeleteTeamByAdmin(id);
+                return Ok(new MessageDTO { Message = $"Team successfully deleted" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
+
         [HttpPost("{id}/send-invite")]
-        public async Task<IActionResult> SendInvite(string emailAdress)
+        public async Task<IActionResult> SendInvite(int id, string emailAdress)
         {
             try
             {
@@ -198,7 +212,12 @@ namespace SieGraSieMa.Controllers
                 var user = _userService.GetUser(email);
                 //await _teamService.DeleteUserFromTeam(userId, user.Id, id);
                 //TODO check if team exists and if user is captain
-                await _emailService.SendAsync(emailAdress, "Zaproszenie do zespołu SiegraSiema", "Treść zaproszenia");
+                var team = _teamService.GetTeam(id);
+                if (team == null)
+                    return NotFound(new ResponseErrorDTO { Error = "Team not found" });
+                if(team.CaptainId != user.Id)
+                    return BadRequest(new ResponseErrorDTO { Error = "You are not a captain" });
+                await _emailService.SendAsync(emailAdress, "Zaproszenie do zespołu SiegraSiema", $"Dołącz do naszego teamu, użyj tego kodu {team.Code} na stronie SiegraSiema");
                 return Ok(new MessageDTO { Message = $"Mail already sent" });
             }
             catch (Exception e)

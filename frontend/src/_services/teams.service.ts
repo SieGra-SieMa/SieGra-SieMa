@@ -23,4 +23,12 @@ export default class TeamsService extends Service {
     leaveTeam(id: number): Promise<{}> {
         return super.post(`${Config.HOST}/api/teams/leave`, { id });
     };
+
+    switchCaptain(teamId: number, userId: number): Promise<Team> {
+        return super.post(`${Config.HOST}/api/teams/${teamId}/switch-captain/${userId}`, null);
+    };
+
+    removePlayer(teamId: number, userId: number): Promise<Team> {
+        return super.del(`${Config.HOST}/api/teams/${teamId}/remove-user/${userId}`);
+    };
 }

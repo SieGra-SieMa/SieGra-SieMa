@@ -6,18 +6,25 @@ import Confirm from '../modal/Confirm';
 import TeamAdd from './TeamAdd';
 import { useApi } from '../api/ApiContext';
 import Button, { ButtonStyle } from '../form/Button';
+import { useUser } from '../user/UserContext';
 
 type TeamsListItemProp = {
     team: Team,
     onRemove: (id: number) => void,
+    onCaptainSwitch: (team: Team) => void,
+    onPlayerRemovedSwitch: (team: Team) => void
 }
 
-export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
+export default function TeamsListItem({ team, onRemove, onCaptainSwitch, onPlayerRemovedSwitch }: TeamsListItemProp) {
 
     const { teamsService } = useApi();
+    const { user } = useUser();
 
     const [isAdd, setIsAdd] = useState(false);
     const [isConfirm, setIsConfirm] = useState(false);
+    const [isSwitch, setIsSwitch] = useState(false);
+    const [isRemoveConfirm, setIsRemoveConfirm] = useState(false);
+    const [chosenPlayer, setChosenPlayer] = useState<number>();
 
     const captain = team.players.find((player) => player.id === team.captainId);
 
@@ -28,6 +35,22 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
                 onRemove(team.id)
             })
     }, [team.id, onRemove, teamsService]);
+
+    const switchCaptain = useCallback((id: number) => {
+        teamsService.switchCaptain(team.id, id)
+        .then((data) => {
+            setIsSwitch(false);
+            onCaptainSwitch(data)
+        });
+    }, [team.id, onCaptainSwitch, teamsService]);
+
+    const removePlayer = useCallback((id: number) => {
+        teamsService.removePlayer(team.id, id)
+        .then((data) => {
+            setIsRemoveConfirm(false);
+            onPlayerRemovedSwitch(data)
+        });
+    }, [team.id, onPlayerRemovedSwitch, teamsService]);
 
     return (
         <div className={styles.root}>
@@ -46,7 +69,22 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
                         <li
                             key={index}
                         >
-                            <p>{`${player.name} ${player.surname}`}</p>
+                            <div className={styles.teamMember}>
+                                <p>{`${player.name} ${player.surname}`}</p>
+                                {(user?.id === team.captainId) && (<>
+                                <Button
+                                    value='Switch Captain'
+                                    onClick={() => { setChosenPlayer(player.id); setIsSwitch(true);}}
+                                    style={ButtonStyle.Orange}
+                                />
+                                <Button
+                                    value='Remove'
+                                    onClick={() => { setChosenPlayer(player.id); setIsRemoveConfirm(true);}} 
+                                    style={ButtonStyle.Red}
+                                />
+                                </>)}
+                            </div>
+
                         </li>
                     ))}
                 </ul>
@@ -81,6 +119,30 @@ export default function TeamsListItem({ team, onRemove }: TeamsListItemProp) {
                         cancel={() => setIsConfirm(false)}
                         confirm={() => leaveTeam()}
                         label='Leave'
+                    />
+                </Modal>
+            )}
+            {isSwitch && (
+                <Modal
+                    close={() => setIsSwitch(false)}
+                    title={`Team "${team.name}" - Do you really want to switch captain?`}
+                >
+                    <Confirm
+                        cancel={() => setIsSwitch(false)}
+                        confirm={() => switchCaptain(chosenPlayer!)}
+                        label='Switch'
+                    />
+                </Modal>
+            )}
+            {isRemoveConfirm && (
+                <Modal
+                    close={() => setIsRemoveConfirm(false)}
+                    title={`Team "${team.name}" - Do you really want to remove player`}
+                >
+                    <Confirm
+                        cancel={() => setIsRemoveConfirm(false)}
+                        confirm={() => removePlayer(chosenPlayer!)}
+                        label='Remove'
                     />
                 </Modal>
             )}

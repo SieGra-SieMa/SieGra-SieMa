@@ -5,11 +5,15 @@
     flex-direction: column;
     overflow: hidden;
     border-radius: 15px;
-    background-color: #fff;
+    background-color: rgb(7, 101, 43);
     padding: 30px;
     row-gap: 45px;
 }
 
+.teamMember{
+    display: flex;
+    flex-direction: row;
+}
 
 .content {}
 

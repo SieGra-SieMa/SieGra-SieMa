@@ -62,7 +62,7 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
-        //[HttpPost("create")]
+
         [HttpPost()]
         [Authorize(Policy = "EveryOneAuthenticated")]
         public IActionResult Create(TeamDTO teamDTO)
@@ -136,15 +136,15 @@ namespace SieGraSieMa.Controllers
 
         }
 
-        [HttpPost("{id}/remove-user/{userId}")]
+        [HttpDelete("{id}/remove-user/{userId}")]
         public async Task<IActionResult> RemoveUserFromTeam(int id, int userId)
         {
             try
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
-                await _teamService.DeleteUserFromTeam(userId, user.Id, id);
-                return Ok(new MessageDTO { Message = $"User {userId} successfully deleted" });
+                var team = await _teamService.DeleteUserFromTeam(userId, user.Id, id);
+                return Ok(team);
             }
             catch (Exception e)
             {
@@ -160,8 +160,8 @@ namespace SieGraSieMa.Controllers
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
-                await _teamService.SwitchCaptain(id, user.Id, userId);
-                return Ok(new MessageDTO { Message = $"Team captain successfully swapped" });
+                var team = await _teamService.SwitchCaptain(id, user.Id, userId);
+                return Ok(team);
             }
             catch (Exception e)
             {

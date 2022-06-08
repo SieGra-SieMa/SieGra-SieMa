@@ -24,8 +24,8 @@ namespace SieGraSieMa.Services
         IEnumerable<Team> GetTeams();
         Task<bool> IsUserAbleToJoinTeam(User user, string code);
         Task ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO);
-        Task DeleteUserFromTeam(int userId, int captainId, int teamId);
-        Task SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId);
+        Task<GetTeamsDTO> DeleteUserFromTeam(int userId, int captainId, int teamId);
+        Task<GetTeamsDTO> SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId);
         Task DeleteTeam(int teamId, int captainId);
         Task DeleteTeamByAdmin(int teamId);
 
@@ -279,7 +279,7 @@ namespace SieGraSieMa.Services
             await _SieGraSieMaContext.SaveChangesAsync();
         }
 
-        public async Task DeleteUserFromTeam(int userId, int captainId, int teamId)
+        public async Task<GetTeamsDTO> DeleteUserFromTeam(int userId, int captainId, int teamId)
         {
             var team = await ValidateTeam(teamId, captainId, userId);
 
@@ -287,20 +287,68 @@ namespace SieGraSieMa.Services
 
             team.Players.Remove(player);
             await _SieGraSieMaContext.SaveChangesAsync();
+
+            return new GetTeamsDTO
+            {
+                Id = team.Id,
+                Name = team.Name,
+                CaptainId = team.CaptainId.Value,
+                Captain = new PlayerDTO
+                {
+                    Id = team.CaptainId.Value,
+                    Name = team.Captain.Name,
+                    Surname = team.Captain.Surname
+
+                },
+                Code = team.Code,
+                ProfilePicture = team.Medium == null ? null : team.Medium.Url,
+                Players = team.Players
+                        .Select(p => new PlayerDTO
+                        {
+                            Id = p.UserId,
+                            Name = p.User.Name,
+                            Surname = p.User.Surname
+
+                        }).ToList()
+            };
         }
 
-        public async Task SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId)
+        public async Task<GetTeamsDTO> SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId)
         {
             var team = await ValidateTeam(teamId, oldCaptainId, newCaptainId);
 
             team.CaptainId = newCaptainId;
             _SieGraSieMaContext.Teams.Update(team);
             await _SieGraSieMaContext.SaveChangesAsync();
+
+            return new GetTeamsDTO
+            {
+                Id = team.Id,
+                Name = team.Name,
+                CaptainId = team.CaptainId.Value,
+                Captain = new PlayerDTO
+                {
+                    Id = team.CaptainId.Value,
+                    Name = team.Captain.Name,
+                    Surname = team.Captain.Surname
+
+                },
+                Code = team.Code,
+                ProfilePicture = team.Medium == null ? null : team.Medium.Url,
+                Players = team.Players
+                        .Select(p => new PlayerDTO
+                        {
+                            Id = p.UserId,
+                            Name = p.User.Name,
+                            Surname = p.User.Surname
+
+                        }).ToList()
+            };
         }
 
         private async Task<Team> ValidateTeam(int teamId, int captainId, int playerId)
         {
-            var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).Where(t => t.Id == teamId).SingleOrDefaultAsync();
+            var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).ThenInclude(e => e.User).Where(t => t.Id == teamId).SingleOrDefaultAsync();
 
             if (team == null)
                 throw new Exception($"Team with {teamId} id does not exists");

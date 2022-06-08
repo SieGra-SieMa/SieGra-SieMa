@@ -29,12 +29,30 @@ export default function TeamsList() {
         }
     };
 
+    const onCaptainSwitch = (changedTeam: Team) => {
+        const data = teams ? [...teams] : [];
+        const index = data.findIndex(e => e.id === changedTeam.id) ?? -1;
+        if (index >= 0) {
+            data[index] = changedTeam;
+            setTeams(data);
+        }
+    };
+
+    const onPlayerRemoved = (changedTeam: Team) => {
+        const data = teams ? [...teams] : [];
+        const index = data.findIndex(e => e.id === changedTeam.id) ?? -1;
+        if (index >= 0) {
+            data[index] = changedTeam;
+            setTeams(data);
+        }
+    };
+
     return (
         <div className="container">
             <h2 className={styles.title}>My teams</h2>
             <div className={styles.content}>
                 {teams ? teams.map((team, index) => (
-                    <TeamsListItem key={index} team={team} onRemove={onRemove} />
+                    <TeamsListItem key={index} team={team} onRemove={onRemove} onCaptainSwitch={onCaptainSwitch} onPlayerRemovedSwitch={onPlayerRemoved}/>
                 )) : (
                     <div className={styles.loader}>
                         <SyncLoader loading={true} size={20} margin={20} />

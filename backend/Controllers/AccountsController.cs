@@ -50,19 +50,20 @@ namespace SieGraSieMa.Controllers
         {
             var user = await _userManager.FindByEmailAsync(login.Email);
             if (user == null)
-                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password"});
+                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
 
+            if (await _userManager.IsLockedOutAsync(user))
+                return BadRequest(new ResponseErrorDTO { Error = "Account is locked out" });
+            
             if (!await _userManager.IsEmailConfirmedAsync(user))
                 return BadRequest(new ResponseErrorDTO { Error = "Email is not confirmed" });
 
             if (!await _userManager.CheckPasswordAsync(user, login.Password))
             {
                 await _userManager.AccessFailedAsync(user);
-
+                await _logService.AddLog(new Log(user, "Account is locked out due to too much bad requests"));
                 if (await _userManager.IsLockedOutAsync(user))
-                {
-                    return BadRequest(new ResponseErrorDTO { Error = "Account is locked out" });
-                }
+                    return BadRequest(new ResponseErrorDTO { Error = "Account is locked out due to too much bad requests" });
 
                 return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
             }
@@ -92,7 +93,7 @@ namespace SieGraSieMa.Controllers
             //https://ethereal.email/
             //await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
 
-            return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email"});
+            return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email" });
         }
 
         [AllowAnonymous]
@@ -127,8 +128,8 @@ namespace SieGraSieMa.Controllers
 
             var user = new User
             {
-                Name= registerRequest.Name,
-                Surname= registerRequest.Surname,
+                Name = registerRequest.Name,
+                Surname = registerRequest.Surname,
                 UserName = registerRequest.Email,
                 Email = registerRequest.Email,
                 NormalizedEmail = registerRequest.Email.ToUpper(),
@@ -143,8 +144,8 @@ namespace SieGraSieMa.Controllers
             {
                 var errors = string.Join(" ", result.Errors.Select(e => e.Description));
 
-         
-                 return BadRequest(new ResponseErrorDTO { Error = errors });
+
+                return BadRequest(new ResponseErrorDTO { Error = errors });
             }
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -192,7 +193,7 @@ namespace SieGraSieMa.Controllers
             if (!string.IsNullOrEmpty(response.RefreshToken))
                 SetRefreshTokenInCookie(response.RefreshToken);
 
-             return Ok(response);
+            return Ok(response);
         }
 
         //revoke token

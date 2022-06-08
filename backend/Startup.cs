@@ -97,9 +97,14 @@ namespace SieGraSieMa
             services.AddTransient<IContestService, ContestService>();
             services.AddTransient<IMediaService, MediaService>();
             services.AddTransient<ILogService, LogService>();
-            services.AddIdentity<User, IdentityRole<int>>()
-            .AddEntityFrameworkStores<SieGraSieMaContext>()
-            .AddDefaultTokenProviders();
+            services.AddIdentity<User, IdentityRole<int>>(options=>
+                {
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(125);
+                })
+                .AddEntityFrameworkStores<SieGraSieMaContext>()
+                .AddDefaultTokenProviders();
+            
+            
 
             /*services.AddIdentity<User, IdentityRole<int>>()
             .AddEntityFrameworkStores<SieGraSieMaContext>()

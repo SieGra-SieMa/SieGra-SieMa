@@ -106,8 +106,10 @@ namespace SieGraSieMa.Controllers
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
                 return NotFound(new ResponseErrorDTO { Error = "User not found" });
-            await _userService.ChangingCaptainTeamsForDelete(user.Id);
-            await _userManager.DeleteAsync(user);
+            await _userService.PreparingUserToBlock(user.Id);
+            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Parse("2038-01-19 00:00:00"));//to jest maksimum dla timestampu xD
+            await _logService.AddLog(new Log(user, "Lock user due to deleting account"));
+            //await _userManager.DeleteAsync(user);
             return Ok();
         }
         [Authorize(Policy = "OnlyAdminAuthenticated")]
@@ -126,6 +128,11 @@ namespace SieGraSieMa.Controllers
             if (user == null)
                 return NotFound(new ResponseErrorDTO { Error = "User not found" });
             await _userManager.AddToRolesAsync(user, roles);
+            if ((await _userManager.IsLockedOutAsync(user))&&(await _userManager.GetRolesAsync(user)).Any())
+            {
+                await _userManager.SetLockoutEndDateAsync(user, null);
+                await _logService.AddLog(new Log(user, "Unlock user due to existing roles"));
+            }
             await _logService.AddLog(new Log(user, "Add roles " + roles.Aggregate((i, j) => i + ", " + j) + " to " + user.UserName));
             return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = await _userManager.GetRolesAsync(user) });
         }
@@ -137,6 +144,11 @@ namespace SieGraSieMa.Controllers
             if (user == null)
                 return NotFound(new ResponseErrorDTO { Error = "User not found" });
             await _userManager.RemoveFromRolesAsync(user, roles);
+            if (!(await _userManager.GetRolesAsync(user)).Any())
+            {
+                await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Parse("2038-01-19 00:00:00"));//to jest maksimum dla timestampu xD
+                await _logService.AddLog(new Log(user, "Lock user due to no roles"));
+            }
             await _logService.AddLog(new Log(user, "Remove roles " + roles.Aggregate((i, j) => i + ", " + j) + " from " + user.UserName));
             return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = await _userManager.GetRolesAsync(user) });
         }

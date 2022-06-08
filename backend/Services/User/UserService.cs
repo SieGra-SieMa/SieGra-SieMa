@@ -19,7 +19,7 @@ namespace SieGraSieMa.Services
         public void JoinNewsletter(int userId);
         public void LeaveNewsletter(int userId);
         public Task<IEnumerable<User>> GetNewsletterSubscribers(int? id);
-        public Task ChangingCaptainTeamsForDelete(int Id);
+        public Task PreparingUserToBlock(int Id);
     }
     public class UserService : IUserService
     {
@@ -35,29 +35,28 @@ namespace SieGraSieMa.Services
             _SieGraSieMaContext.SaveChanges();
         }
 
-        public async Task ChangingCaptainTeamsForDelete(int Id)
+        public async Task PreparingUserToBlock(int Id)
         {
-            var teams = await _SieGraSieMaContext.Teams
-                .Include(e => e.Players)
-                .ThenInclude(e => e.User)
-                .Where(e => e.CaptainId == Id)
-                .ToListAsync();
+            var teams = await _SieGraSieMaContext.Teams.Include(e => e.Players).ThenInclude(e => e.User).Where(e => e.CaptainId == Id).ToListAsync();
             if (teams.Any())
             {
                 teams.ForEach(t =>
                 {
-                    if (t.Players.Count > 1)
-                    {
-                        t.CaptainId = t.Players.Where(p => p.UserId != Id).Select(p => p.UserId).First();
-                    }
-                    else
-                    {
-                        t.CaptainId = null;
-                    }
+                    if (t.Players.Count > 1) t.CaptainId = t.Players.Where(p => p.UserId != Id).Select(p => p.UserId).First();
+                    else t.CaptainId = null;
                 });
                 _SieGraSieMaContext.UpdateRange(teams);
-                await _SieGraSieMaContext.SaveChangesAsync();
             }
+            var newsletter = await _SieGraSieMaContext.Newsletters.Where(n => n.UserId == Id).FirstOrDefaultAsync();
+            if (newsletter != null) _SieGraSieMaContext.Newsletters.Remove(newsletter);
+
+            var players = await _SieGraSieMaContext.Players.Where(n => n.UserId == Id).ToListAsync();
+            if (players.Any()) _SieGraSieMaContext.Players.RemoveRange(players);
+
+            var token = await _SieGraSieMaContext.RefreshTokens.Where(n => n.UserId == Id).ToListAsync();
+            if (token.Any()) _SieGraSieMaContext.RefreshTokens.RemoveRange(token);
+
+            await _SieGraSieMaContext.SaveChangesAsync();
         }
 
         public void DeleteUser(int Id)
@@ -68,7 +67,7 @@ namespace SieGraSieMa.Services
 
         public async Task<IEnumerable<User>> GetNewsletterSubscribers(int? id)
         {
-            if(id == null)
+            if (id == null)
                 return await _SieGraSieMaContext.Newsletters.Include(n => n.User).Select(n => n.User).ToListAsync();
 
             return await _SieGraSieMaContext.Newsletters.Include(n => n.User)

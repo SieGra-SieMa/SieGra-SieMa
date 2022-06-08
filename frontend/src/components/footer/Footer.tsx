@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import './Footer.css';
+import styles from './Footer.module.css';
 import PhoneIcon from '@mui/icons-material/Phone';
 import EmailIcon from '@mui/icons-material/Email';
 
@@ -17,7 +17,7 @@ export default function Footer() {
                         <div className={styles.iconText}><EmailIcon /> <p>siegrasiema.inicjatywa@gmail.com</p></div>
                     </div>
                 </div>
-                <p id='designed-by'>
+                <p id={styles.designedBy}>
                     Designed & created by Jakub Adamczyk, Jan Biniek, Taras Kulyavets, Jakub Pawłowicz
                 </p>
             </div>

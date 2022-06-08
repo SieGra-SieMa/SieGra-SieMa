@@ -31,4 +31,8 @@ export default class TeamsService extends Service {
     removePlayer(teamId: number, userId: number): Promise<Team> {
         return super.del(`${Config.HOST}/api/teams/${teamId}/remove-user/${userId}`);
     };
+
+    updateTeam(id: number, name: string): Promise<Team> {
+        return super.patch(`${Config.HOST}/api/teams/${id}`, { name });
+    };
 }

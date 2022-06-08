@@ -126,8 +126,8 @@ namespace SieGraSieMa.Controllers
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
-                await _teamService.ChangeTeamDetails(user.Id, id, teamDetailsDTO);
-                return Ok(new MessageDTO { Message = "Team details successfully changed" });
+                var team = await _teamService.ChangeTeamDetails(user.Id, id, teamDetailsDTO);
+                return Ok(team);
             }
             catch (Exception e)
             {
@@ -210,8 +210,6 @@ namespace SieGraSieMa.Controllers
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
-                //await _teamService.DeleteUserFromTeam(userId, user.Id, id);
-                //TODO check if team exists and if user is captain
                 var team = _teamService.GetTeam(id);
                 if (team == null)
                     return NotFound(new ResponseErrorDTO { Error = "Team not found" });

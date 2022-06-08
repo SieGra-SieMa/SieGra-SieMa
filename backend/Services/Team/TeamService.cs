@@ -23,7 +23,7 @@ namespace SieGraSieMa.Services
         Task<IEnumerable<GetTeamsDTO>> GetTeamsWhichUserIsCaptain(string email);
         IEnumerable<Team> GetTeams();
         Task<bool> IsUserAbleToJoinTeam(User user, string code);
-        Task ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO);
+        Task<GetTeamsDTO> ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO);
         Task<GetTeamsDTO> DeleteUserFromTeam(int userId, int captainId, int teamId);
         Task<GetTeamsDTO> SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId);
         Task DeleteTeam(int teamId, int captainId);
@@ -263,9 +263,9 @@ namespace SieGraSieMa.Services
             return _SieGraSieMaContext.Teams.Include(t => t.Players).Where(t => t.Id == id).SingleOrDefault();
         }
 
-        public async Task ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO)
+        public async Task<GetTeamsDTO> ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO)
         {
-            var team = await _SieGraSieMaContext.Teams.FindAsync(teamId);
+            var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).ThenInclude(e => e.User).Where(t => t.Id == teamId).SingleOrDefaultAsync();
 
             if (team == null)
                 throw new Exception($"Team with {teamId} id does not exists");
@@ -277,6 +277,30 @@ namespace SieGraSieMa.Services
 
             _SieGraSieMaContext.Teams.Update(team);
             await _SieGraSieMaContext.SaveChangesAsync();
+
+            return new GetTeamsDTO
+            {
+                Id = team.Id,
+                Name = team.Name,
+                CaptainId = team.CaptainId.Value,
+                Captain = new PlayerDTO
+                {
+                    Id = team.CaptainId.Value,
+                    Name = team.Captain.Name,
+                    Surname = team.Captain.Surname
+
+                },
+                Code = team.Code,
+                ProfilePicture = team.Medium == null ? null : team.Medium.Url,
+                Players = team.Players
+                        .Select(p => new PlayerDTO
+                        {
+                            Id = p.UserId,
+                            Name = p.User.Name,
+                            Surname = p.User.Surname
+
+                        }).ToList()
+            };
         }
 
         public async Task<GetTeamsDTO> DeleteUserFromTeam(int userId, int captainId, int teamId)

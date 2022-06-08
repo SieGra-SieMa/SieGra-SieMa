@@ -16,11 +16,11 @@ export type Account = User & {
 export type Player = User;
 
 export type Team = {
-    id: number;
-    name: string;
-    code: string;
-    captainId: number;
-    players: Player[];
+    id?: number;
+    name?: string;
+    code?: string;
+    captainId?: number;
+    players?: Player[];
 };
 
 export type UserDetailsRequest = {

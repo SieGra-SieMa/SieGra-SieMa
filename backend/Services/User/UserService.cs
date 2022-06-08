@@ -1,4 +1,5 @@
-﻿using SieGraSieMa.DTOs.Users;
+﻿using Microsoft.EntityFrameworkCore;
+using SieGraSieMa.DTOs.Users;
 using SieGraSieMa.Models;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace SieGraSieMa.Services
         IEnumerable<User> GetUsers();
         public void JoinNewsletter(int userId);
         public void LeaveNewsletter(int userId);
+        public Task<IEnumerable<User>> GetNewsletterSubscribers(int? id);
     }
     public class UserService : IUserService
     {
@@ -36,6 +38,17 @@ namespace SieGraSieMa.Services
         {
             _SieGraSieMaContext.Users.Remove(GetUser(Id));
             _SieGraSieMaContext.SaveChanges();
+        }
+
+        public async Task<IEnumerable<User>> GetNewsletterSubscribers(int? id)
+        {
+            if(id == null)
+                return await _SieGraSieMaContext.Newsletters.Include(n => n.User).Select(n => n.User).ToListAsync();
+
+            return await _SieGraSieMaContext.Newsletters.Include(n => n.User)
+                .ThenInclude(u => u.Teams)
+                .ThenInclude(u => u.TeamInTournaments)
+                .Where(u => u.User.Teams.Any(t => t.TeamInTournaments.Any(t => t.TournamentId == id))).Select(n => n.User).ToListAsync();
         }
 
         public User GetUser(int Id)

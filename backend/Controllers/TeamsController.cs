@@ -6,8 +6,6 @@ using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
-using SieGraSieMa.Services.Email;
-using SieGraSieMa.Services.Medias;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -180,6 +178,22 @@ namespace SieGraSieMa.Controllers
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 await _teamService.DeleteTeam(id, user.Id);
+                return Ok(new MessageDTO { Message = $"Team successfully deleted" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
+        [HttpDelete("admin/{id}")]
+        public async Task<IActionResult> DeleteByAdminAsync(int id)
+        {
+            try
+            {
+                await _teamService.DeleteTeamByAdmin(id);
                 return Ok(new MessageDTO { Message = $"Team successfully deleted" });
             }
             catch (Exception e)

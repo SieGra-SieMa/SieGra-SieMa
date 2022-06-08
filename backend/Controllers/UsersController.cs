@@ -25,12 +25,13 @@ namespace SieGraSieMa.Controllers
         private readonly IUserService _userService;
         private readonly IEmailService _emailService;
         private readonly UserManager<User> _userManager;
+        private readonly ILogService _logService;
 
-
-        public UsersController(IUserService userService, UserManager<User> userManager, IEmailService emailService)
+        public UsersController(IUserService userService, UserManager<User> userManager, ILogService logService, IEmailService emailService)
         {
             _userService = userService;
             _userManager = userManager;
+            _logService = logService;
             _emailService = emailService;
         }
 
@@ -43,6 +44,7 @@ namespace SieGraSieMa.Controllers
                 var newUser = _userService.UpdateUser(email, userDetailsDTO);
                 var roles = await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(email));
                 newUser.Roles = roles;
+                await _logService.AddLog(new Log(newUser.Id, "Changed user details"));
                 return Ok(newUser);
             }
             catch (Exception e)
@@ -62,16 +64,31 @@ namespace SieGraSieMa.Controllers
         }
 
         [HttpPost("change-password")]
-        public async Task<ActionResult> GetCurrentUserAsync(UserPasswordDTO passwordDTO)
+        public async Task<ActionResult> ChangePassword(UserPasswordDTO passwordDTO)
         {
-            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
-            var user = await _userManager.FindByEmailAsync(email);
-            var response = await _userManager.ChangePasswordAsync(user, passwordDTO.OldPassword, passwordDTO.NewPassword);
-            if (response.Succeeded)
-                return Ok(new MessageDTO { Message = "Password sucsefully changed" });
+            User user = null;
+            try
+            {
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                user = await _userManager.FindByEmailAsync(email);
+                var response = await _userManager.ChangePasswordAsync(user, passwordDTO.OldPassword, passwordDTO.NewPassword);
+                if (response.Succeeded)
+                {
+                    await _logService.AddLog(new Log(user, "Password changed succesfully"));
+                    return Ok(new MessageDTO { Message = "Password succesfully changed" });
 
-            return BadRequest(response.Errors);
-            //new UserDTO { Id = user.Id, Name=user.Name, Surname=user.Surname, Email = user.NormalizedEmail}
+                }
+                await _logService.AddLog(new Log(user, "Password does not changed - password does not meet the requirements"));
+                return BadRequest(new ResponseErrorDTO
+                {
+                    Error = string.Join(" ", response.Errors.Select(e => e.Description))
+                });
+            }
+            catch (Exception e)
+            {
+                await _logService.AddLog(new Log(user, "Error while changing password"));
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
 
         [HttpGet("{id}")]
@@ -98,7 +115,7 @@ namespace SieGraSieMa.Controllers
         public async Task<ActionResult> GetUsers()
         {
             var users = _userManager.Users;
-            var usersDTO = users.Select(u => new UserDTO { Id = u.Id, Name = u.Name, Surname = u.Surname, Email = u.NormalizedEmail});
+            var usersDTO = users.Select(u => new UserDTO { Id = u.Id, Name = u.Name, Surname = u.Surname, Email = u.NormalizedEmail });
             return Ok(usersDTO);
         }
 
@@ -109,7 +126,7 @@ namespace SieGraSieMa.Controllers
             if (user == null)
                 return NotFound(new ResponseErrorDTO { Error = "User not found" });
             await _userManager.AddToRolesAsync(user, roles);
-            
+            await _logService.AddLog(new Log(user, "Add roles " + roles.Aggregate((i, j) => i + ", " + j) + " to " + user.UserName));
             return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = await _userManager.GetRolesAsync(user) });
         }
 
@@ -120,7 +137,7 @@ namespace SieGraSieMa.Controllers
             if (user == null)
                 return NotFound(new ResponseErrorDTO { Error = "User not found" });
             await _userManager.RemoveFromRolesAsync(user, roles);
-
+            await _logService.AddLog(new Log(user, "Remove roles " + roles.Aggregate((i, j) => i + ", " + j) + " from " + user.UserName));
             return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = await _userManager.GetRolesAsync(user) });
         }
 
@@ -151,7 +168,7 @@ namespace SieGraSieMa.Controllers
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = await _userManager.FindByEmailAsync(email);
                 _userService.JoinNewsletter(user.Id);
-                return Ok(new MessageDTO { Message = "Newsletter joined"});
+                return Ok(new MessageDTO { Message = "Newsletter joined" });
             }
             catch (Exception ex)
             {

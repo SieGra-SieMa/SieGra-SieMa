@@ -15,5 +15,6 @@ namespace SieGraSieMa.DTOs.TournamentDTO
         public string Address { get; set; }
         public string ProfilePicture { get; set; }
         public bool Status { get; set; }
+        public bool isUserEnroll { get; set; }
     }
 }

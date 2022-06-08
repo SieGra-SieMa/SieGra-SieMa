@@ -27,6 +27,7 @@ namespace SieGraSieMa.Services
         Task DeleteUserFromTeam(int userId, int captainId, int teamId);
         Task SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId);
         Task DeleteTeam(int teamId, int captainId);
+        Task DeleteTeamByAdmin(int teamId);
 
     }
     public class TeamService : ITeamService
@@ -41,15 +42,16 @@ namespace SieGraSieMa.Services
 
         public Team CreateTeam(string name, User captain)
         {
-            var team = new Team() {
+            var team = new Team()
+            {
                 Name = name,
                 Captain = captain,
                 Code = GenerateNewCode()
             };
             team.Players.Add(new Player()
             {
-                Team=team,
-                User=captain
+                Team = team,
+                User = captain
             });
             _SieGraSieMaContext.Teams.Add(team);
             _SieGraSieMaContext.SaveChanges();
@@ -57,11 +59,13 @@ namespace SieGraSieMa.Services
             return team;
         }
 
-        public void JoinTeam(string code, User user) {
+        public void JoinTeam(string code, User user)
+        {
             var isExist = _SieGraSieMaContext.Teams.Where(e => e.Code == code)
                 .SingleOrDefault();
 
-            if (isExist == null) {
+            if (isExist == null)
+            {
                 throw new Exception("Team with this code doesn`t exist");
             }
 
@@ -133,32 +137,33 @@ namespace SieGraSieMa.Services
                 .Where(e => e.Players.Any(e => e.User.Email == email))
                 .Include(e => e.Players)
                 .ThenInclude(e => e.User)
-                .Select(t => new GetTeamsDTO{
-                    Id=t.Id,
-                    Name=t.Name,
-                    CaptainId=t.CaptainId,
-                    Captain= new PlayerDTO
+                .Select(t => new GetTeamsDTO
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    CaptainId = t.CaptainId.Value,
+                    Captain = new PlayerDTO
                     {
-                        Id = t.CaptainId,
+                        Id = t.CaptainId.Value,
                         Name = t.Captain.Name,
                         Surname = t.Captain.Surname
 
                     },
-                    Code =t.Code,
+                    Code = t.Code,
                     //Players=t.Players.Select(p=>_mapper.Map<PlayerDTO>(p.User)).ToList()
                     ProfilePicture = t.Medium == null ? null : t.Medium.Url,
-                    Players =t.Players
-                        .Select(p=>new PlayerDTO
+                    Players = t.Players
+                        .Select(p => new PlayerDTO
                         {
-                            Id=p.UserId,
-                            Name=p.User.Name,
-                            Surname=p.User.Surname
+                            Id = p.UserId,
+                            Name = p.User.Name,
+                            Surname = p.User.Surname
 
                         }).ToList()
                 })
                 .ToList();
         }
-        
+
         public async Task<IEnumerable<GetTeamsDTO>> GetTeamsWhichUserIsCaptain(string email)
         {
             return await _SieGraSieMaContext.Teams
@@ -169,10 +174,10 @@ namespace SieGraSieMa.Services
                 {
                     Id = t.Id,
                     Name = t.Name,
-                    CaptainId = t.CaptainId,
+                    CaptainId = t.CaptainId.Value,
                     Captain = new PlayerDTO
                     {
-                        Id = t.CaptainId,
+                        Id = t.CaptainId.Value,
                         Name = t.Captain.Name,
                         Surname = t.Captain.Surname
 
@@ -264,8 +269,8 @@ namespace SieGraSieMa.Services
 
             if (team == null)
                 throw new Exception($"Team with {teamId} id does not exists");
-            
-            if(team.CaptainId != userId)
+
+            if (team.CaptainId != userId)
                 throw new Exception($"Current user is not a captain of this team");
 
             team.Name = teamDetailsDTO.Name;
@@ -321,17 +326,34 @@ namespace SieGraSieMa.Services
             if (team.CaptainId != captainId)
                 throw new Exception($"Current user is not a captain of this team");
 
-            if(_SieGraSieMaContext.Tournaments.Any(t => t.TeamInTournaments.Any(t => t.TeamId == team.Id)))
+            if (_SieGraSieMaContext.Tournaments.Any(t => t.TeamInTournaments.Any(t => t.TeamId == team.Id)))
             {
-                //Only delete players and captain
+                var tt = _SieGraSieMaContext.TeamInTournaments.Where(t => t.TeamId == team.Id).ToList();
+                tt.ForEach(tt => tt.Paid = false);
+                _SieGraSieMaContext.TeamInTournaments.UpdateRange(tt);
                 team.Players.Clear();
-                //TODO set captain nullable
-                //.CaptainId = null;
+                team.Captain = null;
                 _SieGraSieMaContext.Update(team);
-                return;
             }
+            else _SieGraSieMaContext.Teams.Remove(team);
+            await _SieGraSieMaContext.SaveChangesAsync();
+        }
+        public async Task DeleteTeamByAdmin(int teamId)
+        {
+            var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).Where(t => t.Id == teamId).SingleOrDefaultAsync();
 
-            _SieGraSieMaContext.Teams.Remove(team);
+            if (team == null) throw new Exception($"Team with {teamId} id does not exists");
+
+            if (_SieGraSieMaContext.Tournaments.Any(t => t.TeamInTournaments.Any(t => t.TeamId == team.Id)))
+            {
+                var tt = _SieGraSieMaContext.TeamInTournaments.Where(t => t.TeamId == team.Id).ToList();
+                tt.ForEach(tt => tt.Paid = false);
+                _SieGraSieMaContext.TeamInTournaments.UpdateRange(tt);
+                team.Players.Clear();
+                team.Captain = null;
+                _SieGraSieMaContext.Update(team);
+            }
+            else _SieGraSieMaContext.Teams.Remove(team);
             await _SieGraSieMaContext.SaveChangesAsync();
         }
     }

@@ -99,17 +99,18 @@ namespace SieGraSieMa.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = roles });
         }
-
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpDelete("admin/{id}")]
         public async Task<ActionResult> DeleteUser(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
                 return NotFound(new ResponseErrorDTO { Error = "User not found" });
+            await _userService.ChangingCaptainTeamsForDelete(user.Id);
             await _userManager.DeleteAsync(user);
             return Ok();
         }
-
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpGet("admin/all")]
         public async Task<ActionResult> GetUsers()
         {
@@ -117,7 +118,7 @@ namespace SieGraSieMa.Controllers
             var usersDTO = users.Select(u => new UserDTO { Id = u.Id, Name = u.Name, Surname = u.Surname, Email = u.NormalizedEmail });
             return Ok(usersDTO);
         }
-
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPost("admin/add-role/{id}")]
         public async Task<ActionResult> AddRoles(int id, IEnumerable<string> roles)
         {
@@ -128,7 +129,7 @@ namespace SieGraSieMa.Controllers
             await _logService.AddLog(new Log(user, "Add roles " + roles.Aggregate((i, j) => i + ", " + j) + " to " + user.UserName));
             return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = await _userManager.GetRolesAsync(user) });
         }
-
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPost("admin/remove-role/{id}")]
         public async Task<ActionResult> RemoveRole(int id, IEnumerable<string> roles)
         {
@@ -139,7 +140,7 @@ namespace SieGraSieMa.Controllers
             await _logService.AddLog(new Log(user, "Remove roles " + roles.Aggregate((i, j) => i + ", " + j) + " from " + user.UserName));
             return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = await _userManager.GetRolesAsync(user) });
         }
-
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPost("admin/newsletter/send")]
         public async Task<ActionResult> SendNewsletter(NewsletterInfoDTO newsletter)
         {

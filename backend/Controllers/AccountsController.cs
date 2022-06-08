@@ -50,10 +50,10 @@ namespace SieGraSieMa.Controllers
         {
             var user = await _userManager.FindByEmailAsync(login.Email);
             if (user == null)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request"});
+                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password"});
 
             if (!await _userManager.IsEmailConfirmedAsync(user))
-                return Unauthorized(new ResponseErrorDTO { Error = "Email is not confirmed" });
+                return BadRequest(new ResponseErrorDTO { Error = "Email is not confirmed" });
 
             if (!await _userManager.CheckPasswordAsync(user, login.Password))
             {
@@ -61,10 +61,10 @@ namespace SieGraSieMa.Controllers
 
                 if (await _userManager.IsLockedOutAsync(user))
                 {
-                    return Unauthorized(new ResponseErrorDTO { Error = "Account is locked out" });
+                    return BadRequest(new ResponseErrorDTO { Error = "Account is locked out" });
                 }
 
-                return Unauthorized(new ResponseErrorDTO { Error = "Incorrect password" });
+                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
             }
 
             if (await _userManager.GetTwoFactorEnabledAsync(user))
@@ -160,7 +160,6 @@ namespace SieGraSieMa.Controllers
 
             await _emailService.SendAsync(user.Email, "Potwierdź konto email", callback);
 
-            //TODO change role
             await _userManager.AddToRoleAsync(user, "User");
 
             await _logService.AddLog(new Log(user, "Register succesfully"));

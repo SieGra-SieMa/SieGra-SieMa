@@ -149,7 +149,7 @@ namespace SieGraSieMa.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Contestants)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("contestants_user");
 
                 entity.HasIndex(e => e.ContestId, "contestants_contest");
@@ -215,7 +215,7 @@ namespace SieGraSieMa.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Logs)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("logs_user");
 
                 entity.HasIndex(e => e.UserId, "logs_user");
@@ -335,7 +335,7 @@ namespace SieGraSieMa.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Newsletters)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("newsletter_user");
 
                 entity.HasIndex(e => e.UserId, "newsletter_user");
@@ -363,7 +363,7 @@ namespace SieGraSieMa.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Players)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("player_user");
 
                 entity.HasIndex(e => e.UserId, "player_user");
@@ -409,7 +409,7 @@ namespace SieGraSieMa.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.RefreshTokens)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("refresh_token_user");
 
                 //entity.HasIndex(e => e.Id, "Id").IsUnique();
@@ -601,48 +601,11 @@ namespace SieGraSieMa.Models
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            var hasher = new PasswordHasher<User>();
-
             modelBuilder.Entity<IdentityRole<int>>().HasData(
                 new IdentityRole<int>() { Id = 1, Name = "Admin", NormalizedName = "Admin" },
-                new IdentityRole<int>() { Id = 2, Name = "Emp", NormalizedName = "Emp" },
+                new IdentityRole<int>() { Id = 2, Name = "Employee", NormalizedName = "Emp" },
                 new IdentityRole<int>() { Id = 3, Name = "User", NormalizedName = "User" }
                 );
-
-            modelBuilder.Entity<User>().HasData(
-            new User() { Id = 1, Name = "Adm", Surname = "In", Email = "admin@gmail.com", NormalizedEmail = "admin@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
-            new User() { Id = 2, Name = "Prac", Surname = "Ownik", Email = "pracownik@gmail.com", NormalizedEmail = "pracownik@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
-            new User() { Id = 3, Name = "Kap", Surname = "Itan", Email = "kapitan@gmail.com", NormalizedEmail = "kapitan@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() },
-            new User() { Id = 4, Name = "Gr", Surname = "acz", Email = "gracz@gmail.com", NormalizedEmail = "gracz@gmail.com", PasswordHash = hasher.HashPassword(null, "haslo123"), EmailConfirmed = true, SecurityStamp = Guid.NewGuid().ToString() }
-            );
-
-            modelBuilder.Entity<IdentityUserRole<int>>().HasData(
-            new IdentityUserRole<int>() { UserId = 1, RoleId = 1 },
-            new IdentityUserRole<int>() { UserId = 2, RoleId = 2 },
-            new IdentityUserRole<int>() { UserId = 2, RoleId = 3 },
-            new IdentityUserRole<int>() { UserId = 3, RoleId = 3 },
-            new IdentityUserRole<int>() { UserId = 4, RoleId = 3 });
-
-
-            modelBuilder.Entity<Team>().HasData(
-            new Team() { Id = 1, Name = "Bogowie", CaptainId = 3, Code = "ABCDE" },
-            new Team() { Id = 2, Name = "Demony", CaptainId = 3, Code = "EDCBA" });
-
-
-            modelBuilder.Entity<Player>().HasData(
-            new Player() { TeamId = 1, UserId = 3 },
-            new Player() { TeamId = 1, UserId = 4 },
-            new Player() { TeamId = 2, UserId = 3 });
-
-
-            modelBuilder.Entity<Newsletter>().HasData(
-            new Newsletter() { Id = 1, UserId = 3 });
-
-            modelBuilder.Entity<Tournament>().HasData(new Tournament() { Name = "Turniej testowy numer 1", Id = 1, Address = "Zbożowa -1" });
-
-
-
-
         }
     }
 }

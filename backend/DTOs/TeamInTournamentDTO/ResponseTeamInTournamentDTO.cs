@@ -9,6 +9,8 @@ namespace SieGraSieMa.DTOs.TeamInTournamentDTO
     {
         public int TeamId { get; set; }
         public int TournamentId { get; set; }
+        public string TeamName { get; set; }
+        public string TeamProfileUrl { get; set; }
         public bool Paid { get; set; }
     }
 }

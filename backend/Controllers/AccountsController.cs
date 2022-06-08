@@ -43,6 +43,30 @@ namespace SieGraSieMa.Controllers
             _emailService = emailService;
             _logService = logService;
         }
+        private async Task<IActionResult> GenerateOTPFor2StepVerification(User user)
+        {
+            var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
+            if (!providers.Contains("Email"))
+            {
+                return Unauthorized(new ResponseErrorDTO { Error = "Wrong provider" });
+            }
+
+            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+
+            //https://ethereal.email/
+            //await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
+
+            return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email" });
+        }
+        private void SetRefreshTokenInCookie(string refreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(10),
+            };
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+        }
 
         [AllowAnonymous]
         [HttpPost("Authenticate")]
@@ -50,19 +74,20 @@ namespace SieGraSieMa.Controllers
         {
             var user = await _userManager.FindByEmailAsync(login.Email);
             if (user == null)
-                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password"});
+                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
 
+            if (await _userManager.IsLockedOutAsync(user))
+                return BadRequest(new ResponseErrorDTO { Error = "Account is locked out" });
+            
             if (!await _userManager.IsEmailConfirmedAsync(user))
                 return BadRequest(new ResponseErrorDTO { Error = "Email is not confirmed" });
 
             if (!await _userManager.CheckPasswordAsync(user, login.Password))
             {
                 await _userManager.AccessFailedAsync(user);
-
+                await _logService.AddLog(new Log(user, "Account is locked out due to too much bad requests"));
                 if (await _userManager.IsLockedOutAsync(user))
-                {
-                    return BadRequest(new ResponseErrorDTO { Error = "Account is locked out" });
-                }
+                    return BadRequest(new ResponseErrorDTO { Error = "Account is locked out due to too much bad requests" });
 
                 return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
             }
@@ -77,22 +102,6 @@ namespace SieGraSieMa.Controllers
             await _userManager.ResetAccessFailedCountAsync(user);
 
             return Ok(new AuthenticateResponseDTO { AccessToken = token, RefreshToken = refreshToken.Token });
-        }
-
-        private async Task<IActionResult> GenerateOTPFor2StepVerification(User user)
-        {
-            var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
-            if (!providers.Contains("Email"))
-            {
-                return Unauthorized(new ResponseErrorDTO { Error = "Wrong provider" });
-            }
-
-            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-
-            //https://ethereal.email/
-            //await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
-
-            return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email"});
         }
 
         [AllowAnonymous]
@@ -127,8 +136,8 @@ namespace SieGraSieMa.Controllers
 
             var user = new User
             {
-                Name= registerRequest.Name,
-                Surname= registerRequest.Surname,
+                Name = registerRequest.Name,
+                Surname = registerRequest.Surname,
                 UserName = registerRequest.Email,
                 Email = registerRequest.Email,
                 NormalizedEmail = registerRequest.Email.ToUpper(),
@@ -143,8 +152,8 @@ namespace SieGraSieMa.Controllers
             {
                 var errors = string.Join(" ", result.Errors.Select(e => e.Description));
 
-         
-                 return BadRequest(new ResponseErrorDTO { Error = errors });
+
+                return BadRequest(new ResponseErrorDTO { Error = errors });
             }
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -167,17 +176,6 @@ namespace SieGraSieMa.Controllers
             return Ok(new MessageDTO { Message = "A verification link has been sent to your email!" });
 
         }
-
-        private void SetRefreshTokenInCookie(string refreshToken)
-        {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(10),
-            };
-            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
-        }
-
         //refresh token
         [AllowAnonymous]
         [HttpPost("Refresh-Token")]
@@ -192,9 +190,8 @@ namespace SieGraSieMa.Controllers
             if (!string.IsNullOrEmpty(response.RefreshToken))
                 SetRefreshTokenInCookie(response.RefreshToken);
 
-             return Ok(response);
+            return Ok(response);
         }
-
         //revoke token
         [AllowAnonymous]
         [HttpPost("Revoke-Token")]
@@ -228,7 +225,7 @@ namespace SieGraSieMa.Controllers
         }
 
 
-        [HttpGet("users")]
+        /*[HttpGet("users")]
         public async Task<IActionResult> GetAll()
         {
             var users = await _accountService.GetAll();
@@ -242,6 +239,6 @@ namespace SieGraSieMa.Controllers
             if (user == null) return NotFound();
 
             return Ok("user");
-        }
+        }*/
     }
 }

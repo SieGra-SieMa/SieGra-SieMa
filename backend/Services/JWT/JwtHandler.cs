@@ -26,7 +26,6 @@ namespace SieGraSieMa.Services
 
         private SigningCredentials GetSigningCredentials()
         {
-            //TODO get from secret
             var key = Encoding.UTF8.GetBytes(_configuration["SecretKey"]);
             var secret = new SymmetricSecurityKey(key);
 

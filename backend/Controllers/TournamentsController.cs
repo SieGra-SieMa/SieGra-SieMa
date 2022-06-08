@@ -64,7 +64,9 @@ namespace SieGraSieMa.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetTournament(int id)
         {
-            var tournament = await _tournamentsService.GetTournament(id);
+            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+            var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
+            var tournament = await _tournamentsService.GetTournament(id, user);
 
             if (tournament == null)
                 return NotFound(new ResponseErrorDTO { Error = "Tournament not found" });
@@ -142,11 +144,7 @@ namespace SieGraSieMa.Controllers
                 if (team == null)
                     return BadRequest(new ResponseErrorDTO { Error = "Team does not exists" });
                 List<User> listOfUsers = new();
-                //team.Players.Select(async p => listOfUsers.Add(await _userManager.FindByIdAsync(p.UserId.ToString()))); zmienilem na foreach ponizej
-                team.Players.ToList().ForEach(async p =>
-                {
-                    listOfUsers.Add(await _userManager.FindByIdAsync(p.UserId.ToString()));
-                });
+                foreach (var player in team.Players) listOfUsers.Add(await _userManager.FindByIdAsync(player.UserId.ToString()));
                 var respone = await _tournamentsService.CheckUsersInTeam(listOfUsers, id);
                 if (respone)
                 {
@@ -164,6 +162,25 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
+
+        [Authorize(Policy = "EveryOneAuthenticated")]
+        [HttpPost("{id}/teams/leave")]
+        public async Task<IActionResult> LeaveTournament(int id, int teamId)
+        {
+            try
+            {
+                var team = _teamService.GetTeamWithPlayers(teamId);
+                if (team == null) return BadRequest(new ResponseErrorDTO { Error = "Team does not exists" });
+
+                var resp = await _tournamentsService.RemoveTeamFromTournament(team.Id, id);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+        
 
         //-------------------------------------------------employee functions
 
@@ -391,7 +408,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var tournament = await _tournamentsService.GetTournament(id);
+                var tournament = await _tournamentsService.GetTournament(id, null);
                 if (tournament == null)
                     return NotFound("Tournament not found!");
 

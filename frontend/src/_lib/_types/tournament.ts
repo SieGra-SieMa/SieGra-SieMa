@@ -1,3 +1,5 @@
+import { Team } from "../types";
+
 export type TournamentRequest = {
     name: string;
     startDate: string,
@@ -9,8 +11,8 @@ export type TournamentRequest = {
 export type TournamentListItem = TournamentRequest & {
     id: number;
     profilePicture: string;
-    status: boolean;
-    isUserEnroll: boolean;
+    isOpen: boolean;
+    team: Team | null;
 };
 
 export type Tournament = TournamentListItem & {

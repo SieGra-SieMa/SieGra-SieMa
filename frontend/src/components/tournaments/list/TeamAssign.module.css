@@ -16,6 +16,7 @@
     border-radius: 5px;
     cursor: pointer;
     border: 2px solid transparent;
+    transition: opacity .3s;
 }
 
 .item:hover {

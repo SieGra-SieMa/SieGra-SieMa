@@ -8,7 +8,7 @@ import { useState } from 'react';
 import Modal from '../../modal/Modal';
 import TeamAssign from './TeamAssign';
 import { useTournaments } from '../TournamentsContext';
-import { useUser } from '../../user/UserContext';
+import { useAuth } from '../../auth/AuthContext';
 
 
 type TournamentsListItemProps = {
@@ -21,7 +21,7 @@ export default function TournamentsListItem({
 
     const navigate = useNavigate();
 
-    const { user } = useUser();
+    const { session } = useAuth();
     const { tournaments, setTournaments } = useTournaments();
 
     const [isTeamAssign, setIsTeamAssign] = useState(false);
@@ -47,7 +47,7 @@ export default function TournamentsListItem({
                         {tournament.description}
                     </p>
                 </div>
-                {user && (!tournament.status && !tournament.isUserEnroll) && (<>
+                {(session && tournament.isOpen && !tournament.team) && (
                     <Button
                         value='Zapisz zespół'
                         onClick={(e) => {
@@ -55,10 +55,10 @@ export default function TournamentsListItem({
                             setIsTeamAssign(true);
                         }}
                     />
-                </>)}
+                )}
             </div>
         </li>
-        {user && (!tournament.status && !tournament.isUserEnroll) && isTeamAssign && (
+        {(session && tournament.isOpen && !tournament.team && isTeamAssign) && (
             <Modal
                 title={`Zapisz zespół - "${tournament.name}"`}
                 isClose
@@ -66,17 +66,18 @@ export default function TournamentsListItem({
             >
                 <TeamAssign
                     id={tournament.id}
-                    confirm={() => {
+                    confirm={(team) => {
                         setIsTeamAssign(false);
                         const updatedTournament = {
                             ...tournament,
-                            status: false,
-                            isUserEnroll: true,
+                            team,
                         };
-                        const filtered = tournaments!.filter(
-                            (e) => e.id !== updatedTournament.id
+                        const index = tournaments!.findIndex(
+                            (e) => e.id === updatedTournament.id
                         );
-                        setTournaments([...filtered, updatedTournament]);
+                        const data = [...tournaments!];
+                        data[index] = updatedTournament;
+                        setTournaments(data);
                     }}
                 />
             </Modal>

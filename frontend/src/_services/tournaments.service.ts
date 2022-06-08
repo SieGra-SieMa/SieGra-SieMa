@@ -37,4 +37,8 @@ export default class TournamentsService extends Service {
     addTeam(tournamentId: number, teamId: number): Promise<any> {
         return super.post(`${Config.HOST}/api/Tournaments/${tournamentId}/teams/join?teamId=${teamId}`, {});
     };
+
+    removeTeam(tournamentId: string, teamId: number): Promise<any> {
+        return super.post(`${Config.HOST}/api/Tournaments/${tournamentId}/teams/leave?teamId=${teamId}`, {});
+    };
 }

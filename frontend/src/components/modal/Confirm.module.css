@@ -2,6 +2,6 @@
 
 .root {
     display: flex;
-    column-gap: 10px;
+    column-gap: 15px;
     justify-content: flex-end;
 }

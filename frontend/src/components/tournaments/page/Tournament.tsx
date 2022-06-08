@@ -14,6 +14,8 @@ import styles from './Tournament.module.css';
 import { TournamentContext } from '../TournamentContext';
 import EditTournamentPicture from './EditTournamentPicture';
 import Groups from '../groups/Groups';
+import TeamAssign from '../list/TeamAssign';
+import { useAuth } from '../../auth/AuthContext';
 
 export default function Tournament() {
 
@@ -22,6 +24,7 @@ export default function Tournament() {
     const { id } = useParams<{ id: string }>();
 
     const { tournamentsService } = useApi();
+    const { session } = useAuth();
     const { tournaments, setTournaments } = useTournaments();
 
     const [tournament, setTournament] = useState<TournamentType | null>(() => {
@@ -36,8 +39,10 @@ export default function Tournament() {
     const [isEdit, setIsEdit] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
     const [isPicture, setIsPicture] = useState(false);
+    const [isTeamAssign, setIsTeamAssign] = useState(false);
+    const [isTeamRemove, setIsTeamRemove] = useState(false);
 
-    const isOpen = tournament?.status || (tournament?.groups?.length ?? 0) === 0;
+    const isOpen = tournament?.isOpen;
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -64,10 +69,12 @@ export default function Tournament() {
         setTournament(updatedTournament);
         setIsEdit(false);
         if (tournaments) {
-            const filtered = tournaments.filter(
-                (e) => e.id !== updatedTournament.id
+            const index = tournaments!.findIndex(
+                (e) => e.id === updatedTournament.id
             );
-            setTournaments([...filtered, updatedTournament]);
+            const data = [...tournaments];
+            data[index] = updatedTournament;
+            setTournaments(data);
         }
     }, [tournaments, setTournaments]);
 
@@ -90,6 +97,27 @@ export default function Tournament() {
         tournamentsService,
         navigate
     ]);
+
+    const removeTeam = (teamId: number) => () => {
+        tournamentsService.removeTeam(id!, teamId)
+            .then(() => {
+                setIsTeamRemove(false);
+                const updatedTournament = {
+                    ...tournament!,
+                    team: null,
+                }
+                setTournament(updatedTournament);
+                if (tournaments) {
+                    const index = tournaments!.findIndex(
+                        (e) => e.id === updatedTournament.id
+                    );
+                    const data = [...tournaments];
+                    data[index] = updatedTournament;
+                    setTournaments(data);
+                }
+            });
+
+    };
 
     return (
         <TournamentContext.Provider value={{ tournament, setTournament }}>
@@ -118,24 +146,41 @@ export default function Tournament() {
                 )}
             </div>
 
-            <div className={styles.details}>
-                <h1 className={styles.title}>{tournament && tournament.name}</h1>
-                <h4 className={styles.dates}>
-                    {tournament && (<>
+            {tournament && (
+                <div>
+                    <h1 className={styles.title}>{tournament.name}</h1>
+                    <h4 className={styles.dates}>
                         {new Date(tournament.startDate).toLocaleString()}
                         <span className={styles.line}> | </span>
                         {new Date(tournament.endDate).toLocaleString()}
-                    </>)}
-                </h4>
-                <p>{tournament && tournament.address}</p>
-                <p>{tournament && tournament.description}</p>
-            </div>
+                    </h4>
+                    <div className={styles.details}>
+                        <p>Address: {tournament.address}</p>
+                        <p>Opis: {tournament.description}</p>
+                        {(session && tournament.isOpen) && (
+                            tournament.team ? (
+                                <div className={styles.team}>
+                                    <h6>{tournament.team.name}</h6>
+                                    <Button
+                                        value='Usuń zespół'
+                                        onClick={() => setIsTeamRemove(true)}
+                                        style={ButtonStyle.Red}
+                                    />
+                                </div>
+                            ) : (
+                                <Button
+                                    value='Zapisz zespół'
+                                    onClick={() => setIsTeamAssign(true)}
+                                />
+                            )
+                        )}
+                    </div>
+                </div>
+            )}
 
 
 
-
-
-            {tournament?.status && (
+            {(tournament && !isOpen) && (
                 <>
                     <h2>Ladder</h2>
                     {tournament && tournament.ladder && <Ladder ladder={tournament.ladder} />}
@@ -146,8 +191,7 @@ export default function Tournament() {
             )}
 
 
-
-            {tournament && isEdit && (
+            {(tournament && isEdit) && (
                 <Modal
                     isClose
                     close={() => setIsEdit(false)}
@@ -159,7 +203,7 @@ export default function Tournament() {
                     />
                 </Modal>
             )}
-            {tournament && isDelete && (
+            {(tournament && isDelete) && (
                 <Modal
                     close={() => setIsDelete(false)}
                     title={`Czy na pewno chcesz usunąć turniej - "${tournament.name}"?`}
@@ -171,7 +215,7 @@ export default function Tournament() {
                     />
                 </Modal>
             )}
-            {tournament && isPicture && (
+            {(tournament && isPicture) && (
                 <Modal
                     isClose
                     close={() => setIsPicture(false)}
@@ -188,12 +232,54 @@ export default function Tournament() {
                             setTournament(updatedTournament);
                             setIsEdit(false);
                             if (tournaments) {
-                                const filtered = tournaments.filter(
-                                    (e) => e.id !== updatedTournament.id
+                                const index = tournaments!.findIndex(
+                                    (e) => e.id === updatedTournament.id
                                 );
-                                setTournaments([...filtered, updatedTournament]);
+                                const data = [...tournaments];
+                                data[index] = updatedTournament;
+                                setTournaments(data);
                             }
                         }}
+                    />
+                </Modal>
+            )}
+            {(session && tournament && tournament.isOpen && !tournament.team && isTeamAssign) && (
+                <Modal
+                    title={`Zapisz zespół - "${tournament.name}"`}
+                    isClose
+                    close={() => setIsTeamAssign(false)}
+                >
+                    <TeamAssign
+                        id={tournament.id}
+                        confirm={(team) => {
+                            setIsTeamAssign(false);
+                            const updatedTournament = {
+                                ...tournament,
+                                team,
+                            };
+                            setTournament(updatedTournament);
+                            if (tournaments) {
+                                const index = tournaments!.findIndex(
+                                    (e) => e.id === updatedTournament.id
+                                );
+                                const data = [...tournaments];
+                                data[index] = updatedTournament;
+                                setTournaments(data);
+                            }
+                        }}
+                    />
+                </Modal>
+            )}
+            {(session && tournament && tournament.isOpen && tournament.team && isTeamRemove) && (
+                <Modal
+                    title={`Czy na pewno chcesz usunąć zaspół - "${tournament.team.name}"?`}
+                    isClose
+                    close={() => setIsTeamRemove(false)}
+                >
+                    <Confirm
+                        confirm={removeTeam(tournament.team.id)}
+                        cancel={() => setIsTeamRemove(false)}
+                        label={'Usuń'}
                     />
                 </Modal>
             )}

@@ -61,11 +61,11 @@
 }
 
 .greyButton:hover {
-    background-color: #cfcfcf;
+    background-color: #aaa;
 }
 
 .greyButton:active {
-    background-color: #aaa;
+    background-color: #777;
 }
 
 .greenButton {

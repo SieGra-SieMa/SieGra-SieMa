@@ -8,7 +8,7 @@ import styles from './TeamAssign.module.css';
 
 type TeamAssignProps = {
     id: number;
-    confirm: () => void;
+    confirm: (team: Team) => void;
 };
 
 export default function TeamAssign({ id, confirm }: TeamAssignProps) {
@@ -31,32 +31,34 @@ export default function TeamAssign({ id, confirm }: TeamAssignProps) {
         if (!selectedTeam) return;
         tournamentsService.addTeam(id, selectedTeam.id)
             .then(() => {
-                confirm();
+                confirm(selectedTeam);
             });
     };
 
     return (
         <form className={styles.root} onSubmit={onSubmit}>
-            <ul className={styles.list}>
-                {teams ? teams.map((team, index) => (
-                    <li
-                        key={index}
-                        className={[
-                            styles.item,
-                            (selectedTeam === team ? styles.selected : undefined)
-                        ].filter((e) => e).join(' ')}
-                        onClick={() => setSelectedTeam(team)}
-                    >
-                        <p>
-                            {team.name}
-                        </p>
-                    </li>
-                )) : (
-                    <div className={styles.loader}>
-                        <SyncLoader loading={true} size={7} margin={20} color='#fff' />
-                    </div>
-                )}
-            </ul>
+            {teams ? (
+                <ul className={styles.list}>
+                    {teams.map((team, index) => (
+                        <li
+                            key={index}
+                            className={[
+                                styles.item,
+                                (selectedTeam === team ? styles.selected : undefined)
+                            ].filter((e) => e).join(' ')}
+                            onClick={() => setSelectedTeam(team)}
+                        >
+                            <p>
+                                {team.name}
+                            </p>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <div className={styles.loader}>
+                    <SyncLoader loading={true} size={7} margin={20} color='#fff' />
+                </div>
+            )}
             <VerticalSpacing size={15} />
             <Button className={styles.button} value='Zapisz' disabled={selectedTeam === null} />
         </form>

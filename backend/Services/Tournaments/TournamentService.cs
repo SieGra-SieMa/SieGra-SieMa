@@ -633,7 +633,7 @@ namespace SieGraSieMa.Services
             var team = await _SieGraSieMaContext.Teams.FindAsync(teamId);
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(tournamentId);
             if (team == null && tournament == null) throw new Exception("Team or tournament does not exist");
-            var tit = await _SieGraSieMaContext.TeamInTournaments.FindAsync(teamId, tournamentId);
+            var tit = await _SieGraSieMaContext.TeamInTournaments.FindAsync(tournamentId, teamId);
             if (tit == null) throw new Exception("This team does not belong to this tournament");
             _SieGraSieMaContext.Entry(tournament).Collection(t => t.Groups).Load();
             if (tournament.Groups.Any()) throw new Exception("Cannot leave tournament which already started");

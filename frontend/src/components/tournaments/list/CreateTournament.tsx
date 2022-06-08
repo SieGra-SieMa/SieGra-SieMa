@@ -65,16 +65,17 @@ export default function CreateTournament({ confirm }: CreateTournamentType) {
                 label='Czas rozpoczęcia'
                 date={startDate}
                 onChange={(date) => setStartDate(date)}
+                minDate={new Date()}
                 maxDate={endDate ?? undefined}
-                filterTime={(date) => endDate ? date.getTime() - endDate.getTime() <= 0 : true}
+                filterTime={(date) => endDate ? date.getTime() - endDate.getTime() <= 0 : (date.getTime() - new Date().getTime() > 0)}
             />
             <DatePicker
                 id='DatePicker-endDate'
                 label='Czas końca'
                 date={endDate}
                 onChange={(date) => setEndDate(date)}
-                minDate={startDate ?? undefined}
-                filterTime={(date) => startDate ? date.getTime() - startDate.getTime() >= 0 : true}
+                minDate={startDate ?? new Date()}
+                filterTime={(date) => startDate ? date.getTime() - startDate.getTime() >= 0 : (date.getTime() - new Date().getTime() > 0)}
             />
             <VerticalSpacing size={15} />
             <Button value='Dodaj' />

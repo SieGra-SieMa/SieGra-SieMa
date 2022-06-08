@@ -63,7 +63,7 @@ namespace SieGraSieMa.Services
 
         public async Task<TournamentListDTO> CreateTournament(Tournament tournament)
         {
-            if (tournament.EndDate < tournament.StartDate || tournament.StartDate < DateTime.Now) throw new Exception("Unable to add because of invalid dates");
+            if (tournament.EndDate < tournament.StartDate || tournament.StartDate < DateTime.UtcNow) throw new Exception("Unable to add because of invalid dates");
             await _SieGraSieMaContext.Tournaments.AddAsync(tournament);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return new TournamentListDTO { Id = tournament.Id, Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
@@ -633,7 +633,7 @@ namespace SieGraSieMa.Services
             var team = await _SieGraSieMaContext.Teams.FindAsync(teamId);
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(tournamentId);
             if (team == null && tournament == null) throw new Exception("Team or tournament does not exist");
-            var tit = await _SieGraSieMaContext.TeamInTournaments.FindAsync(teamId, tournamentId);
+            var tit = await _SieGraSieMaContext.TeamInTournaments.FindAsync(tournamentId, teamId);
             if (tit == null) throw new Exception("This team does not belong to this tournament");
             _SieGraSieMaContext.Entry(tournament).Collection(t => t.Groups).Load();
             if (tournament.Groups.Any()) throw new Exception("Cannot leave tournament which already started");

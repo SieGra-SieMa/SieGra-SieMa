@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class MediaController : ControllerBase
@@ -77,6 +78,7 @@ namespace SieGraSieMa.Controllers
             return Ok();
         }*/
 
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMedium(int id)
         {
@@ -95,6 +97,7 @@ namespace SieGraSieMa.Controllers
             }
         }
 
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPost("{id}/{albumId}")]
         public async Task<IActionResult> AddToAlbum(int id, int albumId)
         {
@@ -109,6 +112,7 @@ namespace SieGraSieMa.Controllers
             }
         }
 
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpDelete("{id}/{albumId}")]
         public async Task<IActionResult> DeleteFromAlbum(int id, int albumId)
         {

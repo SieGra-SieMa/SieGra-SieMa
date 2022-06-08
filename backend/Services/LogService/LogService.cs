@@ -8,9 +8,8 @@ namespace SieGraSieMa.Services
 {
     public interface ILogService
     {
-        //public Task GetLog(int id);
         public Task AddLog(Log log);
-        public Task<IEnumerable<Log>> GetLogs(int? id=null);
+        //public Task<IEnumerable<Log>> GetLogs(int? id=null);
     }
     public class LogService : ILogService
     {
@@ -27,9 +26,9 @@ namespace SieGraSieMa.Services
             await _SieGraSieMaContext.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Log>> GetLogs(int? id = null)
+        /*public async Task<IEnumerable<Log>> GetLogs(int? id = null)
         {
             return _SieGraSieMaContext.Logs.TakeLast(id.Value).ToList();
-        }
+        }*/
     }
 }

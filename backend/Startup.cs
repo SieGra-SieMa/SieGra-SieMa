@@ -68,6 +68,8 @@ namespace SieGraSieMa
                 //admin policy
                 options.AddPolicy("EveryOneAuthenticated", policy =>
                       policy.RequireRole("User", "Admin", "Emp"));
+                options.AddPolicy("OnlyEmployeesAuthenticated", policy =>
+                      policy.RequireRole("Admin","Emp"));
                 options.AddPolicy("OnlyAdminAuthenticated", policy =>
                       policy.RequireRole("Admin"));
             });
@@ -97,9 +99,13 @@ namespace SieGraSieMa
             services.AddTransient<IContestService, ContestService>();
             services.AddTransient<IMediaService, MediaService>();
             services.AddTransient<ILogService, LogService>();
-            services.AddIdentity<User, IdentityRole<int>>()
-            .AddEntityFrameworkStores<SieGraSieMaContext>()
-            .AddDefaultTokenProviders();
+            services.AddIdentity<User, IdentityRole<int>>(options =>
+                {
+                    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(125);
+                }).AddEntityFrameworkStores<SieGraSieMaContext>()
+                .AddDefaultTokenProviders();
+
+
 
             /*services.AddIdentity<User, IdentityRole<int>>()
             .AddEntityFrameworkStores<SieGraSieMaContext>()
@@ -142,6 +148,29 @@ namespace SieGraSieMa
                     {
                         Name = "Example License",
                         Url = new Uri("https://example.com/license%22")
+                    }
+                });
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Please enter a valid token",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    BearerFormat = "JWT",
+                    Scheme = "Bearer"
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type=ReferenceType.SecurityScheme,
+                                Id="Bearer"
+                            }
+                        },
+                        new string[]{}
                     }
                 });
             });

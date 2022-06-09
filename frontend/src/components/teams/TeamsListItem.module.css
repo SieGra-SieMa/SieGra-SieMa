@@ -5,13 +5,10 @@
     flex-direction: column;
     overflow: hidden;
     border-radius: 15px;
-    background-color: #fff;
+    background-color: var(--secondary-color);
     padding: 30px;
     row-gap: 45px;
 }
-
-
-.content {}
 
 .content>h3 {
     font-size: 30px;
@@ -25,10 +22,12 @@
 .codeBlock>span {
     margin-right: 10px;
     font-size: 20px;
+    color: #fff;
 }
 
-.codeBlock>h3 {
-    font-size: 20px;
+.codeBlock>h6 {
+    padding: 0;
+    font-weight: bold;
 }
 
 .footer {

@@ -4,6 +4,7 @@ import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
 import styles from './TeamAdd.module.css';
 
+
 export default function TeamAdd() {
 
     const [email, setEmail] = useState('');
@@ -18,7 +19,7 @@ export default function TeamAdd() {
                 onChange={(e) => setEmail(e.target.value)}
             />
             <VerticalSpacing size={15} />
-            <Button value='Add' />
+            <Button value='Dodaj' />
         </div>
     );
 }

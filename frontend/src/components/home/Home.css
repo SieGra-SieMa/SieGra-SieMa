@@ -25,9 +25,7 @@
 }
 
 .hero-image {
-    width: 400px;
-    border-radius: 50%;
-    overflow: hidden;
+    width: 30%;
 }
 
 .hero-block-info {
@@ -74,6 +72,12 @@
     text-align: center;
 }
 
+@media all and (max-width: 720px) {
+    .main-section {
+        margin-top: 10vh;
+    }
+}
+
 @media all and (max-width: 1600px) {
     .dreamteam-member-list {
         flex-wrap: wrap;
@@ -84,6 +88,9 @@
     .hero-container {
         flex-direction: column;
         justify-content: center;
+    }
+    .hero-image {
+        width: 50%;
     }
 }
 

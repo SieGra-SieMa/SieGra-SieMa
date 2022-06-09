@@ -53,3 +53,12 @@ export type FacebookFeed = {
         }
     }
 };
+
+export type NewsFeedProps = {
+    fetchLimit?: string;
+}
+
+export type PostProps = {
+    feed: FacebookFeed | null,
+    index: number
+};

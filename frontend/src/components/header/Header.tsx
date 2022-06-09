@@ -17,19 +17,24 @@ export default function Header() {
             <div className={`container ${styles.container}`}>
                 <div className={styles.logo}>
                     <Link to="/">
-                        <img src="/logo.png" alt="" />
+                        <img src="/logo_w.png" alt="" />
                     </Link>
                 </div>
                 <nav className={styles.navigation}>
                     <ul>
                         <li>
                             <Link to="/">
-                                HOME
+                                Strona główna
                             </Link>
                         </li>
                         <li>
                             <Link to="/tournaments">
-                                TOURNAMENTS
+                                Turnieje
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/about-us">
+                                O nas
                             </Link>
                         </li>
                         {session ? (
@@ -40,13 +45,13 @@ export default function Header() {
                                     </Link>
                                 </li>
                                 <li>
-                                    <Button value='Logout' type='button' onClick={logout} />
+                                    <Button value='Wyloguj' type='button' onClick={logout} />
                                 </li>
                             </>
                         ) : (
                             <li>
                                 <Link to="/account">
-                                    ACCOUNT
+                                    Profil
                                 </Link>
                             </li>
                         )}

@@ -16,5 +16,8 @@ namespace SieGraSieMa.Models
         public string Url { get; set; }
         
         public virtual ICollection<MediumInAlbum> MediumInAlbums { get; set; }
+        public virtual ICollection<Tournament> Tournament { get; set; }
+        public virtual ICollection<Team> Team { get; set; }
+
     }
 }

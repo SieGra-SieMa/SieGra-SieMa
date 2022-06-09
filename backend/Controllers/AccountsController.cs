@@ -4,16 +4,17 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using SieGraSieMa.DTOs;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.IdentityDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
-using SieGraSieMa.Services.Email;
-using SieGraSieMa.Services.JWT;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AuthenticateResponseDTO = SieGraSieMa.DTOs.IdentityDTO.AuthenticateResponseDTO;
+using RevokeTokenDTO = SieGraSieMa.DTOs.IdentityDTO.RevokeTokenDTO;
 
 namespace SieGraSieMa.Controllers
 {
@@ -31,14 +32,40 @@ namespace SieGraSieMa.Controllers
         //private readonly IMapper _mapper;
 
         private readonly IEmailService _emailService;
+        private readonly ILogService _logService;
 
-        public AccountsController(UserManager<User> userManager, JwtHandler jwtHandler, IEmailService emailService, IAccountIdentityServices accountServices)
+        public AccountsController(UserManager<User> userManager, JwtHandler jwtHandler, IEmailService emailService, IAccountIdentityServices accountServices, ILogService logService)
         {
             _accountService = accountServices;
             _userManager = userManager;
             _jwtHandler = jwtHandler;
             //_mapper = mapper;
             _emailService = emailService;
+            _logService = logService;
+        }
+        private async Task<IActionResult> GenerateOTPFor2StepVerification(User user)
+        {
+            var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
+            if (!providers.Contains("Email"))
+            {
+                return Unauthorized(new ResponseErrorDTO { Error = "Wrong provider" });
+            }
+
+            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+
+            //https://ethereal.email/
+            //await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
+
+            return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email" });
+        }
+        private void SetRefreshTokenInCookie(string refreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(10),
+            };
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
         }
 
         [AllowAnonymous]
@@ -47,21 +74,22 @@ namespace SieGraSieMa.Controllers
         {
             var user = await _userManager.FindByEmailAsync(login.Email);
             if (user == null)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request"});
+                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
 
+            if (await _userManager.IsLockedOutAsync(user))
+                return BadRequest(new ResponseErrorDTO { Error = "Account is locked out" });
+            
             if (!await _userManager.IsEmailConfirmedAsync(user))
-                return Unauthorized(new ResponseErrorDTO { Error = "Email is not confirmed" });
+                return BadRequest(new ResponseErrorDTO { Error = "Email is not confirmed" });
 
             if (!await _userManager.CheckPasswordAsync(user, login.Password))
             {
                 await _userManager.AccessFailedAsync(user);
-
+                await _logService.AddLog(new Log(user, "Account is locked out due to too much bad requests"));
                 if (await _userManager.IsLockedOutAsync(user))
-                {
-                    return Unauthorized(new ResponseErrorDTO { Error = "Account is locked out" });
-                }
+                    return BadRequest(new ResponseErrorDTO { Error = "Account is locked out due to too much bad requests" });
 
-                return Unauthorized(new ResponseErrorDTO { Error = "Incorrect password" });
+                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
             }
 
             if (await _userManager.GetTwoFactorEnabledAsync(user))
@@ -74,22 +102,6 @@ namespace SieGraSieMa.Controllers
             await _userManager.ResetAccessFailedCountAsync(user);
 
             return Ok(new AuthenticateResponseDTO { AccessToken = token, RefreshToken = refreshToken.Token });
-        }
-
-        private async Task<IActionResult> GenerateOTPFor2StepVerification(User user)
-        {
-            var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
-            if (!providers.Contains("Email"))
-            {
-                return Unauthorized(new ResponseErrorDTO { Error = "Wrong provider" });
-            }
-
-            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-
-            //https://ethereal.email/
-            await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
-
-            return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email"});
         }
 
         [AllowAnonymous]
@@ -124,8 +136,8 @@ namespace SieGraSieMa.Controllers
 
             var user = new User
             {
-                Name= registerRequest.Name,
-                Surname= registerRequest.Surname,
+                Name = registerRequest.Name,
+                Surname = registerRequest.Surname,
                 UserName = registerRequest.Email,
                 Email = registerRequest.Email,
                 NormalizedEmail = registerRequest.Email.ToUpper(),
@@ -138,9 +150,10 @@ namespace SieGraSieMa.Controllers
             var result = await _userManager.CreateAsync(user, registerRequest.Password);
             if (!result.Succeeded)
             {
-                 var errors = result.Errors.Select(e => e.Description);
-            
-                 return BadRequest(new ResponseErrorDTO { Error = errors.ToString() });
+                var errors = string.Join(" ", result.Errors.Select(e => e.Description));
+
+
+                return BadRequest(new ResponseErrorDTO { Error = errors });
             }
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -156,22 +169,13 @@ namespace SieGraSieMa.Controllers
 
             await _emailService.SendAsync(user.Email, "Potwierdź konto email", callback);
 
-            //TODO change role
             await _userManager.AddToRoleAsync(user, "User");
 
-            return Ok(token);
-        }
+            await _logService.AddLog(new Log(user, "Register succesfully"));
 
-        private void SetRefreshTokenInCookie(string refreshToken)
-        {
-            var cookieOptions = new CookieOptions
-            {
-                HttpOnly = true,
-                Expires = DateTime.UtcNow.AddDays(10),
-            };
-            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
-        }
+            return Ok(new MessageDTO { Message = "A verification link has been sent to your email!" });
 
+        }
         //refresh token
         [AllowAnonymous]
         [HttpPost("Refresh-Token")]
@@ -186,9 +190,8 @@ namespace SieGraSieMa.Controllers
             if (!string.IsNullOrEmpty(response.RefreshToken))
                 SetRefreshTokenInCookie(response.RefreshToken);
 
-             return Ok(response);
+            return Ok(response);
         }
-
         //revoke token
         [AllowAnonymous]
         [HttpPost("Revoke-Token")]
@@ -217,12 +220,12 @@ namespace SieGraSieMa.Controllers
             {
                 return BadRequest(new ResponseErrorDTO { Error = "Email not confirmed" });
             }
-
+            await _logService.AddLog(new Log(userFound, "Email confirmed succesfully"));
             return Ok();
         }
 
 
-        [HttpGet("users")]
+        /*[HttpGet("users")]
         public async Task<IActionResult> GetAll()
         {
             var users = await _accountService.GetAll();
@@ -236,6 +239,6 @@ namespace SieGraSieMa.Controllers
             if (user == null) return NotFound();
 
             return Ok("user");
-        }
+        }*/
     }
 }

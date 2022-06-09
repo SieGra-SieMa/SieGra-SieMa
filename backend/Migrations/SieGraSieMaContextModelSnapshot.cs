@@ -48,21 +48,21 @@ namespace SieGraSieMa.Migrations
                         new
                         {
                             Id = 1,
-                            ConcurrencyStamp = "d94e3ce3-e2c6-4efc-929f-30ca48e3ad94",
+                            ConcurrencyStamp = "513306c8-5b73-4079-bdd8-2e27f5a0f5a8",
                             Name = "Admin",
                             NormalizedName = "Admin"
                         },
                         new
                         {
                             Id = 2,
-                            ConcurrencyStamp = "d03f2547-be3e-4a7a-9e8e-05032b6dc4b4",
-                            Name = "Emp",
+                            ConcurrencyStamp = "0032aa79-cfc9-4549-bb44-b99e013a909f",
+                            Name = "Employee",
                             NormalizedName = "Emp"
                         },
                         new
                         {
                             Id = 3,
-                            ConcurrencyStamp = "39bb7555-264c-4d5f-93cd-75c25e78fe92",
+                            ConcurrencyStamp = "39f79fc7-c19b-4b9b-b1b4-0b2ae59e9c74",
                             Name = "User",
                             NormalizedName = "User"
                         });
@@ -150,33 +150,6 @@ namespace SieGraSieMa.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            RoleId = 1
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            RoleId = 2
-                        },
-                        new
-                        {
-                            UserId = 2,
-                            RoleId = 3
-                        },
-                        new
-                        {
-                            UserId = 3,
-                            RoleId = 3
-                        },
-                        new
-                        {
-                            UserId = 4,
-                            RoleId = 3
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>
@@ -217,7 +190,7 @@ namespace SieGraSieMa.Migrations
                         .HasColumnType("varchar(256)")
                         .HasColumnName("name");
 
-                    b.Property<int?>("TournamentId")
+                    b.Property<int>("TournamentId")
                         .HasColumnType("int")
                         .HasColumnName("tournament_id");
 
@@ -432,13 +405,6 @@ namespace SieGraSieMa.Migrations
                     b.HasIndex(new[] { "UserId" }, "newsletter_user");
 
                     b.ToTable("newsletter");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            UserId = 3
-                        });
                 });
 
             modelBuilder.Entity("SieGraSieMa.Models.Player", b =>
@@ -457,23 +423,6 @@ namespace SieGraSieMa.Migrations
                     b.HasIndex(new[] { "UserId" }, "player_user");
 
                     b.ToTable("player");
-
-                    b.HasData(
-                        new
-                        {
-                            TeamId = 1,
-                            UserId = 3
-                        },
-                        new
-                        {
-                            TeamId = 1,
-                            UserId = 4
-                        },
-                        new
-                        {
-                            TeamId = 2,
-                            UserId = 3
-                        });
                 });
 
             modelBuilder.Entity("SieGraSieMa.Models.RefreshToken", b =>
@@ -532,7 +481,7 @@ namespace SieGraSieMa.Migrations
                         .HasColumnType("int")
                         .HasColumnName("id");
 
-                    b.Property<int>("CaptainId")
+                    b.Property<int?>("CaptainId")
                         .HasColumnType("int")
                         .HasColumnName("captain_id");
 
@@ -543,6 +492,9 @@ namespace SieGraSieMa.Migrations
                         .HasColumnName("code")
                         .IsFixedLength(true);
 
+                    b.Property<int?>("MediumId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(64)
@@ -551,28 +503,14 @@ namespace SieGraSieMa.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MediumId");
+
                     b.HasIndex(new[] { "CaptainId" }, "captain");
 
                     b.HasIndex(new[] { "Code" }, "code")
                         .IsUnique();
 
                     b.ToTable("team");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CaptainId = 3,
-                            Code = "ABCDE",
-                            Name = "Bogowie"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CaptainId = 3,
-                            Code = "EDCBA",
-                            Name = "Demony"
-                        });
                 });
 
             modelBuilder.Entity("SieGraSieMa.Models.TeamInGroup", b =>
@@ -644,6 +582,9 @@ namespace SieGraSieMa.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("end_date");
 
+                    b.Property<int?>("MediumId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(128)
@@ -654,23 +595,11 @@ namespace SieGraSieMa.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("start_date");
 
-                    b.Property<string>("Summary")
-                        .HasColumnType("text")
-                        .HasColumnName("summary");
-
                     b.HasKey("Id");
 
-                    b.ToTable("tournament");
+                    b.HasIndex("MediumId");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "Zbożowa -1",
-                            EndDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Turniej testowy numer 1",
-                            StartDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
+                    b.ToTable("tournament");
                 });
 
             modelBuilder.Entity("SieGraSieMa.Models.User", b =>
@@ -755,72 +684,6 @@ namespace SieGraSieMa.Migrations
                         .IsUnique();
 
                     b.ToTable("user");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "fca72cee-e4ff-4230-a9cf-f82800665db2",
-                            Email = "admin@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            Name = "Adm",
-                            NormalizedEmail = "admin@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEOdyW+tYyXyGxuA19vVkI1agUPfVaEMBr4zOZbGvtedIQ0VeRx/bqXpbIn2utZ5SBg==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "cd8d7598-ff96-41e3-ac62-ab3b69e624fb",
-                            Surname = "In",
-                            TwoFactorEnabled = false
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "8df7d149-dbc7-4972-84b3-e26c60d7cc9b",
-                            Email = "pracownik@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            Name = "Prac",
-                            NormalizedEmail = "pracownik@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFFwXDsUzw1ZSLr4L/qtONz9HQM/6oi3YCt8PjgzD4xUgxWOcvk+tl9YMJ507Yi5jg==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "356f4603-87b1-4d31-8d00-84a01be58b5f",
-                            Surname = "Ownik",
-                            TwoFactorEnabled = false
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "d754d25c-fbbd-43e3-99ad-5086fd5b4965",
-                            Email = "kapitan@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            Name = "Kap",
-                            NormalizedEmail = "kapitan@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMUTiVFbxJ1ivnVs9PKe5KsAB2H9mhjYvAzxGWu5wBHLWiawVIBNmzld8HSHkhBRzA==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "1e6f7245-b131-453e-b640-d00493c5f9bf",
-                            Surname = "Itan",
-                            TwoFactorEnabled = false
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AccessFailedCount = 0,
-                            ConcurrencyStamp = "1c05b549-2934-43f2-9091-5840ae7f1578",
-                            Email = "gracz@gmail.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = false,
-                            Name = "Gr",
-                            NormalizedEmail = "gracz@gmail.com",
-                            PasswordHash = "AQAAAAEAACcQAAAAEBhW5RQc/T2bbR2cr/L2dlG8RtrKrFXbBLsid9bBSMj4v+MGmjzmKyVjbvOvMKTRUw==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "4bb18fca-bad6-4630-843b-950d8e40e0bb",
-                            Surname = "acz",
-                            TwoFactorEnabled = false
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -879,7 +742,8 @@ namespace SieGraSieMa.Migrations
                     b.HasOne("SieGraSieMa.Models.Tournament", "Tournament")
                         .WithMany("Albums")
                         .HasForeignKey("TournamentId")
-                        .HasConstraintName("album_tournament");
+                        .HasConstraintName("album_tournament")
+                        .IsRequired();
 
                     b.Navigation("Tournament");
                 });
@@ -907,6 +771,7 @@ namespace SieGraSieMa.Migrations
                         .WithMany("Contestants")
                         .HasForeignKey("UserId")
                         .HasConstraintName("contestants_user")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Contest");
@@ -931,6 +796,7 @@ namespace SieGraSieMa.Migrations
                         .WithMany("Logs")
                         .HasForeignKey("UserId")
                         .HasConstraintName("logs_user")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -967,12 +833,14 @@ namespace SieGraSieMa.Migrations
                         .WithMany("MediumInAlbums")
                         .HasForeignKey("AlbumId")
                         .HasConstraintName("medium_in_album_album")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("SieGraSieMa.Models.Medium", "Medium")
                         .WithMany("MediumInAlbums")
                         .HasForeignKey("MediumId")
                         .HasConstraintName("medium_in_album_media")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Album");
@@ -986,6 +854,7 @@ namespace SieGraSieMa.Migrations
                         .WithMany("Newsletters")
                         .HasForeignKey("UserId")
                         .HasConstraintName("newsletter_user")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1003,6 +872,7 @@ namespace SieGraSieMa.Migrations
                         .WithMany("Players")
                         .HasForeignKey("UserId")
                         .HasConstraintName("player_user")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Team");
@@ -1016,6 +886,7 @@ namespace SieGraSieMa.Migrations
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
                         .HasConstraintName("refresh_token_user")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1026,10 +897,16 @@ namespace SieGraSieMa.Migrations
                     b.HasOne("SieGraSieMa.Models.User", "Captain")
                         .WithMany("Teams")
                         .HasForeignKey("CaptainId")
-                        .HasConstraintName("captain")
-                        .IsRequired();
+                        .HasConstraintName("captain");
+
+                    b.HasOne("SieGraSieMa.Models.Medium", "Medium")
+                        .WithMany("Team")
+                        .HasForeignKey("MediumId")
+                        .HasConstraintName("team_medium");
 
                     b.Navigation("Captain");
+
+                    b.Navigation("Medium");
                 });
 
             modelBuilder.Entity("SieGraSieMa.Models.TeamInGroup", b =>
@@ -1069,6 +946,16 @@ namespace SieGraSieMa.Migrations
                     b.Navigation("Tournament");
                 });
 
+            modelBuilder.Entity("SieGraSieMa.Models.Tournament", b =>
+                {
+                    b.HasOne("SieGraSieMa.Models.Medium", "Medium")
+                        .WithMany("Tournament")
+                        .HasForeignKey("MediumId")
+                        .HasConstraintName("tournament_medium");
+
+                    b.Navigation("Medium");
+                });
+
             modelBuilder.Entity("SieGraSieMa.Models.Album", b =>
                 {
                     b.Navigation("MediumInAlbums");
@@ -1087,6 +974,10 @@ namespace SieGraSieMa.Migrations
             modelBuilder.Entity("SieGraSieMa.Models.Medium", b =>
                 {
                     b.Navigation("MediumInAlbums");
+
+                    b.Navigation("Team");
+
+                    b.Navigation("Tournament");
                 });
 
             modelBuilder.Entity("SieGraSieMa.Models.Team", b =>

@@ -10,6 +10,7 @@ type InputProp = {
     placeholder?: string;
     value: string;
     required?: boolean;
+    disabled?: boolean;
     onChange: ChangeEventHandler<HTMLInputElement>;
 }
 
@@ -22,11 +23,12 @@ export default function Input({
     placeholder,
     value,
     required = false,
+    disabled = false,
     onChange,
 }: InputProp) {
     return (
         <div className={styles.root}>
-            {label && (<label htmlFor={id} className={styles.label}>{label}</label>)}
+            {label && (<label htmlFor={id}>{label}</label>)}
             <input
                 id={id}
                 className={styles.input}
@@ -36,6 +38,7 @@ export default function Input({
                 placeholder={placeholder}
                 value={value}
                 required={required}
+                disabled={disabled}
                 onChange={onChange}
             />
         </div>

@@ -7,19 +7,20 @@ import {
 import Header from '../header/Header';
 import Footer from '../footer/Footer';
 import Home from '../home/Home';
+import AboutUs from '../about-us/AboutUs'
 import GuardRoute from '../guard-components/GuardRoute';
 import AccountPage from '../account-page/AccountPage';
 import AuthProvider from '../auth/AuthProvider';
 import AccountEntry from '../account-entry/AccountEntry';
 import TeamOptions from '../team-options/TeamOptions';
 import TeamsList from '../teams/TeamsList';
-import TournamentsPage from '../tournaments/TournamentsPage';
+import Tournaments from '../tournaments/Tournaments';
 import { ROLES } from '../../_lib/roles';
 import { ApiContext } from '../api/ApiContext';
 import ApiClient from '../../_services';
 import UserProvider from '../user/UserProvider';
-import TournamentView from '../tournaments/TournamentView';
-import TournamentsList from '../tournaments/TournamentsList';
+import TournamentsList from '../tournaments/list/TournamentsList';
+import Tournament from '../tournaments/page/Tournament';
 
 const apiClient = new ApiClient();
 
@@ -32,6 +33,7 @@ export default function App() {
                         <Header />
                         <Routes>
                             <Route index element={<Home />} />
+                            <Route path="about-us" element={<AboutUs />} />
                             <Route path="entry" element={<AccountEntry />} />
                             <Route path="access-denied" element={<div>ACCESS DENIED</div>} />
                             <Route path="account/*" element={<AccountPage />}>
@@ -41,9 +43,9 @@ export default function App() {
                                     <Route path="*" element={<h2>404 NOT FOUND</h2>} />
                                 </Route>
                             </Route>
-                            <Route path="tournaments" element={<TournamentsPage />}>
+                            <Route path="tournaments" element={<Tournaments />}>
                                 <Route index element={<TournamentsList />} />
-                                <Route path=":id" element={<TournamentView />} />
+                                <Route path=":id" element={<Tournament />} />
                             </Route>
                         </Routes>
                         <Footer />
@@ -52,4 +54,4 @@ export default function App() {
             </AuthProvider>
         </ApiContext.Provider>
     );
-}
+};

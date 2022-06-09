@@ -1,24 +1,27 @@
 .main-section {
-    color: white;
+    color: var(--light-color);
+}
+
+.main-section h2 {
+    text-align: center;
+}
+
+.hero-section {
+    height: 90vh;
+    max-height: 900px;
+    min-height: 450px;
 }
 
 .hero-section,
 .news-section {
-    background-color: #5F7B88;
-}
-
-.hero-section h2,
-.dreamteam-section h2,
-.news-section h2 {
-    font-size: 70px;
-    padding: 25px;
-    text-align: center;
+    background-color: var(--main-color);
 }
 
 .hero-container {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
+    height: 100%;
 }
 
 .hero-image {
@@ -30,42 +33,61 @@
 .hero-block-info {
     max-width: 600px;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hero-block-info>p {
+    text-align: justify;
 }
 
 .dreamteam-section {
-    background-color: #E3A084;
+    padding: 50px 0;
+    background-color: var(--secondary-color);
+}
+
+.dreamteam-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .dreamteam-member-list {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    column-gap: 50px;
 }
 
 .dreamteam-member {
-    width: 520px;
     padding: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
     box-sizing: border-box;
-}
-
-.dreamteam-member-image {
-    border-radius: 50%;
-    overflow: hidden;
-    margin: 50px;
-}
-
-.dreamteam-member>h3 {
-    margin: 25px 0;
-    text-align: center;
-    font-size: 30px;
 }
 
 .dreamteam-member>p {
     text-align: center;
 }
 
+.news-section {
+    padding: 50px 0;
+}
+
+.news-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .news-list {
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
+    align-items: center;
 }
 
 .news-post {
@@ -90,16 +112,6 @@
     .hero-container {
         flex-direction: column;
         justify-content: center;
-    }
-}
-
-@media all and (max-width: 960px) {
-    .footer-container {
-        flex-direction: column;
-    }
-
-    .footer-block {
-        margin: 10px 0;
     }
 }
 

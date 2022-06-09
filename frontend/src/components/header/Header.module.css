@@ -1,11 +1,11 @@
 .root {
     display: flex;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.75);
+    background-color: var(--main-color);
     position: sticky;
+    opacity: 95%;
     width: 100%;
     top: 0;
-    backdrop-filter: blur(4px);
     z-index: 9999;
 }
 
@@ -40,7 +40,7 @@
 
 .navigation>ul>li>a {
     padding: 15px;
-    color: black;
+    color: var(--light-color);
     font-size: 20px;
     position: relative;
 }
@@ -52,7 +52,8 @@
     right: 16px;
     width: 0px;
     height: 2px;
-    background-color: black;
+    border-radius: 2px;
+    background-color: var(--accent-color);
     transition: width .2s, margin-top .2s;
 }
 

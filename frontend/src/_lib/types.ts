@@ -36,7 +36,7 @@ export type Tokens = {
 export type Session = {
     accessToken: string;
     refreshToken: string;
-}
+};
 
 // Tournaments
 
@@ -68,7 +68,7 @@ export interface Tournament {
             }[];
         }[];
     }
-}
+};
 
 export interface Group {
     id: number;
@@ -86,7 +86,7 @@ export interface Group {
         goalConceded: number;
         points: number;
     }[]
-}
+};
 
 export interface FacebookFeed {
     data: {
@@ -102,5 +102,4 @@ export interface FacebookFeed {
             before: string;
         }
     }
-}
 };

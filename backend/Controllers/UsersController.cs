@@ -117,7 +117,6 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = await _userManager.FindByEmailAsync(email);
                 _userService.LeaveNewsletter(user.Id);
@@ -128,6 +127,20 @@ namespace SieGraSieMa.Controllers
 
                 return BadRequest(new ResponseErrorDTO { Error = ex.Message });
             }
+        }
+    
+        
+        [Authorize(Policy = "EveryOneAuthenticated")]
+        [HttpDelete("delete-account")]
+        public async Task<ActionResult> DeleteUser()
+        {
+            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+            var user = await _userManager.FindByEmailAsync(email);
+            await _userService.PreparingUserToBlock(user.Id);
+            await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Parse("2038-01-19 00:00:00"));//to jest maksimum dla timestampu xD
+            await _logService.AddLog(new Log(user, "Lock user due to deleting account"));
+            
+            return Ok();
         }
 
 
@@ -146,14 +159,16 @@ namespace SieGraSieMa.Controllers
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpDelete("admin/{id}")]
-        public async Task<ActionResult> DeleteUser(string id)
+        public async Task<ActionResult> DeleteUserByAdmin(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
                 return NotFound(new ResponseErrorDTO { Error = "User not found" });
             await _userService.PreparingUserToBlock(user.Id);
             await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Parse("2038-01-19 00:00:00"));//to jest maksimum dla timestampu xD
-            await _logService.AddLog(new Log(user, "Lock user due to deleting account"));
+            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+            var admin = await _userManager.FindByEmailAsync(email);
+            await _logService.AddLog(new Log(admin, "Lock user due to deleting account"));
             //await _userManager.DeleteAsync(user);
             return Ok();
         }

@@ -16,8 +16,8 @@ export default function Footer() {
                 <div className={styles.links}>
                     <a className="slide-button" href="mailto:siegrasiema.inicjatywa@gmail.com"><p>Get in touch</p></a>
                     <div className={styles.social}>
-                        <a href="https://www.facebook.com/siegrasiema.inicjatywa/"><Facebook/></a>
-                        <a href="https://www.instagram.com/siegrasiema.inicjatywa/"><Instagram/></a>
+                        <a href="https://www.facebook.com/siegrasiema.inicjatywa/" target="_blank"><Facebook/></a>
+                        <a href="https://www.instagram.com/siegrasiema.inicjatywa/" target="_blank"><Instagram/></a>
                     </div>
                 </div>
                 <Link className={styles.logo} to="/">

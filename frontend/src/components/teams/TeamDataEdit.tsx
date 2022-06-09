@@ -17,7 +17,7 @@ export default function TeamDataEdit({ confirm }: TeamDataEditProps, parametr: n
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        teamsService.updateTeam(1, name)
+        teamsService.updateTeam(parametr, name)
             .then((data) => {
                 confirm(data);
             });

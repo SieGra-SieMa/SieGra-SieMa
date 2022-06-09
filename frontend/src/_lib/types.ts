@@ -37,3 +37,8 @@ export type Session = {
     accessToken: string;
     refreshToken: string;
 };
+
+export type PasswordChange = {
+    oldpassword: string;
+    newpassword: string;
+};

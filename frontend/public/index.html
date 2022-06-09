@@ -22,24 +22,25 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
-    <title>React App</title>
-  </head>
-  <body>
-    <script>
-        window.fbAsyncInit = function() {
-        FB.init({
-        appId            : '2875621466071847',
-        autoLogAppEvents : true,
-        xfbml            : true,
-        version          : 'v14.0'
-        })
-    };
-    </script>
-    <script async defer crossOrigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+  <title>React App</title>
+</head>
 
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
+<body>
+  <script>
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '2875621466071847',
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v14.0'
+      })
+    };
+  </script>
+  <script crossOrigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
 

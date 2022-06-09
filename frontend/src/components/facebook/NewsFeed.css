@@ -1,14 +1,11 @@
 .news-section {
-    display: flex;
-    flex-direction: column;
-    width: 100vw;
-    margin: 2rem auto;
-    align-items: center;
-    justify-content: center;
+    padding: 50px 0;
 }
 
-.posts {
-    width: 80vw;
+.news-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .news-list {
@@ -61,4 +58,10 @@
     height: 100%;
     width: 100%;
     background-color: #0e181cb0;
+}
+
+@media all and (max-width: 1600px) {
+    .news-list {
+        flex-wrap: wrap;
+    }
 }

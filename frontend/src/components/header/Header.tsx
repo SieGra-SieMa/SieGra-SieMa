@@ -2,15 +2,24 @@ import styles from './Header.module.css';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext';
 import { useUser } from '../user/UserContext';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import Button from '../form/Button';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function Header() {
 
     const { session, setSession } = useAuth();
     const { user } = useUser();
+    const [toggleMenu, setToggleMenu] = useState(false);
+    const [navState, setNavState] = useState(`${styles.navClosed}`);
 
     const logout = useCallback(() => setSession(null), [setSession]);
+
+    const toggleNav = () => {
+        setToggleMenu(!toggleMenu);
+        setNavState( !toggleMenu ? `${styles.navOpen}` : `${styles.navClosed}`);
+    };
 
     return (
         <header className={styles.root}>
@@ -20,7 +29,7 @@ export default function Header() {
                         <img src="/logo_w.png" alt="" />
                     </Link>
                 </div>
-                <nav className={styles.navigation}>
+                <nav className={styles.navigation} id={ navState }>
                     <ul>
                         <li>
                             <Link to="/">
@@ -57,6 +66,7 @@ export default function Header() {
                         )}
                     </ul>
                 </nav>
+                <button className={styles.menu} onClick={toggleNav}>{ !toggleMenu ? <MenuIcon fontSize="large"/> : <CloseIcon fontSize="large"/> }</button>
             </div>
         </header >
     );

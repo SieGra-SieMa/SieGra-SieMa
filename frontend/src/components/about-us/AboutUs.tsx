@@ -1,13 +1,18 @@
+import { useEffect } from 'react'
 import './AboutUs.css'
 
 export default function AboutUs() {
-    return(
-        <div className="about-us-section">
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    return (
+        <div className="container">
             <div className="description">
-                <h2>O nas</h2>
+                <h1>O nas</h1>
                 <p>
-                    Cześć! Miło, że nas odwiedziłeś! Jesteśmy paczką przyjaciół i wspólnie dzielimy pasje do koszykówki i pomagania. 
-                    Poznaj nas bliżej!
+                    Cześć! Miło, że nas odwiedziłeś! Jesteśmy paczką przyjaciół i wspólnie dzielimy pasje do koszykówki i pomagania. Poznaj nas bliżej!
                 </p>
             </div>
             <div className='members'>

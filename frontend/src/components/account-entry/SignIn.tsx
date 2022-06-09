@@ -16,8 +16,8 @@ export default function SignIn() {
 
     const { setSession } = useAuth();
 
-    const [email, setEmail] = useState('gracz@gmail.com');
-    const [password, setPassword] = useState('haslo123');
+    const [email, setEmail] = useState('kapitan@gmail.com');
+    const [password, setPassword] = useState('Haslo+123');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -32,7 +32,7 @@ export default function SignIn() {
                     navigate('/account');
                 },
                 (e) => {
-                    setError(e.message || e);
+                    setError(e);
                     setLoading(false);
                 }
             );
@@ -58,11 +58,10 @@ export default function SignIn() {
                 required
                 onChange={(e) => setPassword(e.target.value)}
             />
-            <div className={styles.spacing}></div>
             <VerticalSpacing size={30} />
             {loading ? (
                 <div className={styles.loader}>
-                    <SyncLoader loading={true} size={7} margin={20} />
+                    <SyncLoader loading={true} size={7} margin={20} color='#fff' />
                 </div>
             ) : (
                 <Button value='Sign in' />

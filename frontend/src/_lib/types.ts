@@ -1,39 +1,39 @@
 import { ROLES } from './roles';
 
-export interface User {
+export type User = {
     id: number;
     name: string;
     surname: string;
     roles: ROLES[];
-}
+};
 
-export interface Account extends User {
+export type Account = User & {
     email: string;
     accessToken: string;
     refreshToken: string;
-}
+};
 
-export interface Player extends User { }
+export type Player = User;
 
-export interface Team {
+export type Team = {
     id: number;
     name: string;
     code: string;
     captainId: number;
     players: Player[];
-}
+};
 
-export interface UserDetailsRequest {
+export type UserDetailsRequest = {
     name: string;
     surname: string;
-}
+};
 
-export interface Tokens {
+export type Tokens = {
     token: string;
     refreshToken: string;
-}
+};
 
-export interface Session {
+export type Session = {
     accessToken: string;
     refreshToken: string;
 }
@@ -88,17 +88,6 @@ export interface Group {
     }[]
 }
 
-// export interface FacebookFeed {
-//     post: {
-//         id: number;
-//         createdTime: string;
-//         message: string;
-//         imageURL: string; 
-//     }[]
-// }
-
-
-
 export interface FacebookFeed {
     data: {
         created_time: string;
@@ -114,4 +103,4 @@ export interface FacebookFeed {
         }
     }
 }
-        
+};

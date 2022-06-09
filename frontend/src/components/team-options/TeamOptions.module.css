@@ -36,20 +36,6 @@
     background-color: #fff;
 }
 
-.disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.disabled:hover {
-    background-color: #E3A084;
-    box-shadow: none;
-}
-
-.disabled:active {
-    background-color: #E3A084;
-}
-
 .root>span {
     text-align: center;
     color: #808080;

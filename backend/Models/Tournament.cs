@@ -21,13 +21,16 @@ namespace SieGraSieMa.Models
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string Description { get; set; }
-        public string Summary { get; set; }
         public string Address { get; set; }
+        public int? MediumId { get; set; }
+
 
         public virtual ICollection<Album> Albums { get; set; }
         public virtual ICollection<Contest> Contests { get; set; }
         public virtual ICollection<Group> Groups { get; set; }
         public virtual ICollection<TeamInTournament> TeamInTournaments { get; set; }
         public virtual ICollection<Match> Matches { get; set; }
+        public virtual Medium Medium { get; set; }
+
     }
 }

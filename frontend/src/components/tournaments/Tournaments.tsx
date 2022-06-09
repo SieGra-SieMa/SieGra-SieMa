@@ -1,15 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Tournament } from '../../_lib/types';
+import { TournamentListItem } from '../../_lib/_types/tournament';
 import { useApi } from '../api/ApiContext';
 import { TournamentsContext } from './TournamentsContext';
-import styles from './TournamentsPage.module.css';
+import styles from './Tournaments.module.css';
 
-export default function TournamentsPage() {
+export default function Tournaments() {
 
     const { tournamentsService } = useApi();
 
-    const [tournaments, setTournaments] = useState<Tournament[] | null>(null);
+    const [tournaments, setTournaments] = useState<TournamentListItem[] | null>(null);
 
     useEffect(() => {
         tournamentsService.getTournaments()
@@ -28,8 +28,10 @@ export default function TournamentsPage() {
 
     return (
         <TournamentsContext.Provider value={value}>
-            <div className={['container', styles.root].join(' ')}>
-                <Outlet />
+            <div>
+                <div className={['container', styles.root].join(' ')}>
+                    <Outlet />
+                </div>
             </div>
         </TournamentsContext.Provider>
     );

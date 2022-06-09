@@ -10,7 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SieGraSieMa.Services.JWT
+namespace SieGraSieMa.Services
 {
     public class JwtHandler
     {
@@ -26,7 +26,6 @@ namespace SieGraSieMa.Services.JWT
 
         private SigningCredentials GetSigningCredentials()
         {
-            //TODO get from secret
             var key = Encoding.UTF8.GetBytes(_configuration["SecretKey"]);
             var secret = new SymmetricSecurityKey(key);
 

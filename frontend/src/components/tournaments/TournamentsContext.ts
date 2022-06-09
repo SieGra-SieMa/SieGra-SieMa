@@ -1,9 +1,9 @@
 import { useContext, createContext } from 'react';
-import { Tournament } from '../../_lib/types';
+import { TournamentListItem } from '../../_lib/_types/tournament';
 
 interface TournamentsContextType {
-    tournaments: Tournament[] | null;
-    setTournaments: (tournaments: Tournament[] | null) => void;
+    tournaments: TournamentListItem[] | null;
+    setTournaments: (tournaments: TournamentListItem[] | null) => void;
 }
 
 export const TournamentsContext = createContext<TournamentsContextType>(null!);

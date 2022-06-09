@@ -11,7 +11,7 @@ export default function Confirm({ cancel, confirm, label }: ConfirmProps) {
     return (
         <div className={styles.root}>
             <Button
-                value='Cancel'
+                value='Anuluj'
                 onClick={cancel}
                 style={ButtonStyle.Grey}
             />

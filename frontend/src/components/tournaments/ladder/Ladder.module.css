@@ -1,0 +1,92 @@
+.ladder {
+    display: flex;
+    margin: 25px 0;
+    overflow: visible !important;
+}
+
+.phase {
+    flex: 1 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.phaseTitle {
+    text-align: center;
+    color: #555;
+}
+
+.matches {
+    display: flex;
+    flex-direction: column;
+    flex-flow: row wrap;
+    height: 100%;
+    justify-content: center;
+}
+
+.matchItem {
+    width: 100%;
+    min-width: 225px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1em 1.5em;
+}
+
+.matchItem:nth-child(odd):not(:last-child)::after {
+    content: "";
+    position: absolute;
+    height: 50%;
+    width: 1.5em;
+    right: 0px;
+    border-right: 1px solid #707070;
+    border-top: 1px solid #707070;
+    top: calc(50% - 0.5px);
+}
+
+.matchItem:nth-child(even)::before {
+    content: '';
+    border-top: 1px solid #707070;
+    position: absolute;
+    top: -0.5px;
+    width: 1.5em;
+    right: -1.5em;
+}
+
+.matchItem:nth-child(even)::after {
+    content: "";
+    position: absolute;
+    height: 50%;
+    width: 1.5em;
+    right: 0px;
+    border-bottom: 1px solid #707070;
+    top: -0.5px;
+    border-right: 1px solid #707070;
+}
+
+.match {
+    width: 100%;
+    background-color: #1a1d2e;
+    color: #fff;
+    border-radius: 5px;
+    transition: box-shadow .3s;
+    position: relative;
+    cursor: pointer;
+}
+
+.match:hover {
+    box-shadow: 0 0 5px #333;
+}
+
+.team {
+    padding: 10px 15px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.matchDetails {
+    display: grid;
+    row-gap: 15px;
+    grid-auto-rows: min-content;
+}

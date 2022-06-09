@@ -14,15 +14,20 @@
     outline: none;
     font-size: 18px;
     border: none;
+    color: #000;
     background-color: #fff;
-    transition: box-shadow .3s;
 }
 
-.input:hover {
-    box-shadow: 0 0 3px var(--box-shadow-color);
+.datepickerLabel {
+    display: inline-block;
+    margin-bottom: 5px;
 }
 
-.orangeButton,
+.datepicker {
+    width: 100%;
+}
+
+.yellowButton,
 .greyButton,
 .greenButton,
 .redButton {
@@ -33,22 +38,21 @@
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
-    transition: background-color .3s, box-shadow .3s;
+    transition: background-color .3s;
     font-weight: bold;
 }
 
-.orangeButton {
+.yellowButton {
     color: #fff;
-    background-color: #E3A084;
+    background-color: var(--accent-color);
 }
 
-.orangeButton:hover {
-    background-color: #ca8c71;
-    box-shadow: 0 0 5px var(--box-shadow-color);
+.yellowButton:hover {
+    background-color: #a8833e;
 }
 
-.orangeButton:active {
-    background-color: #9c664f;
+.yellowButton:active {
+    background-color: #755f36;
 }
 
 .greyButton {
@@ -57,12 +61,11 @@
 }
 
 .greyButton:hover {
-    background-color: #cfcfcf;
-    box-shadow: 0 0 5px var(--box-shadow-color);
+    background-color: #aaa;
 }
 
 .greyButton:active {
-    background-color: #aaa;
+    background-color: #777;
 }
 
 .greenButton {
@@ -72,7 +75,6 @@
 
 .greenButton:hover {
     background-color: #2f424b;
-    box-shadow: 0 0 5px #2f424b;
 }
 
 .greenButton:active {
@@ -86,9 +88,13 @@
 
 .redButton:hover {
     background-color: #9f3838;
-    box-shadow: 0 0 5px #873232;
 }
 
 .redButton:active {
     background-color: #823131;
+}
+
+.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

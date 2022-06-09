@@ -4,8 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs.AlbumDTO;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.Models;
-using SieGraSieMa.Services.Albums;
-using SieGraSieMa.Services.Medias;
+using SieGraSieMa.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class AlbumsController : ControllerBase
@@ -47,6 +47,11 @@ namespace SieGraSieMa.Controllers
             return Ok(album);
         }
 
+
+        //-------------------------------------------------admin functions
+
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPost("{id}/media")]
         public async Task<IActionResult> AddMediaToAlbum(int id, IFormFile[] files)
         {
@@ -63,6 +68,7 @@ namespace SieGraSieMa.Controllers
             }
         }
 
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateAlbum(UpdateAlbumDTO album, int id)
         {
@@ -75,6 +81,7 @@ namespace SieGraSieMa.Controllers
             return Ok();
         }
 
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAlbum(int id)
         {

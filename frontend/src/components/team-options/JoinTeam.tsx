@@ -33,7 +33,6 @@ export default function JoinTeam() {
                 onChange={(e) => setCode(e.target.value)}
             />
             <Button
-                className={code.length !== 5 ? styles.disabled : undefined}
                 value='JOIN'
                 disabled={code.length !== 5}
             />

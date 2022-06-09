@@ -5,6 +5,7 @@ import TournamentsService from './tournaments.service';
 import UsersService from './users.service';
 import { AuthState } from './service';
 import AlbumsService from './albums.service';
+import MatchService from './match.service';
 
 export default class ApiClient {
 
@@ -13,6 +14,7 @@ export default class ApiClient {
 	tournamentsService = new TournamentsService();
 	usersService = new UsersService();
 	albumsService = new AlbumsService();
+	matchService = new MatchService();
 
 	setSession(session: Session | null) {
 		this.teamsService.session = session;
@@ -20,6 +22,7 @@ export default class ApiClient {
 		this.tournamentsService.session = session;
 		this.usersService.session = session;
 		this.albumsService.session = session;
+		this.matchService.session = session;
 	}
 
 	setAuthState(authState: AuthState) {
@@ -28,5 +31,6 @@ export default class ApiClient {
 		this.tournamentsService.authState = authState;
 		this.usersService.authState = authState;
 		this.albumsService.authState = authState;
+		this.matchService.authState = authState;
 	}
 }

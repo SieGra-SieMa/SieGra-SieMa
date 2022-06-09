@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.MatchDTO;
-using SieGraSieMa.Services.Tournaments;
+using SieGraSieMa.Services;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
 {
-    //[Authorize(AuthenticationSchemes = "Bearer")]
-    //[Authorize(Roles ="Emp")]
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class MatchController : ControllerBase
@@ -21,6 +21,7 @@ namespace SieGraSieMa.Controllers
             _tournamentsService = tournamentService;
         }
 
+        [Authorize(Policy = "OnlyEmployeesAuthenticated")]
         [HttpPatch("insertMatchResults")]
         public async Task<IActionResult> InsertMatchResult(MatchResultDTO matchResultDTO)
         {
@@ -34,6 +35,8 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
+
+        [AllowAnonymous]
         [HttpGet("getGroupMatches/{tournamentId}")]
         public async Task<IActionResult> GetAvailableMatchesInGroup(int tournamentId,[FromQuery]ITournamentsService.MatchesEnum filter)
         {
@@ -47,6 +50,8 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
+
+        [AllowAnonymous]
         [HttpGet("getLadderMatches/{tournamentId}")]
         public async Task<IActionResult> GetLadderMatches(int tournamentId)
         {

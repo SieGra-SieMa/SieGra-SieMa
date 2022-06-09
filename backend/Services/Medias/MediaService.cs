@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using static SieGraSieMa.Services.Medias.IMediaService;
+using static SieGraSieMa.Services.IMediaService;
 
-namespace SieGraSieMa.Services.Medias
+namespace SieGraSieMa.Services
 {
     public interface IMediaService
     {
@@ -18,7 +18,7 @@ namespace SieGraSieMa.Services.Medias
         public Task<Medium> GetMedia(int id);
         public Task<List<ResponseMediumDTO>> CreateMedia(int? albumId, int? id, IFormFile[] files, MediaTypeEnum mediaType);
         public enum MediaTypeEnum { photos, teams, tournaments }
-        public Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO);
+        /*public Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO);*/
         public Task<bool> DeleteMedia(int id);
         public Task<MediumInAlbum> AddToAlbum(MediumInAlbum mediumInAlbum);
         public Task<bool> DeleteFromAlbum(int mediaId, int albumId);
@@ -37,6 +37,9 @@ namespace SieGraSieMa.Services.Medias
             var year = DateTime.UtcNow.Year.ToString();
             var month = DateTime.UtcNow.Month.ToString();
             var list = new List<ResponseMediumDTO>();
+
+            var separator = OperatingSystem.IsWindows() ? '\\' : '/';
+
             foreach (var file in files)
             {
                 if (file != null && file.Length > 0)
@@ -45,14 +48,14 @@ namespace SieGraSieMa.Services.Medias
 
                     var result = mediaType switch
                     {
-                        MediaTypeEnum.photos => $@"{year}\{month}",
+                        MediaTypeEnum.photos => $@"{year}{separator}{month}",
                         MediaTypeEnum.teams => $@"{id}",
                         MediaTypeEnum.tournaments => $@"{id}"
                     };
 
-                    if (!Directory.Exists($@"wwwroot\{mediaType}\{result}"))
-                        Directory.CreateDirectory($@"wwwroot\{mediaType}\{result}");
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), $@"wwwroot\{mediaType}\{result}", fileName);
+                    if (!Directory.Exists($@"wwwroot{separator}{mediaType}{separator}{result}"))
+                        Directory.CreateDirectory($@"wwwroot{separator}{mediaType}{separator}{result}");
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), $@"wwwroot{separator}{mediaType}{separator}{result}", fileName);
                     using (var fileStream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(fileStream);
@@ -87,9 +90,19 @@ namespace SieGraSieMa.Services.Medias
         public async Task<bool> DeleteMedia(int id)
         {
             var medium = await _SieGraSieMaContext.Media.FindAsync(id);
+            if (medium == null)
+                throw new Exception("Medium not found!");
+ 
             _SieGraSieMaContext.Media.Remove(medium);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
+            {
+                var absPath = $@"wwwroot\{medium.Url}";
+                {
+                    System.IO.File.Delete(absPath);
+                }
                 return true;
+            }
+                
 
             return false;
         }
@@ -106,7 +119,7 @@ namespace SieGraSieMa.Services.Medias
             return media;
         }
 
-        public async Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO)
+        /*public async Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO)
         {
             var oldMedia = await _SieGraSieMaContext.Media.FindAsync(id);
             if (oldMedia == null)
@@ -117,7 +130,7 @@ namespace SieGraSieMa.Services.Medias
                 return true;
 
             return false;
-        }
+        }*/
 
         public async Task<MediumInAlbum> AddToAlbum(MediumInAlbum mediumInAlbum)
         {
@@ -137,14 +150,22 @@ namespace SieGraSieMa.Services.Medias
         }
         public async Task<bool> DeleteFromAlbum(int mediaId, int albumId)
         {
-            var mediumInAlbum = await _SieGraSieMaContext.MediumInAlbum.FindAsync(mediaId, albumId);
+            var mediumInAlbum = await _SieGraSieMaContext.MediumInAlbum.FindAsync(albumId, mediaId);
             if (mediumInAlbum == null)
-            {
                 throw new Exception("Medium doesnt belong to this album");
-            }
 
             _SieGraSieMaContext.MediumInAlbum.Remove(mediumInAlbum);
-            return await _SieGraSieMaContext.SaveChangesAsync()>0;
+            var medium = await _SieGraSieMaContext.Media.FindAsync(mediaId);
+            if(medium != null && await _SieGraSieMaContext.MediumInAlbum.AnyAsync(m => m.MediumId == mediaId))
+            {
+                if (!_SieGraSieMaContext.Teams.Include(m => m.TeamInTournaments).ThenInclude(t => t.Tournament).GroupBy(m => m.MediumId).Any(m => m.Key == medium.Id))
+                    await DeleteMedia(mediaId);
+            }
+            
+
+            await _SieGraSieMaContext.SaveChangesAsync();
+
+            return true;
         }
 
 

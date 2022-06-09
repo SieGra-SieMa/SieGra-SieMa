@@ -12,8 +12,9 @@ export default class AlbumsService extends Service {
         return super.del(`${Config.HOST}/api/albums/${id}`);
     }
 
-    addMediaToAlbum(id: string, files: FormData): Promise<Media>{
-        return super.post(`${Config.HOST}/api/albums/${id}/media`, files);
+    addMediaToAlbum(id: string, data: FormData): Promise<Media> {
+        const headers = new Headers();
+        return super.post(`${Config.HOST}/api/albums/${id}/media`, data, headers, false);
     }
 
 }

@@ -6,7 +6,7 @@ import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
 import styles from './AlbumAdd.module.css';
 
-export default function MediaAdd({ confirm, parametr  }: { confirm: (media: Media) => void, parametr: string}) {
+export default function MediaAdd({ confirm, parametr }: { confirm: (media: Media) => void, parametr: string }) {
 
     const { albumsService } = useApi();
 
@@ -22,24 +22,24 @@ export default function MediaAdd({ confirm, parametr  }: { confirm: (media: Medi
         //         confirm(data);
         //     })
         //File[] xd = null;
-        const formData= new FormData();
-        formData.append("image", files?.item(0)!, files?.item(0)!.name);
+        const formData = new FormData();
+        formData.append("files", files?.item(0)!, files?.item(0)!.name);
         //console.log(files?.item(0)!);
-        
+
         //const fileListAsArray = Array.from(files!);
         // albumsService.addMediaToAlbum(parametr, fileListAsArray)
         //      .then((data) => {
         //          confirm(data);
         //      })
         albumsService.addMediaToAlbum(parametr, formData)
-            .then((data) => {confirm(data)});
+            .then((data) => { confirm(data) });
     }
 
     return (
         <form className={styles.root} onSubmit={onSubmit}>
-             <input
-               id='MediaAdd-file'
-               type='file'
+            <input
+                id='MediaAdd-file'
+                type='file'
                 onChange={(e) => setFiles(e.target.files)}
             />
             <VerticalSpacing size={15} />

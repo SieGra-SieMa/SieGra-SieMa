@@ -6,8 +6,6 @@ using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
-using SieGraSieMa.Services.Email;
-using SieGraSieMa.Services.Medias;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,8 +33,8 @@ namespace SieGraSieMa.Controllers
             _mediaService = mediaService;
         }
 
-        [HttpGet]
         [Authorize(Policy = "EveryOneAuthenticated")]
+        [HttpGet]
         public IActionResult GetTeamByMail()
         {
             try
@@ -50,23 +48,23 @@ namespace SieGraSieMa.Controllers
             }
         }
         
-        [HttpGet("teamsIAmCaptain")]
         [Authorize(Policy = "EveryOneAuthenticated")]
-        public IActionResult GetTeamByMailForCaptain()
+        [HttpGet("teamsIAmCaptain")]
+        public async Task<IActionResult> GetTeamByMailForCaptain()
         {
             try
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
-                return Ok(_teamService.GetTeamsWhichUserIsCaptain(email));
+                return Ok(await _teamService.GetTeamsWhichUserIsCaptain(email));
             }
             catch (Exception e)
             {
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
-        //[HttpPost("create")]
-        [HttpPost()]
+
         [Authorize(Policy = "EveryOneAuthenticated")]
+        [HttpPost()]
         public IActionResult Create(TeamDTO teamDTO)
         {
             try
@@ -81,15 +79,14 @@ namespace SieGraSieMa.Controllers
             }
         }
 
-        [HttpPost("join")]
         [Authorize(Policy = "EveryOneAuthenticated")]
+        [HttpPost("join")]
         public async Task<IActionResult> Join(TeamCodeDTO teamCodeDTO)
         {
             try
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var captain = _userService.GetUser(email);
-                //TODO change exception types
                 var response = await _teamService.IsUserAbleToJoinTeam(captain, teamCodeDTO.Code);
                 if(!response)
                     return BadRequest(new ResponseErrorDTO { Error = "Player already belongs to another team which is in the same tournament as this one" });
@@ -103,8 +100,8 @@ namespace SieGraSieMa.Controllers
             
         }
 
-        [HttpPost("leave")]
         [Authorize(Policy = "EveryOneAuthenticated")]
+        [HttpPost("leave")]
         public IActionResult Leave(TeamLeaveDTO teamLeaveDTO)
         {
             try
@@ -121,6 +118,7 @@ namespace SieGraSieMa.Controllers
 
         }
 
+        [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> ChangeTeamDetailsAsync(int id, TeamDetailsDTO teamDetailsDTO)
         {
@@ -138,6 +136,7 @@ namespace SieGraSieMa.Controllers
 
         }
 
+        [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpPost("{id}/remove-user/{userId}")]
         public async Task<IActionResult> RemoveUserFromTeam(int id, int userId)
         {
@@ -155,6 +154,7 @@ namespace SieGraSieMa.Controllers
 
         }
 
+        [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpPost("{id}/switch-captain/{userId}")]
         public async Task<IActionResult> SwitchCaptainAsync(int id, int userId)
         {
@@ -172,6 +172,7 @@ namespace SieGraSieMa.Controllers
 
         }
 
+        [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
@@ -189,16 +190,21 @@ namespace SieGraSieMa.Controllers
 
         }
 
+        [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpPost("{id}/send-invite")]
-        public async Task<IActionResult> SendInvite(string emailAdress)
+        public async Task<IActionResult> SendInvite(int id, string emailAdress)
         {
             try
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 //await _teamService.DeleteUserFromTeam(userId, user.Id, id);
-                //TODO check if team exists and if user is captain
-                await _emailService.SendAsync(emailAdress, "Zaproszenie do zespołu SiegraSiema", "Treść zaproszenia");
+                var team = _teamService.GetTeam(id);
+                if (team == null)
+                    return NotFound(new ResponseErrorDTO { Error = "Team not found" });
+                if(team.CaptainId != user.Id)
+                    return BadRequest(new ResponseErrorDTO { Error = "You are not a captain" });
+                await _emailService.SendAsync(emailAdress, "Zaproszenie do zespołu SiegraSiema", $"Dołącz do naszego teamu, użyj tego kodu {team.Code} na stronie SiegraSiema");
                 return Ok(new MessageDTO { Message = $"Mail already sent" });
             }
             catch (Exception e)
@@ -208,6 +214,7 @@ namespace SieGraSieMa.Controllers
 
         }
 
+        [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpPost("{id}/add-profile-photo")]
         public async Task<IActionResult> AddPhoto(int id, IFormFile[] file)
         {
@@ -232,5 +239,25 @@ namespace SieGraSieMa.Controllers
             }
 
         }
+
+
+        //-------------------------------------------------admin functions
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
+        [HttpDelete("admin/{id}")]
+        public async Task<IActionResult> DeleteByAdminAsync(int id)
+        {
+            try
+            {
+                await _teamService.DeleteTeamByAdmin(id);
+                return Ok(new MessageDTO { Message = $"Team successfully deleted" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
+
     }
 }

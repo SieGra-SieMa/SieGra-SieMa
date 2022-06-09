@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import { Tournament } from '../../_lib/types';
+import { TournamentListItem } from '../../_lib/_types/tournament';
 import { useApi } from '../api/ApiContext';
 import { TournamentsContext } from '../tournaments/TournamentsContext';
 import styles from './GalleryPage.module.css';
@@ -9,7 +9,7 @@ export default function TournamentsPage() {
 
     const { tournamentsService } = useApi();
 
-    const [tournaments, setTournaments] = useState<Tournament[] | null>(null);
+    const [tournaments, setTournaments] = useState<TournamentListItem[] | null>(null);
 
     useEffect(() => {
         tournamentsService.getTournaments()

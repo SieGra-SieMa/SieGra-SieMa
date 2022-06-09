@@ -1,0 +1,42 @@
+.top {
+    display: flex;
+    column-gap: 25px;
+    justify-content: space-between;
+}
+
+.adminControls {
+    display: flex;
+    column-gap: 25px;
+}
+
+.title {
+    width: fit-content;
+}
+
+.dates {
+    color: var(--accent-color);
+    font-weight: bold;
+    padding: 0;
+}
+
+.line {
+    color: #fff;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    row-gap: 25px;
+    align-items: flex-start;
+    margin-top: 25px;
+}
+
+.team {
+    background-color: var(--secondary-color);
+    padding: 25px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+}

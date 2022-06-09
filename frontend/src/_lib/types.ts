@@ -1,76 +1,43 @@
 import { ROLES } from './roles';
 
-export interface User {
+export type User = {
     id: number;
     name: string;
     surname: string;
     roles: ROLES[];
-}
+};
 
-export interface Account extends User {
+export type Account = User & {
     email: string;
     accessToken: string;
     refreshToken: string;
-}
+};
 
-export interface Player extends User { }
+export type Player = User;
 
-export interface Team {
+export type Team = {
     id: number;
     name: string;
     code: string;
     captainId: number;
     players: Player[];
-}
+};
 
-export interface UserDetailsRequest {
+export type UserDetailsRequest = {
     name: string;
     surname: string;
-}
+};
 
-export interface Tokens {
+export type Tokens = {
     token: string;
     refreshToken: string;
-}
+};
 
-export interface Session {
+export type Session = {
     accessToken: string;
     refreshToken: string;
 }
 
-// Tournaments
-
-export interface Tournament {
-    id?: number;
-    name: string;
-    startDate: string,
-    endDate: string,
-    description: string;
-    address: string;
-    profilePicture?: string;
-    groups?: Group[];
-
-    ladder?: {
-        phases: {
-            phase: number;
-            matches: {
-                tournamentId: number;
-                phase: number
-                matchId: number;
-                teamHome: {
-                    name: string;
-                }
-                teamAway: {
-                    name: string;
-                }
-                teamHomeScore: number | null;
-                teamAwayScore: number | null;
-            }[];
-        }[];
-    }
-}
-
-// Tournament with album
 export interface TournamentWithAlbums {
     id?: number;
     name: string;
@@ -83,7 +50,6 @@ export interface TournamentWithAlbums {
     albums?: Album[];
 }
 
-//Album
 export interface Album {
     id?: number;
     name: string;
@@ -93,26 +59,8 @@ export interface Album {
     tournamentId?: string;
 }
 
-//Media
-export interface Media{
+export interface Media {
     id?: number;
     url: string;
 }
 
-export interface Group {
-    id: number;
-    name: string;
-    tournamentId: number;
-    ladder: boolean;
-
-    teams: {
-        name: string;
-        playedMatches: number;
-        wonMatches: number;
-        tiedMatches: number;
-        lostMatches: number;
-        goalScored: number;
-        goalConceded: number;
-        points: number;
-    }[]
-}

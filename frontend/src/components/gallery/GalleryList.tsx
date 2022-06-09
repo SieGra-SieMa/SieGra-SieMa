@@ -1,8 +1,4 @@
-import { useEffect, useState } from 'react';
-import { Tournament } from '../../_lib/types';
 import { useNavigate } from 'react-router-dom';
-import { ROLES } from '../../_lib/roles';
-import { useApi } from '../api/ApiContext';
 import { useTournaments } from '../tournaments/TournamentsContext';
 import styles from './GalleryList.module.css';
 
@@ -14,12 +10,12 @@ export default function GalleryList() {
 
     return (
         <>
-        <div className={styles.top}>
+            <div className={styles.top}>
                 <h2 className={styles.title}>Gallery</h2>
             </div>
             <ul className={styles.content}>
                 {tournaments && tournaments?.map((tournament, index) => (
-                    <li key={index} className={styles.item} onClick={() => navigate(`${tournament.id!}`)} style={{backgroundImage: `url(http://localhost:5000/${tournament.profilePicture})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat'}}>
+                    <li key={index} className={styles.item} onClick={() => navigate(`${tournament.id!}`)} style={{ backgroundImage: `url(http://localhost:5000/${tournament.profilePicture})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>
                         <div className={styles.header} >
                             <div className={styles.dates}>
                                 {new Date(tournament.startDate).toLocaleDateString()}

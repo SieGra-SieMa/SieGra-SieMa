@@ -17,14 +17,13 @@ import AuthProvider from '../auth/AuthProvider';
 import AccountEntry from '../account-entry/AccountEntry';
 import TeamOptions from '../team-options/TeamOptions';
 import TeamsList from '../teams/TeamsList';
-import TournamentsPage from '../tournaments/TournamentsPage';
+import Tournaments from '../tournaments/Tournaments';
 import { ROLES } from '../../_lib/roles';
 import { ApiContext } from '../api/ApiContext';
 import ApiClient from '../../_services';
 import UserProvider from '../user/UserProvider';
-import TournamentView from '../tournaments/TournamentView';
-import TournamentsList from '../tournaments/TournamentsList';
-
+import TournamentsList from '../tournaments/list/TournamentsList';
+import Tournament from '../tournaments/page/Tournament';
 
 const apiClient = new ApiClient();
 
@@ -47,9 +46,9 @@ export default function App() {
                                     <Route path="*" element={<h2>404 NOT FOUND</h2>} />
                                 </Route>
                             </Route>
-                            <Route path="tournaments" element={<TournamentsPage />}>
+                            <Route path="tournaments" element={<Tournaments />}>
                                 <Route index element={<TournamentsList />} />
-                                <Route path=":id" element={<TournamentView />} />
+                                <Route path=":id" element={<Tournament />} />
                             </Route>
                             <Route path="gallery" element={<GalleryPage />}>
                                 <Route index element={<GalleryList />} />
@@ -62,4 +61,4 @@ export default function App() {
             </AuthProvider>
         </ApiContext.Provider>
     );
-}
+};

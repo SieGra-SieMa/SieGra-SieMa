@@ -1,14 +1,13 @@
 .footer-section {
     background-color: var(--main-color);
     color: white;
+    padding-top: 25px;
 }
 
 .footer-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 10vh;
-    margin: 2rem auto;
 }
 
 .footer-icon {
@@ -19,13 +18,18 @@
     display: flex;
     align-items: center;
     justify-content: flex-start;
-}
-
-.icon-text>p {
-    margin: auto 1rem;
+    column-gap: 10px;
 }
 
 #designed-by {
-    margin: 1rem auto;
     font-size: 12px;
+    text-align: center;
+    padding: 25px 0;
+}
+
+@media all and (max-width: 960px) {
+    .footer-container {
+        flex-direction: column;
+        row-gap: 25px;
+    }
 }

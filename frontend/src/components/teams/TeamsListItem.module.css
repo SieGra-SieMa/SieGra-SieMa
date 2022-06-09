@@ -5,15 +5,11 @@
     flex-direction: column;
     overflow: hidden;
     border-radius: 15px;
-    transition: box-shadow .3s;
     background-color: #fff;
     padding: 30px;
     row-gap: 45px;
 }
 
-.root:hover {
-    box-shadow: 0 0 5px var(--box-shadow-color);
-}
 
 .content {}
 

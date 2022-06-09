@@ -80,52 +80,68 @@ export default class Service {
     }
 
     api<T>(url: string, options: RequestInit): Promise<T> {
-        const headers = new Headers();
-        headers.set('Content-Type', 'application/json');
+        let headers = options.headers;
+        if (!headers) {
+            headers = new Headers();
+            headers.set('Content-Type', 'application/json');
+        }
         if (this.session) {
             const token = this.session.accessToken;
-            headers.set('Authorization', `Bearer ${token}`);
+            if (headers instanceof Headers) {
+                headers.set('Authorization', `Bearer ${token}`);
+            } else if (headers instanceof Array) {
+                headers.push(['Authorization', `Bearer ${token}`])
+            } else {
+                headers['Authorization'] = `Bearer ${token}`;
+            }
         }
         options.headers = headers;
         return fetch(url, options)
-            .then(res => this.handleResponse<T>(res, options));
+            .then(res => this.handleResponse<T>(res, options))
+            .catch((e) => Promise.reject(e.message || e));
+
     }
 
-    get<T>(url: string): Promise<T> {
+    get<T>(url: string, headers?: Headers): Promise<T> {
         const options: RequestInit = {
             method: 'GET',
+            headers,
         }
         return this.api<T>(url, options);
     }
 
-    post<T>(url: string, body: any): Promise<T> {
+    post<T>(url: string, body: any, headers?: Headers, isJSON: boolean = true): Promise<T> {
         const options: RequestInit = {
             method: 'POST',
-            body: JSON.stringify(body),
+            body: isJSON ? JSON.stringify(body) : body,
+            headers,
         }
         return this.api<T>(url, options);
     }
 
-    put<T>(url: string, body: any): Promise<T> {
+    put<T>(url: string, body: any, headers?: Headers): Promise<T> {
         const options: RequestInit = {
             method: 'PUT',
             body: JSON.stringify(body),
+            headers,
         }
         return this.api<T>(url, options);
     }
 
-    patch<T>(url: string, body: any): Promise<T> {
+    patch<T>(url: string, body: any, headers?: Headers): Promise<T> {
         const options: RequestInit = {
             method: 'PATCH',
             body: JSON.stringify(body),
+            headers,
         }
         return this.api<T>(url, options);
     }
 
-    del<T>(url: string): Promise<T> {
+    del<T>(url: string, headers?: Headers): Promise<T> {
         const options: RequestInit = {
             method: 'DELETE',
+            headers,
         }
-        return this.api<T>(url, options);
+        return this.api<T>(url, options,);
     }
 }

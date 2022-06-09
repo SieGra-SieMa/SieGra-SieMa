@@ -25,6 +25,6 @@ export default class TeamsService extends Service {
     };
 
     updateTeam(id: number, name: string): Promise<Team> {
-        return super.post<Team>(`${Config.HOST}/api/teams/${id}`, { name });
+        return super.patch<Team>(`${Config.HOST}/api/teams/${id}`, { name });
     };
 }

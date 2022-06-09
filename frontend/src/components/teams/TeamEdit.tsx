@@ -5,17 +5,15 @@ import Button from '../form/Button';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
 import styles from './TeamEdit.module.css';
-import { useTeams } from './TeamsContext';
 
 type TeamEditProps = {
     team: Team;
-    confirm: () => void;
+    confirm: (team: Team) => void;
 }
 
 export default function TeamEdit({ team, confirm }: TeamEditProps) {
 
     const { teamsService } = useApi();
-    const { teams, setTeams } = useTeams();
 
     const [name, setName] = useState(team.name);
 
@@ -23,8 +21,7 @@ export default function TeamEdit({ team, confirm }: TeamEditProps) {
         e.preventDefault();
         teamsService.updateTeam(team.id, name)
             .then((data) => {
-                confirm();
-                setTeams([...teams!.filter((team) => team.id !== data.id), data]);
+                confirm(data);
             });
     };
 
@@ -38,7 +35,7 @@ export default function TeamEdit({ team, confirm }: TeamEditProps) {
                 onChange={(e) => setName(e.target.value)}
             />
             <VerticalSpacing size={15} />
-            <Button value='Save' />
+            <Button value='Zapisz' />
         </form>
     );
 }

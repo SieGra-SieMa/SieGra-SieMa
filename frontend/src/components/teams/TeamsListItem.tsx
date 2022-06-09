@@ -45,11 +45,11 @@ export default function TeamsListItem({ team }: TeamsListItemProp) {
                 <h3>{team.name}</h3>
                 <div className={styles.codeBlock}>
                     <span>Code: </span>
-                    <h3>{team.code}</h3>
+                    <h6>{team.code}</h6>
                 </div>
                 <div className={styles.codeBlock}>
                     <span>Captain: </span>
-                    <h3>{captain ? `${captain.name} ${captain.surname}` : 'Username'}</h3>
+                    <h6>{captain ? `${captain.name} ${captain.surname}` : 'Username'}</h6>
                 </div>
                 <ul>
                     {team.players.filter((player) => player.id !== team.captainId).map((player, index) => (
@@ -63,19 +63,19 @@ export default function TeamsListItem({ team }: TeamsListItemProp) {
             </div>
             <div className={styles.footer}>
                 <Button
-                    value='Add participants'
+                    value='Dodaj gracza'
                     onClick={() => setIsAdd(true)}
                     style={ButtonStyle.Orange}
                 />
                 {user && team.captainId === user.id && (
                     <Button
-                        value='Edit'
+                        value='Edytuj zespół'
                         onClick={() => setIsEdit(true)}
                         style={ButtonStyle.DarkBlue}
                     />
                 )}
                 <Button
-                    value='Leave'
+                    value='Opuścić zespół'
                     onClick={() => setIsLeave(true)}
                     style={ButtonStyle.Red}
                 />
@@ -93,23 +93,34 @@ export default function TeamsListItem({ team }: TeamsListItemProp) {
                 <Modal
                     isClose
                     close={() => setIsEdit(false)}
-                    title={'Team edit'}
+                    title={'Edytuj zespół'}
                 >
                     <TeamEdit
                         team={team}
-                        confirm={() => setIsEdit(false)}
+                        confirm={(team) => {
+                            setIsEdit(false);
+                            if (teams) {
+                                const index = teams.findIndex((e) => e.id === team.id);
+                                const data = [...teams];
+                                data[index] = {
+                                    ...team,
+                                    players: teams[index].players,
+                                };
+                                setTeams(data);
+                            }
+                        }}
                     />
                 </Modal>
             )}
             {isLeave && (
                 <Modal
                     close={() => setIsLeave(false)}
-                    title={`Team "${team.name}" - Do you really want to leave?`}
+                    title={`Czy na pewno chcesz opuścić zespół? - "${team.name}"`}
                 >
                     <Confirm
                         cancel={() => setIsLeave(false)}
                         confirm={() => leaveTeam()}
-                        label='Leave'
+                        label='Opuścić'
                     />
                 </Modal>
             )}

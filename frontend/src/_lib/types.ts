@@ -37,3 +37,28 @@ export type Session = {
     accessToken: string;
     refreshToken: string;
 };
+
+export type FacebookFeed = {
+    data: {
+        created_time: string;
+        full_picture: string;
+        id: string;
+        message: string;
+        permalink_url: string;
+    }[]
+    paging: {
+        cursor: {
+            after: string;
+            before: string;
+        }
+    }
+};
+
+export type NewsFeedProps = {
+    fetchLimit?: string;
+}
+
+export type PostProps = {
+    feed: FacebookFeed | null,
+    index: number
+};

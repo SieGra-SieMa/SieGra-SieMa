@@ -23,7 +23,7 @@ namespace SieGraSieMa.Services
         Task<IEnumerable<GetTeamsDTO>> GetTeamsWhichUserIsCaptain(string email);
         IEnumerable<Team> GetTeams();
         Task<bool> IsUserAbleToJoinTeam(User user, string code);
-        Task ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO);
+        Task<Team> ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO);
         Task DeleteUserFromTeam(int userId, int captainId, int teamId);
         Task SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId);
         Task DeleteTeam(int teamId, int captainId);
@@ -263,7 +263,7 @@ namespace SieGraSieMa.Services
             return _SieGraSieMaContext.Teams.Include(t => t.Players).Where(t => t.Id == id).SingleOrDefault();
         }
 
-        public async Task ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO)
+        public async Task<Team> ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO)
         {
             var team = await _SieGraSieMaContext.Teams.FindAsync(teamId);
 
@@ -277,6 +277,8 @@ namespace SieGraSieMa.Services
 
             _SieGraSieMaContext.Teams.Update(team);
             await _SieGraSieMaContext.SaveChangesAsync();
+
+            return team;
         }
 
         public async Task DeleteUserFromTeam(int userId, int captainId, int teamId)

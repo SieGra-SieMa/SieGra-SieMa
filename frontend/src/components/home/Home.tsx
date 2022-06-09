@@ -1,11 +1,13 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './Home.css';
+import NewsFeed from '../facebook/NewsFeed'
 
 export default function Home() {
 
     useEffect(() => {
         window.scrollTo(0, 0);
+        
     }, []);
 
     return (
@@ -62,22 +64,7 @@ export default function Home() {
                     </Link>
                 </div>
             </div>
-            <div className="news-section">
-                <div className="container news-container">
-                    <h2>News feed</h2>
-                    <ul className="news-list">
-                        <li className="news-post">
-
-                        </li>
-                        <li className="news-post">
-
-                        </li>
-                        <li className="news-post">
-
-                        </li>
-                    </ul>
-                </div>
-            </div>
+            <NewsFeed/>
         </section>
     );
 }

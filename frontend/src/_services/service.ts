@@ -65,7 +65,7 @@ export default class Service {
         if (this.session && url !== `${HOST}/api/accounts/refresh-token`) {
             let token = this.session.accessToken;
             const { exp } = jwtDecode<JwtPayload>(token);
-            if ((((exp ?? 0) * 1000) - (4.5 * 60 * 1000)) < Date.now()) {
+            if ((((exp ?? 0) * 1000) - (3 * 60 * 1000)) < Date.now()) {
                 const refreshToken = this.session.refreshToken;
                 try {
                     if (!Service.refresh) {

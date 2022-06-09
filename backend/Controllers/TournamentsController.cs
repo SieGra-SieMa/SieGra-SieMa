@@ -258,8 +258,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                //var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
-                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Address = tournament.Address };
+                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
                 var result = await _tournamentsService.CreateTournament(newTournament);
                 return Ok(result);
             }
@@ -276,8 +275,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                //var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
-                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Address = tournament.Address };
+                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
 
                 var result = await _tournamentsService.UpdateTournament(id, newTournament);
 

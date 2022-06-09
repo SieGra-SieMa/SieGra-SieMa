@@ -124,7 +124,6 @@ namespace SieGraSieMa.Controllers
             }
             catch (Exception ex)
             {
-
                 return BadRequest(new ResponseErrorDTO { Error = ex.Message });
             }
         }
@@ -139,7 +138,6 @@ namespace SieGraSieMa.Controllers
             await _userService.PreparingUserToBlock(user.Id);
             await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Parse("2038-01-19 00:00:00"));//to jest maksimum dla timestampu xD
             await _logService.AddLog(new Log(user, "Lock user due to deleting account"));
-            
             return Ok();
         }
 

@@ -1,10 +1,12 @@
 .root {
     display: flex;
     justify-content: center;
+    align-items: center;
     background-color: var(--main-color);
     position: sticky;
     opacity: 95%;
-    width: 100%;
+    width: 100vw;
+    height: 10vh;
     top: 0;
     z-index: 9999;
 }
@@ -12,10 +14,12 @@
 .container {
     display: flex;
     justify-content: space-between;
+    width: 80%;
 }
 
 .logo {
     padding: 25px;
+    z-index: 99999;
 }
 
 .logo>a>img {
@@ -62,12 +66,20 @@
     left: 15px;
     width: calc(100% - 30px);
 }
+.menu {
+    visibility: hidden;
+    position: absolute;
+}
 
 
 @media all and (max-width: 720px) {
+    .root {
+        position: fixed;
+
+    }
+
     .container {
-        flex-direction: column;
-        align-items: center;
+        overflow: hidden;
     }
 
     .menu {
@@ -85,13 +97,15 @@
 
     .navigation {
         background-color: var(--main-color);
-        position: absolute;
+        position: fixed;
         top: 0;
         right: 0;
+        left: 0;
+        padding: 0;
         margin: 0;
         height: 100vh;
         width: 100vw;
-        position: fixed;
+        overflow: hidden;
     }
 
     .navigation>ul {
@@ -100,7 +114,11 @@
         width: 90vw;
         margin: auto;
         align-items: center;
-        justify-content: space-evenly;
+        justify-content: flex-start;
+        margin-top: 10vh;
+     }
+     .navigation>ul>li {
+        margin: 3rem;
      }
 
     #navClosed {

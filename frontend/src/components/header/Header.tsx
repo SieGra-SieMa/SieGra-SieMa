@@ -23,7 +23,7 @@ export default function Header() {
 
     return (
         <header className={styles.root}>
-            <div className={`container ${styles.container}`}>
+            <div className={styles.container}>
                 <div className={styles.logo}>
                     <Link to="/">
                         <img src="/logo_w.png" alt="" />
@@ -66,8 +66,8 @@ export default function Header() {
                         )}
                     </ul>
                 </nav>
-                <button className={styles.menu} onClick={toggleNav}>{ !toggleMenu ? <MenuIcon fontSize="large"/> : <CloseIcon fontSize="large"/> }</button>
             </div>
+            <button className={styles.menu} onClick={toggleNav}>{ !toggleMenu ? <MenuIcon fontSize="large"/> : <CloseIcon fontSize="large"/> }</button>
         </header >
     );
 }

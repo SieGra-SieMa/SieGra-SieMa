@@ -1,5 +1,5 @@
 import { Session, Tokens } from "../_lib/types";
-import { HOST } from '../config.json';
+import Config from '../config.json';
 import jwtDecode, { JwtPayload } from "jwt-decode";
 
 export type AuthState = {
@@ -62,7 +62,7 @@ export default class Service {
             headers.set('Content-Type', 'application/json');
         }
 
-        if (this.session && url !== `${HOST}/api/accounts/refresh-token`) {
+        if (this.session && url !== `${Config.HOST}/api/accounts/refresh-token`) {
             let token = this.session.accessToken;
             const { exp } = jwtDecode<JwtPayload>(token);
             if ((((exp ?? 0) * 1000) - (3 * 60 * 1000)) < Date.now()) {
@@ -70,7 +70,7 @@ export default class Service {
                 try {
                     if (!Service.refresh) {
                         Service.refresh = this.post<Tokens>(
-                            `${HOST}/api/accounts/refresh-token`,
+                            `${Config.HOST}/api/accounts/refresh-token`,
                             { refreshToken }
                         );
                         const tokens = await Service.refresh;

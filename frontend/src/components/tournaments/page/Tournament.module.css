@@ -40,3 +40,9 @@
     align-items: stretch;
     text-align: center;
 }
+
+.loader {
+    display: flex;
+    justify-content: center;
+    padding: 50px;
+}

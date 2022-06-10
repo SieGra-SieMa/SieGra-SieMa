@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ROLES } from '../../../_lib/roles';
-import { Tournament as TournamentType } from '../../../_lib/_types/tournament';
+import { TeamInTournament, Tournament as TournamentType } from '../../../_lib/_types/tournament';
 import { useApi } from '../../api/ApiContext';
 import Button, { ButtonStyle } from '../../form/Button';
 import GuardComponent from '../../guard-components/GuardComponent';
@@ -16,6 +16,7 @@ import EditTournamentPicture from './EditTournamentPicture';
 import Groups from '../groups/Groups';
 import TeamAssign from '../list/TeamAssign';
 import { useAuth } from '../../auth/AuthContext';
+import { SyncLoader } from 'react-spinners';
 
 export default function Tournament() {
 
@@ -36,6 +37,7 @@ export default function Tournament() {
             ladder: [],
         };
     });
+    const [teams, setTeams] = useState<TeamInTournament[] | null>(null);
     const [isEdit, setIsEdit] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
     const [isPicture, setIsPicture] = useState(false);
@@ -60,7 +62,7 @@ export default function Tournament() {
 
         tournamentsService.getTeamsInTournament(id!)
             .then((data) => {
-                console.log(data);
+                setTeams(data);
             });
 
     }, [isOpen, id, tournamentsService]);
@@ -116,7 +118,6 @@ export default function Tournament() {
                     setTournaments(data);
                 }
             });
-
     };
 
     return (
@@ -179,14 +180,31 @@ export default function Tournament() {
             )}
 
 
+            {(isOpen) && (
+                <>
+                    <h4>Zespoły</h4>
+                    {(teams) ? teams.map((team) => (
+                        <div key={team.teamId}>
+                            <p>
+                                {team.teamName}
+                            </p>
+                        </div>
+                    )) : (
+                        <div className={styles.loader}>
+                            <SyncLoader loading={true} size={20} margin={20} color='#fff' />
+                        </div>
+                    )}
+                </>
+            )}
+
 
             {(tournament && !isOpen) && (
                 <>
-                    <h2>Ladder</h2>
+                    <h2>Drabinka</h2>
                     {tournament && tournament.ladder && <Ladder ladder={tournament.ladder} />}
-                    <h2>Groups</h2>
+                    <h2>Grupy</h2>
                     {tournament && tournament.groups && <Groups groups={tournament.groups} />}
-                    <h2>Matches</h2>
+                    <h2>Mecze</h2>
                 </>
             )}
 

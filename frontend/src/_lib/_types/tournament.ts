@@ -59,3 +59,11 @@ export type MatchResult = {
     homeTeamPoints: number;
     awayTeamPoints: number;
 }
+
+export type TeamInTournament = {
+    teamId: number;
+    tournamentId: number;
+    teamName: string;
+    teamProfileUrl: string;
+    paid: boolean;
+}

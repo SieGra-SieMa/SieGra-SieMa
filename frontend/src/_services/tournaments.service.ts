@@ -1,6 +1,6 @@
 import Config from '../config.json';
 import { Media, Message } from '../_lib/_types/response';
-import { Tournament, TournamentListItem, TournamentRequest } from '../_lib/_types/tournament';
+import { TeamInTournament, Tournament, TournamentListItem, TournamentRequest } from '../_lib/_types/tournament';
 import Service from './service';
 
 export default class TournamentsService extends Service {
@@ -30,7 +30,7 @@ export default class TournamentsService extends Service {
         return super.post(`${Config.HOST}/api/tournaments/${id}/add-profile-photo`, data, headers, false);
     };
 
-    getTeamsInTournament(id: string): Promise<Tournament[]> {
+    getTeamsInTournament(id: string): Promise<TeamInTournament[]> {
         return super.get(`${Config.HOST}/api/tournaments/${id}/teams?filter=0`);
     };
 

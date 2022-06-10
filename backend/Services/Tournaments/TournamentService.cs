@@ -146,6 +146,7 @@ namespace SieGraSieMa.Services
                     //t.TeamInTournaments.Any(tt => tt.Team.Players.Any(p => p.User.Id == (user == null ? null : user.Id)))
                 })
                 .FirstOrDefaultAsync();
+            if (tournament == null) return null;
             tournament.Groups.ToList().ForEach(g =>
             {
                 g.Teams = GetTeamScoresInGroups(g.TournamentId, g.Id);
@@ -169,8 +170,6 @@ namespace SieGraSieMa.Services
                         ).ToList()
                 });
             }
-
-
             return tournament;
         }
         public async Task<IEnumerable<TournamentListDTO>> GetTournaments(User user)

@@ -32,11 +32,11 @@ namespace SieGraSieMa.Services
             this.Configuration = Configuration;
             _logger = logger;
 
-            smtpServer = this.Configuration.GetValue<string>("EmailService:SmtpServer");
-            username = this.Configuration.GetValue<string>("EmailService:Username");
-            password = this.Configuration.GetValue<string>("EmailService:Password");
-            from = this.Configuration.GetValue<string>("EmailService:From");
-            port = this.Configuration.GetValue<int>("EmailService:Port");
+            smtpServer = this.Configuration.GetConnectionString("emailSmtpServer");
+            username = this.Configuration.GetConnectionString("emailUsername");
+            password = this.Configuration.GetConnectionString("emailPassword");
+            from = this.Configuration.GetConnectionString("emailFrom");
+            port = int.Parse(this.Configuration.GetConnectionString("emailPort"));
 
         }
 

@@ -1,0 +1,42 @@
+@import '../../variables.css';
+
+.root {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 15px;
+    background-color: rgb(7, 101, 43);
+    padding: 30px;
+    row-gap: 45px;
+}
+
+.teamMember{
+    display: flex;
+    flex-direction: row;
+}
+
+.content {}
+
+.content>h3 {
+    font-size: 30px;
+}
+
+.codeBlock {
+    display: flex;
+    align-items: center;
+}
+
+.codeBlock>span {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+.codeBlock>h3 {
+    font-size: 20px;
+}
+
+.footer {
+    display: flex;
+    column-gap: 10px;
+    justify-content: space-between;
+}

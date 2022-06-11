@@ -21,6 +21,7 @@ import ApiClient from '../../_services';
 import UserProvider from '../user/UserProvider';
 import TournamentsList from '../tournaments/list/TournamentsList';
 import Tournament from '../tournaments/Tournament';
+import UsersList from '../admin/UsersList';
 
 const apiClient = new ApiClient();
 
@@ -47,6 +48,7 @@ export default function App() {
                                 <Route index element={<TournamentsList />} />
                                 <Route path=":id" element={<Tournament />} />
                             </Route>
+                            <Route path="admin" element={<UsersList />} />
                         </Routes>
                         <Footer />
                     </BrowserRouter>

@@ -23,4 +23,16 @@ export default class UsersService extends Service {
     changePassword(pass: PasswordChange): Promise<{}> {
         return super.post(`${Config.HOST}/api/users/change-password`, pass);
     };
+
+    getUsers(): Promise<User[]> {
+        return super.get(`${Config.HOST}/api/users/admin/all`);
+    };
+
+    addUserRole(id: number, role: string[]): Promise<User> {
+        return super.post(`${Config.HOST}/api/users/admin/add-role/${id}`, role);
+    };
+
+    removeUserRole(id: number, role: string[]): Promise<User> {
+        return super.post(`${Config.HOST}/api/users/admin/remove-role/${id}`, role);
+    };
 }

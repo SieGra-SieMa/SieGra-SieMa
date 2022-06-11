@@ -1,0 +1,43 @@
+root {
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+}
+
+.list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.item {
+    padding: 20px;
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: opacity .3s;
+}
+
+.item:hover {
+    opacity: 0.75;
+}
+
+.item:active {
+    opacity: 0.5;
+}
+
+.selected {
+    border: 2px solid var(--accent-color);
+}
+
+.loader {
+    padding: 50px;
+    margin: auto;
+}
+
+@media all and (max-width: 720px) {
+    .list {
+        grid-template-columns: 1fr;
+    }
+}

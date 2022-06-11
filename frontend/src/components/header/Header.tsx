@@ -37,6 +37,11 @@ export default function Header() {
                                 O nas
                             </Link>
                         </li>
+                        <li>
+                            <Link to="/admin">
+                                Admin Panel
+                            </Link>
+                        </li>
                         {session ? (
                             <>
                                 <li>

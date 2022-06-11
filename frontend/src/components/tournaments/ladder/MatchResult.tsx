@@ -101,7 +101,7 @@ export default function MatchResult({ match, confirm }: MatchResultProps) {
             <GuardComponent roles={[ROLES.Admin, ROLES.Emp]}>
                 {!disabled && (<>
                     <VerticalSpacing size={15} />
-                    <Button value='Save' />
+                    <Button value='Zapisz' disabled={teamAwayScore === teamHomeScore} />
                 </>)}
             </GuardComponent>
         </form>

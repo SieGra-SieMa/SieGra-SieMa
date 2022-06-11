@@ -41,5 +41,18 @@ namespace SieGraSieMa.Controllers
             await _generateService.SeedBasicData();
             return Ok();
         }
+        [HttpPost("TestAsync")]
+        public async Task<IActionResult> TestAsync()
+        {
+            var t1 =_generateService.TestAsync();
+            var t2 = _generateService.TestAsync();
+            var t3 = _generateService.TestAsync();
+            var t4 = _generateService.TestAsync();
+            await t1;
+            await t2;
+            await t3;
+            await t4;
+            return Ok();
+        }
     }
 }

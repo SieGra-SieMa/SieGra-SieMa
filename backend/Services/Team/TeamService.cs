@@ -27,6 +27,7 @@ namespace SieGraSieMa.Services
         Task DeleteUserFromTeam(int userId, int captainId, int teamId);
         Task SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId);
         Task DeleteTeam(int teamId, int captainId);
+        Task<IEnumerable<GetTeamsDTO>> GetAllTeams();
         Task DeleteTeamByAdmin(int teamId);
 
     }
@@ -357,6 +358,34 @@ namespace SieGraSieMa.Services
             }
             else _SieGraSieMaContext.Teams.Remove(team);
             await _SieGraSieMaContext.SaveChangesAsync();
+        }
+        public async Task<IEnumerable<GetTeamsDTO>> GetAllTeams()
+        {
+            return await _SieGraSieMaContext.Teams.Include(e => e.Players).ThenInclude(e => e.User)
+                .Select(t => new GetTeamsDTO
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    CaptainId = t.CaptainId.Value,
+                    Captain = new PlayerDTO
+                    {
+                        Id = t.CaptainId.Value,
+                        Name = t.Captain.Name,
+                        Surname = t.Captain.Surname
+
+                    },
+                    Code = t.Code,
+                    ProfilePicture = t.Medium == null ? null : t.Medium.Url,
+                    Players = t.Players
+                        .Select(p => new PlayerDTO
+                        {
+                            Id = p.UserId,
+                            Name = p.User.Name,
+                            Surname = p.User.Surname
+
+                        }).ToList()
+                })
+                .ToListAsync();
         }
     }
 }

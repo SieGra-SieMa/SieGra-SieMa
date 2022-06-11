@@ -16,8 +16,7 @@ namespace SieGraSieMa.Models
         {
         }
 
-        public SieGraSieMaContext(DbContextOptions<SieGraSieMaContext> options)
-            : base(options)
+        public SieGraSieMaContext(DbContextOptions<SieGraSieMaContext> options) : base(options)
         {
             //this.Configuration.LazyLoadingEnabled = false;
         }

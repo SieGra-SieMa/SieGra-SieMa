@@ -41,7 +41,7 @@ export type Session = {
 
 export enum TeamPaidEnum {
     All, Paid, Unpaid
-}
+};
 
 export type FacebookFeed = {
     data: {
@@ -61,7 +61,7 @@ export type FacebookFeed = {
 
 export type NewsFeedProps = {
     fetchLimit?: string;
-}
+};
 
 export type PostProps = {
     feed: FacebookFeed | null,

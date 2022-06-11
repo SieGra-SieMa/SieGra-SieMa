@@ -12,12 +12,13 @@ import { Album as AlbumType } from '../../_lib/_types/tournament';
 import Confirm from '../modal/Confirm';
 import { Media } from '../../_lib/_types/response';
 import EditAlbum from './EditAlbum';
+import VerticalSpacing from '../spacing/VerticalSpacing';
 
 export default function Album() {
 
     const navigate = useNavigate();
 
-    const { albumsService } = useApi();
+    const { albumsService, mediaService } = useApi();
 
     const { albumId } = useParams<{ albumId: string }>();
 
@@ -33,13 +34,25 @@ export default function Album() {
     useEffect(() => {
         albumsService.getAlbumWithMedia(albumId!)
             .then((data) => {
-                setAlbum(data)
+                setAlbum(data);
             });
     }, [albumId, albumsService]);
 
     const removeAlbum = () => {
         albumsService.deleteAlbum(albumId!)
             .then(() => navigate('..'));
+    }
+
+    const deleteMedia = () => {
+        if (!selectedImage || !album) return;
+        mediaService.deleteMedia(selectedImage.id)
+            .then(() => {
+                setAlbum({
+                    ...album,
+                    mediaList: album.mediaList.filter((media) => media.id !== selectedImage.id)
+                });
+                setSelectedImage(null)
+            });
     }
 
     return (
@@ -138,7 +151,16 @@ export default function Album() {
                     isClose
                     title=''
                 >
-                    <img alt='' className={styles.image} src={`${Config.HOST}${selectedImage.url}`} />
+                    <>
+                        <img alt='' className={styles.image} src={`${Config.HOST}${selectedImage.url}`} />
+                        <GuardComponent roles={[ROLES.Emp, ROLES.Admin]}>
+                            <VerticalSpacing size={30} />
+                            <Button
+                                value='Usuń'
+                                style={ButtonStyle.Red}
+                                onClick={deleteMedia} />
+                        </GuardComponent>
+                    </>
                 </Modal>
             )}
         </>

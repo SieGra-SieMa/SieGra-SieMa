@@ -50,20 +50,12 @@ export default function App() {
                                 <Route index element={<TournamentsList />} />
                                 <Route path=":id" element={<Tournament />} />
 
-                                <Route path=":id/albums">
-                                    <Route index element={<AlbumsList />} />
-                                    <Route path=":albumId" element={<Album />} />
-                                </Route>
-
                                 <Route path="gallery">
                                     <Route index element={<GalleryList />} />
-
                                     <Route path=":id/albums">
                                         <Route index element={<AlbumsList />} />
                                         <Route path=":albumId" element={<Album />} />
                                     </Route>
-
-
                                 </Route>
                             </Route>
 

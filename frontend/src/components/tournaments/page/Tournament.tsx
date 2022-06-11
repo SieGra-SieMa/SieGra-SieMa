@@ -278,19 +278,19 @@ export default function Tournament() {
                 </>)
             )}
 
-            {(tournament) && (<>
+            {(tournament && tournament.albums.length > 0) && (<>
                 <h4>Albumy</h4>
                 <ul className={styles.albums}>
                     {tournament.albums.map((album, index) => (
                         <li
                             key={index}
                             className={styles.item}
-                            style={album.mediaList[0] ? {
-                                backgroundImage: `url(${Config.HOST}${album.mediaList[0].url})`,
+                            style={album.profilePicture ? {
+                                backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
                             } : undefined}
-                            onClick={() => navigate(`${album.id}`)}>
+                            onClick={() => navigate(`../gallery/${id!}/albums/${album.id}`)}>
                             <div className={styles.box}>
-                                {(!album.mediaList[0]) && <ImageIcon className={styles.picture} />}
+                                {(!album.profilePicture) && <ImageIcon className={styles.picture} />}
                                 <h4>
                                     {album.name}
                                 </h4>

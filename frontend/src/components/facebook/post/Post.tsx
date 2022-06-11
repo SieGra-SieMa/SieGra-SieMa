@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { FacebookPost } from "../../../_lib/types";
 import styles from "./Post.module.css";
 
@@ -24,9 +23,9 @@ export default function Post(post: FacebookPost) {
 							</p>
 							<p>{post.message.slice(0, 200)}</p>
 						</div>
-						<Link className="slide-button" to={post.permalink_url}>
+						<a className="slide-button" href={post.permalink_url} target="_blank" rel="noreferrer">
 							Zobacz więcej
-						</Link>
+						</a>
 					</div>
 				</div>
 			</li>

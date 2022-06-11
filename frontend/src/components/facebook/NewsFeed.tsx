@@ -28,6 +28,7 @@ export default function NewsFeed(props?: NewsFeedProps) {
 			{ fields: "full_picture,message,created_time,permalink_url" },
 			function (response: FacebookFeed) {
 				setFeed(response);
+                console.log(feed);
 			}
 		);
 	}, [fetchLimit]);
@@ -36,7 +37,7 @@ export default function NewsFeed(props?: NewsFeedProps) {
         setTranslation(slide * -100);
         setNextVisible(slide === parseInt(fetchLimit) - 1 ? false : true);
 		setPrevVisible(slide === 0 ? false : true);
-    }, [slide]);
+    }, [slide, fetchLimit]);
 
 	function nextSlide() {
 		let nextSlide = slide + 1;
@@ -65,7 +66,7 @@ export default function NewsFeed(props?: NewsFeedProps) {
 								full_picture={post.full_picture}
 								id={post.id}
 								message={post.message}
-								permalink_url={post.created_time}
+								permalink_url={post.permalink_url}
 							/>
 						))}
 				</ul>

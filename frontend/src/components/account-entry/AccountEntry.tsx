@@ -32,7 +32,7 @@ export default function AccountEntry() {
 				<Button
 					className={styles.button}
 					onClick={toggleLogin}
-					value={"Nie masz konta?"}
+					value={"Masz już konto?"}
 					style={ButtonStyle.DarkBlue}
 				/>
 			</div>

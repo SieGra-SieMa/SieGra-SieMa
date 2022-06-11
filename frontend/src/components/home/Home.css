@@ -14,8 +14,12 @@
 }
 
 .hero-section,
-.news-section {
+.dreamteam-section{
 	background-color: var(--main-color);
+}
+
+.news-section {
+	background-color: var(--secondary-color);
 }
 
 .hero-container {

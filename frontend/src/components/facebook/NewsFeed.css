@@ -1,7 +1,3 @@
-.news-section {
-	background-color: var(--secondary-color);
-}
-
 .news-list {
 	display: flex;
 	justify-content: flex-start;

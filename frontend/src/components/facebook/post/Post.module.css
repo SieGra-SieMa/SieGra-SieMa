@@ -1,6 +1,6 @@
 .item {
 	width: 100vw;
-    height: 100%;
+	height: 100%;
 	display: flex;
 	align-items: center;
 	align-self: center;
@@ -9,7 +9,7 @@
 
 .post {
 	width: 60vw;
-    min-width: 400px;
+	min-width: 400px;
 	display: grid;
 	grid-template-columns: 1fr 2fr;
 	background-color: var(--main-color);
@@ -72,7 +72,7 @@
 @media all and (max-width: 960px) {
 	.post {
 		grid-template-columns: auto;
-        grid-template-rows: 1fr .5fr;
-        text-align: center;
+		grid-template-rows: 1fr 0.5fr;
+		text-align: center;
 	}
 }

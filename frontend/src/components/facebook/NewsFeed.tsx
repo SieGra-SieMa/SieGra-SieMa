@@ -28,20 +28,19 @@ export default function NewsFeed(props?: NewsFeedProps) {
 			{ fields: "full_picture,message,created_time,permalink_url" },
 			function (response: FacebookFeed) {
 				setFeed(response);
-                console.log(feed);
 			}
 		);
 	}, [fetchLimit]);
 
-    useEffect(() => {
-        setTranslation(slide * -100);
-        setNextVisible(slide === parseInt(fetchLimit) - 1 ? false : true);
+	useEffect(() => {
+		setTranslation(slide * -100);
+		setNextVisible(slide === parseInt(fetchLimit) - 1 ? false : true);
 		setPrevVisible(slide === 0 ? false : true);
-    }, [slide, fetchLimit]);
+	}, [slide, fetchLimit]);
 
 	function nextSlide() {
 		let nextSlide = slide + 1;
-		setSlide(nextVisible? nextSlide : slide);
+		setSlide(nextVisible ? nextSlide : slide);
 	}
 	function prevSlide() {
 		let prevSlide = slide - 1;
@@ -50,50 +49,47 @@ export default function NewsFeed(props?: NewsFeedProps) {
 
 	return (
 		<>
-			<div className="news-section">
-				<h2>News feed</h2>
-				<ul
-					className="news-list"
-					style={{
-						width: `${parseInt(fetchLimit) * 100}vw`,
-						transform: `translateX(${translation}vw)`,
-					}}
+			<ul
+				className="news-list"
+				style={{
+					width: `${parseInt(fetchLimit) * 100}vw`,
+					transform: `translateX(${translation}vw)`,
+				}}
+			>
+				{feed &&
+					feed.data.map((post, index) => (
+						<Post
+							created_time={post.created_time}
+							full_picture={post.full_picture}
+							id={post.id}
+							message={post.message}
+							permalink_url={post.permalink_url}
+						/>
+					))}
+			</ul>
+			<div className="navigation-buttons">
+				<button
+					onClick={prevSlide}
+					className={
+						prevVisible
+							? "navigation-button navigation-button-visible"
+							: "navigation-button navigation-button-hidden"
+					}
+					id="prev-button"
 				>
-					{feed &&
-						feed.data.map((post, index) => (
-							<Post
-								created_time={post.created_time}
-								full_picture={post.full_picture}
-								id={post.id}
-								message={post.message}
-								permalink_url={post.permalink_url}
-							/>
-						))}
-				</ul>
-				<div className="navigation-buttons">
-					<button
-						onClick={prevSlide}
-						className={
-							prevVisible
-								? "navigation-button navigation-button-visible"
-								: "navigation-button navigation-button-hidden"
-						}
-						id="prev-button"
-					>
-						<NavigateBeforeIcon fontSize="large" />
-					</button>
-					<button
-						onClick={nextSlide}
-						className={
-							nextVisible
-								? "navigation-button navigation-button-visible"
-								: "navigation-button navigation-button-hidden"
-						}
-						id="next-button"
-					>
-						<NavigateNextIcon fontSize="large" />
-					</button>
-				</div>
+					<NavigateBeforeIcon fontSize="large" />
+				</button>
+				<button
+					onClick={nextSlide}
+					className={
+						nextVisible
+							? "navigation-button navigation-button-visible"
+							: "navigation-button navigation-button-hidden"
+					}
+					id="next-button"
+				>
+					<NavigateNextIcon fontSize="large" />
+				</button>
 			</div>
 		</>
 	);

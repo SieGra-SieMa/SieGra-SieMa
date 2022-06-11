@@ -59,6 +59,10 @@
 	margin-bottom: 10px;
 }
 
+.button {
+    display: none;
+}
+
 @media all and (max-width: 1000px) {
 	#divider {
 		display: none;
@@ -69,6 +73,7 @@
     }
 
 	.button {
+		display: block;
 		scale: 50%;
 	}
 

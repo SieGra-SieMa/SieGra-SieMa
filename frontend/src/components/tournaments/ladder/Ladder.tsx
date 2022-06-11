@@ -26,7 +26,8 @@ export default function Ladder({ ladder }: LadderProps) {
         return phases;
     }, [ladder]);
 
-    return (
+    return (<>
+        <h4>Drabinka</h4>
         <Swiper
             slidesPerView={'auto'}
             className={styles.ladder}
@@ -37,5 +38,5 @@ export default function Ladder({ ladder }: LadderProps) {
                 </SwiperSlide>
             ))}
         </Swiper>
-    );
+    </>);
 };

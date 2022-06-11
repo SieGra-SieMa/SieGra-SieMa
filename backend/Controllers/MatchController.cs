@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.MatchDTO;
+using SieGraSieMa.Models;
 using SieGraSieMa.Services;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
@@ -16,9 +19,12 @@ namespace SieGraSieMa.Controllers
     {
         private readonly ITournamentsService _tournamentsService;
 
-        public MatchController(ITournamentsService tournamentService)
+        private readonly UserManager<User> _userManager;
+
+        public MatchController(ITournamentsService tournamentService, UserManager<User> userManager)
         {
             _tournamentsService = tournamentService;
+            _userManager = userManager;
         }
 
         [Authorize(Policy = "OnlyEmployeesAuthenticated")]
@@ -27,8 +33,13 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var response=await _tournamentsService.InsertMatchResult(matchResultDTO);
-                return Ok(response);
+                await _tournamentsService.InsertMatchResult(matchResultDTO);
+
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
+                var tournament = await _tournamentsService.GetTournament(matchResultDTO.TournamentId, user);
+
+                return Ok(tournament);
             }
             catch (Exception e)
             {

@@ -1,6 +1,7 @@
 import Config from '../config.json';
+import { TeamPaidEnum } from '../_lib/types';
 import { Media, Message } from '../_lib/_types/response';
-import { Tournament, TournamentListItem, TournamentRequest } from '../_lib/_types/tournament';
+import { TeamInTournament, Tournament, TournamentListItem, TournamentRequest } from '../_lib/_types/tournament';
 import Service from './service';
 
 export default class TournamentsService extends Service {
@@ -13,7 +14,7 @@ export default class TournamentsService extends Service {
         return super.post(`${Config.HOST}/api/tournaments`, tournament);
     };
 
-    getTournamentbyId(id: string): Promise<Tournament> {
+    getTournamentById(id: string): Promise<Tournament> {
         return super.get(`${Config.HOST}/api/tournaments/${id}`);
     };
 
@@ -30,15 +31,35 @@ export default class TournamentsService extends Service {
         return super.post(`${Config.HOST}/api/tournaments/${id}/add-profile-photo`, data, headers, false);
     };
 
-    getTeamsInTournament(id: string): Promise<Tournament[]> {
-        return super.get(`${Config.HOST}/api/tournaments/${id}/teams?filter=0`);
+    getTeamsInTournament(id: string): Promise<TeamInTournament[]> {
+        return super.get(`${Config.HOST}/api/tournaments/${id}/teams?filter=${TeamPaidEnum.All}`);
     };
 
     addTeam(tournamentId: number, teamId: number): Promise<any> {
-        return super.post(`${Config.HOST}/api/Tournaments/${tournamentId}/teams/join?teamId=${teamId}`, {});
+        return super.post(`${Config.HOST}/api/tournaments/${tournamentId}/teams/join?teamId=${teamId}`, {});
     };
 
     removeTeam(tournamentId: string, teamId: number): Promise<any> {
-        return super.post(`${Config.HOST}/api/Tournaments/${tournamentId}/teams/leave?teamId=${teamId}`, {});
+        return super.post(`${Config.HOST}/api/tournaments/${tournamentId}/teams/leave?teamId=${teamId}`, {});
     };
+
+    setTeamStatus(tournamentId: number, teamId: number, status: TeamPaidEnum): Promise<TeamInTournament> {
+        return super.patch(`${Config.HOST}/api/tournaments/${tournamentId}/teams/${teamId}?filter=${status}`, {});
+    };
+
+    prepareTournamnet(id: string): Promise<Tournament> {
+        return super.post(`${Config.HOST}/api/tournaments/${id}/prepareTournament`, {});
+    }
+
+    resetTournament(id: string): Promise<Tournament> {
+        return super.post(`${Config.HOST}/api/tournaments/${id}/resetTournament`, {});
+    }
+
+    composeLadder(id: string): Promise<Tournament> {
+        return super.post(`${Config.HOST}/api/tournaments/${id}/composeLadder`, {});
+    }
+
+    resetLadder(id: string): Promise<Tournament> {
+        return super.post(`${Config.HOST}/api/tournaments/${id}/resetLadder`, {});
+    }
 }

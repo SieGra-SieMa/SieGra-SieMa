@@ -426,7 +426,13 @@ namespace SieGraSieMa.Controllers
             {
                 var result = await _albumService.CreateAlbum(new Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = id });
 
-                return Ok();
+                return Ok(new ResponseAlbumWithoutMediaDTO
+                {
+                    Id = result.Id,
+                    Name = result.Name,
+                    CreateDate = result.CreateDate,
+                    ProfilePicture = result.MediumInAlbums.Select(m => m.Medium.Url).FirstOrDefault()
+                });
             }
             catch (Exception e)
             {

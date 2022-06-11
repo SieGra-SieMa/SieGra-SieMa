@@ -28,6 +28,7 @@ namespace SieGraSieMa.Controllers
             _mediaService = mediaService;
         }
 
+        [AllowAnonymous]
         [HttpGet()]
         public async Task<IActionResult> GetAlbums()
         {
@@ -36,6 +37,7 @@ namespace SieGraSieMa.Controllers
             return Ok(albums);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAlbum(int id)
         {

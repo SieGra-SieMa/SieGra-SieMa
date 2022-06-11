@@ -1,7 +1,7 @@
 import Config from '../config.json';
 import { TeamPaidEnum } from '../_lib/types';
 import { Media, Message } from '../_lib/_types/response';
-import { TeamInTournament, Tournament, TournamentListItem, TournamentRequest } from '../_lib/_types/tournament';
+import { Album, AlbumRequest, TeamInTournament, Tournament, TournamentListItem, TournamentRequest, TournamentWithAlbums } from '../_lib/_types/tournament';
 import Service from './service';
 
 export default class TournamentsService extends Service {
@@ -25,6 +25,14 @@ export default class TournamentsService extends Service {
     deleteTournament(id: string): Promise<Message> {
         return super.del(`${Config.HOST}/api/tournaments/${id}`);
     };
+
+    getTournamentWithAlbums(id: string): Promise<TournamentWithAlbums> {
+        return super.get(`${Config.HOST}/api/tournaments/${id}/albums`);
+    };
+
+    addAlbum(id: string, album: AlbumRequest): Promise<Album> {
+        return super.post(`${Config.HOST}/api/tournaments/${id}/albums`, album);
+    }
 
     addProfilePhoto(id: number, data: FormData): Promise<Media[]> {
         const headers = new Headers();

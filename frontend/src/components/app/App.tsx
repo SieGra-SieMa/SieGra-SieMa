@@ -7,7 +7,9 @@ import {
 import Header from '../header/Header';
 import Footer from '../footer/Footer';
 import Home from '../home/Home';
-import AboutUs from '../about-us/AboutUs'
+import AboutUs from '../about-us/AboutUs';
+import GalleryList from '../gallery/GalleryList';
+import AlbumsList from '../gallery/AlbumsList';
 import GuardRoute from '../guard-components/GuardRoute';
 import AccountPage from '../account-page/AccountPage';
 import AuthProvider from '../auth/AuthProvider';
@@ -21,6 +23,7 @@ import ApiClient from '../../_services';
 import UserProvider from '../user/UserProvider';
 import TournamentsList from '../tournaments/list/TournamentsList';
 import Tournament from '../tournaments/page/Tournament';
+import Album from '../gallery/Album';
 
 const apiClient = new ApiClient();
 
@@ -46,7 +49,16 @@ export default function App() {
                             <Route path="tournaments" element={<Tournaments />}>
                                 <Route index element={<TournamentsList />} />
                                 <Route path=":id" element={<Tournament />} />
+
+                                <Route path="gallery">
+                                    <Route index element={<GalleryList />} />
+                                    <Route path=":id/albums">
+                                        <Route index element={<AlbumsList />} />
+                                        <Route path=":albumId" element={<Album />} />
+                                    </Route>
+                                </Route>
                             </Route>
+
                         </Routes>
                         <Footer />
                     </BrowserRouter>

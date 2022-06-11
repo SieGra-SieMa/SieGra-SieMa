@@ -123,11 +123,7 @@ namespace SieGraSieMa.Services
                         Name = a.Name,
                         CreateDate = a.CreateDate,
                         TournamentId = a.TournamentId,
-                        MediaList = a.MediumInAlbums.Select(m => new ResponseMediumDTO
-                        {
-                            Id = m.MediumId,
-                            Url = m.Medium.Url
-                        })
+                        ProfilePicture = a.MediumInAlbums.Select(m => m.Medium.Url).First()
                     }),
                     Groups = t.Groups.Where(g => g.Ladder == false && g.TeamInGroups.Count > 1).Select(g => new ResponseGroupDTO
                     {

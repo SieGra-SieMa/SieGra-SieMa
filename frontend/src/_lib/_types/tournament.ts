@@ -1,4 +1,5 @@
 import { Team } from "../types";
+import { Media } from "./response";
 
 export type TournamentRequest = {
     name: string;
@@ -16,6 +17,7 @@ export type TournamentListItem = TournamentRequest & {
 };
 
 export type Tournament = TournamentListItem & {
+    albums: Album[]
     groups: Group[];
     ladder: Phase[];
 };
@@ -71,3 +73,26 @@ export type TeamInTournament = {
     teamProfileUrl: string;
     paid: boolean;
 }
+
+export type TournamentWithAlbums = {
+    id: number;
+    name: string;
+    startDate: string,
+    endDate: string,
+    description: string;
+    address: string;
+    profilePicture?: string;
+    albums: Album[];
+};
+
+export type AlbumRequest = {
+    name: string;
+    createDate: string;
+}
+
+export type Album = AlbumRequest & {
+    id: number;
+    tournamentId: string;
+    profilePicture?: string;
+    mediaList: Media[];
+};

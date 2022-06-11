@@ -102,7 +102,9 @@ export default class Service {
         options.headers = headers;
 
         return fetch(url, options)
-            .then(res => this.handleResponse<T>(res, options));
+            .then(res => this.handleResponse<T>(res, options))
+            .catch((e) => Promise.reject(e.message || e));
+
     }
 
     get<T>(url: string, headers?: Headers): Promise<T> {

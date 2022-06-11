@@ -3,5 +3,6 @@ export type Message = {
 }
 
 export type Media = {
+    id: number;
     url: string;
 }

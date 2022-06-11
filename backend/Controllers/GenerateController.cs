@@ -31,7 +31,7 @@ namespace SieGraSieMa.Controllers
         public async Task<IActionResult> GenerateMatchResults([FromBody] GenerateMatchResultDTO generateMatchResultDTO)
         {
             var matches = await _generateService.GenerateMatchResults(generateMatchResultDTO.tournamentId, generateMatchResultDTO.phase);
-            if (matches == null) return NotFound();
+            if (!matches) return Ok("No matches found");
 
             return Ok(matches);
         }

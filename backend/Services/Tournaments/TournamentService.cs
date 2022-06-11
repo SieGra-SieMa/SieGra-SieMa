@@ -698,6 +698,7 @@ namespace SieGraSieMa.Services
 
         public async Task<GetMatchDTO> InsertMatchResult(MatchResultDTO DTO)
         {
+            if(DTO.Phase!=0 && DTO.HomeTeamPoints==DTO.AwayTeamPoints) throw new Exception("Ivalid score: cannot be a tie");
             var match = _SieGraSieMaContext.Matches.Find(DTO.TournamentId, DTO.Phase, DTO.MatchId);
             _SieGraSieMaContext.Entry(match).Reference(m => m.TeamHome).Load();
             _SieGraSieMaContext.Entry(match).Reference(m => m.TeamAway).Load();

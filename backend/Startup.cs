@@ -59,7 +59,7 @@ namespace SieGraSieMa
                         ClockSkew = TimeSpan.Zero,
                         ValidIssuer = "SieGraSieMa",
                         ValidAudience = "Users",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["ConnectionStrings:SecretKey"]))
                     };
                 });
 
@@ -119,7 +119,7 @@ namespace SieGraSieMa
                 options.AddPolicy("AllowSpecificOrigin",
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:3000");
+                        builder.AllowAnyOrigin();
                         builder.AllowAnyHeader();
                         builder.AllowAnyMethod();
                     });
@@ -183,7 +183,7 @@ namespace SieGraSieMa
 
             app.UseStaticFiles();
 
-            if (env.IsDevelopment())
+            //if (env.IsDevelopment())
             {
                 //app.UseDeveloperExceptionPage();
                 app.UseSwagger();

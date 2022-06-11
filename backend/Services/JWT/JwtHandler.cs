@@ -26,7 +26,7 @@ namespace SieGraSieMa.Services
 
         private SigningCredentials GetSigningCredentials()
         {
-            var key = Encoding.UTF8.GetBytes(_configuration["SecretKey"]);
+            var key = Encoding.UTF8.GetBytes(_configuration["ConnectionStrings:SecretKey"]);
             var secret = new SymmetricSecurityKey(key);
 
             return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);

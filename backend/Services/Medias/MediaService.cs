@@ -14,8 +14,8 @@ namespace SieGraSieMa.Services
 {
     public interface IMediaService
     {
-        public Task<IEnumerable<Medium>> GetMedia();
-        public Task<Medium> GetMedia(int id);
+        public Task<IEnumerable<ResponseMediumDTO>> GetMedia();
+        public Task<ResponseMediumDTO> GetMedia(int id);
         public Task<List<ResponseMediumDTO>> CreateMedia(int? albumId, int? id, IFormFile[] files, MediaTypeEnum mediaType);
         public enum MediaTypeEnum { photos, teams, tournaments }
         /*public Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO);*/
@@ -107,15 +107,17 @@ namespace SieGraSieMa.Services
             return false;
         }
 
-        public async Task<IEnumerable<Medium>> GetMedia()
+        public async Task<IEnumerable<ResponseMediumDTO>> GetMedia()
         {
-            var media = await _SieGraSieMaContext.Media.Include(m => m.MediumInAlbums).ThenInclude(m => m.Album).ToListAsync();
+            var media = await _SieGraSieMaContext.Media.Select(m => new ResponseMediumDTO { Id = m.Id, Url = m.Url }).ToListAsync();
+            //var media = await _SieGraSieMaContext.Media.Include(m => m.MediumInAlbums).ThenInclude(m => m.Album).ToListAsync();
             return media;
         }
 
-        public async Task<Medium> GetMedia(int id)
+        public async Task<ResponseMediumDTO> GetMedia(int id)
         {
-            var media = await _SieGraSieMaContext.Media.Include(m => m.MediumInAlbums).ThenInclude(m=>m.Album).SingleOrDefaultAsync(m => m.Id == id);
+            var media = await _SieGraSieMaContext.Media.Select(m => new ResponseMediumDTO { Id = m.Id, Url = m.Url }).SingleOrDefaultAsync(m => m.Id == id);
+            //var media = await _SieGraSieMaContext.Media.Include(m => m.MediumInAlbums).ThenInclude(m => m.Album).SingleOrDefaultAsync(m => m.Id == id);
             return media;
         }
 
@@ -167,7 +169,5 @@ namespace SieGraSieMa.Services
 
             return true;
         }
-
-
     }
 }

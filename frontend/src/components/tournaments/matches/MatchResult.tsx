@@ -8,10 +8,10 @@ import GuardComponent from '../../guard-components/GuardComponent';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
 import { useUser } from '../../user/UserContext';
 import { useTournament } from '../TournamentContext';
-import styles from './Ladder.module.css';
+import styles from './Matches.module.css';
 
 type MatchResultProps = {
-    match: MatchType;
+    match: MatchType & { groupId: number };
     confirm: () => void;
 };
 
@@ -51,35 +51,13 @@ export default function MatchResult({ match, confirm }: MatchResultProps) {
             });
     };
 
-    const isEditable = () => {
-        if (match.phase === tournament!.ladder.length - 2) {
-            const thirdPlacePhase = tournament!.ladder[match.phase];
-            const thirdPlaceMatch = thirdPlacePhase.matches[0];
-            const finalPhase = tournament!.ladder[match.phase + 1];
-            const finalMatch = finalPhase.matches[0];
-            return (
-                finalMatch.teamAwayScore === null &&
-                finalMatch.teamHomeScore === null &&
-                thirdPlaceMatch.teamAwayScore === null &&
-                thirdPlaceMatch.teamHomeScore === null
-            );
-        } else if (match.phase < tournament!.ladder.length - 2) {
-            const nextPhase = tournament!.ladder[match.phase];
-            const nextMatch = nextPhase.matches[Math.ceil(match.matchId / 2) - 1];
-            return (
-                nextMatch.teamAwayScore === null &&
-                nextMatch.teamHomeScore === null
-            );
-        }
-        return true;
-    }
-
     const disabled = (
-        user &&
+        tournament && user &&
         match.teamAway &&
         match.teamHome &&
-        user.roles.some((role) => [ROLES.Emp, ROLES.Admin].includes(role)) &&
-        isEditable()
+        (!tournament.ladder[0].matches[0].teamAway) &&
+        (!tournament.ladder[0].matches[0].teamHome) &&
+        user.roles.some((role) => [ROLES.Emp, ROLES.Admin].includes(role))
     ) ? false : true;
 
     return (

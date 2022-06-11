@@ -1,12 +1,13 @@
 import { Session, Tokens } from "../_lib/types";
-import { HOST } from '../config.json';
+import Config from '../config.json';
+import jwtDecode, { JwtPayload } from "jwt-decode";
 
-export interface AuthState {
+export type AuthState = {
     logout: () => void;
     update: (session: Session) => void;
 }
 
-interface WSResponse {
+type WSResponse = {
     error: string;
     data: any;
 }
@@ -21,43 +22,18 @@ export default class Service {
         update: (session: Session) => {
             localStorage.setItem('session', JSON.stringify(session));
         },
-    }
+    };
+    static refresh: Promise<Tokens> | null = null;
 
     handleResponse<T>(
         response: Response,
         options: RequestInit,
-        retry: boolean = false
     ): Promise<T> {
         return response.text().then(async (text) => {
             if ([401, 403].indexOf(response.status) !== -1) {
                 if (this.session === null) {
                     this.authState.logout();
                     return Promise.reject(response.statusText);
-                }
-
-                if (response.url !== `${HOST}/api/accounts/refresh-token` && !retry) {
-                    const refreshToken = this.session.refreshToken;
-                    if (refreshToken) {
-                        try {
-                            const tokens = await this.post<Tokens>(
-                                `${HOST}/api/accounts/refresh-token`,
-                                { refreshToken }
-                            );
-                            this.authState.update({
-                                ...tokens,
-                                accessToken: tokens.token,
-                            } as Session);
-                            (options.headers as Headers).set(
-                                'Authorization',
-                                `Bearer ${tokens.token}`
-                            );
-                            return await fetch(response.url, options)
-                                .then(res => this.handleResponse<T>(res, options, true));
-                        } catch (e) {
-                            this.authState.logout();
-                            return Promise.reject(e);
-                        }
-                    }
                 }
             }
 
@@ -79,14 +55,41 @@ export default class Service {
         });
     }
 
-    api<T>(url: string, options: RequestInit): Promise<T> {
+    async api<T>(url: string, options: RequestInit): Promise<T> {
         let headers = options.headers;
         if (!headers) {
             headers = new Headers();
             headers.set('Content-Type', 'application/json');
         }
-        if (this.session) {
-            const token = this.session.accessToken;
+
+        if (this.session && url !== `${Config.HOST}/api/accounts/refresh-token`) {
+            let token = this.session.accessToken;
+            const { exp } = jwtDecode<JwtPayload>(token);
+            if ((((exp ?? 0) * 1000) - (3 * 60 * 1000)) < Date.now()) {
+                const refreshToken = this.session.refreshToken;
+                try {
+                    if (!Service.refresh) {
+                        Service.refresh = this.post<Tokens>(
+                            `${Config.HOST}/api/accounts/refresh-token`,
+                            { refreshToken }
+                        );
+                        const tokens = await Service.refresh;
+                        token = tokens.token;
+                        this.authState.update({
+                            ...tokens,
+                            accessToken: tokens.token,
+                        } as Session);
+                    } else {
+                        const tokens = await Service.refresh;
+                        token = tokens.token;
+                    }
+                } catch (e) {
+                    return Promise.reject(e);
+                } finally {
+                    Service.refresh = null;
+                }
+            }
+
             if (headers instanceof Headers) {
                 headers.set('Authorization', `Bearer ${token}`);
             } else if (headers instanceof Array) {
@@ -95,7 +98,9 @@ export default class Service {
                 headers['Authorization'] = `Bearer ${token}`;
             }
         }
+
         options.headers = headers;
+
         return fetch(url, options)
             .then(res => this.handleResponse<T>(res, options))
             .catch((e) => Promise.reject(e.message || e));

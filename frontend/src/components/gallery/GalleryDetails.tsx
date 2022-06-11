@@ -32,7 +32,7 @@ export default function GalleryDetails() {
     const getMedia = (id: number) => {
         albumsService.getAlbumWithMedia(String(id))
             .then(data => { setAlbum(data) });
-            setAlbumId(String(id));
+        setAlbumId(String(id));
     }
 
     const onRemove = (id: number) => {
@@ -58,12 +58,10 @@ export default function GalleryDetails() {
                 <Button
                     value='Add photo'
                     onClick={() => setAddPhoto(true)}
-                    style={ButtonStyle.Orange}
                 />
                 <Button
                     value='Add album'
                     onClick={() => setAddAlbum(true)}
-                    style={ButtonStyle.Orange}
                 />
             </div>
             <ul className={styles.content}>
@@ -77,7 +75,6 @@ export default function GalleryDetails() {
                                 <Button
                                     value='DeleteAlbum album'
                                     onClick={() => deleteAlbum(album.id!)}
-                                    style={ButtonStyle.Orange}
                                 />
                             </div>
                         </div>

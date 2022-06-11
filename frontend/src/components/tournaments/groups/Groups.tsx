@@ -7,7 +7,8 @@ type GroupsProps = {
 
 export default function Groups({ groups }: GroupsProps) {
 
-    return (
+    return (<>
+        <h4>Grupy</h4>
         <ul className={styles.groups}>
             {groups.filter((group) => !group.ladder)
                 .map((group) => (
@@ -49,5 +50,5 @@ export default function Groups({ groups }: GroupsProps) {
                     </li>
                 ))}
         </ul>
-    );
+    </>);
 };

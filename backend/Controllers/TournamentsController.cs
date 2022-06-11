@@ -226,13 +226,18 @@ namespace SieGraSieMa.Controllers
         }
 
         [Authorize(Policy = "OnlyEmployeesAuthenticated")]
-        [HttpPost("{id}/groups/composeLadder")]
+        [HttpPost("{id}/composeLadder")]
         public async Task<IActionResult> ComposeLadderGroups(int id)
         {
             try
             {
-                var response = await _tournamentsService.ComposeLadderGroups(id);
-                return Ok();
+                await _tournamentsService.ComposeLadderGroups(id);
+
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
+                var tournament = await _tournamentsService.GetTournament(id, user);
+
+                return Ok(tournament);
             }
             catch (Exception e)
             {
@@ -324,7 +329,12 @@ namespace SieGraSieMa.Controllers
                 var groups = await _tournamentsService.CreateBasicGroups(id);
                 var teams = await _tournamentsService.AddTeamsToGroup(id);
                 var matches = await _tournamentsService.CreateMatchTemplates(id);
-                return Ok();
+
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
+                var tournament = await _tournamentsService.GetTournament(id, user);
+
+                return Ok(tournament);
             }
             catch (Exception e)
             {
@@ -338,8 +348,13 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var result = await _tournamentsService.ResetTournament(id);
-                return Ok(result);
+                await _tournamentsService.ResetTournament(id);
+
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
+                var tournament = await _tournamentsService.GetTournament(id, user);
+
+                return Ok(tournament);
             }
             catch (Exception e)
             {

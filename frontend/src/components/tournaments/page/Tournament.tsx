@@ -17,6 +17,8 @@ import Groups from '../groups/Groups';
 import TeamAssign from '../list/TeamAssign';
 import { useAuth } from '../../auth/AuthContext';
 import { SyncLoader } from 'react-spinners';
+import TeamsList from '../teams/TeamsList';
+import Matches from '../matches/Matches';
 
 export default function Tournament() {
 
@@ -37,12 +39,18 @@ export default function Tournament() {
             ladder: [],
         };
     });
+    const [isLoading, setIsLoading] = useState(true);
     const [teams, setTeams] = useState<TeamInTournament[] | null>(null);
+    const [isPrepare, setIsPrepare] = useState(false);
+    const [isReset, setIsReset] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [isDelete, setIsDelete] = useState(false);
     const [isPicture, setIsPicture] = useState(false);
     const [isTeamAssign, setIsTeamAssign] = useState(false);
     const [isTeamRemove, setIsTeamRemove] = useState(false);
+    const [isLadderCompose, setIsLadderCompose] = useState(false);
+    const [isLadderReset, setIsLadderReset] = useState(false);
+
 
     const isOpen = tournament?.isOpen;
 
@@ -51,9 +59,10 @@ export default function Tournament() {
     }, []);
 
     useEffect(() => {
-        tournamentsService.getTournamentbyId(id!)
+        tournamentsService.getTournamentById(id!)
             .then((data) => {
                 setTournament(data);
+                setIsLoading(false);
             });
     }, [id, tournamentsService]);
 
@@ -66,6 +75,22 @@ export default function Tournament() {
             });
 
     }, [isOpen, id, tournamentsService]);
+
+    const prepareTournament = () => {
+        tournamentsService.prepareTournamnet(id!)
+            .then((data) => {
+                setTournament(data);
+                setIsPrepare(false);
+            })
+    };
+
+    const resetTournament = () => {
+        tournamentsService.resetTournament(id!)
+            .then((data) => {
+                setTournament(data);
+                setIsReset(false);
+            })
+    };
 
     const editTournament = useCallback((updatedTournament: TournamentType) => {
         setTournament(updatedTournament);
@@ -117,16 +142,46 @@ export default function Tournament() {
                     data[index] = updatedTournament;
                     setTournaments(data);
                 }
+                setTeams(teams && teams.filter((team) => team.teamId !== teamId));
             });
     };
 
+    const composeLadder = () => {
+        tournamentsService.composeLadder(id!)
+            .then((data) => {
+                setTournament(data);
+                setIsLadderCompose(false);
+            });
+    }
+
+    const resetLadder = () => {
+        tournamentsService.resetLadder(id!)
+            .then((data) => {
+                setTournament(data);
+                setIsLadderReset(false);
+            });
+    }
+
     return (
-        <TournamentContext.Provider value={{ tournament, setTournament }}>
+        <TournamentContext.Provider value={{ tournament, setTournament, teams, setTeams }}>
             <div className={styles.top}>
                 <Button value='Wstecz' onClick={() => navigate('..')} />
                 {tournament && (
                     <GuardComponent roles={[ROLES.Admin]}>
                         <div className={styles.adminControls}>
+                            {(isOpen) ? (
+                                <Button
+                                    value='Przygotuj turniej'
+                                    onClick={() => setIsPrepare(true)}
+                                    style={ButtonStyle.Yellow}
+                                />
+                            ) : (
+                                <Button
+                                    value='Resetuj turniej'
+                                    onClick={() => setIsReset(true)}
+                                    style={ButtonStyle.Red}
+                                />
+                            )}
                             <Button
                                 value='Edytuj zdjęcie profilowe'
                                 onClick={() => setIsPicture(true)}
@@ -178,37 +233,76 @@ export default function Tournament() {
                     </div>
                 </div>
             )}
+            {(isOpen) && (<TeamsList teams={teams} />)}
+            {(!isOpen) && (
+                isLoading ? (
+                    <div className={styles.loader}>
+                        <SyncLoader loading={true} size={20} margin={20} color='#fff' />
+                    </div>
+                ) : (<>
+                    {(tournament && !isOpen) && (<>
+                        {tournament.groups.length > 1 && (<>
+                            <Groups groups={tournament.groups} />
+                            <Matches groups={tournament.groups} />
+                        </>)}
+                        {tournament.ladder[0]?.matches[0].teamHome && <Ladder ladder={tournament.ladder} />}
+                        <GuardComponent roles={[ROLES.Emp, ROLES.Admin]}>
+                            {tournament && tournament.groups.map((group) =>
+                                group.matches?.map(e =>
+                                    e.teamAwayScore !== null && e.teamHomeScore !== null).every(e => e)
+                                ?? true)
+                                .every(e => e) && (
+                                    tournament.ladder[0]?.matches[0].teamHome ? (
+                                        <div className={styles.ladderControls}>
+                                            <Button
+                                                value='Zresetuj drabinke'
+                                                onClick={() => setIsLadderReset(true)}
+                                                style={ButtonStyle.Red}
+                                            />
+                                        </div>
 
-
-            {(isOpen) && (
-                <>
-                    <h4>Zespoły</h4>
-                    {(teams) ? teams.map((team) => (
-                        <div key={team.teamId}>
-                            <p>
-                                {team.teamName}
-                            </p>
-                        </div>
-                    )) : (
-                        <div className={styles.loader}>
-                            <SyncLoader loading={true} size={20} margin={20} color='#fff' />
-                        </div>
-                    )}
-                </>
+                                    ) : (
+                                        <div className={styles.ladderControls}>
+                                            <Button
+                                                value='Zbuduj drabinke'
+                                                onClick={() => setIsLadderCompose(true)}
+                                            />
+                                        </div>
+                                    )
+                                )}
+                        </GuardComponent>
+                    </>)}
+                </>)
             )}
 
-
-            {(tournament && !isOpen) && (
-                <>
-                    <h2>Drabinka</h2>
-                    {tournament && tournament.ladder && <Ladder ladder={tournament.ladder} />}
-                    <h2>Grupy</h2>
-                    {tournament && tournament.groups && <Groups groups={tournament.groups} />}
-                    <h2>Mecze</h2>
-                </>
+            {(tournament && isPrepare) && (
+                <Modal
+                    isClose
+                    close={() => setIsPrepare(false)}
+                    title={`Czy na pewno chcesz przygotuj turniej`}
+                >
+                    <Confirm
+                        cancel={() => setIsPrepare(false)}
+                        confirm={prepareTournament}
+                        label='Potwierdź'
+                        style={ButtonStyle.Yellow}
+                    />
+                </Modal>
             )}
-
-
+            {(tournament && isReset) && (
+                <Modal
+                    isClose
+                    close={() => setIsReset(false)}
+                    title={`Czy na pewno chcesz zresetować turniej?"`}
+                >
+                    <Confirm
+                        cancel={() => setIsReset(false)}
+                        confirm={resetTournament}
+                        label='Potwierdź'
+                        style={ButtonStyle.Red}
+                    />
+                </Modal>
+            )}
             {(tournament && isEdit) && (
                 <Modal
                     isClose
@@ -224,12 +318,13 @@ export default function Tournament() {
             {(tournament && isDelete) && (
                 <Modal
                     close={() => setIsDelete(false)}
-                    title={`Czy na pewno chcesz usunąć turniej - "${tournament.name}"?`}
+                    title={`Czy na pewno chcesz usunąć turniej"?`}
                 >
                     <Confirm
                         cancel={() => setIsDelete(false)}
                         confirm={deleteTournament}
                         label='Usuń'
+                        style={ButtonStyle.Red}
                     />
                 </Modal>
             )}
@@ -237,7 +332,7 @@ export default function Tournament() {
                 <Modal
                     isClose
                     close={() => setIsPicture(false)}
-                    title={`Edytuj zdjęcie profilowe - "${tournament.name}"`}
+                    title={`Edytuj zdjęcie profilowe"`}
                 >
                     <EditTournamentPicture
                         tournament={tournament}
@@ -263,7 +358,7 @@ export default function Tournament() {
             )}
             {(session && tournament && tournament.isOpen && !tournament.team && isTeamAssign) && (
                 <Modal
-                    title={`Zapisz zespół - "${tournament.name}"`}
+                    title={`Zapisz zespół"`}
                     isClose
                     close={() => setIsTeamAssign(false)}
                 >
@@ -284,6 +379,18 @@ export default function Tournament() {
                                 data[index] = updatedTournament;
                                 setTournaments(data);
                             }
+                            const newTeams: TeamInTournament[] = [];
+                            if (teams) {
+                                newTeams.push(...teams);
+                            }
+                            newTeams.push({
+                                teamId: team.id,
+                                tournamentId: tournament.id,
+                                teamName: team.name,
+                                teamProfileUrl: team.profilePicture,
+                                paid: false
+                            });
+                            setTeams(newTeams);
                         }}
                     />
                 </Modal>
@@ -297,7 +404,36 @@ export default function Tournament() {
                     <Confirm
                         confirm={removeTeam(tournament.team.id)}
                         cancel={() => setIsTeamRemove(false)}
-                        label={'Usuń'}
+                        label='Usuń'
+                        style={ButtonStyle.Red}
+                    />
+                </Modal>
+            )}
+            {(isLadderCompose) && (
+                <Modal
+                    title={`Czy na pewno chcesz zbudować drabinke?`}
+                    isClose
+                    close={() => setIsLadderCompose(false)}
+                >
+                    <Confirm
+                        confirm={composeLadder}
+                        cancel={() => setIsLadderCompose(false)}
+                        label='Potwierdź'
+                        style={ButtonStyle.Yellow}
+                    />
+                </Modal>
+            )}
+            {(isLadderReset) && (
+                <Modal
+                    title={`Czy na pewno chcesz zresetować drabinke?`}
+                    isClose
+                    close={() => setIsLadderReset(false)}
+                >
+                    <Confirm
+                        confirm={resetLadder}
+                        cancel={() => setIsLadderReset(false)}
+                        label='Potwierdź'
+                        style={ButtonStyle.Red}
                     />
                 </Modal>
             )}

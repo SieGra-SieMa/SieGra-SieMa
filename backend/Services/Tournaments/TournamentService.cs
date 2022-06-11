@@ -30,14 +30,14 @@ namespace SieGraSieMa.Services
         public enum TeamPaidEnum { All, Paid, Unpaid }
         public Task<int> CheckCountTeamsInTournament(int tournamentId, TeamPaidEnum teamsEnum);//do wyświetlania ilości teamów zapisanych i opłaconych w turnieju
         public Task<IEnumerable<ResponseTeamInTournamentDTO>> GetTeamsInTournament(int tournamentId, TeamPaidEnum teamsEnum);
-        public Task<TeamInTournament> SetPaidStatusTeamsInTournament(int tournamentId, int teamId, TeamPaidEnum teamsEnum);
+        public Task<ResponseTeamInTournamentDTO> SetPaidStatusTeamsInTournament(int tournamentId, int teamId, TeamPaidEnum teamsEnum);
         public Task<int> CheckCountGroupsInTournament(int tournamentId);//do sprawdzenia czy zostały już utworzone grupy dla turnieju
         public Task<IEnumerable<Team>> CheckCorectnessOfTeams(int tournamentId);//do sprawdzenia czy w turnieju nie ma zapisanej jednej osoby w dwóch różnych teamach
         public Task<IEnumerable<Group>> CreateBasicGroups(int tournamentId);//do stworzenia grup fazy grupowej
         public Task<IEnumerable<Group>> CreateLadderGroups(int tournamentId, int groupCount);//do stworzenia grup fazy drabinkowej
         public Task<IEnumerable<TeamInGroup>> AddTeamsToGroup(int tournamentId);//do dodania zespołów do grup turniejowych
         public Task<IEnumerable<Match>> CreateMatchTemplates(int tournamentId);//do stworzenia wszystkich meczy oraz "teamInGroup" dla wszystkich meczy drabinkowych
-        public Task<bool> ResetTournament(int id);//do usunięcia grup i meczy gdyby trzeba było je zresetować
+        public Task ResetTournament(int id);//do usunięcia grup i meczy gdyby trzeba było je zresetować
         public Task<IEnumerable<GetMatchDTO>> ComposeLadderGroups(int tournamentId);//zbiera najlepsze teamy i wypełnia nimi drabinkę
         public Task<bool> CheckUsersInTeam(List<User> users, int tournamentId);
         public Task<bool> AddTeamToTournament(int teamId, int tournamentId);
@@ -264,14 +264,22 @@ namespace SieGraSieMa.Services
             };
             return await query.ToListAsync();
         }
-        public async Task<TeamInTournament> SetPaidStatusTeamsInTournament(int tournamentId, int teamId, TeamPaidEnum teamsEnum = TeamPaidEnum.Unpaid)
+        public async Task<ResponseTeamInTournamentDTO> SetPaidStatusTeamsInTournament(int tournamentId, int teamId, TeamPaidEnum teamsEnum = TeamPaidEnum.Unpaid)
         {
-            var tit = await _SieGraSieMaContext.TeamInTournaments.FindAsync(tournamentId, teamId);
+            var tit = await _SieGraSieMaContext.TeamInTournaments.Include(t => t.Team).ThenInclude(tt => tt.Medium)
+                .Where(t => t.TournamentId == tournamentId && t.TeamId == teamId).FirstOrDefaultAsync();
             if (tit == null) throw new Exception("No team with this id is signed up for tournament with this id");
             tit.Paid = teamsEnum == TeamPaidEnum.Paid;
             _SieGraSieMaContext.Update(tit);
             await _SieGraSieMaContext.SaveChangesAsync();
-            return tit;
+            return new ResponseTeamInTournamentDTO()
+            {
+                TeamId = tit.TeamId,
+                TournamentId = tit.TournamentId,
+                Paid = tit.Paid,
+                TeamName = tit.Team.Name,
+                TeamProfileUrl = tit.Team.Medium?.Url
+            };
         }
 
         public async Task<int> CheckCountGroupsInTournament(int tournamentId)
@@ -593,7 +601,7 @@ namespace SieGraSieMa.Services
                                 }).ToList();
             return result;
         }
-        public async Task<bool> ResetTournament(int tournamentId)
+        public async Task ResetTournament(int tournamentId)
         {
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(tournamentId);
             if (tournament == null) throw new Exception("Tournament with this id not found");
@@ -601,8 +609,9 @@ namespace SieGraSieMa.Services
             var groups = await _SieGraSieMaContext.Groups.Include(g => g.TeamInGroups).Where(g => g.TournamentId == tournamentId).ToListAsync();
             groups.ToList().ForEach(g => _SieGraSieMaContext.RemoveRange(g.TeamInGroups));
             _SieGraSieMaContext.RemoveRange(groups);
-            return await _SieGraSieMaContext.SaveChangesAsync() > 0;
+            await _SieGraSieMaContext.SaveChangesAsync();
         }
+
         public async Task<bool> CheckUsersInTeam(List<User> users, int tournamentId)
         {
             var emptyList = await _SieGraSieMaContext.Tournaments.Where(t => t.Id == tournamentId)
@@ -748,13 +757,13 @@ namespace SieGraSieMa.Services
                     _SieGraSieMaContext.Matches.Update(nextMatch);
                 }
             }
-            else
-            {
-                if (!(await _SieGraSieMaContext.Matches.Where(m => m.TournamentId == DTO.TournamentId && m.Phase == 0 && m.TeamAwayScore == null && m.TeamHomeScore == null).AnyAsync()))
-                {
-                    await ComposeLadderGroups(DTO.TournamentId);
-                }
-            }
+            //else
+            //{
+            //    if (!(await _SieGraSieMaContext.Matches.Where(m => m.TournamentId == DTO.TournamentId && m.Phase == 0 && m.TeamAwayScore == null && m.TeamHomeScore == null).AnyAsync()))
+            //    {
+            //        await ComposeLadderGroups(DTO.TournamentId);
+            //    }
+            //}
             await _SieGraSieMaContext.SaveChangesAsync();
             return new GetMatchDTO()
             {

@@ -2,12 +2,18 @@ import Button, { ButtonStyle } from '../form/Button';
 import styles from './Confirm.module.css';
 
 type ConfirmProps = {
-    cancel: () => void,
-    confirm: () => void,
-    label: string
+    cancel: () => void;
+    confirm: () => void;
+    label: string;
+    style: ButtonStyle;
 };
 
-export default function Confirm({ cancel, confirm, label }: ConfirmProps) {
+export default function Confirm({
+    cancel,
+    confirm,
+    label,
+    style,
+}: ConfirmProps) {
     return (
         <div className={styles.root}>
             <Button
@@ -18,8 +24,8 @@ export default function Confirm({ cancel, confirm, label }: ConfirmProps) {
             <Button
                 value={label}
                 onClick={confirm}
-                style={ButtonStyle.Red}
+                style={style}
             />
         </div>
     );
-}
+};

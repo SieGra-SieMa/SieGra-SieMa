@@ -84,7 +84,6 @@ export default class Service {
                         token = tokens.token;
                     }
                 } catch (e) {
-                    this.authState.logout();
                     return Promise.reject(e);
                 } finally {
                     Service.refresh = null;

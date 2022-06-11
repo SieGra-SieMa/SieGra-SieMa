@@ -44,5 +44,11 @@
 .loader {
     display: flex;
     justify-content: center;
-    padding: 50px;
+    padding: 150px 50px;
+}
+
+.ladderControls {
+    display: flex;
+    justify-content: center;
+    padding: 25px 0;
 }

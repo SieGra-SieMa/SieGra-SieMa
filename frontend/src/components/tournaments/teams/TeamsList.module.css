@@ -1,0 +1,21 @@
+.root {
+    display: flex;
+    gap: 25px;
+}
+
+.root>div {
+    flex: 1 1;
+}
+
+.teams {
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+    padding: 10px 0;
+}
+
+.team {
+    padding: 10px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

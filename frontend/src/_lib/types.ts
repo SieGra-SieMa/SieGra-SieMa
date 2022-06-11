@@ -20,6 +20,7 @@ export type Team = {
     name: string;
     code: string;
     captainId: number;
+    profilePicture: string;
     players: Player[];
 };
 
@@ -37,3 +38,7 @@ export type Session = {
     accessToken: string;
     refreshToken: string;
 };
+
+export enum TeamPaidEnum {
+    All, Paid, Unpaid
+}

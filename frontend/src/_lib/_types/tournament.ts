@@ -35,6 +35,10 @@ export type Group = {
         goalConceded: number;
         points: number;
     }[];
+
+    matches: (Match & {
+        groupId: number;
+    })[] | null;
 };
 
 export type Match = {

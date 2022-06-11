@@ -32,21 +32,21 @@ export default function NewsFeed(props?: NewsFeedProps) {
 		);
 	}, [fetchLimit]);
 
-	async function nextSlide() {
-		let nextSlide = slide + 1;
-		setNextVisible(slide === parseInt(fetchLimit) - 1 ? false : true);
-		setPrevVisible(slide === 0 ? false : true);
-		setSlide(nextSlide);
-		setTranslation(slide * -100);
-		console.log("next" + nextSlide);
-	}
-	async function prevSlide() {
-		let prevSlide = slide - 1;
-		setSlide(prevSlide);
+    useEffect(() => {
+        setTranslation(slide * -100);
         setNextVisible(slide === parseInt(fetchLimit) - 1 ? false : true);
 		setPrevVisible(slide === 0 ? false : true);
-		setTranslation(slide * -100);
-		console.log("prev" + prevSlide);
+    }, [slide]);
+
+	function nextSlide() {
+		let nextSlide = slide + 1;
+		setSlide(nextVisible? nextSlide : slide);
+		console.log("next" + slide);
+	}
+	function prevSlide() {
+		let prevSlide = slide - 1;
+		setSlide(prevVisible ? prevSlide : slide);
+		console.log("prev " + slide);
 	}
 
 	return (

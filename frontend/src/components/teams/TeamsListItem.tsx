@@ -65,7 +65,6 @@ export default function TeamsListItem({ team }: TeamsListItemProp) {
                 <Button
                     value='Dodaj gracza'
                     onClick={() => setIsAdd(true)}
-                    style={ButtonStyle.Orange}
                 />
                 {user && team.captainId === user.id && (
                     <Button
@@ -121,6 +120,7 @@ export default function TeamsListItem({ team }: TeamsListItemProp) {
                         cancel={() => setIsLeave(false)}
                         confirm={() => leaveTeam()}
                         label='Opuścić'
+                        style={ButtonStyle.Red}
                     />
                 </Modal>
             )}

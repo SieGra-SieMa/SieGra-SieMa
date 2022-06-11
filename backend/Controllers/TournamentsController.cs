@@ -226,13 +226,38 @@ namespace SieGraSieMa.Controllers
         }
 
         [Authorize(Policy = "OnlyEmployeesAuthenticated")]
-        [HttpPost("{id}/groups/composeLadder")]
+        [HttpPost("{id}/composeLadder")]
         public async Task<IActionResult> ComposeLadderGroups(int id)
         {
             try
             {
-                var response = await _tournamentsService.ComposeLadderGroups(id);
-                return Ok();
+                await _tournamentsService.ComposeLadderGroups(id);
+
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
+                var tournament = await _tournamentsService.GetTournament(id, user);
+
+                return Ok(tournament);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [Authorize(Policy = "OnlyEmployeesAuthenticated")]
+        [HttpPost("{id}/resetLadder")]
+        public async Task<IActionResult> ResetLadder(int id)
+        {
+            try
+            {
+                await _tournamentsService.ResetLadder(id);
+
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
+                var tournament = await _tournamentsService.GetTournament(id, user);
+
+                return Ok(tournament);
             }
             catch (Exception e)
             {
@@ -258,8 +283,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                //var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
-                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Address = tournament.Address };
+                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
                 var result = await _tournamentsService.CreateTournament(newTournament);
                 return Ok(result);
             }
@@ -276,8 +300,7 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                //var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
-                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Address = tournament.Address };
+                var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
 
                 var result = await _tournamentsService.UpdateTournament(id, newTournament);
 
@@ -326,7 +349,12 @@ namespace SieGraSieMa.Controllers
                 var groups = await _tournamentsService.CreateBasicGroups(id);
                 var teams = await _tournamentsService.AddTeamsToGroup(id);
                 var matches = await _tournamentsService.CreateMatchTemplates(id);
-                return Ok();
+
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
+                var tournament = await _tournamentsService.GetTournament(id, user);
+
+                return Ok(tournament);
             }
             catch (Exception e)
             {
@@ -340,8 +368,13 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
-                var result = await _tournamentsService.ResetTournament(id);
-                return Ok(result);
+                await _tournamentsService.ResetTournament(id);
+
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
+                var tournament = await _tournamentsService.GetTournament(id, user);
+
+                return Ok(tournament);
             }
             catch (Exception e)
             {
@@ -393,7 +426,13 @@ namespace SieGraSieMa.Controllers
             {
                 var result = await _albumService.CreateAlbum(new Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = id });
 
-                return Ok();
+                return Ok(new ResponseAlbumWithoutMediaDTO
+                {
+                    Id = result.Id,
+                    Name = result.Name,
+                    CreateDate = result.CreateDate,
+                    ProfilePicture = result.MediumInAlbums.Select(m => m.Medium.Url).FirstOrDefault()
+                });
             }
             catch (Exception e)
             {

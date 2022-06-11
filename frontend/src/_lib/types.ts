@@ -16,11 +16,12 @@ export type Account = User & {
 export type Player = User;
 
 export type Team = {
-	id: number;
-	name: string;
-	code: string;
-	captainId: number;
-	players: Player[];
+    id: number;
+    name: string;
+    code: string;
+    captainId: number;
+    profilePicture: string;
+    players: Player[];
 };
 
 export type UserDetailsRequest = {
@@ -54,4 +55,6 @@ export type FacebookFeed = {
 			before: string;
 		};
 	};
+export enum TeamPaidEnum {
+    All, Paid, Unpaid
 };

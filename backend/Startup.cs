@@ -59,7 +59,7 @@ namespace SieGraSieMa
                         ClockSkew = TimeSpan.Zero,
                         ValidIssuer = "SieGraSieMa",
                         ValidAudience = "Users",
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["SecretKey"]))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["ConnectionStrings:SecretKey"]))
                     };
                 });
 
@@ -88,17 +88,16 @@ namespace SieGraSieMa
             services.AddSingleton(mapper);
             services.AddSingleton<IActionResultExecutor<ObjectResult>, ResponseResultExecutor>();
 
-            //services.AddTransient<IAccountService, AccountService>();
-            services.AddTransient<IAccountIdentityServices, AccountService>();
-            services.AddTransient<IUserService, UserService>();
-            services.AddTransient<ITeamService, TeamService>();
-            services.AddTransient<IGenerateService, GenerateService>();
-            services.AddTransient<IEmailService, EmailService>();
-            services.AddTransient<IAlbumService, AlbumService>();
-            services.AddTransient<ITournamentsService, TournamentService>();
-            services.AddTransient<IContestService, ContestService>();
-            services.AddTransient<IMediaService, MediaService>();
-            services.AddTransient<ILogService, LogService>();
+            services.AddScoped<IAccountIdentityServices, AccountService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITeamService, TeamService>();
+            services.AddScoped<IGenerateService, GenerateService>();
+            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IAlbumService, AlbumService>();
+            services.AddScoped<ITournamentsService, TournamentService>();
+            services.AddScoped<IContestService, ContestService>();
+            services.AddScoped<IMediaService, MediaService>();
+            services.AddScoped<ILogService, LogService>();
             services.AddIdentity<User, IdentityRole<int>>(options =>
                 {
                     options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(125);
@@ -183,7 +182,7 @@ namespace SieGraSieMa
 
             app.UseStaticFiles();
 
-            if (env.IsDevelopment())
+            //if (env.IsDevelopment())
             {
                 //app.UseDeveloperExceptionPage();
                 app.UseSwagger();

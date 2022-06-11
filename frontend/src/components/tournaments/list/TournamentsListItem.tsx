@@ -43,7 +43,8 @@ export default function TournamentsListItem({
                     </p>
                     <p>
                         {tournament.address}
-                        <br />
+                    </p>
+                    <p>
                         {tournament.description}
                     </p>
                 </div>

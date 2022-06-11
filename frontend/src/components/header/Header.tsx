@@ -36,6 +36,11 @@ export default function Header() {
 						<li>
 							<NavLink className="navlink" to="/tournaments">Turnieje</NavLink>
 						</li>
+            <li>
+              <NavLink className="navlink" to="/tournaments/gallery">
+                Galeria
+              </Link>
+            </li>
 						<li>
 							<NavLink className="navlink" to="/about-us">O nas</NavLink>
 						</li>

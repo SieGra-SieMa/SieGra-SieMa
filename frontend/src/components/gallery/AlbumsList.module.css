@@ -4,55 +4,9 @@
     justify-content: space-between;
 }
 
-.adminControls {
-    display: flex;
-    column-gap: 25px;
-}
-
 .title {
     width: fit-content;
 }
-
-.dates {
-    color: var(--accent-color);
-    font-weight: bold;
-    padding: 0;
-}
-
-.line {
-    color: #fff;
-}
-
-.details {
-    display: flex;
-    flex-direction: column;
-    row-gap: 25px;
-    align-items: flex-start;
-    margin-top: 25px;
-}
-
-.team {
-    background-color: var(--secondary-color);
-    padding: 25px;
-    border-radius: 5px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-}
-
-.loader {
-    display: flex;
-    justify-content: center;
-    padding: 150px 50px;
-}
-
-.ladderControls {
-    display: flex;
-    justify-content: center;
-    padding: 25px 0;
-}
-
 
 .albums {
     display: grid;
@@ -105,4 +59,16 @@
     grid-template-columns: 1fr 1fr 1fr 1fr;
     gap: 25px;
     margin: 20px 0;
+}
+
+.adminControls {
+    display: flex;
+    column-gap: 25px;
+}
+
+.image {
+    max-width: min(800px, 100%);
+    max-height: min(500px, 100%);
+    display: block;
+    margin: auto;
 }

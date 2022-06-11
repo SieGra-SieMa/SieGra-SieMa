@@ -31,7 +31,7 @@ namespace SieGraSieMa.Controllers
         public async Task<IActionResult> GenerateMatchResults([FromBody] GenerateMatchResultDTO generateMatchResultDTO)
         {
             var matches = await _generateService.GenerateMatchResults(generateMatchResultDTO.tournamentId, generateMatchResultDTO.phase);
-            if (matches == null) return NotFound();
+            if (!matches) return Ok("No matches found");
 
             return Ok(matches);
         }
@@ -39,6 +39,19 @@ namespace SieGraSieMa.Controllers
         public async Task<IActionResult> ResetDatabase()
         {
             await _generateService.SeedBasicData();
+            return Ok();
+        }
+        [HttpPost("TestAsync")]
+        public async Task<IActionResult> TestAsync()
+        {
+            var t1 =_generateService.TestAsync();
+            var t2 = _generateService.TestAsync();
+            var t3 = _generateService.TestAsync();
+            var t4 = _generateService.TestAsync();
+            await t1;
+            await t2;
+            await t3;
+            await t4;
             return Ok();
         }
     }

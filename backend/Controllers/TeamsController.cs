@@ -259,5 +259,21 @@ namespace SieGraSieMa.Controllers
 
         }
 
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
+        [HttpGet("admin")]
+        public async Task<IActionResult> GetAllTeamsByAdmin()
+        {
+            try
+            {
+                var result = await _teamService.GetAllTeams();
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
+
     }
 }

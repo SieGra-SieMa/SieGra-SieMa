@@ -11,7 +11,7 @@ namespace SieGraSieMa.Services
     public interface IGenerateService
     {
         public Task<IEnumerable<Team>> GenerateTeams(int amount, int tournamentId);
-        public Task<IEnumerable<Match>> GenerateMatchResults(int tournamentId, int phase);
+        public Task<bool> GenerateMatchResults(int tournamentId, int phase);
         public Task SeedBasicData();
     }
     public class GenerateService : IGenerateService
@@ -90,7 +90,7 @@ namespace SieGraSieMa.Services
                                                     .ToArray());
         }
 
-        public async Task<IEnumerable<Match>> GenerateMatchResults(int tournamentId, int phase)
+        public async Task<bool> GenerateMatchResults(int tournamentId, int phase)
         {
             Random r = new();
             List<Match> Matches = _context.Matches
@@ -104,8 +104,8 @@ namespace SieGraSieMa.Services
                 do m.TeamAwayScore = r.Next(0, 40); while (m.TeamHomeScore == m.TeamAwayScore);
             });
             _context.Matches.UpdateRange(Matches);
-            await _context.SaveChangesAsync();
-            return Matches.Select(m => new Match { TournamentId = m.TournamentId, Phase = m.Phase, MatchId = m.MatchId });
+            return await _context.SaveChangesAsync() > 0;
+            //return Matches.Select(m => new Match { TournamentId = m.TournamentId, Phase = m.Phase, MatchId = m.MatchId });
         }
 
         public async Task SeedBasicData()

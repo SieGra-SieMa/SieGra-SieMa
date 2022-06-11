@@ -1,3 +1,4 @@
+import Config from '../../../config.json';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ROLES } from '../../../_lib/roles';
@@ -19,6 +20,7 @@ import { useAuth } from '../../auth/AuthContext';
 import { SyncLoader } from 'react-spinners';
 import TeamsList from '../teams/TeamsList';
 import Matches from '../matches/Matches';
+import ImageIcon from '@mui/icons-material/Image';
 
 export default function Tournament() {
 
@@ -35,6 +37,7 @@ export default function Tournament() {
         if (!tournament) return null;
         return {
             ...tournament,
+            albums: [],
             groups: [],
             ladder: [],
         };
@@ -275,6 +278,28 @@ export default function Tournament() {
                 </>)
             )}
 
+            {(tournament) && (<>
+                <h4>Albumy</h4>
+                <ul className={styles.albums}>
+                    {tournament.albums.map((album, index) => (
+                        <li
+                            key={index}
+                            className={styles.item}
+                            style={album.mediaList[0] ? {
+                                backgroundImage: `url(${Config.HOST}${album.mediaList[0].url})`,
+                            } : undefined}
+                            onClick={() => navigate(`${album.id}`)}>
+                            <div className={styles.box}>
+                                {(!album.mediaList[0]) && <ImageIcon className={styles.picture} />}
+                                <h4>
+                                    {album.name}
+                                </h4>
+                            </div>
+                        </li>
+                    ))}
+                </ul>
+            </>)}
+
             {(tournament && isPrepare) && (
                 <Modal
                     isClose
@@ -318,7 +343,7 @@ export default function Tournament() {
             {(tournament && isDelete) && (
                 <Modal
                     close={() => setIsDelete(false)}
-                    title={`Czy na pewno chcesz usunąć turniej"?`}
+                    title='Czy na pewno chcesz usunąć turniej"?'
                 >
                     <Confirm
                         cancel={() => setIsDelete(false)}
@@ -332,7 +357,7 @@ export default function Tournament() {
                 <Modal
                     isClose
                     close={() => setIsPicture(false)}
-                    title={`Edytuj zdjęcie profilowe"`}
+                    title='Edytuj zdjęcie profilowe'
                 >
                     <EditTournamentPicture
                         tournament={tournament}
@@ -358,7 +383,7 @@ export default function Tournament() {
             )}
             {(session && tournament && tournament.isOpen && !tournament.team && isTeamAssign) && (
                 <Modal
-                    title={`Zapisz zespół"`}
+                    title='Zapisz zespół'
                     isClose
                     close={() => setIsTeamAssign(false)}
                 >
@@ -397,7 +422,7 @@ export default function Tournament() {
             )}
             {(session && tournament && tournament.isOpen && tournament.team && isTeamRemove) && (
                 <Modal
-                    title={`Czy na pewno chcesz usunąć zaspół - "${tournament.team.name}"?`}
+                    title={`Czy na pewno chcesz usunąć zespół - "${tournament.team.name}"?`}
                     isClose
                     close={() => setIsTeamRemove(false)}
                 >

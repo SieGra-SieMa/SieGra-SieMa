@@ -1,31 +1,35 @@
+import Config from '../../config.json';
 import { useNavigate } from 'react-router-dom';
 import { useTournaments } from '../tournaments/TournamentsContext';
+import ImageIcon from '@mui/icons-material/Image';
 import styles from './GalleryList.module.css';
 
 export default function GalleryList() {
 
     const navigate = useNavigate();
 
-    const { tournaments, setTournaments } = useTournaments();
+    const { tournaments } = useTournaments();
 
     return (
         <>
             <div className={styles.top}>
-                <h2 className={styles.title}>Gallery</h2>
+                <h1>Galeria</h1>
             </div>
             <ul className={styles.content}>
-                {tournaments && tournaments?.map((tournament, index) => (
-                    <li key={index} className={styles.item} onClick={() => navigate(`${tournament.id!}`)} style={{ backgroundImage: `url(http://localhost:5000/${tournament.profilePicture})`, backgroundPosition: 'center', backgroundSize: 'cover', backgroundRepeat: 'no-repeat' }}>
-                        <div className={styles.header} >
-                            <div className={styles.dates}>
-                                {new Date(tournament.startDate).toLocaleDateString()}
-                            </div>
-                            <h3>
+                {tournaments && tournaments.map((tournament, index) => (
+                    <li
+                        key={index}
+                        className={styles.item}
+                        onClick={() => navigate(`${tournament.id!}/albums`)}
+                        style={tournament.profilePicture ? {
+                            backgroundImage: `url(${Config.HOST}${tournament.profilePicture})`
+                        } : undefined}
+                    >
+                        <div className={styles.box}>
+                            {(!tournament.profilePicture) && <ImageIcon className={styles.picture} />}
+                            <h4>
                                 {tournament.name}
-                            </h3>
-                            <div className={styles.dates}>
-                                {new Date(tournament.endDate).toLocaleDateString()}
-                            </div>
+                            </h4>
                         </div>
                     </li>
                 ))}

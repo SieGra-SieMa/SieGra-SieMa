@@ -92,11 +92,14 @@ namespace SieGraSieMa.Services
             var medium = await _SieGraSieMaContext.Media.FindAsync(id);
             if (medium == null)
                 throw new Exception("Medium not found!");
+
  
             _SieGraSieMaContext.Media.Remove(medium);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
             {
-                var absPath = $@"wwwroot\{medium.Url}";
+                var separator = OperatingSystem.IsWindows() ? '\\' : '/';
+
+                var absPath = $@"wwwroot{separator}{medium.Url}";
                 {
                     System.IO.File.Delete(absPath);
                 }

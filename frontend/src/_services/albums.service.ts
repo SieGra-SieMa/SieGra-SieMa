@@ -1,5 +1,6 @@
 import Config from '../config.json';
-import { Album, Media } from '../_lib/types';
+import { Media } from '../_lib/_types/response';
+import { Album } from '../_lib/_types/tournament';
 import Service from './service';
 
 export default class AlbumsService extends Service {
@@ -12,9 +13,12 @@ export default class AlbumsService extends Service {
         return super.del(`${Config.HOST}/api/albums/${id}`);
     }
 
-    addMediaToAlbum(id: string, data: FormData): Promise<Media> {
+    addMediaToAlbum(id: number, data: FormData): Promise<Media> {
         const headers = new Headers();
         return super.post(`${Config.HOST}/api/albums/${id}/media`, data, headers, false);
     }
 
+    editAlbum(id: number, album: Album): Promise<Album> {
+        return super.patch(`${Config.HOST}/api/albums/${id}`, album);
+    }
 }

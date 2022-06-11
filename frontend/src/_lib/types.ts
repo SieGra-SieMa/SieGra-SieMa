@@ -39,32 +39,6 @@ export type Session = {
     refreshToken: string;
 };
 
-export interface TournamentWithAlbums {
-    id?: number;
-    name: string;
-    startDate: string,
-    endDate: string,
-    description: string;
-    address: string;
-    profilePicture?: string;
-
-    albums?: Album[];
-};
-
-export interface Album {
-    id?: number;
-    name: string;
-    createDate: string;
-    profilePicture?: string;
-    mediaList?: Media[];
-    tournamentId?: string;
-};
-
-export interface Media {
-    id?: number;
-    url: string;
-};
-
 export enum TeamPaidEnum {
     All, Paid, Unpaid
 };

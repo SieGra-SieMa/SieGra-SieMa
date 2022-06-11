@@ -1,7 +1,7 @@
 import Config from '../config.json';
-import { TeamPaidEnum, Album, TournamentWithAlbums } from '../_lib/types';
+import { TeamPaidEnum } from '../_lib/types';
 import { Media, Message } from '../_lib/_types/response';
-import { TeamInTournament, Tournament, TournamentListItem, TournamentRequest } from '../_lib/_types/tournament';
+import { Album, AlbumRequest, TeamInTournament, Tournament, TournamentListItem, TournamentRequest, TournamentWithAlbums } from '../_lib/_types/tournament';
 import Service from './service';
 
 export default class TournamentsService extends Service {
@@ -30,7 +30,7 @@ export default class TournamentsService extends Service {
         return super.get(`${Config.HOST}/api/tournaments/${id}/albums`);
     };
 
-    addAlbumToTournament(id: string, album: Album): Promise<Album> {
+    addAlbum(id: string, album: AlbumRequest): Promise<Album> {
         return super.post(`${Config.HOST}/api/tournaments/${id}/albums`, album);
     }
 

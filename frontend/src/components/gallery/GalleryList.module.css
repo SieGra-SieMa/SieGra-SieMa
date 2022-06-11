@@ -1,45 +1,52 @@
 .top {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    row-gap: 25px;
     align-items: center;
-    column-gap: 25px;
-}
-
-.title {
-    font-size: 33px;
 }
 
 .content {
-    display: flex;
-    flex-direction: row;
-    row-gap: 25px;
-    column-gap: 25px;
-    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin: 20px 0;
 }
 
 .item {
     border-radius: 15px;
     overflow: hidden;
     transition: box-shadow .3s;
-    padding: 30px;
+    min-height: 300px;
     cursor: pointer;
-    width: 20%;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    background-color: #3e555f;
+    color: #fff;
+    position: relative;
 }
 
 .item:hover {
-    box-shadow: 0 0 5px #aaa;
+    box-shadow: 0 5px 15px #000;
 }
 
-.header {
+.item:active {
+    box-shadow: 0 5px 5px #000;
+}
+
+.box {
+    padding: 0 30px;
+    flex: 1 1;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
-.header>h3 {
-    font-size: 30px;
-}
-
-.dates {
-    font-weight: bold;
+.picture {
+    font-size: 72px !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

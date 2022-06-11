@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react';
-import { Album, AlbumRequest } from '../../_lib/_types/tournament';
+import { Album } from '../../_lib/_types/tournament';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import Input from '../form/Input';
@@ -7,40 +7,40 @@ import VerticalSpacing from '../spacing/VerticalSpacing';
 import styles from './AlbumAdd.module.css';
 
 
-type AlbumAddProps = {
+type EditAlbumProps = {
     confirm: (album: Album) => void;
-    tournamentId: string;
+    album: Album;
 };
 
-export default function AlbumAdd({ confirm, tournamentId }: AlbumAddProps) {
+export default function EditAlbum({ confirm, album }: EditAlbumProps) {
 
-    const { tournamentsService } = useApi();
+    const { albumsService } = useApi();
 
-    const [name, setName] = useState('');
+    const [name, setName] = useState(album.name);
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        const album: AlbumRequest = {
+        const updatedAlbum: Album = {
+            ...album,
             name,
-            createDate: new Date().toISOString(),
         };
-        tournamentsService.addAlbum(tournamentId, album)
+        albumsService.editAlbum(album.id, updatedAlbum)
             .then((data) => {
-                confirm(data);
+                confirm(updatedAlbum);
             });
     }
 
     return (
         <form className={styles.root} onSubmit={onSubmit}>
             <Input
-                id='TournamentAdd-name'
+                id='EditAlbum-name'
                 label='Name'
                 value={name}
                 required
                 onChange={(e) => setName(e.target.value)}
             />
             <VerticalSpacing size={15} />
-            <Button value='Dodaj' />
+            <Button value='Zapisz' />
         </form>
     );
 };

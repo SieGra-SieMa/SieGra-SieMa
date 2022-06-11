@@ -33,7 +33,7 @@ export default function Header() {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/gallery">
+                            <Link to="/tournaments/gallery">
                                 Galeria
                             </Link>
                         </li>

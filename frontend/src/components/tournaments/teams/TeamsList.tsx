@@ -1,7 +1,6 @@
 import { TeamInTournament } from '../../../_lib/_types/tournament';
 import styles from './TeamsList.module.css';
 import { SyncLoader } from 'react-spinners';
-import Button from '../../form/Button';
 import { useEffect, useState } from 'react';
 import TeamUnpaid from './TeamUnpaid';
 import TeamPaid from './TeamPaid';

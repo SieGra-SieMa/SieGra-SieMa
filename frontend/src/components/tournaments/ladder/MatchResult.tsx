@@ -1,6 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { ROLES } from '../../../_lib/roles';
-import { Match as MatchType, MatchResult as MatchResultType, Tournament } from '../../../_lib/_types/tournament';
+import { Match as MatchType, MatchResult as MatchResultType } from '../../../_lib/_types/tournament';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
 import Input from '../../form/Input';

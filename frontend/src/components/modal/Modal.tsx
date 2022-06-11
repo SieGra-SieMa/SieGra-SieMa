@@ -13,7 +13,7 @@ export default function Modal({
         const handleEscKey = (e: KeyboardEvent) => e.key === 'Escape' && close();
         window.addEventListener('keydown', handleEscKey);
         return () => window.removeEventListener('keydown', handleEscKey);
-    }, []);
+    }, [close]);
 
     return createPortal((
         <div

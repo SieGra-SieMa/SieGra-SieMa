@@ -18,12 +18,12 @@ export default function Home() {
 		let nextSlide = slide - 100;
 		setSlide(nextSlide <= 100 && nextSlide >= -100 ? nextSlide : slide);
 		setNextVisible(slide === -100 ? false : true);
-        setPrevVisible(slide === 100 ? false : true);
+		setPrevVisible(slide === 100 ? false : true);
 	}
 	function prevSlide() {
 		let prevSlide = slide + 100;
 		setSlide(prevSlide <= 100 && prevSlide >= -100 ? prevSlide : slide);
-        setNextVisible(slide === -100 ? false : true);
+		setNextVisible(slide === -100 ? false : true);
 		setPrevVisible(slide === 100 ? false : true);
 	}
 
@@ -57,6 +57,7 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
+			<NewsFeed fetchLimit="4"/>
 			<div className="dreamteam-section">
 				<div className="container dreamteam-container">
 					<h2>Poznaj naszą drużynę!</h2>
@@ -113,7 +114,6 @@ export default function Home() {
 					</Link>
 				</div>
 			</div>
-			<NewsFeed />
 		</section>
 	);
 }

@@ -1,51 +1,101 @@
-import { useEffect, useState } from "react"
-import { FacebookFeed, NewsFeedProps } from "../../_lib/types";
-import './NewsFeed.css';
-import Post from './Post';
+import { useEffect, useState } from "react";
+import { FacebookFeed } from "../../_lib/types";
+import "./NewsFeed.css";
+import Post from "./post/Post";
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+
+interface NewsFeedProps {
+	fetchLimit?: string;
+}
 
 export default function NewsFeed(props?: NewsFeedProps) {
-    const APP_ID = "102617622481951";
-    const ACCESS_TOKEN = "EAAo3XMvZBYycBAHVdiapMw63KyWyPhsjxJP5FuEfAeqGqnBZCkYZBDtg3e5GE93HkiB1iyIMEwPYa1uJo21W8ZBdoTVPZBLCVlYTBUxtjXBK0NmIjPETMwrXaQDVVnzpHxF5HKO6nuepaG5WMTAkhV4411ojTUivZC7DIfNZBohiij9yGvCATDzVRo5hN7ZCJD0ZD";
-    const [feed, setFeed] = useState<FacebookFeed | null>(null);
-    const fetchLimit = props?.fetchLimit ? props?.fetchLimit : "10";
+	const APP_ID = "102617622481951";
+	const ACCESS_TOKEN =
+		"EAAo3XMvZBYycBAHVdiapMw63KyWyPhsjxJP5FuEfAeqGqnBZCkYZBDtg3e5GE93HkiB1iyIMEwPYa1uJo21W8ZBdoTVPZBLCVlYTBUxtjXBK0NmIjPETMwrXaQDVVnzpHxF5HKO6nuepaG5WMTAkhV4411ojTUivZC7DIfNZBohiij9yGvCATDzVRo5hN7ZCJD0ZD";
+	const [feed, setFeed] = useState<FacebookFeed | null>(null);
+	const fetchLimit = props?.fetchLimit ? props?.fetchLimit : "10";
 
-    useEffect(() => {
-        FB.api(
-            `/${APP_ID}/posts?access_token=${ACCESS_TOKEN}&limit=${fetchLimit}`,
-            'get',
-            { "fields": "full_picture,message,created_time,permalink_url" },
-            function (response: FacebookFeed) {
-                setFeed(response);
-            }
-        );
-    }, [fetchLimit]);
+	const [slide, setSlide] = useState(0);
+	const [nextVisible, setNextVisible] = useState(true);
+	const [prevVisible, setPrevVisible] = useState(false);
+	const [translation, setTranslation] = useState(0);
 
-    return (
-        // <div className="news-section">
-        //     <h2>News feed</h2>
-        //     <div className="posts">
-        //         <ul className="news-list">
-        //             {feed && feed.data.map((post, index) => (
-        //                 <li key={index} className="news-post">
-        //                     <div className="post-image"><img src={post.full_picture} alt="" /></div>
-        //                     <div className="post-description">
-        //                         <h6>{post.created_time.split('T')[0]}</h6>
-        //                         <p className="message">{post.message}</p>
-        //                     </div>
-        //                 </li>
-        //             ))}
-        //         </ul>
-        //     </div> 
-        // </div>
-        <div className="news-section">
-            <div className="container news-container">
-                <h2>News feed</h2>
-                <ul className="news-list">
-                    <Post feed={feed} index={0} />
-                    <Post feed={feed} index={1} />
-                    <Post feed={feed} index={2} />
-                </ul>
-            </div>
-        </div>
-    )
+	useEffect(() => {
+		FB.api(
+			`/${APP_ID}/posts?access_token=${ACCESS_TOKEN}&limit=${fetchLimit}`,
+			"get",
+			{ fields: "full_picture,message,created_time,permalink_url" },
+			function (response: FacebookFeed) {
+				setFeed(response);
+			}
+		);
+	}, [fetchLimit]);
+
+	async function nextSlide() {
+		let nextSlide = slide + 1;
+		setNextVisible(slide === parseInt(fetchLimit) - 1 ? false : true);
+		setPrevVisible(slide === 0 ? false : true);
+		setSlide(nextSlide);
+		setTranslation(slide * -100);
+		console.log("next" + nextSlide);
+	}
+	async function prevSlide() {
+		let prevSlide = slide - 1;
+		setSlide(prevSlide);
+        setNextVisible(slide === parseInt(fetchLimit) - 1 ? false : true);
+		setPrevVisible(slide === 0 ? false : true);
+		setTranslation(slide * -100);
+		console.log("prev" + prevSlide);
+	}
+
+	return (
+		<>
+			<div className="news-section">
+				<h2>News feed</h2>
+				<ul
+					className="news-list"
+					style={{
+						width: `${parseInt(fetchLimit) * 100}vw`,
+						transform: `translateX(${translation}vw)`,
+					}}
+				>
+					{feed &&
+						feed.data.map((post, index) => (
+							<Post
+								created_time={post.created_time}
+								full_picture={post.full_picture}
+								id={post.id}
+								message={post.message}
+								permalink_url={post.created_time}
+							/>
+						))}
+				</ul>
+				<div className="navigation-buttons">
+					<button
+						onClick={prevSlide}
+						className={
+							prevVisible
+								? "navigation-button navigation-button-visible"
+								: "navigation-button navigation-button-hidden"
+						}
+						id="prev-button"
+					>
+						<NavigateBeforeIcon fontSize="large" />
+					</button>
+					<button
+						onClick={nextSlide}
+						className={
+							nextVisible
+								? "navigation-button navigation-button-visible"
+								: "navigation-button navigation-button-hidden"
+						}
+						id="next-button"
+					>
+						<NavigateNextIcon fontSize="large" />
+					</button>
+				</div>
+			</div>
+		</>
+	);
 }

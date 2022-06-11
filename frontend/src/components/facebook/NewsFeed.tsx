@@ -41,12 +41,10 @@ export default function NewsFeed(props?: NewsFeedProps) {
 	function nextSlide() {
 		let nextSlide = slide + 1;
 		setSlide(nextVisible? nextSlide : slide);
-		console.log("next" + slide);
 	}
 	function prevSlide() {
 		let prevSlide = slide - 1;
 		setSlide(prevVisible ? prevSlide : slide);
-		console.log("prev " + slide);
 	}
 
 	return (

@@ -14,17 +14,18 @@ export default function Home() {
 		window.scrollTo(0, 0);
 	}, []);
 
-	function nextSlide() {
-		let nextSlide = slide - 100;
-		setSlide(nextSlide <= 100 && nextSlide >= -100 ? nextSlide : slide);
+	useEffect(() => {
 		setNextVisible(slide === -100 ? false : true);
 		setPrevVisible(slide === 100 ? false : true);
+	}, [slide]);
+
+	function nextSlide() {
+		let nextSlide = slide - 100;
+		setSlide(nextVisible ? nextSlide : slide);
 	}
 	function prevSlide() {
 		let prevSlide = slide + 100;
-		setSlide(prevSlide <= 100 && prevSlide >= -100 ? prevSlide : slide);
-		setNextVisible(slide === -100 ? false : true);
-		setPrevVisible(slide === 100 ? false : true);
+		setSlide(prevVisible ? prevSlide : slide);
 	}
 
 	return (
@@ -57,7 +58,7 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
-			<NewsFeed fetchLimit="4"/>
+			<NewsFeed fetchLimit="4" />
 			<div className="dreamteam-section">
 				<div className="container dreamteam-container">
 					<h2>Poznaj naszą drużynę!</h2>

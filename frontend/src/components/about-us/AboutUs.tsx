@@ -21,7 +21,7 @@ export default function AboutUs() {
                         <div className="image-container dreamteam-member-image">
                             <img src="/card_kamila.png" alt="" />
                         </div>
-                        <h4>Kamila</h4>
+                        <h3>Kamila</h3>
                         <p>
                             Pierwszy raz w projekcie społecznym wzięłam udział
                             przeszło 4 lata temu. Od tego czasu wraz z moimi
@@ -43,7 +43,7 @@ export default function AboutUs() {
                         <div className="image-container dreamteam-member-image">
                             <img src="/card_olek.png" alt="" />
                         </div>
-                        <h4>Olek</h4>
+                        <h3>Olek</h3>
                         <p>
                             Większość z nas całe życie szuka pasji i próbuje obrać własną
                             ścieżkę. Ja miałem to szczęście ze odkryłem to wszystko za
@@ -67,7 +67,7 @@ export default function AboutUs() {
                         <div className="image-container dreamteam-member-image">
                             <img src="/card_mateusz.png" alt="" />
                         </div>
-                        <h4>Mateusz</h4>
+                        <h3>Mateusz</h3>
                         <p>
                             Organizowałem Szlachetna Paczkę na Białołęce, dalej pozostaję tam wolontariuszem, ale chciałem zrobić coś swojego.
                             Po finale Paczki czułem dziką satysfakcję.

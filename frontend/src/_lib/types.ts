@@ -53,8 +53,10 @@ export type FacebookFeed = {
 		cursor: {
 			after: string;
 			before: string;
-		};
-	};
+		}
+	}
+};
+
 export enum TeamPaidEnum {
     All, Paid, Unpaid
 };

@@ -31,18 +31,24 @@ export default function Header() {
 				<nav className={styles.navigation} id={navState}>
 					<ul>
 						<li>
-							<NavLink className="navlink" to="/">Strona główna</NavLink>
+							<NavLink className="navlink" to="/">
+								Strona główna
+							</NavLink>
 						</li>
 						<li>
-							<NavLink className="navlink" to="/tournaments">Turnieje</NavLink>
+							<NavLink className="navlink" to="/tournaments">
+								Turnieje
+							</NavLink>
 						</li>
-            <li>
-              <NavLink className="navlink" to="/tournaments/gallery">
-                Galeria
-              </Link>
-            </li>
 						<li>
-							<NavLink className="navlink" to="/about-us">O nas</NavLink>
+							<NavLink className="navlink" to="/tournaments/gallery">
+								Galeria
+							</NavLink>
+						</li>
+						<li>
+							<NavLink className="navlink" to="/about-us">
+								O nas
+							</NavLink>
 						</li>
 						{session ? (
 							<>
@@ -63,7 +69,9 @@ export default function Header() {
 							</>
 						) : (
 							<li>
-								<NavLink className="navlink" to="/account">Profil</NavLink>
+								<NavLink className="navlink" to="/account">
+									Profil
+								</NavLink>
 							</li>
 						)}
 					</ul>

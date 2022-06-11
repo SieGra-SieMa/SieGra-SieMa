@@ -246,6 +246,26 @@ namespace SieGraSieMa.Controllers
         }
 
         [Authorize(Policy = "OnlyEmployeesAuthenticated")]
+        [HttpPost("{id}/resetLadder")]
+        public async Task<IActionResult> ResetLadder(int id)
+        {
+            try
+            {
+                await _tournamentsService.ResetLadder(id);
+
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
+                var tournament = await _tournamentsService.GetTournament(id, user);
+
+                return Ok(tournament);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [Authorize(Policy = "OnlyEmployeesAuthenticated")]
         [HttpPost("{id}/contests/{contestId}/setScore")]
         public async Task<IActionResult> AddContestant(int contestId, AddContestantDTO addContestantDTO)
         {

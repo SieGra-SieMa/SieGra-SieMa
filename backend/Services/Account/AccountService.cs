@@ -19,10 +19,6 @@ namespace SieGraSieMa.Services
 
         public Task<bool> RevokeToken(string token);
 
-        public Task<List<User>> GetAll();
-
-        public Task<User> GetById(int id);
-
     }
     public class AccountService : IAccountIdentityServices
     {
@@ -41,24 +37,15 @@ namespace SieGraSieMa.Services
 
         public async Task<RefreshTokenDTO> RefreshToken(string token)
         {
-            var user = _context.Users.Include(i => i.RefreshTokens).SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
+            var user = await _context.Users.Include(i => i.RefreshTokens).Where(u => u.RefreshTokens.Any(t => t.Token == token)).SingleOrDefaultAsync();
 
-            var refreshTokenDTO = new RefreshTokenDTO();
             if (user == null)
-            {
-                refreshTokenDTO.IsAuthenticated = false;
-                refreshTokenDTO.Message = $"Token did not match any users.";
-                return refreshTokenDTO;
-            }
+                throw new Exception("User not found!");
 
             var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
 
             if (!refreshToken.IsActive)
-            {
-                refreshTokenDTO.IsAuthenticated = false;
-                refreshTokenDTO.Message = $"Token Not Active.";
-                return refreshTokenDTO;
-            }
+                throw new Exception("Token is not active!");
 
             var newRefreshToken = CreateRefreshToken();
             user.RefreshTokens.Add(newRefreshToken);
@@ -66,15 +53,7 @@ namespace SieGraSieMa.Services
             await _context.SaveChangesAsync();
             var newJWTToken = await _jwtHandler.GenerateToken(user);
 
-            //fill the DTO
-            refreshTokenDTO.Token = newJWTToken;
-            refreshTokenDTO.RefreshToken = newRefreshToken.Token;
-            refreshTokenDTO.IsAuthenticated = true;
-            refreshTokenDTO.Email = user.Email;
-            refreshTokenDTO.UserName = user.UserName;
-            refreshTokenDTO.RefreshTokenExpiration = newRefreshToken.Expires;
-
-            return refreshTokenDTO;
+            return new RefreshTokenDTO {Token = newJWTToken, RefreshToken = newRefreshToken.Token };
         }
 
         public async Task<RefreshToken> CreateRefreshToken(User user)
@@ -97,43 +76,32 @@ namespace SieGraSieMa.Services
 
         public async Task<bool> RevokeToken(string token)
         {
-            var user = _context.Users.Include(i => i.RefreshTokens).SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
-            // return false if no user found with token
-            if (user == null) return false;
-            var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
-            // return false if token is not active
-            if (!refreshToken.IsActive) return false;
-            // revoke token and save
+            var user = await _context.Users.Include(i => i.RefreshTokens).Where(u => u.RefreshTokens.Any(t => t.Token == token)).SingleOrDefaultAsync();
+            if (user == null)
+                throw new Exception("User does not exists!");
+
+            var refreshToken = user.RefreshTokens.First(x => x.Token == token);
+
+            if (!refreshToken.IsActive)
+                throw new Exception("Token is not active!");
+
             refreshToken.Revoked = DateTime.UtcNow;
             _context.Update(user);
-            await _context.SaveChangesAsync();
-            return true;
+            return await _context.SaveChangesAsync() > 1;
         }
 
         private RefreshToken CreateRefreshToken()
         {
             var randomNumber = new byte[32];
-            using (var generator = new RNGCryptoServiceProvider())
+            using var generator = new RNGCryptoServiceProvider();
+            generator.GetBytes(randomNumber);
+            return new RefreshToken
             {
-                generator.GetBytes(randomNumber);
-                return new RefreshToken
-                {
-                    Token = Convert.ToBase64String(randomNumber),
-                    Expires = DateTime.UtcNow.AddDays(10),
-                    Created = DateTime.UtcNow,
-                    CreatedByIp = "123"
-                };
-            }
-        }
-
-        public async Task<List<User>> GetAll()
-        {
-            return await _context.Users.ToListAsync();
-        }
-
-        public async Task<User> GetById(int id)
-        {
-            return await _context.Users.FindAsync(id);
+                Token = Convert.ToBase64String(randomNumber),
+                Expires = DateTime.UtcNow.AddDays(10),
+                Created = DateTime.UtcNow,
+                CreatedByIp = "123"
+            };
         }
     }
 

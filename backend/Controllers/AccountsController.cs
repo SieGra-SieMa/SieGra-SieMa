@@ -29,8 +29,6 @@ namespace SieGraSieMa.Controllers
 
         private readonly UserManager<User> _userManager;
 
-        //private readonly IMapper _mapper;
-
         private readonly IEmailService _emailService;
         private readonly ILogService _logService;
 
@@ -39,25 +37,10 @@ namespace SieGraSieMa.Controllers
             _accountService = accountServices;
             _userManager = userManager;
             _jwtHandler = jwtHandler;
-            //_mapper = mapper;
             _emailService = emailService;
             _logService = logService;
         }
-        private async Task<IActionResult> GenerateOTPFor2StepVerification(User user)
-        {
-            var providers = await _userManager.GetValidTwoFactorProvidersAsync(user);
-            if (!providers.Contains("Email"))
-            {
-                return Unauthorized(new ResponseErrorDTO { Error = "Wrong provider" });
-            }
 
-            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-
-            //https://ethereal.email/
-            //await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
-
-            return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email" });
-        }
         private void SetRefreshTokenInCookie(string refreshToken)
         {
             var cookieOptions = new CookieOptions
@@ -72,173 +55,166 @@ namespace SieGraSieMa.Controllers
         [HttpPost("Authenticate")]
         public async Task<IActionResult> Authenticate([FromBody] LoginDTO login)
         {
-            var user = await _userManager.FindByEmailAsync(login.Email);
-            if (user == null)
-                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
-
-            if (await _userManager.IsLockedOutAsync(user))
-                return BadRequest(new ResponseErrorDTO { Error = "Account is locked out" });
-            
-            if (!await _userManager.IsEmailConfirmedAsync(user))
-                return BadRequest(new ResponseErrorDTO { Error = "Email is not confirmed" });
-
-            if (!await _userManager.CheckPasswordAsync(user, login.Password))
+            try
             {
-                await _userManager.AccessFailedAsync(user);
-                await _logService.AddLog(new Log(user, "Account is locked out due to too much bad requests"));
+                var user = await _userManager.FindByEmailAsync(login.Email);
+                if (user == null)
+                    return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
+
                 if (await _userManager.IsLockedOutAsync(user))
-                    return BadRequest(new ResponseErrorDTO { Error = "Account is locked out due to too much bad requests" });
+                    return BadRequest(new ResponseErrorDTO { Error = "Account is locked out" });
 
-                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
+                if (!await _userManager.IsEmailConfirmedAsync(user))
+                    return BadRequest(new ResponseErrorDTO { Error = "Email is not confirmed" });
+
+                if (!await _userManager.CheckPasswordAsync(user, login.Password))
+                {
+                    await _userManager.AccessFailedAsync(user);
+                    await _logService.AddLog(new Log(user, "Account is locked out due to too much bad requests"));
+                    if (await _userManager.IsLockedOutAsync(user))
+                        return BadRequest(new ResponseErrorDTO { Error = "Account is locked out due to too much bad requests" });
+
+                    return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
+                }
+
+                var token = await _jwtHandler.GenerateToken(user);
+                var refreshToken = await _accountService.CreateRefreshToken(user);
+                SetRefreshTokenInCookie(refreshToken.Token);
+
+                await _userManager.ResetAccessFailedCountAsync(user);
+
+                return Ok(new AuthenticateResponseDTO { AccessToken = token, RefreshToken = refreshToken.Token });
             }
-
-            if (await _userManager.GetTwoFactorEnabledAsync(user))
-                return await GenerateOTPFor2StepVerification(user);
-
-            var token = await _jwtHandler.GenerateToken(user);
-            var refreshToken = await _accountService.CreateRefreshToken(user);
-            SetRefreshTokenInCookie(refreshToken.Token);
-
-            await _userManager.ResetAccessFailedCountAsync(user);
-
-            return Ok(new AuthenticateResponseDTO { AccessToken = token, RefreshToken = refreshToken.Token });
-        }
-
-        [AllowAnonymous]
-        [HttpPost("Verify")]
-        public async Task<IActionResult> TwoStepVerification([FromBody] LoginTwoFactorDTO twoFactorDto)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
-
-            var user = await _userManager.FindByEmailAsync(twoFactorDto.Email);
-            if (user == null)
-                return BadRequest(new ResponseErrorDTO { Error = "Wrong email" });
-
-            var validVerification = await _userManager.VerifyTwoFactorTokenAsync(user, twoFactorDto.Provider, twoFactorDto.Token);
-            if (!validVerification)
-                return BadRequest(new ResponseErrorDTO { Error = "Wrong token" });
-
-            var token = await _jwtHandler.GenerateToken(user);
-            var refreshingToken = await _accountService.CreateRefreshToken(user);
-            SetRefreshTokenInCookie(refreshingToken.Token);
-            return Ok(new AuthenticateResponseDTO { AccessToken = token, RefreshToken = refreshingToken.Token });
+            catch (Exception e)
+            {
+                //await _logService.AddLog(new Log(user, "Error while changing password"));
+                return BadRequest(new ResponseErrorDTO
+                {
+                    Error = e.Message
+                });
+            }
         }
 
         [AllowAnonymous]
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterUser([FromBody] RegisterDTO registerRequest)
         {
-            if (registerRequest == null || !ModelState.IsValid)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
-
-            //var user = _mapper.Map<User>(registerRequest);
-
-            var user = new User
+            try
             {
-                Name = registerRequest.Name,
-                Surname = registerRequest.Surname,
-                UserName = registerRequest.Email,
-                Email = registerRequest.Email,
-                NormalizedEmail = registerRequest.Email.ToUpper(),
-                NormalizedUserName = registerRequest.Email.ToUpper(),
-                EmailConfirmed = false,
-                PhoneNumber = null,
-                TwoFactorEnabled = false
-            };
+                if (registerRequest == null || !ModelState.IsValid)
+                    return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
-            var result = await _userManager.CreateAsync(user, registerRequest.Password);
-            if (!result.Succeeded)
-            {
-                var errors = string.Join(" ", result.Errors.Select(e => e.Description));
+                var user = new User
+                {
+                    Name = registerRequest.Name,
+                    Surname = registerRequest.Surname,
+                    UserName = registerRequest.Email,
+                    Email = registerRequest.Email,
+                    NormalizedEmail = registerRequest.Email.ToUpper(),
+                    NormalizedUserName = registerRequest.Email.ToUpper(),
+                    EmailConfirmed = false,
+                    PhoneNumber = null,
+                    TwoFactorEnabled = false
+                };
+
+                var result = await _userManager.CreateAsync(user, registerRequest.Password);
+                if (!result.Succeeded)
+                {
+                    var errors = string.Join(" ", result.Errors.Select(e => e.Description));
 
 
-                return BadRequest(new ResponseErrorDTO { Error = errors });
+                    return BadRequest(new ResponseErrorDTO { Error = errors });
+                }
+
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var param = new Dictionary<string, string>
+                {
+                    {"userid", Convert.ToString(user.Id) },
+                    {"token", token }
+                };
+
+                //Email
+                var link = $"{Request.Scheme}://{Request.Host}/api/Accounts/Confirm-Email";
+                var callback = QueryHelpers.AddQueryString(link, param);
+
+                await _emailService.SendAsync(user.Email, "Potwierdź konto email", callback);
+
+                await _userManager.AddToRoleAsync(user, "User");
+
+                await _logService.AddLog(new Log(user, "Register succesfully"));
+
+                return Ok(new MessageDTO { Message = "A verification link has been sent to your email!" });
             }
-
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var param = new Dictionary<string, string>
+            catch (Exception e)
             {
-               {"userid", Convert.ToString(user.Id) },
-               {"token", token }
-            };
-
-            //Email
-            var link = $"{Request.Scheme}://{Request.Host}/api/Accounts/Confirm-Email";
-            var callback = QueryHelpers.AddQueryString(link, param);
-
-            await _emailService.SendAsync(user.Email, "Potwierdź konto email", callback);
-
-            await _userManager.AddToRoleAsync(user, "User");
-
-            await _logService.AddLog(new Log(user, "Register succesfully"));
-
-            return Ok(new MessageDTO { Message = "A verification link has been sent to your email!" });
-
+                //await _logService.AddLog(new Log(user, "Error while changing password"));
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
-        //refresh token
+
         [AllowAnonymous]
         [HttpPost("Refresh-Token")]
         public async Task<IActionResult> RefreshToken([FromBody] RevokeTokenDTO model)
         {
-            var refreshToken = model.RefreshToken ?? Request.Cookies["refreshToken"];
-            var response = await _accountService.RefreshToken(refreshToken);
+            try
+            {
+                var refreshToken = model.RefreshToken ?? Request.Cookies["refreshToken"];
+                var response = await _accountService.RefreshToken(refreshToken);
 
-            if (!response.IsAuthenticated)
-                return Unauthorized(new ResponseErrorDTO { Error = "Wrong token" });
+                if (!string.IsNullOrEmpty(response.RefreshToken))
+                    SetRefreshTokenInCookie(response.RefreshToken);
 
-            if (!string.IsNullOrEmpty(response.RefreshToken))
-                SetRefreshTokenInCookie(response.RefreshToken);
-
-            return Ok(response);
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                //await _logService.AddLog(new Log(user, "Error while changing password"));
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
-        //revoke token
+
         [AllowAnonymous]
         [HttpPost("Revoke-Token")]
         public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenDTO model)
         {
-            // accept token from request body or cookie
-            var token = model.RefreshToken ?? Request.Cookies["refreshToken"];
-            if (string.IsNullOrEmpty(token))
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
-            var response = _accountService.RevokeToken(token);
-            if (!await response)
-                return NotFound(new ResponseErrorDTO { Error = "Token not found" });
-            return Ok();
+            try
+            {
+                var token = model.RefreshToken ?? Request.Cookies["refreshToken"];
+                if (string.IsNullOrEmpty(token))
+                    return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
+                var response = await _accountService.RevokeToken(token);
+                if (!response)
+                    return NotFound(new ResponseErrorDTO { Error = "Token not found" });
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                //await _logService.AddLog(new Log(user, "Error while changing password"));
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
 
         [AllowAnonymous]
         [HttpGet("Confirm-Email")]
         public async Task<IActionResult> ConfirmEmail(string userid, string token)
         {
-
-            var userFound = await _userManager.FindByIdAsync(userid);
-            if (userFound == null)
-                return BadRequest(new ResponseErrorDTO { Error = "Wrong user id" });
-            var result = (await _userManager.ConfirmEmailAsync(userFound, token));
-            if (!result.Succeeded)
+            try
             {
-                return BadRequest(new ResponseErrorDTO { Error = "Email not confirmed" });
+                var user = await _userManager.FindByIdAsync(userid);
+                if (user == null)
+                    return BadRequest(new ResponseErrorDTO { Error = "Wrong user id" });
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+                if (!result.Succeeded)
+                    return BadRequest(new ResponseErrorDTO { Error = "Email not confirmed" });
+
+                await _logService.AddLog(new Log(user, "Email confirmed succesfully"));
+                return Ok(new MessageDTO { Message = "Email confirmed!" });
             }
-            await _logService.AddLog(new Log(userFound, "Email confirmed succesfully"));
-            return Ok();
+            catch (Exception e)
+            {
+                //await _logService.AddLog(new Log(user, "Error while changing password"));
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
-
-
-        /*[HttpGet("users")]
-        public async Task<IActionResult> GetAll()
-        {
-            var users = await _accountService.GetAll();
-            return Ok(users);
-        }
-
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var user = await _accountService.GetById(id);
-            if (user == null) return NotFound();
-
-            return Ok("user");
-        }*/
     }
 }

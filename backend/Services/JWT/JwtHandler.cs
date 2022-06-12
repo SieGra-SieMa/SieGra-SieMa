@@ -15,13 +15,11 @@ namespace SieGraSieMa.Services
     public class JwtHandler
     {
         private readonly IConfiguration _configuration;
-        //private readonly IConfigurationSection _jwtSettings;
         private readonly UserManager<User> _userManager;
         public JwtHandler(IConfiguration configuration, UserManager<User> userManager)
         {
             _userManager = userManager;
             _configuration = configuration;
-            //_jwtSettings = _configuration.GetSection("JwtSettings");
         }
 
         private SigningCredentials GetSigningCredentials()

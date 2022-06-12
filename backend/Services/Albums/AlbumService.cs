@@ -25,9 +25,12 @@ namespace SieGraSieMa.Services
     {
         private readonly SieGraSieMaContext _SieGraSieMaContext;
 
-        public AlbumService(SieGraSieMaContext SieGraSieMaContext)
+        private readonly IMediaService _mediaService;
+
+        public AlbumService(SieGraSieMaContext SieGraSieMaContext, IMediaService mediaService)
         {
             _SieGraSieMaContext = SieGraSieMaContext;
+            _mediaService = mediaService;
         }
         public async Task<Album> CreateAlbum(Album album)
         {
@@ -44,8 +47,13 @@ namespace SieGraSieMa.Services
 
         public async Task<bool> DeleteAlbum(int id)
         {
-            var tournament = await _SieGraSieMaContext.Albums.FindAsync(id);
-            _SieGraSieMaContext.Albums.Remove(tournament);
+            var album = await _SieGraSieMaContext.Albums.FindAsync(id);
+            var mediaList = await _SieGraSieMaContext.MediumInAlbum.Where(a => a.AlbumId == album.Id).ToListAsync();
+            foreach(var media in mediaList)
+            {
+                await _mediaService.DeleteFromAlbum(media.MediumId, album.Id);
+            }
+            _SieGraSieMaContext.Albums.Remove(album);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return true;
 

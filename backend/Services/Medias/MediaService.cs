@@ -18,7 +18,6 @@ namespace SieGraSieMa.Services
         public Task<ResponseMediumDTO> GetMedia(int id);
         public Task<List<ResponseMediumDTO>> CreateMedia(int? albumId, int? id, IFormFile[] files, MediaTypeEnum mediaType);
         public enum MediaTypeEnum { photos, teams, tournaments }
-        /*public Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO);*/
         public Task<bool> DeleteMedia(int id);
         public Task<MediumInAlbum> AddToAlbum(MediumInAlbum mediumInAlbum);
         public Task<bool> DeleteFromAlbum(int mediaId, int albumId);
@@ -44,7 +43,7 @@ namespace SieGraSieMa.Services
             {
                 if (file != null && file.Length > 0)
                 {
-                    var fileName = Path.GetFileName(file.FileName);
+                    var fileName = $"{Path.GetFileNameWithoutExtension(file.FileName)}{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
 
                     var result = mediaType switch
                     {
@@ -113,30 +112,14 @@ namespace SieGraSieMa.Services
         public async Task<IEnumerable<ResponseMediumDTO>> GetMedia()
         {
             var media = await _SieGraSieMaContext.Media.Select(m => new ResponseMediumDTO { Id = m.Id, Url = m.Url }).ToListAsync();
-            //var media = await _SieGraSieMaContext.Media.Include(m => m.MediumInAlbums).ThenInclude(m => m.Album).ToListAsync();
             return media;
         }
 
         public async Task<ResponseMediumDTO> GetMedia(int id)
         {
             var media = await _SieGraSieMaContext.Media.Select(m => new ResponseMediumDTO { Id = m.Id, Url = m.Url }).SingleOrDefaultAsync(m => m.Id == id);
-            //var media = await _SieGraSieMaContext.Media.Include(m => m.MediumInAlbums).ThenInclude(m => m.Album).SingleOrDefaultAsync(m => m.Id == id);
             return media;
         }
-
-        /*public async Task<bool> UpdateMedia(int id, RequestMediumDTO mediumDTO)
-        {
-            var oldMedia = await _SieGraSieMaContext.Media.FindAsync(id);
-            if (oldMedia == null)
-                return false;
-            oldMedia.Url = mediumDTO.Url;
-            _SieGraSieMaContext.Media.Update(oldMedia);
-            if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
-                return true;
-
-            return false;
-        }*/
-
         public async Task<MediumInAlbum> AddToAlbum(MediumInAlbum mediumInAlbum)
         {
             var medium = await _SieGraSieMaContext.Media.FindAsync(mediumInAlbum.MediumId);

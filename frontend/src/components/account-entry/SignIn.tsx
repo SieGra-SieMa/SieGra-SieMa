@@ -40,7 +40,7 @@ export default function SignIn() {
 
     return (
         <form className={styles.block} onSubmit={signIn}>
-            <h3>Sign in</h3>
+            <h3>Zaloguj się</h3>
             {error && <div className={styles.failed}>FAILED: {error}</div>}
             <Input
                 id='SignIn-email'
@@ -52,7 +52,7 @@ export default function SignIn() {
             />
             <Input
                 id='SignIn-password'
-                label='Password'
+                label='Hasło'
                 type='password'
                 value={password}
                 required
@@ -64,7 +64,7 @@ export default function SignIn() {
                     <SyncLoader loading={true} size={7} margin={20} color='#fff' />
                 </div>
             ) : (
-                <Button value='Sign in' />
+                <Button value='Zaloguj się' />
             )}
         </form>
     );

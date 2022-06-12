@@ -28,8 +28,11 @@ export default function Album() {
     const [isEdit, setIsEdit] = useState(false);
     const [isRemove, setIsRemove] = useState(false);
 
-
     const [selectedImage, setSelectedImage] = useState<Media | null>(null);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     useEffect(() => {
         albumsService.getAlbumWithMedia(albumId!)

@@ -3,12 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { useTournaments } from '../tournaments/TournamentsContext';
 import ImageIcon from '@mui/icons-material/Image';
 import styles from './GalleryList.module.css';
+import { useEffect } from 'react';
 
 export default function GalleryList() {
 
     const navigate = useNavigate();
 
     const { tournaments } = useTournaments();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     return (
         <>

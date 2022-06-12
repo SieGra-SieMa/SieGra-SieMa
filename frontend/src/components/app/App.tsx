@@ -49,10 +49,13 @@ export default function App() {
                                     <Route path="*" element={<h2>404 NOT FOUND</h2>} />
                                 </Route>
                             </Route>
-                            <Route path="tournaments" element={<Tournaments />}>
-                                <Route index element={<TournamentsList />} />
-                                <Route path=":id" element={<Tournament />} />
+                            <Route path="*" element={<Tournaments />}>
+                                <Route path="tournaments">
+                                    <Route index element={<TournamentsList />} />
+                                    <Route path=":id" element={<Tournament />} />
 
+
+                                </Route>
                                 <Route path="gallery">
                                     <Route index element={<GalleryList />} />
                                     <Route path=":id/albums">

@@ -1,6 +1,7 @@
 .root {
     display: flex;
     justify-content: center;
+    align-items: center;
     background-color: var(--main-color);
     position: sticky;
     opacity: 0.95;
@@ -16,6 +17,7 @@
 
 .logo {
     padding: 25px;
+    z-index: 99999;
 }
 
 .logo>a>img {
@@ -45,11 +47,25 @@
     position: relative;
 }
 
+.navigation>ul>li>a:global(.active)::after {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 16px;
+    left: 15px;
+    margin-top: 5px;
+    height: 2px;
+    border-radius: 2px;
+    background-color: var(--accent-color);
+    width: calc(100% - 30px);
+}
+
 .navigation>ul>li>a::after {
     content: '';
     display: block;
     position: absolute;
     right: 16px;
+    margin-top: 5px;
     width: 0px;
     height: 2px;
     border-radius: 2px;
@@ -63,10 +79,56 @@
     width: calc(100% - 30px);
 }
 
+.menu {
+    display: none;
+}
+
 
 @media all and (max-width: 720px) {
+
     .container {
+        justify-content: center;
+    }
+
+    .menu {
+        display: block;
+        position: fixed;
+        background-color: transparent;
+        top: 0;
+        right: 0;
+        padding: 25px;
+        color: white;
+        border: none;
+        outline: none;
+    }
+
+    .navigation {
+        background-color: var(--main-color);
+        position: fixed;
+        top: 90px;
+        left: 100%;
+        right: -100%;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        transition: .3s ease-in-out;
+    }
+
+    .navigation>ul {
+        width: 100%;
         flex-direction: column;
-        align-items: center;
+        gap: 75px;
+        overflow: auto;
+        padding: 30px 0;
+    }
+
+    #navClosed {
+        left: 100%;
+        right: -100%;
+    }
+
+    #navOpen {
+        left: 0;
+        right: 0;
     }
 }

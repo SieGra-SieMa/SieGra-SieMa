@@ -1,19 +1,41 @@
-import { useEffect } from 'react';
-import styles from './AccountEntry.module.css';
-import CreateAccount from './CreateAccount';
-import SignIn from './SignIn';
+import { useEffect, useState } from "react";
+import Button, { ButtonStyle } from "../form/Button";
+import styles from "./AccountEntry.module.css";
+import CreateAccount from "./CreateAccount";
+import SignIn from "./SignIn";
 
 export default function AccountEntry() {
+	const [login, setLogin] = useState(true);
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, []);
 
-    return (
-        <div className={`container ${styles.root}`}>
-            <SignIn />
-            <span>OR</span>
-            <CreateAccount />
-        </div>
-    );
+	function toggleLogin() {
+		setLogin(!login);
+	}
+
+	return (
+		<div className={`container ${styles.root}`}>
+			<div className={login ? styles.form : styles.hidden}>
+				<SignIn />
+				<Button
+					className={styles.button}
+					onClick={toggleLogin}
+					value={"Nie masz konta?"}
+					style={ButtonStyle.DarkBlue}
+				/>
+			</div>
+			<span id={styles.divider}>OR</span>
+			<div className={login ? styles.hidden : styles.form}>
+				<CreateAccount />
+				<Button
+					className={styles.button}
+					onClick={toggleLogin}
+					value={"Masz już konto?"}
+					style={ButtonStyle.DarkBlue}
+				/>
+			</div>
+		</div>
+	);
 }

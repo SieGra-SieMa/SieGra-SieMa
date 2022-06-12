@@ -288,7 +288,7 @@ export default function Tournament() {
                             style={album.profilePicture ? {
                                 backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
                             } : undefined}
-                            onClick={() => navigate(`../gallery/${id!}/albums/${album.id}`)}>
+                            onClick={() => navigate(`/gallery/${id!}/albums/${album.id}`)}>
                             <div className={styles.box}>
                                 {(!album.profilePicture) && <ImageIcon className={styles.picture} />}
                                 <h4>

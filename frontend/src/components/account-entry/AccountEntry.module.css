@@ -1,59 +1,89 @@
 .root {
-    display: flex;
-    align-items: center;
-    margin: 100px auto;
-    justify-content: space-evenly;
+	display: flex;
+	align-items: center;
+	margin: 0 auto;
+	justify-content: space-evenly;
 }
 
 .block {
-    width: 400px;
-    border-radius: 10px;
-    padding: 20px;
-    display: grid;
-    row-gap: 15px;
+	max-width: 400px;
+	min-width: 100px;
+	border-radius: 10px;
+	padding: 20px;
+	display: grid;
+	row-gap: 15px;
 }
 
 .block>h3 {
-    text-align: center;
-    padding: 20px 0;
+	text-align: center;
+	padding: 20px 0;
 }
 
 .loader {
-    display: flex;
-    justify-content: center;
+	display: flex;
+	justify-content: center;
 }
 
 .failed {
-    padding: 15px 20px;
-    border-radius: 5px;
-    background-color: #ffd7d7;
-    color: #b60000;
+	padding: 15px 20px;
+	border-radius: 5px;
+	background-color: #ffd7d7;
+	color: #b60000;
 }
 
 .root>span {
-    text-align: center;
-    color: #fff;
-    font-size: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    align-self: stretch;
+	text-align: center;
+	color: #fff;
+	font-size: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	align-self: stretch;
 }
 
 .root>span::after,
 .root>span::before {
-    content: '';
-    display: block;
-    width: 0;
-    height: 100%;
-    border-left: 1px dashed #fff;
-    border-right: 1px dashed #fff;
+	content: "";
+	display: block;
+	width: 0;
+	height: 100%;
+	border-left: 1px dashed #fff;
+	border-right: 1px dashed #fff;
 }
 
 .root>span::after {
-    margin-top: 10px;
+	margin-top: 10px;
 }
 
 .root>span::before {
-    margin-bottom: 10px;
+	margin-bottom: 10px;
+}
+
+.button {
+	display: none;
+}
+
+@media all and (max-width: 1000px) {
+	#divider {
+		display: none;
+	}
+
+	.block {
+		padding: 30px;
+	}
+
+	.button {
+		display: block;
+	}
+
+	.form {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.hidden {
+		display: none;
+	}
 }

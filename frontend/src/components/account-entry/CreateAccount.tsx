@@ -33,7 +33,7 @@ export default function CreateAccount() {
 
     return (
         <form className={styles.block} onSubmit={createAccount}>
-            <h3>Create account</h3>
+            <h3>Stwórz konto</h3>
             {error && <div className={styles.failed}>{error}</div>}
             <Input
                 id='CreateAccount-email'
@@ -45,21 +45,21 @@ export default function CreateAccount() {
             />
             <Input
                 id='CreateAccount-name'
-                label='Name'
+                label='Imię'
                 value={name}
                 required
                 onChange={(e) => setName(e.target.value)}
             />
             <Input
                 id='CreateAccount-surname'
-                label='Surname'
+                label='Nazwisko'
                 value={surname}
                 required
                 onChange={(e) => setSurname(e.target.value)}
             />
             <Input
                 id='CreateAccount-password'
-                label='Password'
+                label='Hasło'
                 type='password'
                 value={password}
                 required
@@ -71,7 +71,7 @@ export default function CreateAccount() {
                     <SyncLoader loading={true} size={7} margin={20} color='#fff' />
                 </div>
             ) : (
-                <Button value='Create account' />
+                <Button value='Zarejestruj się' />
             )}
         </form>
     );

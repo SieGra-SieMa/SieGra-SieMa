@@ -1,8 +1,8 @@
 import { FormEvent, useState } from 'react';
-import { Tournament } from '../../_lib/_types/tournament';
-import { useApi } from '../api/ApiContext';
-import Button from '../form/Button';
-import VerticalSpacing from '../spacing/VerticalSpacing';
+import { Tournament } from '../../../_lib/_types/tournament';
+import { useApi } from '../../api/ApiContext';
+import Button from '../../form/Button';
+import VerticalSpacing from '../../spacing/VerticalSpacing';
 import styles from './EditTournamentPicture.module.css';
 
 type EditTournamentProps = {

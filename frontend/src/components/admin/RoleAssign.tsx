@@ -12,22 +12,18 @@ type TeamAssignProps = {
     confirm: (user: User) => void;
 };
 
+const roles = [ROLES.User, ROLES.Employee, ROLES.Admin];
+
 export default function RoleAssign({ id, confirm }: TeamAssignProps) {
 
     const { usersService } = useApi();
 
-    const [roles, setRoles] = useState<string[] | null>(null);
-
-    const [selectedRole, setSelectedRole] = useState<string | null>(null);
-
-    useEffect(() => {
-        setRoles([ROLES.User, ROLES.Emp, ROLES.Admin]);
-    }, [usersService]);
+    const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        if (!selectedRole) return;
-        usersService.addUserRole(id, [selectedRole])
+        if (!selectedRoles.length) return;
+        usersService.addUserRole(id, selectedRoles)
             .then((data) => {
                 confirm(data);
             });
@@ -35,30 +31,28 @@ export default function RoleAssign({ id, confirm }: TeamAssignProps) {
 
     return (
         <form className={styles.root} onSubmit={onSubmit}>
-            {roles ? (
-                <ul className={styles.list}>
-                    {roles.map((role, index) => (
-                        <li
-                            key={index}
-                            className={[
-                                styles.item,
-                                (selectedRole === role ? styles.selected : undefined)
-                            ].filter((e) => e).join(' ')}
-                            onClick={() => setSelectedRole(role)}
-                        >
-                            <p>
-                                {role}
-                            </p>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <div className={styles.loader}>
-                    <SyncLoader loading={true} size={7} margin={20} color='#fff' />
-                </div>
-            )}
+            <ul className={styles.list}>
+                {roles.map((role, index) => (
+                    <li
+                        key={index}
+                        className={[
+                            styles.item,
+                            (selectedRoles.includes(role) ? styles.selected : undefined)
+                        ].filter((e) => e).join(' ')}
+                        onClick={() => {
+                            selectedRoles.includes(role) ?
+                                setSelectedRoles(selectedRoles.filter((e) => e != role)) :
+                                setSelectedRoles([...selectedRoles, role]);
+                        }}
+                    >
+                        <p>
+                            {role}
+                        </p>
+                    </li>
+                ))}
+            </ul>
             <VerticalSpacing size={15} />
-            <Button className={styles.button} value='Dodaj' disabled={selectedRole === null} />
-        </form>
+            <Button className={styles.button} value='Dodaj' disabled={!selectedRoles.length} />
+        </form >
     );
 };

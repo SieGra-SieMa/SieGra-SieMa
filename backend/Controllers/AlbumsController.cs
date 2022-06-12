@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("api/[controller]")]
     [ApiController]
     public class AlbumsController : ControllerBase
@@ -27,6 +28,7 @@ namespace SieGraSieMa.Controllers
             _mediaService = mediaService;
         }
 
+        [AllowAnonymous]
         [HttpGet()]
         public async Task<IActionResult> GetAlbums()
         {
@@ -35,6 +37,7 @@ namespace SieGraSieMa.Controllers
             return Ok(albums);
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAlbum(int id)
         {
@@ -46,6 +49,11 @@ namespace SieGraSieMa.Controllers
             return Ok(album);
         }
 
+
+        //-------------------------------------------------admin functions
+
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPost("{id}/media")]
         public async Task<IActionResult> AddMediaToAlbum(int id, IFormFile[] files)
         {
@@ -62,6 +70,7 @@ namespace SieGraSieMa.Controllers
             }
         }
 
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateAlbum(UpdateAlbumDTO album, int id)
         {
@@ -74,6 +83,7 @@ namespace SieGraSieMa.Controllers
             return Ok();
         }
 
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAlbum(int id)
         {

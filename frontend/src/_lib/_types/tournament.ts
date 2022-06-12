@@ -1,3 +1,6 @@
+import { Team } from "../types";
+import { Media } from "./response";
+
 export type TournamentRequest = {
     name: string;
     startDate: string,
@@ -9,10 +12,12 @@ export type TournamentRequest = {
 export type TournamentListItem = TournamentRequest & {
     id: number;
     profilePicture: string;
-    status: boolean;
+    isOpen: boolean;
+    team: Team | null;
 };
 
 export type Tournament = TournamentListItem & {
+    albums: Album[]
     groups: Group[];
     ladder: Phase[];
 };
@@ -32,6 +37,10 @@ export type Group = {
         goalConceded: number;
         points: number;
     }[];
+
+    matches: (Match & {
+        groupId: number;
+    })[] | null;
 };
 
 export type Match = {
@@ -56,3 +65,34 @@ export type MatchResult = {
     homeTeamPoints: number;
     awayTeamPoints: number;
 }
+
+export type TeamInTournament = {
+    teamId: number;
+    tournamentId: number;
+    teamName: string;
+    teamProfileUrl: string;
+    paid: boolean;
+}
+
+export type TournamentWithAlbums = {
+    id: number;
+    name: string;
+    startDate: string,
+    endDate: string,
+    description: string;
+    address: string;
+    profilePicture?: string;
+    albums: Album[];
+};
+
+export type AlbumRequest = {
+    name: string;
+    createDate: string;
+}
+
+export type Album = AlbumRequest & {
+    id: number;
+    tournamentId: string;
+    profilePicture?: string;
+    mediaList: Media[];
+};

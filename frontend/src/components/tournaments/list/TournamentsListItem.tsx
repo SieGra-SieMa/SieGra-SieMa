@@ -7,6 +7,8 @@ import Button from '../../form/Button';
 import { useState } from 'react';
 import Modal from '../../modal/Modal';
 import TeamAssign from './TeamAssign';
+import { useTournaments } from '../TournamentsContext';
+import { useAuth } from '../../auth/AuthContext';
 
 
 type TournamentsListItemProps = {
@@ -18,6 +20,9 @@ export default function TournamentsListItem({
 }: TournamentsListItemProps) {
 
     const navigate = useNavigate();
+
+    const { session } = useAuth();
+    const { tournaments, setTournaments } = useTournaments();
 
     const [isTeamAssign, setIsTeamAssign] = useState(false);
 
@@ -38,11 +43,12 @@ export default function TournamentsListItem({
                     </p>
                     <p>
                         {tournament.address}
-                        <br />
+                    </p>
+                    <p>
                         {tournament.description}
                     </p>
                 </div>
-                {(!tournament.status) && (<>
+                {(session && tournament.isOpen && !tournament.team) && (
                     <Button
                         value='Zapisz zespół'
                         onClick={(e) => {
@@ -50,18 +56,30 @@ export default function TournamentsListItem({
                             setIsTeamAssign(true);
                         }}
                     />
-                </>)}
+                )}
             </div>
         </li>
-        {(!tournament.status) && isTeamAssign && (
+        {(session && tournament.isOpen && !tournament.team && isTeamAssign) && (
             <Modal
-                title='Zapisz zespół'
+                title={`Zapisz zespół - "${tournament.name}"`}
                 isClose
                 close={() => setIsTeamAssign(false)}
             >
                 <TeamAssign
                     id={tournament.id}
-                    confirm={() => setIsTeamAssign(false)}
+                    confirm={(team) => {
+                        setIsTeamAssign(false);
+                        const updatedTournament = {
+                            ...tournament,
+                            team,
+                        };
+                        const index = tournaments!.findIndex(
+                            (e) => e.id === updatedTournament.id
+                        );
+                        const data = [...tournaments!];
+                        data[index] = updatedTournament;
+                        setTournaments(data);
+                    }}
                 />
             </Modal>
         )}

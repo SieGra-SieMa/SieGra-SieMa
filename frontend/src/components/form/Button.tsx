@@ -2,7 +2,7 @@ import { MouseEventHandler } from 'react';
 import styles from './Form.module.css';
 
 export enum ButtonStyle {
-    Orange,
+    Yellow,
     Grey,
     DarkBlue,
     Red,
@@ -20,7 +20,7 @@ type ButtonProp = {
 
 const getStyleName = (style: ButtonStyle) => {
     switch (style) {
-        case ButtonStyle.Orange:
+        case ButtonStyle.Yellow:
             return styles.yellowButton;
         case ButtonStyle.Grey:
             return styles.greyButton;
@@ -40,7 +40,7 @@ export default function Button({
     type = 'submit',
     disabled = false,
     onClick,
-    style = ButtonStyle.Orange,
+    style = ButtonStyle.Yellow,
 }: ButtonProp) {
 
     const styleName = getStyleName(style);
@@ -49,7 +49,11 @@ export default function Button({
         <button
             id={id}
             type={type}
-            className={[styleName, className].filter((c) => c).join(' ')}
+            className={[
+                styleName,
+                className,
+                (disabled ? styles.disabled : undefined)
+            ].filter((c) => c).join(' ')}
             disabled={disabled}
             onClick={onClick}
         >

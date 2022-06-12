@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { Team } from '../../_lib/types';
 import SyncLoader from 'react-spinners/SyncLoader';
 import { useApi } from '../api/ApiContext';
+import { TeamsContext } from './TeamsContext';
 
 export default function TeamsList() {
 
@@ -20,45 +21,23 @@ export default function TeamsList() {
             )
     }, [teamsService]);
 
-    const onRemove = (id: number) => {
-        const data = teams ? [...teams] : [];
-        const index = data.findIndex(e => e.id === id) ?? -1;
-        if (index >= 0) {
-            data.splice(index, 1);
-            setTeams(data);
-        }
-    };
-
-    const onCaptainSwitch = (changedTeam: Team) => {
-        const data = teams ? [...teams] : [];
-        const index = data.findIndex(e => e.id === changedTeam.id) ?? -1;
-        if (index >= 0) {
-            data[index] = changedTeam;
-            setTeams(data);
-        }
-    };
-
-    const onPlayerRemoved = (changedTeam: Team) => {
-        const data = teams ? [...teams] : [];
-        const index = data.findIndex(e => e.id === changedTeam.id) ?? -1;
-        if (index >= 0) {
-            data[index] = changedTeam;
-            setTeams(data);
-        }
-    };
-
     return (
-        <div className="container">
-            <h2 className={styles.title}>My teams</h2>
-            <div className={styles.content}>
-                {teams ? teams.map((team, index) => (
-                    <TeamsListItem key={index} team={team} onRemove={onRemove} onCaptainSwitch={onCaptainSwitch} onPlayerRemovedSwitch={onPlayerRemoved}/>
-                )) : (
-                    <div className={styles.loader}>
-                        <SyncLoader loading={true} size={20} margin={20} />
-                    </div>
-                )}
+        <TeamsContext.Provider value={{ teams, setTeams }}>
+            <div className="container">
+                <h2 className={styles.title}>My teams</h2>
+                <div className={styles.content}>
+                    {teams ? teams.map((team, index) => (
+                        <TeamsListItem
+                            key={index}
+                            team={team}
+                        />
+                    )) : (
+                        <div className={styles.loader}>
+                            <SyncLoader loading={true} size={20} margin={20} color='#fff' />
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
+        </TeamsContext.Provider>
     );
 }

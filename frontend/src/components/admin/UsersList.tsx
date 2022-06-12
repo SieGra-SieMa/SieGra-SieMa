@@ -34,10 +34,14 @@ export default function UsersList() {
             <h2 className={styles.title}>Users:</h2>
             <div className={styles.content}>
                 {users ? users.map((user, index) => (
-                    <UsersListItem key={index} user={user} onUserPropChange={onUserPropChange}/>
+                    <UsersListItem
+                        key={index}
+                        user={user}
+                        onUserPropChange={onUserPropChange}
+                    />
                 )) : (
                     <div className={styles.loader}>
-                        <SyncLoader loading={true} size={20} margin={20} />
+                        <SyncLoader loading={true} size={20} margin={20} color='#fff' />
                     </div>
                 )}
             </div>

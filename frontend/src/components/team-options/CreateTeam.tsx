@@ -32,7 +32,6 @@ export default function CreateTeam() {
                 onChange={(e) => setName(e.target.value)}
             />
             <Button
-                className={name.length === 0 ? styles.disabled : undefined}
                 value='CREATE'
                 disabled={name.length === 0}
             />

@@ -1,0 +1,37 @@
+.group {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 10px;
+}
+
+.matches {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Match */
+
+.match {
+    background-color: var(--secondary-color);
+    padding: 25px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    align-items: center;
+}
+
+.vs {
+    font-size: 36px;
+    color: var(--accent-color);
+}
+
+/* MatchResult */
+
+.matchDetails {
+    display: grid;
+    row-gap: 15px;
+    grid-auto-rows: min-content;
+}

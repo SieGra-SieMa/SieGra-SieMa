@@ -1,11 +1,12 @@
 import { FormEvent, useState } from 'react';
 import { ROLES } from '../../../_lib/roles';
-import { Match as MatchType, MatchResult as MatchResultType, Tournament } from '../../../_lib/_types/tournament';
+import { Match as MatchType, MatchResult as MatchResultType } from '../../../_lib/_types/tournament';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
 import Input from '../../form/Input';
 import GuardComponent from '../../guard-components/GuardComponent';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
+import { useUser } from '../../user/UserContext';
 import { useTournament } from '../TournamentContext';
 import styles from './Ladder.module.css';
 
@@ -28,6 +29,7 @@ const createFunction = (fn: (data: number) => void) => {
 export default function MatchResult({ match, confirm }: MatchResultProps) {
 
     const { matchService } = useApi();
+    const { user } = useUser();
     const { tournament, setTournament } = useTournament();
 
     const [teamHomeScore, setTeamHomeScore] = useState(match.teamHomeScore ?? 0);
@@ -43,47 +45,42 @@ export default function MatchResult({ match, confirm }: MatchResultProps) {
             awayTeamPoints: teamAwayScore
         }
         matchService.insertResults(result)
-            .then(() => {
-                const phase = tournament!.ladder[result.phase - 1];
-                const updatedMatch = phase.matches.find(
-                    (match) => match.matchId === result.matchId
-                )!;
-                updatedMatch.teamAwayScore = result.awayTeamPoints;
-                updatedMatch.teamHomeScore = result.homeTeamPoints;
-                const updatedTournament: Tournament = {
-                    ...tournament!
-                };
-
-                const teamWin = result.awayTeamPoints > result.homeTeamPoints ? match.teamAway : match.teamHome;
-                const teamLose = result.awayTeamPoints < result.homeTeamPoints ? match.teamAway : match.teamHome;
-
-                if (result.phase === tournament!.ladder.length - 2) {
-                    const thirdPlacePhase = tournament!.ladder[result.phase];
-                    const thirdPlaceMatch = thirdPlacePhase.matches[0];
-                    const finalPhase = tournament!.ladder[result.phase + 1];
-                    const finalMatch = finalPhase.matches[0];
-                    if (result.matchId % 2 === 0) {
-                        thirdPlaceMatch.teamAway = teamLose;
-                        finalMatch.teamAway = teamWin;
-                    } else {
-                        thirdPlaceMatch.teamHome = teamLose;
-                        finalMatch.teamHome = teamWin;
-                    }
-                } else {
-                    const nextPhase = tournament!.ladder[result.phase];
-                    const nextMatch = nextPhase.matches[Math.ceil(result.matchId / 2) - 1];
-                    if (result.matchId % 2 === 0) {
-                        nextMatch.teamAway = teamWin;
-                    } else {
-                        nextMatch.teamHome = teamWin;
-                    }
-                }
-                setTournament(updatedTournament);
+            .then((data) => {
+                setTournament(data);
                 confirm();
             });
     };
 
-    const disabled = (match.teamAway && match.teamHome) ? false : true;
+    const isEditable = () => {
+        if (match.phase === tournament!.ladder.length - 2) {
+            const thirdPlacePhase = tournament!.ladder[match.phase];
+            const thirdPlaceMatch = thirdPlacePhase.matches[0];
+            const finalPhase = tournament!.ladder[match.phase + 1];
+            const finalMatch = finalPhase.matches[0];
+            return (
+                finalMatch.teamAwayScore === null &&
+                finalMatch.teamHomeScore === null &&
+                thirdPlaceMatch.teamAwayScore === null &&
+                thirdPlaceMatch.teamHomeScore === null
+            );
+        } else if (match.phase < tournament!.ladder.length - 2) {
+            const nextPhase = tournament!.ladder[match.phase];
+            const nextMatch = nextPhase.matches[Math.ceil(match.matchId / 2) - 1];
+            return (
+                nextMatch.teamAwayScore === null &&
+                nextMatch.teamHomeScore === null
+            );
+        }
+        return true;
+    }
+
+    const disabled = (
+        user &&
+        match.teamAway &&
+        match.teamHome &&
+        user.roles.some((role) => [ROLES.Employee, ROLES.Admin].includes(role)) &&
+        isEditable()
+    ) ? false : true;
 
     return (
         <form className={styles.matchDetails} onSubmit={onSubmit}>
@@ -101,10 +98,10 @@ export default function MatchResult({ match, confirm }: MatchResultProps) {
                 disabled={disabled}
                 onChange={(e) => createFunction(setTeamAwayScore)(e.target.value)}
             />
-            <GuardComponent roles={[ROLES.Admin, ROLES.Emp]}>
+            <GuardComponent roles={[ROLES.Admin, ROLES.Employee]}>
                 {!disabled && (<>
                     <VerticalSpacing size={15} />
-                    <Button value='Save' />
+                    <Button value='Zapisz' disabled={teamAwayScore === teamHomeScore} />
                 </>)}
             </GuardComponent>
         </form>

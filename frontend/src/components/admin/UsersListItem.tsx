@@ -7,28 +7,24 @@ import { useApi } from '../api/ApiContext';
 import Button, { ButtonStyle } from '../form/Button';
 import RoleAssign from './RoleAssign';
 
-import { useUser } from '../user/UserContext';
-
 type UsersListItemProp = {
     user: User,
     onUserPropChange: (user: User) => void,
-}
+};
 
 export default function UserListItem({ user, onUserPropChange }: UsersListItemProp) {
 
-    const [isEdit, setisEdit] = useState(false);
     const [isAdd, setIsAdd] = useState(false);
     const [isRemove, setIsRemove] = useState(false);
-    const [isDelete, setIsDelete] = useState(false);
     const [chosenRole, setChosenRole] = useState<string | null>(null);
 
-    const removeRole = useCallback((role: string) => {
+    const removeRole = (role: string) => {
         usersService.removeUserRole(user.id, [role])
             .then((data) => {
                 setIsRemove(false);
                 onUserPropChange(data);
             });
-    }, []);
+    };
 
     const { usersService } = useApi();
 
@@ -40,7 +36,6 @@ export default function UserListItem({ user, onUserPropChange }: UsersListItemPr
                     <Button
                         value='Edit'
                         onClick={() => { console.log('abc') }}
-                        style={ButtonStyle.Orange}
                     />
                     <Button
                         value='Delete'
@@ -85,21 +80,22 @@ export default function UserListItem({ user, onUserPropChange }: UsersListItemPr
                         cancel={() => setIsRemove(false)}
                         confirm={() => removeRole(chosenRole!)}
                         label='Remove'
+                        style={ButtonStyle.Red}
                     />
                 </Modal>
             )}
             {(isAdd) && (
-            <Modal
-                title='Dodaj role'
-                isClose
-                close={() => setIsAdd(false)}
-            >
-                <RoleAssign
-                    id={user.id}
-                    confirm={(user) => { onUserPropChange(user); setIsAdd(false) }}
-                />
-            </Modal>
-        )}
+                <Modal
+                    title='Dodaj role'
+                    isClose
+                    close={() => setIsAdd(false)}
+                >
+                    <RoleAssign
+                        id={user.id}
+                        confirm={(user) => { onUserPropChange(user); setIsAdd(false) }}
+                    />
+                </Modal>
+            )}
         </div>
     );
-}
+};

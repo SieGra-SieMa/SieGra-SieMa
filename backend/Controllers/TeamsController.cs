@@ -33,8 +33,8 @@ namespace SieGraSieMa.Controllers
             _mediaService = mediaService;
         }
 
-        [HttpGet]
         [Authorize(Policy = "EveryOneAuthenticated")]
+        [HttpGet]
         public IActionResult GetTeamByMail()
         {
             try
@@ -48,8 +48,8 @@ namespace SieGraSieMa.Controllers
             }
         }
         
-        [HttpGet("teamsIAmCaptain")]
         [Authorize(Policy = "EveryOneAuthenticated")]
+        [HttpGet("teamsIAmCaptain")]
         public async Task<IActionResult> GetTeamByMailForCaptain()
         {
             try
@@ -63,8 +63,8 @@ namespace SieGraSieMa.Controllers
             }
         }
 
-        [HttpPost()]
         [Authorize(Policy = "EveryOneAuthenticated")]
+        [HttpPost()]
         public IActionResult Create(TeamDTO teamDTO)
         {
             try
@@ -79,15 +79,14 @@ namespace SieGraSieMa.Controllers
             }
         }
 
-        [HttpPost("join")]
         [Authorize(Policy = "EveryOneAuthenticated")]
+        [HttpPost("join")]
         public async Task<IActionResult> Join(TeamCodeDTO teamCodeDTO)
         {
             try
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var captain = _userService.GetUser(email);
-                //TODO change exception types
                 var response = await _teamService.IsUserAbleToJoinTeam(captain, teamCodeDTO.Code);
                 if(!response)
                     return BadRequest(new ResponseErrorDTO { Error = "Player already belongs to another team which is in the same tournament as this one" });
@@ -101,8 +100,8 @@ namespace SieGraSieMa.Controllers
             
         }
 
-        [HttpPost("leave")]
         [Authorize(Policy = "EveryOneAuthenticated")]
+        [HttpPost("leave")]
         public IActionResult Leave(TeamLeaveDTO teamLeaveDTO)
         {
             try
@@ -119,6 +118,7 @@ namespace SieGraSieMa.Controllers
 
         }
 
+        [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpPatch("{id}")]
         public async Task<IActionResult> ChangeTeamDetailsAsync(int id, TeamDetailsDTO teamDetailsDTO)
         {
@@ -136,7 +136,8 @@ namespace SieGraSieMa.Controllers
 
         }
 
-        [HttpDelete("{id}/remove-user/{userId}")]
+        [Authorize(Policy = "EveryOneAuthenticated")]
+        [HttpPost("{id}/remove-user/{userId}")]
         public async Task<IActionResult> RemoveUserFromTeam(int id, int userId)
         {
             try
@@ -153,6 +154,7 @@ namespace SieGraSieMa.Controllers
 
         }
 
+        [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpPost("{id}/switch-captain/{userId}")]
         public async Task<IActionResult> SwitchCaptainAsync(int id, int userId)
         {
@@ -170,6 +172,7 @@ namespace SieGraSieMa.Controllers
 
         }
 
+        [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
@@ -187,22 +190,7 @@ namespace SieGraSieMa.Controllers
 
         }
 
-        [Authorize(Policy = "OnlyAdminAuthenticated")]
-        [HttpDelete("admin/{id}")]
-        public async Task<IActionResult> DeleteByAdminAsync(int id)
-        {
-            try
-            {
-                await _teamService.DeleteTeamByAdmin(id);
-                return Ok(new MessageDTO { Message = $"Team successfully deleted" });
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new ResponseErrorDTO { Error = e.Message });
-            }
-
-        }
-
+        [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpPost("{id}/send-invite")]
         public async Task<IActionResult> SendInvite(int id, string emailAdress)
         {
@@ -210,6 +198,7 @@ namespace SieGraSieMa.Controllers
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
+                //await _teamService.DeleteUserFromTeam(userId, user.Id, id);
                 var team = _teamService.GetTeam(id);
                 if (team == null)
                     return NotFound(new ResponseErrorDTO { Error = "Team not found" });
@@ -225,6 +214,7 @@ namespace SieGraSieMa.Controllers
 
         }
 
+        [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpPost("{id}/add-profile-photo")]
         public async Task<IActionResult> AddPhoto(int id, IFormFile[] file)
         {
@@ -249,5 +239,41 @@ namespace SieGraSieMa.Controllers
             }
 
         }
+
+
+        //-------------------------------------------------admin functions
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
+        [HttpDelete("admin/{id}")]
+        public async Task<IActionResult> DeleteByAdminAsync(int id)
+        {
+            try
+            {
+                await _teamService.DeleteTeamByAdmin(id);
+                return Ok(new MessageDTO { Message = $"Team successfully deleted" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
+        [HttpGet("admin")]
+        public async Task<IActionResult> GetAllTeamsByAdmin()
+        {
+            try
+            {
+                var result = await _teamService.GetAllTeams();
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
+
     }
 }

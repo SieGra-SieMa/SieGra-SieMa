@@ -1,5 +1,6 @@
 import Config from '../config.json';
 import { User, UserDetailsRequest, PasswordChange } from '../_lib/types';
+import { Message } from '../_lib/_types/response';
 import Service from './service';
 
 export default class UsersService extends Service {
@@ -20,19 +21,19 @@ export default class UsersService extends Service {
         return super.get(`${Config.HOST}/api/users/newsletter/leave`);
     };
 
-    changePassword(pass: PasswordChange): Promise<{}> {
+    changePassword(pass: PasswordChange): Promise<Message> {
         return super.post(`${Config.HOST}/api/users/change-password`, pass);
     };
 
     getUsers(): Promise<User[]> {
-        return super.get(`${Config.HOST}/api/users/admin/all`);
+        return super.get(`${Config.HOST}/api/users`);
     };
 
     addUserRole(id: number, role: string[]): Promise<User> {
-        return super.post(`${Config.HOST}/api/users/admin/add-role/${id}`, role);
+        return super.post(`${Config.HOST}/api/users/${id}/add-role`, role);
     };
 
     removeUserRole(id: number, role: string[]): Promise<User> {
-        return super.post(`${Config.HOST}/api/users/admin/remove-role/${id}`, role);
+        return super.post(`${Config.HOST}/api/users/${id}/remove-role`, role);
     };
 }

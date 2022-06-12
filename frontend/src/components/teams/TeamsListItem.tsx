@@ -8,88 +8,102 @@ import TeamChange from './TeamDataEdit';
 import { useApi } from '../api/ApiContext';
 import Button, { ButtonStyle } from '../form/Button';
 import { useUser } from '../user/UserContext';
+import TeamEdit from './TeamEdit';
+import { useTeams } from './TeamsContext';
 
 type TeamsListItemProp = {
-    team: Team,
-    onRemove: (id: number) => void,
-    onCaptainSwitch: (team: Team) => void,
-    onPlayerRemovedSwitch: (team: Team) => void
+    team: Team;
 }
 
-export default function TeamsListItem({ team, onRemove, onCaptainSwitch, onPlayerRemovedSwitch }: TeamsListItemProp) {
+export default function TeamsListItem({
+    team,
+}: TeamsListItemProp) {
 
     const { teamsService } = useApi();
     const { user } = useUser();
 
+    const { teams, setTeams } = useTeams();
+
     const [isAdd, setIsAdd] = useState(false);
-    const [isConfirm, setIsConfirm] = useState(false);
     const [isSwitch, setIsSwitch] = useState(false);
     const [isRemoveConfirm, setIsRemoveConfirm] = useState(false);
-    const [isTeamEdit, setIsTeamEdit] = useState(false);
     const [chosenPlayer, setChosenPlayer] = useState<number>();
+
+    const [isEdit, setIsEdit] = useState(false);
+    const [isLeave, setIsLeave] = useState(false);
 
     const captain = team.players!.find((player) => player.id === team.captainId);
 
     const leaveTeam = useCallback(() => {
-        teamsService.leaveTeam(team.id!)
+        teamsService.leaveTeam(team.id)
             .then(() => {
-                setIsConfirm(false);
-                onRemove(team.id!)
+                const data = teams ? [...teams] : [];
+                const index = data.findIndex(e => e.id === team.id) ?? -1;
+                if (index >= 0) {
+                    data.splice(index, 1);
+                    setTeams(data);
+                }
+                setIsLeave(false);
             })
-    }, [team.id, onRemove, teamsService]);
+    }, [team.id, teams, setTeams, teamsService]);
 
     const switchCaptain = useCallback((id: number) => {
-        teamsService.switchCaptain(team.id!, id)
-            .then((data) => {
+        teamsService.switchCaptain(team.id, id)
+            .then((team) => {
+                const data = teams ? [...teams] : [];
+                const index = data.findIndex(e => e.id === team.id) ?? -1;
+                if (index >= 0) {
+                    data[index] = team;
+                    setTeams(data);
+                }
                 setIsSwitch(false);
-                onCaptainSwitch(data)
             });
-    }, [team.id, onCaptainSwitch, teamsService]);
+    }, [team.id, teamsService]);
 
     const removePlayer = useCallback((id: number) => {
-        teamsService.removePlayer(team.id!, id)
-            .then((data) => {
+        teamsService.removePlayer(team.id, id)
+            .then((team) => {
+                const data = teams ? [...teams] : [];
+                const index = data.findIndex(e => e.id === team.id) ?? -1;
+                if (index >= 0) {
+                    data[index] = team;
+                    setTeams(data);
+                }
                 setIsRemoveConfirm(false);
-                onPlayerRemovedSwitch(data)
             });
-    }, [team.id, onPlayerRemovedSwitch, teamsService]);
+    }, [team.id, teamsService]);
 
     return (
         <div className={styles.root}>
             <div className={styles.content}>
-                <h3>{team.name}
-                {(user?.id === team.captainId) && (<>
-                    <Button
-                        value='Edit'
-                        onClick={() => { setIsTeamEdit(true); }}
-                        style={ButtonStyle.Orange}
-                    />
-                </>)}
-                </h3>
+                <h3>{team.name}</h3>
                 <div className={styles.codeBlock}>
                     <span>Code: </span>
-                    <h3>{team.code}</h3>
+                    <h6>{team.code}</h6>
                 </div>
                 <div className={styles.codeBlock}>
                     <span>Captain: </span>
-                    <h3>{captain ? `${captain.name} ${captain.surname}` : 'Username'}</h3>
+                    <h6>{captain ? `${captain.name} ${captain.surname}` : 'Username'}</h6>
                 </div>
                 <ul>
                     {team.players!.filter((player) => player.id !== team.captainId).map((player, index) => (
-                        <li
-                            key={index}
-                        >
+                        <li key={index}>
                             <div className={styles.teamMember}>
                                 <p>{`${player.name} ${player.surname}`}</p>
                                 {(user?.id === team.captainId) && (<>
                                     <Button
-                                        value='Switch Captain'
-                                        onClick={() => { setChosenPlayer(player.id); setIsSwitch(true); }}
-                                        style={ButtonStyle.Orange}
+                                        value='Zmień kapitana'
+                                        onClick={() => {
+                                            setChosenPlayer(player.id);
+                                            setIsSwitch(true);
+                                        }}
                                     />
                                     <Button
-                                        value='Remove'
-                                        onClick={() => { setChosenPlayer(player.id); setIsRemoveConfirm(true); }}
+                                        value='Usuń gracza'
+                                        onClick={() => {
+                                            setChosenPlayer(player.id);
+                                            setIsRemoveConfirm(true);
+                                        }}
                                         style={ButtonStyle.Red}
                                     />
                                 </>)}
@@ -101,13 +115,19 @@ export default function TeamsListItem({ team, onRemove, onCaptainSwitch, onPlaye
             </div>
             <div className={styles.footer}>
                 <Button
-                    value='Add participants'
+                    value='Dodaj gracza'
                     onClick={() => setIsAdd(true)}
-                    style={ButtonStyle.Orange}
                 />
+                {user && team.captainId === user.id && (
+                    <Button
+                        value='Edytuj zespół'
+                        onClick={() => setIsEdit(true)}
+                        style={ButtonStyle.DarkBlue}
+                    />
+                )}
                 <Button
-                    value='Leave'
-                    onClick={() => setIsConfirm(true)}
+                    value='Opuść zespół'
+                    onClick={() => setIsLeave(true)}
                     style={ButtonStyle.Red}
                 />
             </div>
@@ -120,55 +140,67 @@ export default function TeamsListItem({ team, onRemove, onCaptainSwitch, onPlaye
                     <TeamAdd />
                 </Modal>
             )}
-            {isConfirm && (
+            {isEdit && (
                 <Modal
-                    close={() => setIsConfirm(false)}
-                    title={`Team "${team.name}" - Do you really want to leave?`}
+                    isClose
+                    close={() => setIsEdit(false)}
+                    title={'Edytuj zespół'}
+                >
+                    <TeamEdit
+                        team={team}
+                        confirm={(team) => {
+                            setIsEdit(false);
+                            if (teams) {
+                                const index = teams.findIndex((e) => e.id === team.id);
+                                const data = [...teams];
+                                data[index] = {
+                                    ...team,
+                                    players: teams[index].players,
+                                };
+                                setTeams(data);
+                            }
+                        }}
+                    />
+                </Modal>
+            )}
+            {isLeave && (
+                <Modal
+                    close={() => setIsLeave(false)}
+                    title={`Czy na pewno chcesz opuścić zespół? - "${team.name}"`}
                 >
                     <Confirm
-                        cancel={() => setIsConfirm(false)}
+                        cancel={() => setIsLeave(false)}
                         confirm={() => leaveTeam()}
-                        label='Leave'
+                        label='Opuść'
+                        style={ButtonStyle.Red}
                     />
                 </Modal>
             )}
             {isSwitch && (
                 <Modal
                     close={() => setIsSwitch(false)}
-                    title={`Team "${team.name}" - Do you really want to switch captain?`}
+                    title={`Zespół "${team.name}" - Czy na pewno chcesz zmienić kapitana?`}
                 >
                     <Confirm
                         cancel={() => setIsSwitch(false)}
                         confirm={() => switchCaptain(chosenPlayer!)}
-                        label='Switch'
+                        label='Zmień'
+                        style={ButtonStyle.Yellow}
                     />
                 </Modal>
             )}
             {isRemoveConfirm && (
                 <Modal
                     close={() => setIsRemoveConfirm(false)}
-                    title={`Team "${team.name}" - Do you really want to remove player`}
+                    title={`Zespół "${team.name}" - Czy na pewno chcesz usunąć gracza?`}
                 >
                     <Confirm
                         cancel={() => setIsRemoveConfirm(false)}
                         confirm={() => removePlayer(chosenPlayer!)}
-                        label='Remove'
+                        label='Usuń'
+                        style={ButtonStyle.Red}
                     />
                 </Modal>
-            )}
-            {isTeamEdit && (
-                <Modal
-                close={() => setIsTeamEdit(false)}
-                isClose
-                title={`Team "${team.name}" - Change name`}
-            >
-                <TeamChange parameter={team.id!} confirm={(team) => {
-                        // setUser(user);
-                        // setIsEdit(false);
-                        onCaptainSwitch(team);
-                        setIsTeamEdit(false);
-                    }}/>
-            </Modal>
             )}
         </div>
     );

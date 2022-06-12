@@ -26,6 +26,18 @@
 </head>
 
 <body>
+  <script>
+    window.fbAsyncInit = function () {
+      FB.init({
+        appId: '2875621466071847',
+        autoLogAppEvents: true,
+        xfbml: true,
+        version: 'v14.0'
+      })
+    };
+  </script>
+  <script crossOrigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
   <div id="modal"></div>

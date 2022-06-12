@@ -1,0 +1,74 @@
+.top {
+    display: flex;
+    column-gap: 25px;
+    justify-content: space-between;
+}
+
+.title {
+    width: fit-content;
+}
+
+.albums {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 25px;
+    margin: 20px 0;
+}
+
+.item {
+    border-radius: 15px;
+    overflow: hidden;
+    transition: box-shadow .3s;
+    min-height: 250px;
+    cursor: pointer;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    background-color: #3e555f;
+    color: #fff;
+    position: relative;
+}
+
+.item:hover {
+    box-shadow: 0 5px 15px #000;
+}
+
+.item:active {
+    box-shadow: 0 5px 5px #000;
+}
+
+.box {
+    padding: 0 30px;
+    flex: 1 1;
+    display: flex;
+    align-items: flex-end;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.picture {
+    font-size: 72px !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.images {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 25px;
+    margin: 20px 0;
+}
+
+.adminControls {
+    display: flex;
+    column-gap: 25px;
+}
+
+.image {
+    max-width: min(800px, 100%);
+    max-height: min(500px, 100%);
+    display: block;
+    margin: auto;
+}

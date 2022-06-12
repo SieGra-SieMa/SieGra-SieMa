@@ -1,0 +1,5 @@
+.root {
+    display: grid;
+    row-gap: 15px;
+    grid-auto-rows: min-content;
+}

@@ -4,6 +4,8 @@ import { useAuth } from '../auth/AuthContext';
 import { useUser } from '../user/UserContext';
 import { useCallback } from 'react';
 import Button from '../form/Button';
+import GuardComponent from '../guard-components/GuardComponent';
+import { ROLES } from '../../_lib/roles';
 
 export default function Header() {
 
@@ -33,15 +35,22 @@ export default function Header() {
                             </Link>
                         </li>
                         <li>
+                            <Link to="/tournaments/gallery">
+                                Galeria
+                            </Link>
+                        </li>
+                        <li>
                             <Link to="/about-us">
                                 O nas
                             </Link>
                         </li>
-                        <li>
-                            <Link to="/admin">
-                                Admin Panel
-                            </Link>
-                        </li>
+                        <GuardComponent roles={[ROLES.Admin]}>
+                            <li>
+                                <Link to="/admin">
+                                    Panel administratora
+                                </Link>
+                            </li>
+                        </GuardComponent>
                         {session ? (
                             <>
                                 <li>

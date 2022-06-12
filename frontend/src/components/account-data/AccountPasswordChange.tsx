@@ -1,6 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { User, UserDetailsRequest, PasswordChange } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
+import { useAuth } from '../auth/AuthContext';
 import Button from '../form/Button';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
@@ -14,42 +15,45 @@ type AccountDataEditProps = {
 export default function AccountPasswordChange({ confirm }: AccountDataEditProps) {
 
     const { usersService } = useApi();
-    const { user } = useUser();
 
-    const [oldpassword, setOldPassword] = useState('');
-    const [newpassword, setNewPassword] = useState('');
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
         const updatedUser: PasswordChange = {
-            oldpassword,
-            newpassword
+            oldPassword,
+            newPassword
         };
         usersService.changePassword(updatedUser)
-            .then((data) => {});
-        // usersService.updateUser(updatedUser)
-        //     .then((data) => {
-        //         confirm({ ...user!, ...updatedUser });
-        //     });
-        //usersService.
+            .then(
+                (data) => {
+                    alert(data.message);
+                    confirm();
+                }, (error) => {
+                    alert(error);
+                }
+            );
     };
 
     return (
         <form className={styles.root} onSubmit={onSubmit}>
             <Input
                 id='AccountPasswordChange-pass1'
-                label='Old password'
-                value={oldpassword}
+                label='Stare hasło'
+                type='password'
+                value={oldPassword}
                 onChange={(e) => setOldPassword(e.target.value)}
             />
             <Input
                 id='AccountPasswordChange-pass2'
-                label='New password'
-                value={newpassword}
+                label='Nowe hasło'
+                type='password'
+                value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
             />
             <VerticalSpacing size={15} />
-            <Button value='Save' />
+            <Button value='Zapisz' />
         </form>
     );
 }

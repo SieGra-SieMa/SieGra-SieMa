@@ -14,7 +14,7 @@ import { useApi } from '../api/ApiContext';
 export default function AccountData() {
 
     const { user, setUser } = useUser();
-    const { session, setSession } = useAuth();
+    const { setSession } = useAuth();
     const { usersService } = useApi();
 
     const [isEdit, setIsEdit] = useState(false);
@@ -26,45 +26,38 @@ export default function AccountData() {
         setIsConfirm(false);
     }
 
-    const leave = () => {
-        usersService.leaveNewsletter();
-    }
+    // const leave = () => {
+    //     usersService.leaveNewsletter();
+    // }
 
     return (
         <div className={styles.root}>
             <div className={styles.container}>
-                <div className={styles.avatarBlock}>
-                    <img src="http://localhost:3000/hero.jpeg" alt="" />
+                <div className={styles.controls}>
+                    <Button
+                        value='Edytuj użytkownika'
+                        onClick={() => setIsEdit(true)}
+                        style={ButtonStyle.DarkBlue}
+                    />
                 </div>
-                <div className={styles.dataBlock}>
-                    <div className={styles.controls}>
-                        <Button
-                            value='Edit'
-                            onClick={() => setIsEdit(true)}
-                            style={ButtonStyle.DarkBlue}
-                        />
-                    </div>
-                    <h2>{user ? `${user.name} ${user.surname}` : 'Username'}</h2>
-                    <div className={styles.userButtons}>
-                        <Button
-                            value='Change Password'
-                            onClick={() => setIsChanged(true)}
-                            style={ButtonStyle.Red}
-                        />
-                        <Button
-                            value='Join Newsletter'
-                            onClick={() => setIsConfirm(true)}
-                            style={ButtonStyle.Orange}
-                        />
-                    </div>
-                    
+                <h2>{user ? `${user.name} ${user.surname}` : 'Username'}</h2>
+                <div className={styles.userButtons}>
+                    <Button
+                        value='Zmień hasło'
+                        onClick={() => setIsChanged(true)}
+                        style={ButtonStyle.Red}
+                    />
+                    <Button
+                        value='Dolącz do newslettera'
+                        onClick={() => setIsConfirm(true)}
+                    />
                 </div>
             </div>
             {user && isEdit && (
                 <Modal
                     isClose
                     close={() => setIsEdit(false)}
-                    title={'Edit user'}
+                    title={'Edytuj użytkownika'}
                 >
                     <AccountDataEdit confirm={(user) => {
                         setUser(user);
@@ -76,10 +69,9 @@ export default function AccountData() {
                 <Modal
                     isClose
                     close={() => setIsChanged(false)}
-                    title={`Password change`}
+                    title={`Zmiana hasła`}
                 >
                     <AccountPasswordChange confirm={() => {
-                        //setUser(user);
                         setIsEdit(false);
                         setSession(null);
                     }} />
@@ -88,12 +80,13 @@ export default function AccountData() {
             {isConfirm && (
                 <Modal
                     close={() => setIsConfirm(false)}
-                    title={`Do you want to join newsletter?`}
+                    title={`Czy na pewno chcesz dołączyć do newsslettera?`}
                 >
                     <Confirm
                         cancel={() => setIsConfirm(false)}
                         confirm={() => join()}
-                        label='Join'
+                        label='Potwierdź'
+                        style={ButtonStyle.Yellow}
                     />
                 </Modal>
             )}

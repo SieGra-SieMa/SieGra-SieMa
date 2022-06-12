@@ -5,15 +5,17 @@
     flex-direction: column;
     overflow: hidden;
     border-radius: 15px;
-    background-color: var(--secondary-color);
+    background-color: rgb(7, 101, 43);
     padding: 30px;
     row-gap: 45px;
 }
 
-.teamMember {
+.teamMember{
     display: flex;
     flex-direction: row;
 }
+
+.content {}
 
 .content>h3 {
     font-size: 30px;
@@ -27,12 +29,10 @@
 .codeBlock>span {
     margin-right: 10px;
     font-size: 20px;
-    color: #fff;
 }
 
-.codeBlock>h6 {
-    padding: 0;
-    font-weight: bold;
+.codeBlock>h3 {
+    font-size: 20px;
 }
 
 .footer {

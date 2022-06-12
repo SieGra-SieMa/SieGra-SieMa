@@ -59,9 +59,9 @@ export default function Home() {
 				</div>
 			</div>
 			<div className="news-section">
-				<h2 style={{ width: "auto", margin: "auto"}}>News feed</h2>
-				<div style={{ margin: "auto" }}>
-					<NewsFeed fetchLimit="4" />
+				<div className="container news-container">
+					<h2>News feed</h2>
+					<NewsFeed fetchLimit={4} />
 				</div>
 			</div>
 			<div className="dreamteam-section">

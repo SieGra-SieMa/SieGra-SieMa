@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
-import { FacebookFeed } from "../../_lib/types";
-import "./NewsFeed.css";
-import Post from "./post/Post";
-import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+import { useEffect, useState } from 'react';
+import { FacebookFeed } from '../../_lib/types';
+import './NewsFeed.css';
+import Post from './post/Post';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
 interface NewsFeedProps {
-	fetchLimit?: string;
+	fetchLimit?: number;
 }
 
 export default function NewsFeed(props?: NewsFeedProps) {
@@ -14,12 +14,11 @@ export default function NewsFeed(props?: NewsFeedProps) {
 	const ACCESS_TOKEN =
 		"EAAo3XMvZBYycBAHVdiapMw63KyWyPhsjxJP5FuEfAeqGqnBZCkYZBDtg3e5GE93HkiB1iyIMEwPYa1uJo21W8ZBdoTVPZBLCVlYTBUxtjXBK0NmIjPETMwrXaQDVVnzpHxF5HKO6nuepaG5WMTAkhV4411ojTUivZC7DIfNZBohiij9yGvCATDzVRo5hN7ZCJD0ZD";
 	const [feed, setFeed] = useState<FacebookFeed | null>(null);
-	const fetchLimit = props?.fetchLimit ? props?.fetchLimit : "10";
+	const fetchLimit = props?.fetchLimit ? props?.fetchLimit : 10;
 
 	const [slide, setSlide] = useState(0);
 	const [nextVisible, setNextVisible] = useState(true);
 	const [prevVisible, setPrevVisible] = useState(false);
-	const [translation, setTranslation] = useState(0);
 
 	useEffect(() => {
 		FB.api(
@@ -33,8 +32,7 @@ export default function NewsFeed(props?: NewsFeedProps) {
 	}, [fetchLimit]);
 
 	useEffect(() => {
-		setTranslation(slide * -100);
-		setNextVisible(slide === parseInt(fetchLimit) - 1 ? false : true);
+		setNextVisible(slide === fetchLimit - 1 ? false : true);
 		setPrevVisible(slide === 0 ? false : true);
 	}, [slide, fetchLimit]);
 
@@ -48,17 +46,18 @@ export default function NewsFeed(props?: NewsFeedProps) {
 	}
 
 	return (
-		<>
+		<div className="news-wrapper">
 			<ul
 				className="news-list"
 				style={{
-					width: `${parseInt(fetchLimit) * 100}vw`,
-					transform: `translateX(${translation}vw)`,
+					width: `${fetchLimit * 100}%`,
+					transform: `translateX(-${slide / fetchLimit * 100}%)`,
 				}}
 			>
 				{feed &&
 					feed.data.map((post, index) => (
 						<Post
+							key={index}
 							created_time={post.created_time}
 							full_picture={post.full_picture}
 							id={post.id}
@@ -91,6 +90,6 @@ export default function NewsFeed(props?: NewsFeedProps) {
 					<NavigateNextIcon fontSize="large" />
 				</button>
 			</div>
-		</>
+		</div>
 	);
 }

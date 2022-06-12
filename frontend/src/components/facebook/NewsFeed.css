@@ -1,13 +1,11 @@
+.news-wrapper {
+	width: 100%;
+}
+
 .news-list {
 	display: flex;
 	justify-content: flex-start;
 	align-items: flex-start;
 	overflow: hidden;
 	transition: all 0.3s ease-in-out;
-}
-
-@media all and (max-width: 1600px) {
-	.news-list {
-		flex-wrap: wrap;
-	}
 }

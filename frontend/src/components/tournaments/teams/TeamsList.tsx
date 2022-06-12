@@ -27,7 +27,7 @@ export default function TeamsList({ teams }: TeamsListProps) {
             {(paidTeams) ? (
                 <div className={styles.root}>
                     <div>
-                        <GuardComponent roles={[ROLES.Emp, ROLES.Admin]}>
+                        <GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
                             <h6>Zapłacono</h6>
                         </GuardComponent>
                         <ul className={styles.teams}>
@@ -36,7 +36,7 @@ export default function TeamsList({ teams }: TeamsListProps) {
                             ))}
                         </ul>
                     </div>
-                    <GuardComponent roles={[ROLES.Emp, ROLES.Admin]}>
+                    <GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
                         <div>
                             <h6>Oczekiwanie</h6>
                             <ul className={styles.teams}>

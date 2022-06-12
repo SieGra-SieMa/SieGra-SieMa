@@ -23,6 +23,10 @@ export default function AlbumsList() {
     const [addAlbum, setAddAlbum] = useState(false);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
         tournamentsService.getTournamentWithAlbums(id!)
             .then((data) => {
                 setTournamentWithAlbums(data);

@@ -28,8 +28,11 @@ export default function Album() {
     const [isEdit, setIsEdit] = useState(false);
     const [isRemove, setIsRemove] = useState(false);
 
-
     const [selectedImage, setSelectedImage] = useState<Media | null>(null);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     useEffect(() => {
         albumsService.getAlbumWithMedia(albumId!)
@@ -60,7 +63,7 @@ export default function Album() {
             <div className={styles.top}>
                 <Button value='Wstecz' onClick={() => navigate('..')} />
 
-                <GuardComponent roles={[ROLES.Emp, ROLES.Admin]}>
+                <GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
                     <div className={styles.adminControls}>
                         <Button
                             value='Dodaj zdjęcie'
@@ -153,7 +156,7 @@ export default function Album() {
                 >
                     <>
                         <img alt='' className={styles.image} src={`${Config.HOST}${selectedImage.url}`} />
-                        <GuardComponent roles={[ROLES.Emp, ROLES.Admin]}>
+                        <GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
                             <VerticalSpacing size={30} />
                             <Button
                                 value='Usuń'

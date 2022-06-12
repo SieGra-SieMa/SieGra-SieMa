@@ -145,7 +145,7 @@ namespace SieGraSieMa.Controllers
         //-------------------------------------------------admin functions
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
-        [HttpGet("admin/{id}")]
+        [HttpGet("{id}")]
         public async Task<ActionResult> GetUserById(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
@@ -170,18 +170,23 @@ namespace SieGraSieMa.Controllers
             //await _userManager.DeleteAsync(user);
             return Ok();
         }
-
+        
         [Authorize(Policy = "OnlyAdminAuthenticated")]
-        [HttpGet("admin/all")]
+        [HttpGet()]
         public async Task<ActionResult> GetUsers()
         {
-            var users = _userManager.Users;
-            var usersDTO = users.Select(u => new UserDTO { Id = u.Id, Name = u.Name, Surname = u.Surname, Email = u.NormalizedEmail });
+            var users = await _userManager.Users.ToListAsync();
+            List<UserDTO> usersDTO = new List<UserDTO>();
+            foreach(var user in users)
+            {
+                usersDTO.Add(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = await _userManager.GetRolesAsync(user) });
+            }
+            
             return Ok(usersDTO);
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
-        [HttpPost("admin/{id}/add-role")]
+        [HttpPost("{id}/add-role")]
         public async Task<ActionResult> AddRoles(int id, IEnumerable<string> roles)
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
@@ -198,7 +203,7 @@ namespace SieGraSieMa.Controllers
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
-        [HttpPost("admin/{id}/remove-role")]
+        [HttpPost("{id}/remove-role")]
 
         public async Task<ActionResult> RemoveRole(int id, IEnumerable<string> roles)
         {
@@ -216,16 +221,16 @@ namespace SieGraSieMa.Controllers
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
-        [HttpPost("admin/newsletter/send")]
+        [HttpPost("newsletter/send")]
         public async Task<ActionResult> SendNewsletter(NewsletterInfoDTO newsletter)
         {
             try
             {
-                //var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
-                //var user = await _userManager.FindByEmailAsync(email);
-                //_userService.JoinNewsletter(user.Id);
                 var users = await _userService.GetNewsletterSubscribers(newsletter.TournamentId);
-                users.ToList().ForEach(async u => await _emailService.SendAsync(u.NormalizedEmail, newsletter.Title, newsletter.Body));
+                foreach(var user in users)
+                {
+                    await _emailService.SendAsync(user.NormalizedEmail, newsletter.Title, newsletter.Body);
+                }
                 return Ok(new MessageDTO { Message = "Newsletter sent!" });
             }
             catch (Exception ex)

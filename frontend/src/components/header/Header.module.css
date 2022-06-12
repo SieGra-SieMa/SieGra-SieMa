@@ -6,26 +6,13 @@
     position: sticky;
     opacity: 0.95;
     width: 100%;
-    height: 10vh;
     top: 0;
     z-index: 9999;
-}
-
-.navlink.active {
-    content: '';
-	display: block;
-	position: relative;
-	width: 100%;
-	height: 3px;
-	margin: 10px 0;
-	border-radius: 3px;
-	background-color: var(--accent-color);
 }
 
 .container {
     display: flex;
     justify-content: space-between;
-    width: 80%;
 }
 
 .logo {
@@ -60,6 +47,19 @@
     position: relative;
 }
 
+.navigation>ul>li>a:global(.active)::after {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 16px;
+    left: 15px;
+    margin-top: 5px;
+    height: 2px;
+    border-radius: 2px;
+    background-color: var(--accent-color);
+    width: calc(100% - 30px);
+}
+
 .navigation>ul>li>a::after {
     content: '';
     display: block;
@@ -78,80 +78,57 @@
     left: 15px;
     width: calc(100% - 30px);
 }
+
 .menu {
-    visibility: hidden;
-    position: absolute;
+    display: none;
 }
 
 
 @media all and (max-width: 720px) {
-    .root {
-        position: fixed;
-    }
-
-    .logo {
-        position: fixed;
-        margin-left: auto;
-        margin-right: auto;
-        top: 0;
-        left: 50px;
-        right: 50px;
-        text-align: center;
-    }
 
     .container {
-        width: 100%;
-        height: 10vh;
+        justify-content: center;
     }
 
     .menu {
-        visibility: visible;
-        z-index: 10000;
-        transition: .3s ease-in-out;
+        display: block;
+        position: fixed;
         background-color: transparent;
-        position: absolute;
         top: 0;
         right: 0;
         padding: 25px;
         color: white;
         border: none;
+        outline: none;
     }
 
     .navigation {
         background-color: var(--main-color);
         position: fixed;
-        top: 0;
-        right: 0;
-        left: 0;
-        padding: 0;
-        margin: 0;
-        height: 100vh;
-        width: 100vw;
-        overflow: hidden;
+        top: 90px;
+        left: 100%;
+        right: -100%;
+        bottom: 0;
+        display: flex;
+        justify-content: center;
+        transition: .3s ease-in-out;
     }
 
     .navigation>ul {
-        flex-direction: column; 
-        height: 100%;
-        width: 90vw;
-        margin: auto;
-        align-items: center;
-        justify-content: flex-start;
-        margin-top: 10vh;
-     }
-     .navigation>ul>li {
-        margin: 3rem;
-     }
+        width: 100%;
+        flex-direction: column;
+        gap: 75px;
+        overflow: auto;
+        padding: 30px 0;
+    }
 
     #navClosed {
-        transform: translateX(100vw);
-        transition: .3s ease-in-out;
-
+        left: 100%;
+        right: -100%;
     }
 
     #navOpen {
-        transform: translateX(0);
-        transition: .3s ease-in-out;
-        z-index: 9999;
+        left: 0;
+        right: 0;
     }
 }

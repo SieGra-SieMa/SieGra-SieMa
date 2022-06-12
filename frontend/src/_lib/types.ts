@@ -7,6 +7,7 @@ export type User = {
 	roles: ROLES[];
 };
 
+
 export type Account = User & {
 	email: string;
 	accessToken: string;
@@ -16,12 +17,12 @@ export type Account = User & {
 export type Player = User;
 
 export type Team = {
-    id: number;
-    name: string;
-    code: string;
-    captainId: number;
-    profilePicture: string;
-    players: Player[];
+	id: number;
+	name: string;
+	code: string;
+	captainId: number;
+	profilePicture: string;
+	players: Player[];
 };
 
 export type UserDetailsRequest = {
@@ -58,5 +59,10 @@ export type FacebookFeed = {
 };
 
 export enum TeamPaidEnum {
-    All, Paid, Unpaid
+	All, Paid, Unpaid
+};
+
+export type PasswordChange = {
+	oldPassword: string;
+	newPassword: string;
 };

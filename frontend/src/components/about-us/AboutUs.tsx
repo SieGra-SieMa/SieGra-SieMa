@@ -8,7 +8,7 @@ export default function AboutUs() {
     }, []);
 
     return (
-        <div className="container">
+        <div className="container about-us-container">
             <div className="description">
                 <h1>O nas</h1>
                 <p>

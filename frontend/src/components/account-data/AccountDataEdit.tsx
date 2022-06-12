@@ -35,18 +35,18 @@ export default function AccountDataEdit({ confirm }: AccountDataEditProps) {
         <form className={styles.root} onSubmit={onSubmit}>
             <Input
                 id='AccountData-name'
-                label='Name'
+                label='Imie'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
             />
             <Input
                 id='AccountData-surname'
-                label='Surname'
+                label='Nazwisko'
                 value={surname}
                 onChange={(e) => setSurname(e.target.value)}
             />
             <VerticalSpacing size={15} />
-            <Button value='Save' />
+            <Button value='Zapisz' />
         </form>
     );
 }

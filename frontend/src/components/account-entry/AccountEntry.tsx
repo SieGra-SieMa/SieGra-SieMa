@@ -17,7 +17,7 @@ export default function AccountEntry() {
 
 	return (
 		<div className={`container ${styles.root}`}>
-			<div className={ login ? styles.form : styles.hidden }>
+			<div className={login ? styles.form : styles.hidden}>
 				<SignIn />
 				<Button
 					className={styles.button}
@@ -27,7 +27,7 @@ export default function AccountEntry() {
 				/>
 			</div>
 			<span id={styles.divider}>OR</span>
-			<div className={ login ? styles.hidden : styles.form }>
+			<div className={login ? styles.hidden : styles.form}>
 				<CreateAccount />
 				<Button
 					className={styles.button}

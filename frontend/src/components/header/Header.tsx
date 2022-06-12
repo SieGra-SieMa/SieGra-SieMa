@@ -1,11 +1,13 @@
-import styles from "./Header.module.css";
-import { NavLink } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
-import { useUser } from "../user/UserContext";
-import { useCallback, useState } from "react";
-import Button from "../form/Button";
-import MenuIcon from "@mui/icons-material/Menu";
-import CloseIcon from "@mui/icons-material/Close";
+import styles from './Header.module.css';
+import { NavLink } from 'react-router-dom';
+import { useAuth } from '../auth/AuthContext';
+import { useUser } from '../user/UserContext';
+import { useCallback, useState } from 'react';
+import Button from '../form/Button';
+import GuardComponent from '../guard-components/GuardComponent';
+import { ROLES } from '../../_lib/roles';
+import MenuIcon from '@mui/icons-material/Menu';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function Header() {
 	const { session, setSession } = useAuth();
@@ -13,16 +15,27 @@ export default function Header() {
 	const [toggleMenu, setToggleMenu] = useState(false);
 	const [navState, setNavState] = useState(`${styles.navClosed}`);
 
-	const logout = useCallback(() => setSession(null), [setSession]);
+	const closeMenu = () => {
+		setNavState(`${styles.navClosed}`);
+		setToggleMenu(false);
+	};
 
 	const toggleNav = () => {
 		setToggleMenu(!toggleMenu);
 		setNavState(!toggleMenu ? `${styles.navOpen}` : `${styles.navClosed}`);
 	};
 
+	const logout = useCallback(() => {
+		setSession(null);
+		closeMenu();
+	}, [setSession]);
+
 	return (
 		<header className={styles.root}>
-			<div className={styles.container}>
+			<div className={[
+				'container',
+				styles.container,
+			].join(' ')}>
 				<div className={styles.logo}>
 					<NavLink to="/">
 						<img src="/logo_w.png" alt="" />
@@ -31,29 +44,36 @@ export default function Header() {
 				<nav className={styles.navigation} id={navState}>
 					<ul>
 						<li>
-							<NavLink className="navlink" to="/">
+							<NavLink to="/" onClick={closeMenu}>
 								Strona główna
 							</NavLink>
 						</li>
 						<li>
-							<NavLink className="navlink" to="/tournaments">
+							<NavLink to="/tournaments" onClick={closeMenu}>
 								Turnieje
 							</NavLink>
 						</li>
 						<li>
-							<NavLink className="navlink" to="/tournaments/gallery">
+							<NavLink to="/gallery" onClick={closeMenu}>
 								Galeria
 							</NavLink>
 						</li>
 						<li>
-							<NavLink className="navlink" to="/about-us">
+							<NavLink to="/about-us" onClick={closeMenu}>
 								O nas
 							</NavLink>
 						</li>
+						<GuardComponent roles={[ROLES.Admin]}>
+							<li>
+								<NavLink to="/admin" onClick={closeMenu}>
+									Panel administratora
+								</NavLink>
+							</li>
+						</GuardComponent>
 						{session ? (
 							<>
 								<li>
-									<NavLink className="navlink" to="/account">
+									<NavLink to="/account" onClick={closeMenu}>
 										{user
 											? `${user.name} ${user.surname}`
 											: "USERNAME"}
@@ -61,15 +81,15 @@ export default function Header() {
 								</li>
 								<li>
 									<Button
-										value="Wyloguj"
-										type="button"
+										value='Wyloguj'
+										type='button'
 										onClick={logout}
 									/>
 								</li>
 							</>
 						) : (
 							<li>
-								<NavLink className="navlink" to="/account">
+								<NavLink className="navlink" to="/account" onClick={closeMenu}>
 									Profil
 								</NavLink>
 							</li>

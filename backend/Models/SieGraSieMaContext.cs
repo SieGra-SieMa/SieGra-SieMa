@@ -602,7 +602,7 @@ namespace SieGraSieMa.Models
         {
             modelBuilder.Entity<IdentityRole<int>>().HasData(
                 new IdentityRole<int>() { Id = 1, Name = "Admin", NormalizedName = "Admin" },
-                new IdentityRole<int>() { Id = 2, Name = "Employee", NormalizedName = "Emp" },
+                new IdentityRole<int>() { Id = 2, Name = "Employee", NormalizedName = "Employee" },
                 new IdentityRole<int>() { Id = 3, Name = "User", NormalizedName = "User" }
                 );
         }

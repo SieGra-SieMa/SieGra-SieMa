@@ -22,6 +22,7 @@ import { ApiContext } from '../api/ApiContext';
 import ApiClient from '../../_services';
 import UserProvider from '../user/UserProvider';
 import TournamentsList from '../tournaments/list/TournamentsList';
+import UsersList from '../admin/UsersList';
 import Tournament from '../tournaments/page/Tournament';
 import Album from '../gallery/Album';
 
@@ -38,7 +39,9 @@ export default function App() {
                             <Route index element={<Home />} />
                             <Route path="about-us" element={<AboutUs />} />
                             <Route path="entry" element={<AccountEntry />} />
-                            <Route path="access-denied" element={<div>ACCESS DENIED</div>} />
+                            <Route path="access-denied" element={
+                                <div style={{ color: '#fff' }}>ACCESS DENIED</div>
+                            } />
                             <Route path="account/*" element={<AccountPage />}>
                                 <Route element={<GuardRoute roles={[ROLES.User, ROLES.Admin]} />}>
                                     <Route index element={<TeamOptions />} />
@@ -58,12 +61,14 @@ export default function App() {
                                     </Route>
                                 </Route>
                             </Route>
-
-                        </Routes>
+                            <Route path="admin" element={<GuardRoute roles={[ROLES.Admin]} />}>
+                                <Route index element={<UsersList />} />
+                            </Route>
+                        </Routes >
                         <Footer />
-                    </BrowserRouter>
-                </UserProvider>
-            </AuthProvider>
-        </ApiContext.Provider>
+                    </BrowserRouter >
+                </UserProvider >
+            </AuthProvider >
+        </ApiContext.Provider >
     );
 };

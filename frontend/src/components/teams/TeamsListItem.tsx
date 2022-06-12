@@ -11,32 +11,65 @@ import TeamEdit from './TeamEdit';
 import { useTeams } from './TeamsContext';
 
 type TeamsListItemProp = {
-    team: Team,
+    team: Team;
 }
 
-export default function TeamsListItem({ team }: TeamsListItemProp) {
+export default function TeamsListItem({
+    team,
+}: TeamsListItemProp) {
 
     const { teamsService } = useApi();
     const { user } = useUser();
+
     const { teams, setTeams } = useTeams();
 
     const [isAdd, setIsAdd] = useState(false);
+    const [isSwitch, setIsSwitch] = useState(false);
+    const [isRemoveConfirm, setIsRemoveConfirm] = useState(false);
+    const [chosenPlayer, setChosenPlayer] = useState<number>();
+
     const [isEdit, setIsEdit] = useState(false);
     const [isLeave, setIsLeave] = useState(false);
 
-    const captain = team.players.find((player) => player.id === team.captainId);
+    const captain = team.players!.find((player) => player.id === team.captainId);
 
     const leaveTeam = useCallback(() => {
         teamsService.leaveTeam(team.id)
             .then(() => {
-                setIsLeave(false);
                 const data = teams ? [...teams] : [];
                 const index = data.findIndex(e => e.id === team.id) ?? -1;
                 if (index >= 0) {
                     data.splice(index, 1);
                     setTeams(data);
                 }
+                setIsLeave(false);
             })
+    }, [team.id, teams, setTeams, teamsService]);
+
+    const switchCaptain = useCallback((id: number) => {
+        teamsService.switchCaptain(team.id, id)
+            .then((team) => {
+                const data = teams ? [...teams] : [];
+                const index = data.findIndex(e => e.id === team.id) ?? -1;
+                if (index >= 0) {
+                    data[index] = team;
+                    setTeams(data);
+                }
+                setIsSwitch(false);
+            });
+    }, [team.id, teams, setTeams, teamsService]);
+
+    const removePlayer = useCallback((id: number) => {
+        teamsService.removePlayer(team.id, id)
+            .then((team) => {
+                const data = teams ? [...teams] : [];
+                const index = data.findIndex(e => e.id === team.id) ?? -1;
+                if (index >= 0) {
+                    data[index] = team;
+                    setTeams(data);
+                }
+                setIsRemoveConfirm(false);
+            });
     }, [team.id, teams, setTeams, teamsService]);
 
     return (
@@ -52,11 +85,29 @@ export default function TeamsListItem({ team }: TeamsListItemProp) {
                     <h6>{captain ? `${captain.name} ${captain.surname}` : 'Username'}</h6>
                 </div>
                 <ul>
-                    {team.players.filter((player) => player.id !== team.captainId).map((player, index) => (
-                        <li
-                            key={index}
-                        >
-                            <p>{`${player.name} ${player.surname}`}</p>
+                    {team.players!.filter((player) => player.id !== team.captainId).map((player, index) => (
+                        <li key={index}>
+                            <div className={styles.teamMember}>
+                                <p>{`${player.name} ${player.surname}`}</p>
+                                {(user?.id === team.captainId) && (<>
+                                    <Button
+                                        value='Zmień kapitana'
+                                        onClick={() => {
+                                            setChosenPlayer(player.id);
+                                            setIsSwitch(true);
+                                        }}
+                                    />
+                                    <Button
+                                        value='Usuń gracza'
+                                        onClick={() => {
+                                            setChosenPlayer(player.id);
+                                            setIsRemoveConfirm(true);
+                                        }}
+                                        style={ButtonStyle.Red}
+                                    />
+                                </>)}
+                            </div>
+
                         </li>
                     ))}
                 </ul>
@@ -74,7 +125,7 @@ export default function TeamsListItem({ team }: TeamsListItemProp) {
                     />
                 )}
                 <Button
-                    value='Opuścić zespół'
+                    value='Opuść zespół'
                     onClick={() => setIsLeave(true)}
                     style={ButtonStyle.Red}
                 />
@@ -119,7 +170,33 @@ export default function TeamsListItem({ team }: TeamsListItemProp) {
                     <Confirm
                         cancel={() => setIsLeave(false)}
                         confirm={() => leaveTeam()}
-                        label='Opuścić'
+                        label='Opuść'
+                        style={ButtonStyle.Red}
+                    />
+                </Modal>
+            )}
+            {isSwitch && (
+                <Modal
+                    close={() => setIsSwitch(false)}
+                    title={`Zespół "${team.name}" - Czy na pewno chcesz zmienić kapitana?`}
+                >
+                    <Confirm
+                        cancel={() => setIsSwitch(false)}
+                        confirm={() => switchCaptain(chosenPlayer!)}
+                        label='Zmień'
+                        style={ButtonStyle.Yellow}
+                    />
+                </Modal>
+            )}
+            {isRemoveConfirm && (
+                <Modal
+                    close={() => setIsRemoveConfirm(false)}
+                    title={`Zespół "${team.name}" - Czy na pewno chcesz usunąć gracza?`}
+                >
+                    <Confirm
+                        cancel={() => setIsRemoveConfirm(false)}
+                        confirm={() => removePlayer(chosenPlayer!)}
+                        label='Usuń'
                         style={ButtonStyle.Red}
                     />
                 </Modal>

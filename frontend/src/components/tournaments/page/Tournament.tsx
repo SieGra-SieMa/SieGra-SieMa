@@ -249,7 +249,7 @@ export default function Tournament() {
                             <Matches groups={tournament.groups} />
                         </>)}
                         {tournament.ladder[0]?.matches[0].teamHome && <Ladder ladder={tournament.ladder} />}
-                        <GuardComponent roles={[ROLES.Emp, ROLES.Admin]}>
+                        <GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
                             {tournament && tournament.groups.map((group) =>
                                 group.matches?.map(e =>
                                     e.teamAwayScore !== null && e.teamHomeScore !== null).every(e => e)

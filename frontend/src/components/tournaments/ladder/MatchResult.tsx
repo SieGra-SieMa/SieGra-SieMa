@@ -78,7 +78,7 @@ export default function MatchResult({ match, confirm }: MatchResultProps) {
         user &&
         match.teamAway &&
         match.teamHome &&
-        user.roles.some((role) => [ROLES.Emp, ROLES.Admin].includes(role)) &&
+        user.roles.some((role) => [ROLES.Employee, ROLES.Admin].includes(role)) &&
         isEditable()
     ) ? false : true;
 
@@ -98,7 +98,7 @@ export default function MatchResult({ match, confirm }: MatchResultProps) {
                 disabled={disabled}
                 onChange={(e) => createFunction(setTeamAwayScore)(e.target.value)}
             />
-            <GuardComponent roles={[ROLES.Admin, ROLES.Emp]}>
+            <GuardComponent roles={[ROLES.Admin, ROLES.Employee]}>
                 {!disabled && (<>
                     <VerticalSpacing size={15} />
                     <Button value='Zapisz' disabled={teamAwayScore === teamHomeScore} />

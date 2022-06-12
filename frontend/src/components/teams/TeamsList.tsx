@@ -27,10 +27,13 @@ export default function TeamsList() {
                 <h2 className={styles.title}>My teams</h2>
                 <div className={styles.content}>
                     {teams ? teams.map((team, index) => (
-                        <TeamsListItem key={index} team={team} />
+                        <TeamsListItem
+                            key={index}
+                            team={team}
+                        />
                     )) : (
                         <div className={styles.loader}>
-                            <SyncLoader loading={true} size={20} margin={20} />
+                            <SyncLoader loading={true} size={20} margin={20} color='#fff' />
                         </div>
                     )}
                 </div>

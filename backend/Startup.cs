@@ -67,9 +67,9 @@ namespace SieGraSieMa
             {
                 //admin policy
                 options.AddPolicy("EveryOneAuthenticated", policy =>
-                      policy.RequireRole("User", "Admin", "Emp"));
+                      policy.RequireRole("User", "Admin", "Employee"));
                 options.AddPolicy("OnlyEmployeesAuthenticated", policy =>
-                      policy.RequireRole("Admin","Emp"));
+                      policy.RequireRole("Admin", "Employee"));
                 options.AddPolicy("OnlyAdminAuthenticated", policy =>
                       policy.RequireRole("Admin"));
             });

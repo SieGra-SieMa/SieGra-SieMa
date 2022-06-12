@@ -7,6 +7,7 @@ export type User = {
     roles: ROLES[];
 };
 
+
 export type Account = User & {
     email: string;
     accessToken: string;
@@ -37,6 +38,11 @@ export type Tokens = {
 export type Session = {
     accessToken: string;
     refreshToken: string;
+};
+
+export type PasswordChange = {
+    oldPassword: string;
+    newPassword: string;
 };
 
 export enum TeamPaidEnum {

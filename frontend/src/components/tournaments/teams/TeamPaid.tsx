@@ -37,7 +37,7 @@ export default function TeamPaid({ team }: TeamUnpaidProps) {
             <p>
                 {team.teamName}
             </p>
-            <GuardComponent roles={[ROLES.Emp, ROLES.Admin]}>
+            <GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
                 <Button value='Nie zapłacono' onClick={() => setIsChange(true)} />
                 {(isChange) && (
                     <Modal

@@ -39,7 +39,9 @@ export default function App() {
                             <Route index element={<Home />} />
                             <Route path="about-us" element={<AboutUs />} />
                             <Route path="entry" element={<AccountEntry />} />
-                            <Route path="access-denied" element={<div>ACCESS DENIED</div>} />
+                            <Route path="access-denied" element={
+                                <div style={{ color: '#fff' }}>ACCESS DENIED</div>
+                            } />
                             <Route path="account/*" element={<AccountPage />}>
                                 <Route element={<GuardRoute roles={[ROLES.User, ROLES.Admin]} />}>
                                     <Route index element={<TeamOptions />} />
@@ -59,7 +61,7 @@ export default function App() {
                                     </Route>
                                 </Route>
                             </Route>
-                            <Route path="admin" element={<GuardRoute roles={[ROLES.User, ROLES.Admin]} />}>
+                            <Route path="admin" element={<GuardRoute roles={[ROLES.Admin]} />}>
                                 <Route index element={<UsersList />} />
                             </Route>
                         </Routes >

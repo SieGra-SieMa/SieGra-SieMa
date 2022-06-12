@@ -1,11 +1,9 @@
 import { FormEvent, useState } from 'react';
-import { User, UserDetailsRequest, PasswordChange } from '../../_lib/types';
+import { PasswordChange } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
-import { useAuth } from '../auth/AuthContext';
 import Button from '../form/Button';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
-import { useUser } from '../user/UserContext';
 import styles from './AccountPasswordChange.module.css';
 
 type AccountDataEditProps = {

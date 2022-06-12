@@ -31,8 +31,8 @@ export default function UsersList() {
 
     return (
         <div className="container">
-            <h2 className={styles.title}>Users:</h2>
-            <div className={styles.content}>
+            <h2>Users:</h2>
+            <div className={styles.list}>
                 {users ? users.map((user, index) => (
                     <UsersListItem
                         key={index}

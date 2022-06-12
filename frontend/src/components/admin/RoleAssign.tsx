@@ -1,5 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
-import { SyncLoader } from 'react-spinners';
+import { FormEvent, useState } from 'react';
 import { User } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
 import { ROLES } from '../../_lib/roles';
@@ -41,7 +40,7 @@ export default function RoleAssign({ id, confirm }: TeamAssignProps) {
                         ].filter((e) => e).join(' ')}
                         onClick={() => {
                             selectedRoles.includes(role) ?
-                                setSelectedRoles(selectedRoles.filter((e) => e != role)) :
+                                setSelectedRoles(selectedRoles.filter((e) => e !== role)) :
                                 setSelectedRoles([...selectedRoles, role]);
                         }}
                     >

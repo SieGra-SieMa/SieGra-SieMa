@@ -1,6 +1,6 @@
 import styles from './UsersListItem.module.css';
 import { User } from '../../_lib/types';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import Modal from '../modal/Modal';
 import Confirm from '../modal/Confirm';
 import { useApi } from '../api/ApiContext';

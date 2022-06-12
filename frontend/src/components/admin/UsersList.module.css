@@ -1,0 +1,11 @@
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
+    padding: 150px 50px;
+}

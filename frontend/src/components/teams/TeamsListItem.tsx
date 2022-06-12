@@ -4,7 +4,6 @@ import { useCallback, useState } from 'react';
 import Modal from '../modal/Modal';
 import Confirm from '../modal/Confirm';
 import TeamAdd from './TeamAdd';
-import TeamChange from './TeamDataEdit';
 import { useApi } from '../api/ApiContext';
 import Button, { ButtonStyle } from '../form/Button';
 import { useUser } from '../user/UserContext';
@@ -58,7 +57,7 @@ export default function TeamsListItem({
                 }
                 setIsSwitch(false);
             });
-    }, [team.id, teamsService]);
+    }, [team.id, teams, setTeams, teamsService]);
 
     const removePlayer = useCallback((id: number) => {
         teamsService.removePlayer(team.id, id)
@@ -71,7 +70,7 @@ export default function TeamsListItem({
                 }
                 setIsRemoveConfirm(false);
             });
-    }, [team.id, teamsService]);
+    }, [team.id, teams, setTeams, teamsService]);
 
     return (
         <div className={styles.root}>

@@ -64,7 +64,6 @@ export default function App() {
                                     </Route>
                                 </Route>
                             </Route>
-
                             <Route path="admin" element={<GuardRoute roles={[ROLES.Admin]} />}>
                                 <Route index element={<UsersList />} />
                             </Route>

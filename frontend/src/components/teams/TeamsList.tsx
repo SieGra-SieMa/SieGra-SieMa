@@ -6,6 +6,7 @@ import { Team } from '../../_lib/types';
 import SyncLoader from 'react-spinners/SyncLoader';
 import { useApi } from '../api/ApiContext';
 import { TeamsContext } from './TeamsContext';
+import TeamOptions from './team-options/TeamOptions';
 
 export default function TeamsList() {
 
@@ -24,7 +25,10 @@ export default function TeamsList() {
     return (
         <TeamsContext.Provider value={{ teams, setTeams }}>
             <div className="container">
-                <h2 className={styles.title}>My teams</h2>
+                <div className={styles.top}>
+                    <h1>My teams</h1>
+                </div>
+                <TeamOptions />
                 <div className={styles.content}>
                     {teams ? teams.map((team, index) => (
                         <TeamsListItem

@@ -31,7 +31,7 @@
 	color: #b60000;
 }
 
-.root>span {
+.divider {
 	text-align: center;
 	color: #fff;
 	font-size: 20px;
@@ -41,8 +41,8 @@
 	align-self: stretch;
 }
 
-.root>span::after,
-.root>span::before {
+.divider::after,
+.divider::before {
 	content: "";
 	display: block;
 	width: 0;
@@ -51,11 +51,11 @@
 	border-right: 1px dashed #fff;
 }
 
-.root>span::after {
+.divider::after {
 	margin-top: 10px;
 }
 
-.root>span::before {
+.divider::before {
 	margin-bottom: 10px;
 }
 
@@ -64,7 +64,7 @@
 }
 
 @media all and (max-width: 1000px) {
-	#divider {
+	.divider {
 		display: none;
 	}
 
@@ -76,7 +76,7 @@
 		display: block;
 	}
 
-	.form {
+	.visible {
 		display: flex;
 		flex-direction: column;
 		align-items: center;

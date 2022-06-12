@@ -5,37 +5,41 @@ import CreateAccount from "./CreateAccount";
 import SignIn from "./SignIn";
 
 export default function AccountEntry() {
-	const [login, setLogin] = useState(true);
+
+	const [isLogin, setIsLogin] = useState(true);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
 
-	function toggleLogin() {
-		setLogin(!login);
-	}
+	const changeView = () => {
+		setIsLogin(state => !state);
+	};
 
 	return (
-		<div className={`container ${styles.root}`}>
-			<div className={login ? styles.form : styles.hidden}>
+		<div className={[
+			'container',
+			styles.root
+		].join(' ')}>
+			<div className={isLogin ? styles.visible : styles.hidden}>
 				<SignIn />
 				<Button
 					className={styles.button}
-					onClick={toggleLogin}
-					value={"Nie masz konta?"}
+					onClick={changeView}
+					value='Nie masz konta?'
 					style={ButtonStyle.DarkBlue}
 				/>
 			</div>
-			<span id={styles.divider}>OR</span>
-			<div className={login ? styles.hidden : styles.form}>
+			<span className={styles.divider}>OR</span>
+			<div className={isLogin ? styles.hidden : styles.visible}>
 				<CreateAccount />
 				<Button
 					className={styles.button}
-					onClick={toggleLogin}
-					value={"Masz już konto?"}
+					onClick={changeView}
+					value='Masz już konto?'
 					style={ButtonStyle.DarkBlue}
 				/>
 			</div>
-		</div>
+		</div >
 	);
 }

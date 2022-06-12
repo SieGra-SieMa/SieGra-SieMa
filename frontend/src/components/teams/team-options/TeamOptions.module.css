@@ -1,4 +1,4 @@
-@import '../../variables.css';
+@import '../../../variables.css';
 
 .root {
     display: flex;
@@ -19,10 +19,6 @@
     transition: box-shadow .3s;
 }
 
-.option>h2 {
-    font-size: 33px;
-}
-
 #codeInput {
     display: block;
     padding: 20px;
@@ -36,9 +32,9 @@
     background-color: #fff;
 }
 
-.root>span {
+.divider {
     text-align: center;
-    color: #808080;
+    color: #fff;
     font-size: 20px;
     display: flex;
     flex-direction: column;
@@ -46,20 +42,56 @@
     align-self: stretch;
 }
 
-.root>span::after,
-.root>span::before {
-    content: '';
+.divider::after,
+.divider::before {
+    content: "";
     display: block;
     width: 0;
     height: 100%;
-    border-left: 1px dashed #808080;
-    border-right: 1px dashed #808080;
+    border-left: 1px dashed #fff;
+    border-right: 1px dashed #fff;
 }
 
-.root>span::after {
+.divider::after {
     margin-top: 10px;
 }
 
-.root>span::before {
+.divider::before {
     margin-bottom: 10px;
+}
+
+.button {
+    display: none;
+}
+
+@media all and (max-width: 1000px) {
+
+    .option {
+        padding: 30px;
+        height: auto;
+        gap: 30px;
+    }
+
+    .visible {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .option>h4 {
+        padding: 0;
+    }
+
+    .divider {
+        display: none;
+    }
+
+    .button {
+        display: block;
+    }
 }

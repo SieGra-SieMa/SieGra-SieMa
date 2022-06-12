@@ -63,15 +63,20 @@ export default function Header() {
 								O nas
 							</NavLink>
 						</li>
-						<GuardComponent roles={[ROLES.Admin]}>
-							<li>
-								<NavLink to="/admin" onClick={closeMenu}>
-									Panel administratora
-								</NavLink>
-							</li>
-						</GuardComponent>
 						{session ? (
 							<>
+								<GuardComponent roles={[ROLES.Admin]}>
+									<li>
+										<NavLink to="/admin" onClick={closeMenu}>
+											Panel administratora
+										</NavLink>
+									</li>
+								</GuardComponent>
+								<li>
+									<NavLink to="/myteams" onClick={closeMenu}>
+										Moje zespoły
+									</NavLink>
+								</li>
 								<li>
 									<NavLink to="/account" onClick={closeMenu}>
 										{user

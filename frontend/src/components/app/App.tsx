@@ -14,7 +14,7 @@ import GuardRoute from '../guard-components/GuardRoute';
 import AccountPage from '../account-page/AccountPage';
 import AuthProvider from '../auth/AuthProvider';
 import AccountEntry from '../account-entry/AccountEntry';
-import TeamOptions from '../team-options/TeamOptions';
+import TeamOptions from '../teams/team-options/TeamOptions';
 import TeamsList from '../teams/TeamsList';
 import Tournaments from '../tournaments/Tournaments';
 import { ROLES } from '../../_lib/roles';
@@ -45,16 +45,18 @@ export default function App() {
                             <Route path="account/*" element={<AccountPage />}>
                                 <Route element={<GuardRoute roles={[ROLES.User, ROLES.Admin]} />}>
                                     <Route index element={<TeamOptions />} />
-                                    <Route path="myteams" element={<TeamsList />} />
                                     <Route path="*" element={<h2>404 NOT FOUND</h2>} />
                                 </Route>
                             </Route>
+
+                            <Route path="myteams" element={<GuardRoute roles={[ROLES.User, ROLES.Admin]} />}>
+                                <Route index element={<TeamsList />} />
+                            </Route>
+
                             <Route path="*" element={<Tournaments />}>
                                 <Route path="tournaments">
                                     <Route index element={<TournamentsList />} />
                                     <Route path=":id" element={<Tournament />} />
-
-
                                 </Route>
                                 <Route path="gallery">
                                     <Route index element={<GalleryList />} />

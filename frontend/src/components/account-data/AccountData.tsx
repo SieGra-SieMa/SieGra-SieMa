@@ -9,8 +9,6 @@ import AccountPasswordChange from './AccountPasswordChange';
 import Confirm from '../modal/Confirm';
 import { useApi } from '../api/ApiContext';
 
-
-
 export default function AccountData() {
 
     const { user, setUser } = useUser();
@@ -18,17 +16,25 @@ export default function AccountData() {
     const { usersService } = useApi();
 
     const [isEdit, setIsEdit] = useState(false);
-    const [isConfirm, setIsConfirm] = useState(false);
-    const [isChanged, setIsChanged] = useState(false);
+    const [isNewsletterJoin, setIsNewsletterJoin] = useState(false);
+    const [isNewsletterLeave, setIsNewsletterLeave] = useState(false);
+    const [isPasswordChange, setIsPasswordChange] = useState(false);
 
-    const join = () => {
-        usersService.joinNewsletter();
-        setIsConfirm(false);
+    const joinNewsletter = () => {
+        usersService.joinNewsletter()
+            .then((data) => {
+                setUser(data);
+                setIsNewsletterJoin(false);
+            });
     }
 
-    // const leave = () => {
-    //     usersService.leaveNewsletter();
-    // }
+    const leaveNewsletter = () => {
+        usersService.leaveNewsletter()
+            .then((data) => {
+                setUser(data);
+                setIsNewsletterLeave(false);
+            });
+    }
 
     return (
         <div className="container">
@@ -41,13 +47,24 @@ export default function AccountData() {
                         onClick={() => setIsEdit(true)}
                         style={ButtonStyle.DarkBlue}
                     />
-                    <Button
-                        value='Dolącz do newslettera'
-                        onClick={() => setIsConfirm(true)}
-                    />
+                    {user && (
+                        user.newsletter ? (
+                            <Button
+                                value='Zrezygnuj z newslettera'
+                                onClick={() => setIsNewsletterLeave(true)}
+                                style={ButtonStyle.Red}
+                            />
+                        ) : (
+                            <Button
+                                value='Dolącz do newslettera'
+                                onClick={() => setIsNewsletterJoin(true)}
+                            />
+                        )
+                    )}
+
                     <Button
                         value='Zmień hasło'
-                        onClick={() => setIsChanged(true)}
+                        onClick={() => setIsPasswordChange(true)}
                         style={ButtonStyle.Red}
                     />
                 </div>
@@ -58,34 +75,46 @@ export default function AccountData() {
                     close={() => setIsEdit(false)}
                     title={'Edytuj użytkownika'}
                 >
-                    <AccountDataEdit confirm={(user) => {
-                        setUser(user);
+                    <AccountDataEdit confirm={() => {
                         setIsEdit(false);
                     }} />
                 </Modal>
             )}
-            {isChanged && (
+            {isPasswordChange && (
                 <Modal
                     isClose
-                    close={() => setIsChanged(false)}
+                    close={() => setIsPasswordChange(false)}
                     title={`Zmiana hasła`}
                 >
                     <AccountPasswordChange confirm={() => {
-                        setIsEdit(false);
+                        setIsPasswordChange(false);
                         setSession(null);
                     }} />
                 </Modal>
             )}
-            {isConfirm && (
+            {isNewsletterJoin && (
                 <Modal
-                    close={() => setIsConfirm(false)}
+                    close={() => setIsNewsletterJoin(false)}
                     title={`Czy na pewno chcesz dołączyć do newslettera?`}
                 >
                     <Confirm
-                        cancel={() => setIsConfirm(false)}
-                        confirm={() => join()}
+                        cancel={() => setIsNewsletterJoin(false)}
+                        confirm={() => joinNewsletter()}
                         label='Potwierdź'
                         style={ButtonStyle.Yellow}
+                    />
+                </Modal>
+            )}
+            {isNewsletterLeave && (
+                <Modal
+                    close={() => setIsNewsletterLeave(false)}
+                    title={`Czy na pewno chcesz zrezygnować z newslettera?`}
+                >
+                    <Confirm
+                        cancel={() => setIsNewsletterLeave(false)}
+                        confirm={() => leaveNewsletter()}
+                        label='Potwierdź'
+                        style={ButtonStyle.Red}
                     />
                 </Modal>
             )}

@@ -69,7 +69,7 @@ export default function Album() {
         <>
             <div className={styles.top}>
                 <Button value='Wstecz' onClick={() => navigate('..')} />
-                <GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
+                <GuardComponent roles={[ROLES.Admin]}>
                     <div className={styles.adminControls}>
                         <Button
                             value='Dodaj zdjęcie'
@@ -163,7 +163,7 @@ export default function Album() {
                 >
                     <>
                         <img alt='' className={styles.image} src={`${Config.HOST}${selectedImage.url}`} />
-                        <GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
+                        <GuardComponent roles={[ROLES.Admin]}>
                             <VerticalSpacing size={30} />
                             <Button
                                 value='Usuń'

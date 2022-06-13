@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SieGraSieMa.DTOs.AlbumDTO;
+using SieGraSieMa.DTOs.ContestantDTO;
+using SieGraSieMa.DTOs.ContestDTO;
 using SieGraSieMa.DTOs.GroupDTO;
 using SieGraSieMa.DTOs.MatchDTO;
 using SieGraSieMa.DTOs.MediumDTO;
@@ -133,13 +135,26 @@ namespace SieGraSieMa.Services
                     }),
                     Ladder = ladder,
                     IsOpen = !t.Groups.Any(),
-                    Team = t.TeamInTournaments.Where(tt=>tt.Team.Players.Any(p => p.User.Id == (user == null ? null : user.Id))).Select(tt=>new GetTeamsDTO
+                    Team = t.TeamInTournaments.Where(tt => tt.Team.Players.Any(p => p.User.Id == (user == null ? null : user.Id))).Select(tt => new GetTeamsDTO
                     {
-                        Name=tt.Team.Name,
-                        CaptainId=tt.Team.CaptainId.Value,
-                        Id=tt.Team.Id,
-                        ProfilePicture=tt.Team.Medium.Url
-                    }).FirstOrDefault()
+                        Name = tt.Team.Name,
+                        CaptainId = tt.Team.CaptainId.Value,
+                        Id = tt.Team.Id,
+                        ProfilePicture = tt.Team.Medium.Url
+                    }).FirstOrDefault(),
+                    Contests = t.Contests.Select(c => new ResponseContestDTO
+                    {
+                        Id = c.Id,
+                        Name = c.Name,
+                        TournamentId = c.TournamentId,
+                        Contestants = c.Contestants.Select(cc => new ResponseContestantDTO {
+                            //ContestId = c.Id,
+                            UserId=cc.UserId,
+                            Name = cc.User.Name,
+                            Surname = cc.User.Surname,
+                            Points = cc.Points
+                        }).ToList()
+                    }).ToList()
                     //t.TeamInTournaments.Any(tt => tt.Team.Players.Any(p => p.User.Id == (user == null ? null : user.Id)))
                 })
                 .FirstOrDefaultAsync();

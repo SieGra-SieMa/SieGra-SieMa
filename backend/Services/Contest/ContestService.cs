@@ -57,10 +57,12 @@ namespace SieGraSieMa.Services
                 Id = contest.Id,
                 Name = contest.Name,
                 TournamentId = contest.TournamentId,
-                Contestants = await _SieGraSieMaContext.Contestants.Where(c => c.ContestId == id).Select(c => new ResponseContestantDTO
+                Contestants = await _SieGraSieMaContext.Contestants.Include(c=>c.User).Where(c => c.ContestId == id).Select(c => new ResponseContestantDTO
                 {
-                    ContestId = c.ContestId,
-                    UserId = c.UserId,
+                    //ContestId = c.ContestId,
+                    Name=c.User.Name,
+                    Surname=c.User.Surname,
+                    //UserId = c.UserId,
                     Points = c.Points
                 }).ToListAsync()
             };
@@ -69,7 +71,7 @@ namespace SieGraSieMa.Services
         public async Task<ICollection<ResponseContestDTO>> GetContests(int tournamentId)
         {
 
-            var result = _SieGraSieMaContext.Contests.Include(c => c.Contestants).Where(c => c.TournamentId == tournamentId).Select(c =>
+            var result = _SieGraSieMaContext.Contests.Include(c => c.Contestants).ThenInclude(c => c.User).Where(c => c.TournamentId == tournamentId).Select(c =>
                 new ResponseContestDTO
                 {
                     Id = c.Id,
@@ -77,8 +79,10 @@ namespace SieGraSieMa.Services
                     TournamentId = c.TournamentId,
                     Contestants = c.Contestants.Select(cc => new ResponseContestantDTO
                     {
-                        ContestId = cc.ContestId,
-                        UserId = cc.UserId,
+                        //ContestId = cc.ContestId,
+                        Name = cc.User.Name,
+                        Surname = cc.User.Surname,
+                        //UserId = cc.UserId,
                         Points = cc.Points
                     }).ToList()
                 }).ToListAsync();

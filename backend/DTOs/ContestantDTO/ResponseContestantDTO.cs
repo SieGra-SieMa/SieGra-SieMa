@@ -7,8 +7,10 @@ namespace SieGraSieMa.DTOs.ContestantDTO
 {
     public class ResponseContestantDTO
     {
-        public int ContestId { get; set; }
+        //public int ContestId { get; set; }
         public int UserId { get; set; }
+        public string Name { get; set; }
+        public string Surname { get; set; }
         public int Points { get; set; }
     }
 }

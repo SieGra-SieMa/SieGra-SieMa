@@ -94,7 +94,7 @@ namespace SieGraSieMa.Services
         public void JoinNewsletter(int userId)
         {
             var currentNewsletter = _SieGraSieMaContext.Newsletters.SingleOrDefault(n => n.UserId == userId);
-            if (currentNewsletter == null)
+            if (currentNewsletter != null)
                 throw new Exception("User is already subscribed to newsletter");
             _SieGraSieMaContext.Newsletters.Add(new Newsletter { UserId = userId });
             _SieGraSieMaContext.SaveChanges();

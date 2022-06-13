@@ -194,7 +194,10 @@ namespace SieGraSieMa.Controllers
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
                 return NotFound(new ResponseErrorDTO { Error = "User not found" });
-            await _userManager.AddToRolesAsync(user, roles);
+            foreach(var role in roles)
+            {
+                await _userManager.AddToRoleAsync(user, role);
+            }
             if ((await _userManager.IsLockedOutAsync(user)) && (await _userManager.GetRolesAsync(user)).Any())
             {
                 await _userManager.SetLockoutEndDateAsync(user, null);

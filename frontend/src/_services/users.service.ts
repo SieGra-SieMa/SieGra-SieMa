@@ -13,11 +13,11 @@ export default class UsersService extends Service {
         return super.get(`${Config.HOST}/api/users/current`);
     };
 
-    joinNewsletter(): Promise<{}> {
+    joinNewsletter(): Promise<User> {
         return super.get(`${Config.HOST}/api/users/newsletter/join`);
     };
 
-    leaveNewsletter(): Promise<{}> {
+    leaveNewsletter(): Promise<User> {
         return super.get(`${Config.HOST}/api/users/newsletter/leave`);
     };
 

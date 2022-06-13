@@ -1,5 +1,5 @@
 import Config from '../../config.json';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ROLES } from '../../_lib/roles';
 import { useApi } from '../api/ApiContext';
@@ -13,14 +13,16 @@ import Confirm from '../modal/Confirm';
 import { Media } from '../../_lib/_types/response';
 import EditAlbum from './EditAlbum';
 import VerticalSpacing from '../spacing/VerticalSpacing';
+import { useTournaments } from '../tournaments/TournamentsContext';
 
 export default function Album() {
 
     const navigate = useNavigate();
 
-    const { albumsService, mediaService } = useApi();
-
     const { albumId } = useParams<{ albumId: string }>();
+
+    const { albumsService, mediaService } = useApi();
+    const { tournaments } = useTournaments();
 
     const [album, setAlbum] = useState<AlbumType | null>(null);
 
@@ -29,6 +31,11 @@ export default function Album() {
     const [isRemove, setIsRemove] = useState(false);
 
     const [selectedImage, setSelectedImage] = useState<Media | null>(null);
+
+    const tournament = useMemo(() => {
+        if (!tournaments || !album) return null;
+        return tournaments.find((tournament) => tournament.id === parseInt(album.tournamentId));
+    }, [album, tournaments]);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -62,8 +69,7 @@ export default function Album() {
         <>
             <div className={styles.top}>
                 <Button value='Wstecz' onClick={() => navigate('..')} />
-
-                <GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
+                <GuardComponent roles={[ROLES.Admin]}>
                     <div className={styles.adminControls}>
                         <Button
                             value='Dodaj zdjęcie'
@@ -83,10 +89,11 @@ export default function Album() {
                 </GuardComponent>
             </div>
 
-            {(album) && (<>
-                <h2 className={styles.title}>
+            {(album && tournament) && (<>
+                <h6 className={styles.breadcrumbs}>Galeria - {tournament.name}</h6>
+                <h1 className={styles.title}>
                     {album.name}
-                </h2>
+                </h1>
                 <ul className={styles.images}>
                     {album.mediaList.map((media, index) => (
                         <li
@@ -156,7 +163,7 @@ export default function Album() {
                 >
                     <>
                         <img alt='' className={styles.image} src={`${Config.HOST}${selectedImage.url}`} />
-                        <GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
+                        <GuardComponent roles={[ROLES.Admin]}>
                             <VerticalSpacing size={30} />
                             <Button
                                 value='Usuń'

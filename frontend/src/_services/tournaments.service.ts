@@ -70,4 +70,12 @@ export default class TournamentsService extends Service {
     resetLadder(id: string): Promise<Tournament> {
         return super.post(`${Config.HOST}/api/tournaments/${id}/resetLadder`, {});
     }
+
+    createContest(id: string, name: string): Promise<{}> {
+        return super.post(`${Config.HOST}/api/tournaments/${id}/contests`, { name });
+    }
+
+    addContestScore(tournamentId: number, contestId: number, email: string, points: number): Promise<{}> {
+        return super.post(`${Config.HOST}/api/tournaments/${tournamentId}/contests/${contestId}/setScore`, { email, points });
+    }
 }

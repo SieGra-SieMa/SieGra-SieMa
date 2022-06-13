@@ -1,7 +1,7 @@
 import { FormEvent, useState } from 'react';
 import { PasswordChange } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
-import Button from '../form/Button';
+import Button, { ButtonStyle } from '../form/Button';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
 import styles from './AccountPasswordChange.module.css';
@@ -41,6 +41,7 @@ export default function AccountPasswordChange({ confirm }: AccountDataEditProps)
                 label='Stare hasło'
                 type='password'
                 value={oldPassword}
+                required
                 onChange={(e) => setOldPassword(e.target.value)}
             />
             <Input
@@ -48,10 +49,11 @@ export default function AccountPasswordChange({ confirm }: AccountDataEditProps)
                 label='Nowe hasło'
                 type='password'
                 value={newPassword}
+                required
                 onChange={(e) => setNewPassword(e.target.value)}
             />
             <VerticalSpacing size={15} />
-            <Button value='Zapisz' />
+            <Button value='Zmień' style={ButtonStyle.Red} />
         </form>
     );
 }

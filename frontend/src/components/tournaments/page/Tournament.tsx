@@ -21,6 +21,8 @@ import { SyncLoader } from 'react-spinners';
 import TeamsList from '../teams/TeamsList';
 import Matches from '../matches/Matches';
 import ImageIcon from '@mui/icons-material/Image';
+import CreateContest from '../contests/CreateContest';
+import Contest from '../contests/Contest';
 
 export default function Tournament() {
 
@@ -37,6 +39,7 @@ export default function Tournament() {
         if (!tournament) return null;
         return {
             ...tournament,
+            contests: [],
             albums: [],
             groups: [],
             ladder: [],
@@ -53,6 +56,7 @@ export default function Tournament() {
     const [isTeamRemove, setIsTeamRemove] = useState(false);
     const [isLadderCompose, setIsLadderCompose] = useState(false);
     const [isLadderReset, setIsLadderReset] = useState(false);
+    const [isAddContest, setIsAddContest] = useState(false);
 
 
     const isOpen = tournament?.isOpen;
@@ -249,7 +253,7 @@ export default function Tournament() {
                             <Matches groups={tournament.groups} />
                         </>)}
                         {tournament.ladder[0]?.matches[0].teamHome && <Ladder ladder={tournament.ladder} />}
-                        <GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
+                        <GuardComponent roles={[ROLES.Admin]}>
                             {tournament && tournament.groups.map((group) =>
                                 group.matches?.map(e =>
                                     e.teamAwayScore !== null && e.teamHomeScore !== null).every(e => e)
@@ -277,6 +281,24 @@ export default function Tournament() {
                     </>)}
                 </>)
             )}
+
+
+            {(tournament) && (<>
+                <h4>Konkursy</h4>
+                <GuardComponent roles={[ROLES.Admin]}>
+                    <Button
+                        value='Dodaj konkurs'
+                        onClick={() => setIsAddContest(true)}
+                    />
+                </GuardComponent>
+
+                <div>
+                    {tournament.contests.map((contest) => (
+                        <Contest key={contest.id} contest={contest} />
+                    ))}
+                </div>
+
+            </>)}
 
             {(tournament && tournament.albums.length > 0) && (<>
                 <h4>Albumy</h4>
@@ -436,7 +458,7 @@ export default function Tournament() {
             )}
             {(isLadderCompose) && (
                 <Modal
-                    title={`Czy na pewno chcesz zbudować drabinke?`}
+                    title='Czy na pewno chcesz zbudować drabinke?'
                     isClose
                     close={() => setIsLadderCompose(false)}
                 >
@@ -450,7 +472,7 @@ export default function Tournament() {
             )}
             {(isLadderReset) && (
                 <Modal
-                    title={`Czy na pewno chcesz zresetować drabinke?`}
+                    title='Czy na pewno chcesz zresetować drabinke?'
                     isClose
                     close={() => setIsLadderReset(false)}
                 >
@@ -459,6 +481,21 @@ export default function Tournament() {
                         cancel={() => setIsLadderReset(false)}
                         label='Potwierdź'
                         style={ButtonStyle.Red}
+                    />
+                </Modal>
+            )}
+            {(isAddContest) && (
+                <Modal
+                    title='Dodanie konkursu'
+                    isClose
+                    close={() => setIsAddContest(false)}
+                >
+                    <CreateContest
+                        tournamentId={id!}
+                        confirm={(data) => {
+                            console.log(data);
+                            setIsAddContest(false);
+                        }}
                     />
                 </Modal>
             )}

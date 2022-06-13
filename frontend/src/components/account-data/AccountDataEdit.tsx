@@ -8,13 +8,13 @@ import { useUser } from '../user/UserContext';
 import styles from './AccountDataEdit.module.css';
 
 type AccountDataEditProps = {
-    confirm: (user: User) => void;
+    confirm: () => void;
 }
 
 export default function AccountDataEdit({ confirm }: AccountDataEditProps) {
 
     const { usersService } = useApi();
-    const { user } = useUser();
+    const { user, setUser } = useUser();
 
     const [name, setName] = useState(user!.name);
     const [surname, setSurname] = useState(user!.surname);
@@ -27,7 +27,8 @@ export default function AccountDataEdit({ confirm }: AccountDataEditProps) {
         };
         usersService.updateUser(updatedUser)
             .then((data) => {
-                confirm({ ...user!, ...updatedUser });
+                setUser({ ...user!, ...updatedUser });
+                confirm();
             });
     };
 

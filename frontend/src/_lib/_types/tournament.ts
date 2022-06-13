@@ -17,6 +17,7 @@ export type TournamentListItem = TournamentRequest & {
 };
 
 export type Tournament = TournamentListItem & {
+    contests: Contest[];
     albums: Album[]
     groups: Group[];
     ladder: Phase[];
@@ -95,4 +96,19 @@ export type Album = AlbumRequest & {
     tournamentId: string;
     profilePicture?: string;
     mediaList: Media[];
+};
+
+
+export type Contestant = {
+    userId: number;
+    name: string;
+    surname: string;
+    points: number;
+};
+
+export type Contest = {
+    id: number;
+    name: string;
+    tournamentId: number;
+    contestants: Contestant[];
 };

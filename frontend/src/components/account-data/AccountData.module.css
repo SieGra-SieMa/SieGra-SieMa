@@ -1,34 +1,13 @@
-.root {
-    background-color: #5f7b88;
-    height: 300px;
-    display: flex;
-    justify-content: center;
-}
-
 .container {
-    width: 900px;
-    padding: 15px;
-    box-sizing: border-box;
-}
-
-.userButtons {
     display: flex;
-    flex-direction: row;
-    column-gap: 5%;
-}
-
-.avatarBlock>img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    border-radius: 50%;
-    border: 3px solid #fff;
-    box-shadow: 0 0 15px #000;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 30px;
 }
 
 .controls {
     display: flex;
-    justify-content: flex-end;
-    padding: 5px 0 15px;
+    flex-direction: column;
+    gap: 15px;
 }

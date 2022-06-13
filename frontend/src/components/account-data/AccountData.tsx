@@ -31,25 +31,24 @@ export default function AccountData() {
     // }
 
     return (
-        <div className={styles.root}>
+        <div className="container">
             <div className={styles.container}>
+                <h1>Profil</h1>
+                <h4>{user ? `${user.name} ${user.surname}` : 'Username'}</h4>
                 <div className={styles.controls}>
                     <Button
                         value='Edytuj użytkownika'
                         onClick={() => setIsEdit(true)}
                         style={ButtonStyle.DarkBlue}
                     />
-                </div>
-                <h2>{user ? `${user.name} ${user.surname}` : 'Username'}</h2>
-                <div className={styles.userButtons}>
+                    <Button
+                        value='Dolącz do newslettera'
+                        onClick={() => setIsConfirm(true)}
+                    />
                     <Button
                         value='Zmień hasło'
                         onClick={() => setIsChanged(true)}
                         style={ButtonStyle.Red}
-                    />
-                    <Button
-                        value='Dolącz do newslettera'
-                        onClick={() => setIsConfirm(true)}
                     />
                 </div>
             </div>
@@ -80,7 +79,7 @@ export default function AccountData() {
             {isConfirm && (
                 <Modal
                     close={() => setIsConfirm(false)}
-                    title={`Czy na pewno chcesz dołączyć do newsslettera?`}
+                    title={`Czy na pewno chcesz dołączyć do newslettera?`}
                 >
                     <Confirm
                         cancel={() => setIsConfirm(false)}

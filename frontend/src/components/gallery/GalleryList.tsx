@@ -19,6 +19,7 @@ export default function GalleryList() {
         <>
             <div className={styles.top}>
                 <h1>Galeria</h1>
+                <h4>Turnieje</h4>
             </div>
             <ul className={styles.content}>
                 {tournaments && tournaments.map((tournament, index) => (

@@ -15,7 +15,9 @@
 }
 
 .container {
-    min-width: 400px;
+    min-width: 320px;
+    box-sizing: border-box;
+
     background-color: var(--main-color);
     border-radius: 10px;
     padding: 30px;
@@ -25,7 +27,6 @@
     box-shadow: 0 0 15px #000;
     margin: 15px;
     max-height: 100%;
-    box-sizing: content-box;
     overflow: auto;
 }
 

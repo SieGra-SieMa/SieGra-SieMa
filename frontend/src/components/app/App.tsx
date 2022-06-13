@@ -11,10 +11,8 @@ import AboutUs from '../about-us/AboutUs';
 import GalleryList from '../gallery/GalleryList';
 import AlbumsList from '../gallery/AlbumsList';
 import GuardRoute from '../guard-components/GuardRoute';
-import AccountPage from '../account-page/AccountPage';
 import AuthProvider from '../auth/AuthProvider';
 import AccountEntry from '../account-entry/AccountEntry';
-import TeamOptions from '../teams/team-options/TeamOptions';
 import TeamsList from '../teams/TeamsList';
 import Tournaments from '../tournaments/Tournaments';
 import { ROLES } from '../../_lib/roles';
@@ -25,6 +23,7 @@ import TournamentsList from '../tournaments/list/TournamentsList';
 import UsersList from '../admin/UsersList';
 import Tournament from '../tournaments/page/Tournament';
 import Album from '../gallery/Album';
+import AccountData from '../account-data/AccountData';
 
 const apiClient = new ApiClient();
 
@@ -42,17 +41,16 @@ export default function App() {
                             <Route path="access-denied" element={
                                 <div style={{ color: '#fff' }}>ACCESS DENIED</div>
                             } />
-                            <Route path="account/*" element={<AccountPage />}>
-                                <Route element={<GuardRoute roles={[ROLES.User, ROLES.Admin]} />}>
-                                    <Route index element={<TeamOptions />} />
-                                    <Route path="*" element={<h2>404 NOT FOUND</h2>} />
-                                </Route>
+                            <Route path="account" element={
+                                <GuardRoute roles={[ROLES.User, ROLES.Employee, ROLES.Admin]} />
+                            }>
+                                <Route index element={<AccountData />} />
                             </Route>
-
-                            <Route path="myteams" element={<GuardRoute roles={[ROLES.User, ROLES.Admin]} />}>
+                            <Route path="myteams" element={
+                                <GuardRoute roles={[ROLES.User, ROLES.Employee, ROLES.Admin]} />
+                            }>
                                 <Route index element={<TeamsList />} />
                             </Route>
-
                             <Route path="*" element={<Tournaments />}>
                                 <Route path="tournaments">
                                     <Route index element={<TournamentsList />} />

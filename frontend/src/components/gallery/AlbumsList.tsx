@@ -46,7 +46,9 @@ export default function AlbumsList() {
             </div>
 
             {tournamentWithAlbums && (<>
+                <h6 className={styles.breadcrumbs}>Galeria</h6>
                 <h1 className={styles.title}>{tournamentWithAlbums.name}</h1>
+                <h4>Albumy</h4>
                 <ul className={styles.albums}>
                     {tournamentWithAlbums.albums.map((album, index) => (
                         <li

@@ -13,7 +13,6 @@
 	background-color: var(--main-color);
 	border-radius: 15px;
 	overflow: hidden;
-	cursor: pointer;
 	transition: box-shadow 0.3s;
 }
 

@@ -1,20 +1,19 @@
-import { ROLES } from "./roles";
+import { ROLES } from './roles';
 
 export type User = {
 	id: number;
 	name: string;
 	surname: string;
+	email: string;
+	newsletter: boolean;
 	roles: ROLES[];
 };
 
-
-export type Account = User & {
-	email: string;
-	accessToken: string;
-	refreshToken: string;
+export type Player = {
+	id: number;
+	name: string;
+	surname: string;
 };
-
-export type Player = User;
 
 export type Team = {
 	id: number;

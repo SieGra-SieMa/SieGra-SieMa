@@ -84,7 +84,7 @@
 }
 
 
-@media all and (max-width: 720px) {
+@media all and (max-width: 1280px) {
 
     .container {
         justify-content: center;

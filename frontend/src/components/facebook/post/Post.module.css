@@ -13,16 +13,11 @@
 	background-color: var(--main-color);
 	border-radius: 15px;
 	overflow: hidden;
-	cursor: pointer;
 	transition: box-shadow 0.3s;
 }
 
 .post:hover {
 	box-shadow: 0 5px 15px #000;
-}
-
-.post:active {
-	box-shadow: 0 5px 5px #000;
 }
 
 .pictureBlock {
@@ -72,5 +67,14 @@
 		grid-template-columns: auto;
 		grid-template-rows: 1fr 0.5fr;
 		text-align: center;
+	}
+}
+
+@media all and (max-width: 400px) {
+	.post {
+		grid-template-rows: .5fr .5fr;
+	}
+	.pictureBlock {
+		height: 200px;
 	}
 }

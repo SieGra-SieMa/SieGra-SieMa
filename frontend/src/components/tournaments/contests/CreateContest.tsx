@@ -3,14 +3,14 @@ import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
 import Input from '../../form/Input';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
-import styles from './CreateContest.module.css';
+import styles from './Contests.module.css';
 
-type CreateContestType = {
+type CreateContestProps = {
     tournamentId: string;
     confirm: (contest: any) => void;
 };
 
-export default function CreateContest({ tournamentId, confirm }: CreateContestType) {
+export default function CreateContest({ tournamentId, confirm }: CreateContestProps) {
 
     const { tournamentsService } = useApi();
 
@@ -18,7 +18,7 @@ export default function CreateContest({ tournamentId, confirm }: CreateContestTy
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        tournamentsService.addContest(tournamentId, name)
+        tournamentsService.createContest(tournamentId, name)
             .then((data) => {
                 confirm(data);
             });
@@ -27,7 +27,7 @@ export default function CreateContest({ tournamentId, confirm }: CreateContestTy
     return (
         <form className={styles.root} onSubmit={onSubmit}>
             <Input
-                id='TournamentAdd-name'
+                id='CreateContest-name'
                 label='Nazwa'
                 value={name}
                 required

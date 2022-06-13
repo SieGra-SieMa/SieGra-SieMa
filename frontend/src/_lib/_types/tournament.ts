@@ -109,6 +109,6 @@ export type Contestant = {
 export type Contest = {
     id: number;
     name: string;
-    tournamnetId: number;
+    tournamentId: number;
     contestants: Contestant[];
 };

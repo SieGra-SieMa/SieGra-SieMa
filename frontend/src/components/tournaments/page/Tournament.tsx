@@ -22,6 +22,7 @@ import TeamsList from '../teams/TeamsList';
 import Matches from '../matches/Matches';
 import ImageIcon from '@mui/icons-material/Image';
 import CreateContest from '../contests/CreateContest';
+import Contest from '../contests/Contest';
 
 export default function Tournament() {
 
@@ -291,18 +292,11 @@ export default function Tournament() {
                     />
                 </GuardComponent>
 
-                {tournament.contests.map((c, index) => (
-                    <div key={index}>
-                        <p>{c.name}</p>
-                        <div>
-                            {c.contestants.map((player) => (
-                                <p key={player.userId}>
-                                    {player.name} {player.surname} - {player.points}
-                                </p>
-                            ))}
-                        </div>
-                    </div>
-                ))}
+                <div>
+                    {tournament.contests.map((contest) => (
+                        <Contest key={contest.id} contest={contest} />
+                    ))}
+                </div>
 
             </>)}
 

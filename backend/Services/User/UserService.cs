@@ -20,6 +20,7 @@ namespace SieGraSieMa.Services
         public void LeaveNewsletter(int userId);
         public Task<IEnumerable<User>> GetNewsletterSubscribers(int? id);
         public Task PreparingUserToBlock(int Id);
+        public Task<bool> CheckIfUserIsSubscribed(int id);
     }
     public class UserService : IUserService
     {
@@ -117,6 +118,15 @@ namespace SieGraSieMa.Services
             _SieGraSieMaContext.Users.Update(user);
             _SieGraSieMaContext.SaveChanges();
             return new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Surname = user.Surname };
+        }
+
+        public async Task<bool> CheckIfUserIsSubscribed(int id)
+        {
+            var currentNewsletter = await _SieGraSieMaContext.Newsletters.SingleOrDefaultAsync(n => n.UserId == id);
+            if (currentNewsletter == null)
+                return false;
+
+            return true;
         }
     }
 }

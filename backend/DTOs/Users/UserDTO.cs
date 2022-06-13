@@ -11,6 +11,7 @@ namespace SieGraSieMa.DTOs.Users
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Email { get; set; }
+        public bool Newsletter { get; set; }
         public IEnumerable<string> Roles { get; set; }
     }
 }

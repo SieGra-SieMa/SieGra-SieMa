@@ -60,7 +60,7 @@ namespace SieGraSieMa.Controllers
             var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
             var user = await _userManager.FindByEmailAsync(email);
             var roles = await _userManager.GetRolesAsync(user);
-            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = roles });
+            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = roles, Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
             //new UserDTO { Id = user.Id, Name=user.Name, Surname=user.Surname, Email = user.NormalizedEmail}
         }
 
@@ -101,8 +101,9 @@ namespace SieGraSieMa.Controllers
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = await _userManager.FindByEmailAsync(email);
+                var roles = await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(email));
                 _userService.JoinNewsletter(user.Id);
-                return Ok(new MessageDTO { Message = "Newsletter joined" });
+                return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = roles, Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
             }
             catch (Exception ex)
             {
@@ -119,8 +120,9 @@ namespace SieGraSieMa.Controllers
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = await _userManager.FindByEmailAsync(email);
+                var roles = await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(email));
                 _userService.LeaveNewsletter(user.Id);
-                return Ok(new MessageDTO { Message = "Newsletter unsubscribed" });
+                return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = roles, Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
             }
             catch (Exception ex)
             {
@@ -152,7 +154,7 @@ namespace SieGraSieMa.Controllers
             if (user == null)
                 return NotFound(new ResponseErrorDTO { Error = "User not found" });
             var roles = await _userManager.GetRolesAsync(user);
-            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = roles });
+            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = roles, Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
@@ -179,7 +181,7 @@ namespace SieGraSieMa.Controllers
             List<UserDTO> usersDTO = new List<UserDTO>();
             foreach(var user in users)
             {
-                usersDTO.Add(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = await _userManager.GetRolesAsync(user) });
+                usersDTO.Add(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
             }
             
             return Ok(usersDTO);
@@ -199,7 +201,7 @@ namespace SieGraSieMa.Controllers
                 await _logService.AddLog(new Log(user, "Unlock user due to existing roles"));
             }
             await _logService.AddLog(new Log(user, "Add roles " + roles.Aggregate((i, j) => i + ", " + j) + " to " + user.UserName));
-            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = await _userManager.GetRolesAsync(user) });
+            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
@@ -217,7 +219,7 @@ namespace SieGraSieMa.Controllers
                 await _logService.AddLog(new Log(user, "Lock user due to no roles"));
             }
             await _logService.AddLog(new Log(user, "Remove roles " + roles.Aggregate((i, j) => i + ", " + j) + " from " + user.UserName));
-            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.NormalizedEmail, Roles = await _userManager.GetRolesAsync(user) });
+            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]

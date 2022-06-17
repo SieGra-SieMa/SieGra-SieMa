@@ -60,7 +60,7 @@ export default function Home() {
 			</div>
 			<div className="news-section">
 				<div className="container news-container">
-					<h2>News feed</h2>
+					<h2>Aktualności</h2>
 					<NewsFeed fetchLimit={4} />
 				</div>
 			</div>

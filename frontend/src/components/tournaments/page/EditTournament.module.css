@@ -3,3 +3,7 @@
     row-gap: 15px;
     grid-auto-rows: min-content;
 }
+
+.quill > * > * > *{
+    color: black;
+}

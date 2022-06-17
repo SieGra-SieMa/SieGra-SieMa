@@ -60,18 +60,12 @@ export default function EditTournament({
                 onChange={(e) => setAddress(e.target.value)}
             />
             <ReactQuill
+                className={styles.quill}
                 theme='snow'
                 value={description}
                 onChange={setDescription}
-                style={{minHeight: '300px'}}
+                style={{minHeight: '300px', backgroundColor: 'white'}}
             />
-            {/* <Input
-                id='TournamentAdd-description'
-                label='Opis'
-                value={description}
-                required
-                onChange={(e) => setDescription(e.target.value)}
-            /> */}
             <DatePicker
                 id='DatePicker-startDate'
                 label='Czas rozpoczęcia'

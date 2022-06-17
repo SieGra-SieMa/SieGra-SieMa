@@ -6,6 +6,8 @@ import DatePicker from '../../form/DatePicker';
 import Input from '../../form/Input';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
 import styles from './EditTournament.module.css';
+import ReactQuill from "react-quill"
+import 'react-quill/dist/quill.snow.css'
 
 type EditTournamentProps = {
     tournament: Tournament;
@@ -57,13 +59,19 @@ export default function EditTournament({
                 required
                 onChange={(e) => setAddress(e.target.value)}
             />
-            <Input
+            <ReactQuill
+                theme='snow'
+                value={description}
+                onChange={setDescription}
+                style={{minHeight: '300px'}}
+            />
+            {/* <Input
                 id='TournamentAdd-description'
                 label='Opis'
                 value={description}
                 required
                 onChange={(e) => setDescription(e.target.value)}
-            />
+            /> */}
             <DatePicker
                 id='DatePicker-startDate'
                 label='Czas rozpoczęcia'

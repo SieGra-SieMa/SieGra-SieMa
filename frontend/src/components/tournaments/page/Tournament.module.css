@@ -15,12 +15,12 @@
 
 .dates {
     color: var(--accent-color);
-    font-weight: bold;
     padding: 0;
 }
 
 .line {
     color: #fff;
+    margin: 0 20px;
 }
 
 .details {
@@ -29,6 +29,17 @@
     row-gap: 25px;
     align-items: flex-start;
     margin-top: 25px;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-start;
+}
+
+.description>h6 {
+    padding: 0;
 }
 
 .team {

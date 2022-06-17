@@ -23,6 +23,7 @@ import Matches from '../matches/Matches';
 import ImageIcon from '@mui/icons-material/Image';
 import CreateContest from '../contests/CreateContest';
 import Contest from '../contests/Contest';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'; 
 
 export default function Tournament() {
 
@@ -172,7 +173,7 @@ export default function Tournament() {
     return (
         <TournamentContext.Provider value={{ tournament, setTournament, teams, setTeams }}>
             <div className={styles.top}>
-                <Button value='Wstecz' onClick={() => navigate('..')} />
+                <ArrowBackIosNewIcon onClick={() => navigate('..')} fontSize="large" style={{ color:"white" }}/>
                 {tournament && (
                     <GuardComponent roles={[ROLES.Admin]}>
                         <div className={styles.adminControls}>
@@ -218,8 +219,14 @@ export default function Tournament() {
                         {new Date(tournament.endDate).toLocaleString()}
                     </h4>
                     <div className={styles.details}>
-                        <p>Address: {tournament.address}</p>
-                        <p>Opis: {tournament.description}</p>
+                        <div className={styles.description}>
+                            <h6 className='underline'>Adres</h6>
+                            <p>{tournament.address}</p>
+                            <br/>
+                            <h6 className="underline">Opis</h6>
+                            <div dangerouslySetInnerHTML={{ __html: `${tournament.description}`}}></div>
+                        </div>
+                        
                         {(session && tournament.isOpen) && (
                             tournament.team ? (
                                 <div className={styles.team}>

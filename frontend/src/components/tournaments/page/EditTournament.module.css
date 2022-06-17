@@ -7,3 +7,7 @@
 .quill > * > * > *{
     color: black;
 }
+
+.quill > *{
+    height: auto;
+}

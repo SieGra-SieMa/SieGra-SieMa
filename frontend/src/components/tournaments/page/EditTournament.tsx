@@ -8,6 +8,7 @@ import VerticalSpacing from '../../spacing/VerticalSpacing';
 import styles from './EditTournament.module.css';
 import ReactQuill from "react-quill"
 import 'react-quill/dist/quill.snow.css'
+import { NoEncryption } from '@mui/icons-material';
 
 type EditTournamentProps = {
     tournament: Tournament;
@@ -59,12 +60,13 @@ export default function EditTournament({
                 required
                 onChange={(e) => setAddress(e.target.value)}
             />
+            <p>Opis</p>
             <ReactQuill
                 className={styles.quill}
                 theme='snow'
                 value={description}
                 onChange={setDescription}
-                style={{minHeight: '300px', backgroundColor: 'white'}}
+                style={{minHeight: '30px', backgroundColor: 'white' }}
             />
             <DatePicker
                 id='DatePicker-startDate'

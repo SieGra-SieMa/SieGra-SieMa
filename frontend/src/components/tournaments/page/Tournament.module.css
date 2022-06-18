@@ -26,20 +26,49 @@
 .details {
     display: flex;
     flex-direction: column;
-    row-gap: 25px;
     align-items: flex-start;
     margin-top: 25px;
+    row-gap: 15px;
+}
+
+.address {
+    display: flex;
+    align-items: center;
+}
+
+.address > * {
+    margin-right: 5px;
+}
+
+.tournamentInfo {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 .description {
     display: flex;
     flex-direction: column;
-    justify-content: space-around;
     align-items: flex-start;
+    justify-content: flex-start;
+    text-align: justify;
+    width: 80%;
 }
 
 .description>h6 {
     padding: 0;
+    margin: 0;
+}
+
+.interactiveIcon {
+    transform: scale(1);
+    color: white;
+    transition: all .2s ease-in-out !important;
+}
+
+.interactiveIcon:hover {
+    cursor: pointer;
+    color: var(--accent-color);
+    transform: scale(1.1);
 }
 
 .team {

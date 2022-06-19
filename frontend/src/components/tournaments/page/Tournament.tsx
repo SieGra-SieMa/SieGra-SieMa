@@ -30,7 +30,7 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
-import LocationOnOutlinedIcon from '@mui/icons-material/LocationOnOutlined';
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 
 export default function Tournament() {
 	const navigate = useNavigate();
@@ -237,7 +237,14 @@ export default function Tournament() {
 									}}
 								></div>
 							</div>
-							<div>{isOpen && <TeamsList teams={teams} />}</div>
+							<div>
+								{isOpen && <TeamsList teams={teams} />}
+								{tournament &&
+									!isOpen &&
+									tournament.groups.length > 1 && (
+										<Groups groups={tournament.groups} />
+									)}
+							</div>
 						</div>
 
 						{session &&
@@ -277,7 +284,6 @@ export default function Tournament() {
 							<>
 								{tournament.groups.length > 1 && (
 									<>
-										<Groups groups={tournament.groups} />
 										<Matches groups={tournament.groups} />
 									</>
 								)}

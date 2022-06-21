@@ -8,6 +8,7 @@ type GroupsProps = {
 
 export default function Groups({ groups }: GroupsProps) {
 	const [currentGroup, setCurrentGroup] = useState<Group>(groups[0]);
+    const [opacity, setOpacity] = useState(100);
 
 	return (
 		<div className={styles.root}>
@@ -23,7 +24,9 @@ export default function Groups({ groups }: GroupsProps) {
 									group === currentGroup ? styles.active : ""
 								}
 								onClick={() => {
-									setCurrentGroup(group);
+                                    setOpacity(0);
+                                    setTimeout(setCurrentGroup, 200, group);
+                                    setTimeout(setOpacity, 200, 100);
 								}}
                                 key={group.id}
 							>
@@ -32,7 +35,7 @@ export default function Groups({ groups }: GroupsProps) {
 						))}
 				</div>
 				<div className={styles.group}>
-					<table>
+					<table style={{ opacity: `${opacity}%` }}>
 						<thead>
 							<tr>
 								<th>Miejsce</th>

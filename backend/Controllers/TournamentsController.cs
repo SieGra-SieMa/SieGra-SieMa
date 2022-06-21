@@ -33,12 +33,13 @@ namespace SieGraSieMa.Controllers
         private readonly ITeamService _teamService;
         private readonly IAlbumService _albumService;
         private readonly IMediaService _mediaService;
+        private readonly ILogService _logService;
 
         private readonly UserManager<User> _userManager;
 
         //private readonly IMapper _mapper;
 
-        public TournamentsController(ITournamentsService tournamentsService, UserManager<User> userManager, IContestService contestService, ITeamService teamService, IAlbumService albumService, IMediaService mediaService)
+        public TournamentsController(ITournamentsService tournamentsService, UserManager<User> userManager, IContestService contestService, ITeamService teamService, IAlbumService albumService, IMediaService mediaService, ILogService logService)
         {
             _tournamentsService = tournamentsService;
             //_mapper = mapper;
@@ -47,6 +48,7 @@ namespace SieGraSieMa.Controllers
             _teamService = teamService;
             _albumService = albumService;
             _mediaService = mediaService;
+            _logService = logService;
         }
 
         [AllowAnonymous]
@@ -74,7 +76,7 @@ namespace SieGraSieMa.Controllers
             return Ok(tournament);
         }
 
-        [AllowAnonymous]
+        /*[AllowAnonymous]
         [HttpGet("{id}/description")]
         public async Task<IActionResult> GetDescription(int id)
         {
@@ -84,7 +86,7 @@ namespace SieGraSieMa.Controllers
                 return NotFound(new ResponseErrorDTO { Error = "Description not found" });
 
             return Ok(new MessageDTO { Message = desc });
-        }
+        }*/
 
         [AllowAnonymous]
         [HttpGet("{id}/teams")]
@@ -145,13 +147,15 @@ namespace SieGraSieMa.Controllers
                     return BadRequest(new ResponseErrorDTO { Error = "Team does not exists" });
                 List<User> listOfUsers = new();
                 foreach (var player in team.Players) listOfUsers.Add(await _userManager.FindByIdAsync(player.UserId.ToString()));
-                var respone = await _tournamentsService.CheckUsersInTeam(listOfUsers, id);
-                if (respone)
+                var response = await _tournamentsService.CheckUsersInTeam(listOfUsers, id);
+                if (response)
                 {
-                    var resp = await _tournamentsService.AddTeamToTournament(team.Id, id);
-                    if (!resp)
+                    var response2 = await _tournamentsService.AddTeamToTournament(team.Id, id);
+                    if (!response2)
                         return BadRequest(new ResponseErrorDTO { Error = "Tournament does not exists" });
-
+                    var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                    var user = await _userManager.FindByEmailAsync(email);
+                    await _logService.AddLog(new Log(user, $"Team with id {teamId} was added to tournament with id {id}"));
                     return Ok();
                 }
 
@@ -173,6 +177,11 @@ namespace SieGraSieMa.Controllers
                 if (team == null) return BadRequest(new ResponseErrorDTO { Error = "Team does not exists" });
 
                 var resp = await _tournamentsService.RemoveTeamFromTournament(team.Id, id);
+
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Team with id {teamId} was removed from tournament with id {id}"));
+
                 return Ok();
             }
             catch (Exception e)
@@ -201,6 +210,9 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var response = await _tournamentsService.SetPaidStatusTeamsInTournament(id, teamId, filter);
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Team with id {teamId} has been marked as {filter} in tournament with id {id}"));
                 return Ok(response);
             }
             catch (Exception e)
@@ -236,6 +248,7 @@ namespace SieGraSieMa.Controllers
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
                 var tournament = await _tournamentsService.GetTournament(id, user);
+                await _logService.AddLog(new Log(user, $"Ladder was composed in tournament with id {id}"));
 
                 return Ok(tournament);
             }
@@ -256,6 +269,7 @@ namespace SieGraSieMa.Controllers
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
                 var tournament = await _tournamentsService.GetTournament(id, user);
+                await _logService.AddLog(new Log(user, $"Ladder was reset in tournament with id {id}"));
 
                 return Ok(tournament);
             }
@@ -272,6 +286,9 @@ namespace SieGraSieMa.Controllers
             var result = await _contestService.SetScore(contestId, addContestantDTO);
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
+            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+            var user = await _userManager.FindByEmailAsync(email);
+            await _logService.AddLog(new Log(user, $"Set score in contest with id {contestId} for {addContestantDTO.Email}"));
             return Ok();
         }
 
@@ -285,6 +302,9 @@ namespace SieGraSieMa.Controllers
             {
                 var newTournament = new Tournament { Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
                 var result = await _tournamentsService.CreateTournament(newTournament);
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Tournament with id {result.Id} created"));
                 return Ok(result);
             }
             catch (Exception e)
@@ -304,6 +324,10 @@ namespace SieGraSieMa.Controllers
 
                 var result = await _tournamentsService.UpdateTournament(id, newTournament);
 
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Tournament with id {id} updated"));
+
                 return Ok(result);
             }
             catch (Exception e)
@@ -322,6 +346,10 @@ namespace SieGraSieMa.Controllers
             if (!result)
                 return NotFound(new ResponseErrorDTO { Error = "Tournament not found" });
 
+            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+            var user = await _userManager.FindByEmailAsync(email);
+            await _logService.AddLog(new Log(user, $"Tournament with id {id} deleted"));
+
             return Ok(new MessageDTO { Message = $"Tournament with {id} id succesfully deleted" });
         }
 
@@ -332,6 +360,9 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var response = await _tournamentsService.SetDescription(id, dto.data);
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Tournament with id {id} got new description"));
                 return Ok(response);
             }
             catch (Exception e)
@@ -354,6 +385,7 @@ namespace SieGraSieMa.Controllers
                 var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
                 var tournament = await _tournamentsService.GetTournament(id, user);
 
+                await _logService.AddLog(new Log(user, $"Tournament with id {id} has prepared"));
                 return Ok(tournament);
             }
             catch (Exception e)
@@ -373,6 +405,7 @@ namespace SieGraSieMa.Controllers
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
                 var tournament = await _tournamentsService.GetTournament(id, user);
+                await _logService.AddLog(new Log(user, $"Tournament with id {id} has reset"));
 
                 return Ok(tournament);
             }
@@ -392,6 +425,10 @@ namespace SieGraSieMa.Controllers
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
+            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+            var user = await _userManager.FindByEmailAsync(email);
+            await _logService.AddLog(new Log(user, $"New contest with name {contest.Name} in tournament with id {id}"));
+
             return Ok();
         }
 
@@ -406,15 +443,22 @@ namespace SieGraSieMa.Controllers
             if (!result)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
+            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+            var user = await _userManager.FindByEmailAsync(email);
+            await _logService.AddLog(new Log(user, $"Contest with id {contestId} in tournament with id {id} was updated"));
+
             return Ok();
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpDelete("{id}/contests/{contestId}")]
-        public async Task<IActionResult> DeleteContest(int contestId)
+        public async Task<IActionResult> DeleteContest(int id, int contestId)
         {
             var result = await _contestService.DeleteContest(contestId);
             if (!result) return NotFound(new ResponseErrorDTO { Error = "Contest not found" });
+            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+            var user = await _userManager.FindByEmailAsync(email);
+            await _logService.AddLog(new Log(user, $"Contest with id {contestId} in tournament with id {id} was deleted"));
             return Ok(result);
         }
 
@@ -426,6 +470,9 @@ namespace SieGraSieMa.Controllers
             {
                 var result = await _albumService.CreateAlbum(new Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = id });
 
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Album {album.Name} created in tournament with id {id}"));
                 return Ok(new ResponseAlbumWithoutMediaDTO
                 {
                     Id = result.Id,
@@ -455,6 +502,10 @@ namespace SieGraSieMa.Controllers
                     return BadRequest("There should be only one photo sent!");
 
                 var list = await _mediaService.CreateMedia(null, tournament.Id, file, MediaTypeEnum.tournaments);
+
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Media {list[0].Url} set as profile picture of tournament with id {id}"));
 
                 return Ok(list);
             }

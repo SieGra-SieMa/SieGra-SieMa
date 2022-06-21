@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs;
 using SieGraSieMa.DTOs.AlbumDTO;
@@ -10,6 +11,7 @@ using SieGraSieMa.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
@@ -20,11 +22,13 @@ namespace SieGraSieMa.Controllers
     public class MediaController : ControllerBase
     {
         private readonly IMediaService _mediaService;
-        private readonly IEmailService _emailService;
-        public MediaController(IMediaService mediaService, IEmailService emailService)
+        private readonly UserManager<User> _userManager;
+        private readonly ILogService _logService;
+        public MediaController(IMediaService mediaService, UserManager<User> userManager, ILogService logService)
         {
             _mediaService = mediaService;
-            _emailService = emailService;
+            _userManager = userManager;
+            _logService = logService;
         }
 
 
@@ -85,11 +89,12 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var result = await _mediaService.DeleteMedia(id);
+                if (!result) return NotFound(new ResponseErrorDTO { Error = "Medium not found" });
 
-                if (!result)
-                    return NotFound(new ResponseErrorDTO { Error = "Medium not found" });
-
-                return Ok(new MessageDTO { Message = "Medium deleted!"});
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Medium with id {id} deleted"));
+                return Ok(new MessageDTO { Message = "Medium deleted!" });
             }
             catch (Exception e)
             {
@@ -104,6 +109,10 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var result = await _mediaService.AddToAlbum(new MediumInAlbum { MediumId = id, AlbumId = albumId });
+
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Medium with id {id} added to album with id {albumId}"));
                 return Ok(result);
             }
             catch (Exception e)
@@ -119,6 +128,10 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var result = await _mediaService.DeleteFromAlbum(id, albumId);
+
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Mediumwith id {id} deleted from album with id {albumId}"));
                 return Ok(new MessageDTO { Message = "Photo deleted from album" });
             }
             catch (Exception e)

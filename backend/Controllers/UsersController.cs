@@ -44,7 +44,7 @@ namespace SieGraSieMa.Controllers
                 var newUser = _userService.UpdateUser(email, userDetailsDTO);
                 var roles = await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(email));
                 newUser.Roles = roles;
-                await _logService.AddLog(new Log(newUser.Id, "Changed user details"));
+                await _logService.AddLog(new Log(newUser.Id, $"Changed user details"));
                 return Ok(newUser);
             }
             catch (Exception e)
@@ -76,11 +76,11 @@ namespace SieGraSieMa.Controllers
                 var response = await _userManager.ChangePasswordAsync(user, passwordDTO.OldPassword, passwordDTO.NewPassword);
                 if (response.Succeeded)
                 {
-                    await _logService.AddLog(new Log(user, "Password changed succesfully"));
+                    await _logService.AddLog(new Log(user, $"Password changed succesfully"));
                     return Ok(new MessageDTO { Message = "Password succesfully changed" });
 
                 }
-                await _logService.AddLog(new Log(user, "Password does not changed - password does not meet the requirements"));
+                //await _logService.AddLog(new Log(user, $"Password does not changed - password does not meet the requirements"));
                 return BadRequest(new ResponseErrorDTO
                 {
                     Error = string.Join(" ", response.Errors.Select(e => e.Description))
@@ -88,7 +88,7 @@ namespace SieGraSieMa.Controllers
             }
             catch (Exception e)
             {
-                await _logService.AddLog(new Log(user, "Error while changing password"));
+                //await _logService.AddLog(new Log(user, $"Error while changing password"));
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
@@ -139,7 +139,7 @@ namespace SieGraSieMa.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             await _userService.PreparingUserToBlock(user.Id);
             await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Parse("2038-01-19 00:00:00"));//to jest maksimum dla timestampu xD
-            await _logService.AddLog(new Log(user, "Lock user due to deleting account"));
+            await _logService.AddLog(new Log(user, $"Lock user due to deleting account"));
             return Ok();
         }
 
@@ -168,7 +168,7 @@ namespace SieGraSieMa.Controllers
             await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Parse("2038-01-19 00:00:00"));//to jest maksimum dla timestampu xD
             var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
             var admin = await _userManager.FindByEmailAsync(email);
-            await _logService.AddLog(new Log(admin, "Lock user due to deleting account"));
+            await _logService.AddLog(new Log(admin, $"Lock user {user.Id} due to deleting account"));
             //await _userManager.DeleteAsync(user);
             return Ok();
         }
@@ -178,7 +178,7 @@ namespace SieGraSieMa.Controllers
         public async Task<ActionResult> GetUsers()
         {
             var users = await _userManager.Users.ToListAsync();
-            List<UserDTO> usersDTO = new List<UserDTO>();
+            List<UserDTO> usersDTO = new();
             foreach(var user in users)
             {
                 usersDTO.Add(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
@@ -201,9 +201,9 @@ namespace SieGraSieMa.Controllers
             if ((await _userManager.IsLockedOutAsync(user)) && (await _userManager.GetRolesAsync(user)).Any())
             {
                 await _userManager.SetLockoutEndDateAsync(user, null);
-                await _logService.AddLog(new Log(user, "Unlock user due to existing roles"));
+                await _logService.AddLog(new Log(user, $"Unlock user {user.Id} due to existing roles"));
             }
-            await _logService.AddLog(new Log(user, "Add roles " + roles.Aggregate((i, j) => i + ", " + j) + " to " + user.UserName));
+            await _logService.AddLog(new Log(user, $"Add roles {roles.Aggregate((i, j) => i + ", " + j)} to {user.Id}"));
             return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
         }
 
@@ -219,9 +219,9 @@ namespace SieGraSieMa.Controllers
             if (!(await _userManager.GetRolesAsync(user)).Any())
             {
                 await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Parse("2038-01-19 00:00:00"));//to jest maksimum dla timestampu xD
-                await _logService.AddLog(new Log(user, "Lock user due to no roles"));
+                await _logService.AddLog(new Log(user, $"Lock user {user.Id} due to removing last role"));
             }
-            await _logService.AddLog(new Log(user, "Remove roles " + roles.Aggregate((i, j) => i + ", " + j) + " from " + user.UserName));
+            await _logService.AddLog(new Log(user, $"Remove roles {roles.Aggregate((i, j) => i + ", " + j)} from {user.Id}"));
             return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
         }
 

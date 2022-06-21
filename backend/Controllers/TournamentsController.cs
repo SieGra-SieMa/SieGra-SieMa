@@ -350,7 +350,7 @@ namespace SieGraSieMa.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             await _logService.AddLog(new Log(user, $"Tournament with id {id} deleted"));
 
-            return Ok(new MessageDTO { Message = $"Tournament with {id} id succesfully deleted" });
+            return Ok(new MessageDTO { Message = $"Tournament with {id} id successfully deleted" });
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]

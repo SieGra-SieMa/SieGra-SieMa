@@ -76,8 +76,8 @@ namespace SieGraSieMa.Controllers
                 var response = await _userManager.ChangePasswordAsync(user, passwordDTO.OldPassword, passwordDTO.NewPassword);
                 if (response.Succeeded)
                 {
-                    await _logService.AddLog(new Log(user, $"Password changed succesfully"));
-                    return Ok(new MessageDTO { Message = "Password succesfully changed" });
+                    await _logService.AddLog(new Log(user, $"Password changed successfully"));
+                    return Ok(new MessageDTO { Message = "Password successfully changed" });
 
                 }
                 //await _logService.AddLog(new Log(user, $"Password does not changed - password does not meet the requirements"));

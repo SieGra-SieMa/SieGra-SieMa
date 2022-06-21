@@ -2,17 +2,17 @@ import { useState } from 'react';
 import Button from '../form/Button';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
-import styles from './TeamAdd.module.css';
+import styles from './AddParticipant.module.css';
 
 
-export default function TeamAdd() {
+export default function AddParticipant() {
 
     const [email, setEmail] = useState('');
 
     return (
         <div className={styles.root}>
             <Input
-                id='TeamAdd-email'
+                id='AddParticipant-email'
                 label='Email'
                 value={email}
                 required

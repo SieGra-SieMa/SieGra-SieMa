@@ -64,19 +64,19 @@ export default function MatchResult({ match, confirm }: MatchResultProps) {
         <form className={styles.matchDetails} onSubmit={onSubmit}>
             <Input
                 id='MatchResult-teamHomeScore'
-                label={`${match.teamHome ?? '-----------'} - Team score`}
+                label={`${match.teamHome ?? '-----------'}`}
                 value={`${teamHomeScore}`}
                 disabled={disabled}
                 onChange={(e) => createFunction(setTeamHomeScore)(e.target.value)}
             />
             <Input
                 id='MatchResult-teamAwayScore'
-                label={`${match.teamAway ?? '-----------'} - Team score`}
+                label={`${match.teamAway ?? '-----------'}`}
                 value={`${teamAwayScore}`}
                 disabled={disabled}
                 onChange={(e) => createFunction(setTeamAwayScore)(e.target.value)}
             />
-            <GuardComponent roles={[ROLES.Admin, ROLES.Employee]}>
+            <GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
                 {!disabled && (<>
                     <VerticalSpacing size={15} />
                     <Button value='Save' />

@@ -3,13 +3,13 @@ import Button, { ButtonStyle } from '../form/Button';
 import { useAuth } from '../auth/AuthContext';
 import Modal from '../modal/Modal';
 import { useUser } from '../user/UserContext';
-import styles from './AccountData.module.css';
-import AccountDataEdit from './AccountDataEdit';
-import AccountPasswordChange from './AccountPasswordChange';
+import styles from './Profile.module.css';
+import EditProfile from './EditProfile';
+import AccountPasswordChange from './PasswordChange';
 import Confirm from '../modal/Confirm';
 import { useApi } from '../api/ApiContext';
 
-export default function AccountData() {
+export default function Profile() {
 
     const { user, setUser } = useUser();
     const { setSession } = useAuth();
@@ -37,7 +37,10 @@ export default function AccountData() {
     }
 
     return (
-        <div className="container">
+        <div className={[
+            'container',
+            styles.root,
+        ].join(' ')}>
             <div className={styles.container}>
                 <h1>Profil</h1>
                 <h4>{user ? `${user.name} ${user.surname}` : 'Username'}</h4>
@@ -75,7 +78,7 @@ export default function AccountData() {
                     close={() => setIsEdit(false)}
                     title={'Edytuj użytkownika'}
                 >
-                    <AccountDataEdit confirm={() => {
+                    <EditProfile confirm={() => {
                         setIsEdit(false);
                     }} />
                 </Modal>

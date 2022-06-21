@@ -6,7 +6,7 @@ import { useApi } from '../api/ApiContext';
 import styles from './AlbumsList.module.css';
 import Button from '../form/Button';
 import Modal from '../modal/Modal';
-import AlbumAdd from './AlbumAdd';
+import CreateAlbum from './CreateAlbum';
 import GuardComponent from '../guard-components/GuardComponent';
 import { TournamentWithAlbums } from '../../_lib/_types/tournament';
 import ImageIcon from '@mui/icons-material/Image';
@@ -20,7 +20,7 @@ export default function AlbumsList() {
     const { id } = useParams<{ id: string }>();
 
     const [tournamentWithAlbums, setTournamentWithAlbums] = useState<TournamentWithAlbums | null>(null);
-    const [addAlbum, setAddAlbum] = useState(false);
+    const [isAddAlbum, setIsAddAlbum] = useState(false);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -40,7 +40,7 @@ export default function AlbumsList() {
                 <GuardComponent roles={[ROLES.Admin]}>
                     <Button
                         value='Dodaj album'
-                        onClick={() => setAddAlbum(true)}
+                        onClick={() => setIsAddAlbum(true)}
                     />
                 </GuardComponent>
             </div>
@@ -69,20 +69,20 @@ export default function AlbumsList() {
                 </ul>
             </>)}
 
-            {(tournamentWithAlbums && addAlbum) && (
+            {(tournamentWithAlbums && isAddAlbum) && (
                 <Modal
                     title='Dodaj album'
-                    close={() => setAddAlbum(false)}
+                    close={() => setIsAddAlbum(false)}
                     isClose
                 >
-                    <AlbumAdd
+                    <CreateAlbum
                         tournamentId={id!}
                         confirm={(album) => {
                             setTournamentWithAlbums({
                                 ...tournamentWithAlbums,
                                 albums: tournamentWithAlbums.albums.concat(album)
                             });
-                            setAddAlbum(false);
+                            setIsAddAlbum(false);
                         }}
                     />
                 </Modal>

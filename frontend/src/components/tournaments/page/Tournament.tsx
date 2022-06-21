@@ -21,8 +21,8 @@ import { SyncLoader } from 'react-spinners';
 import TeamsList from '../teams/TeamsList';
 import Matches from '../matches/Matches';
 import ImageIcon from '@mui/icons-material/Image';
-import CreateContest from '../contests/CreateContest';
-import Contest from '../contests/Contest';
+import Contests from '../contests/Contests';
+import CreateAlbum from '../../gallery/CreateAlbum';
 
 export default function Tournament() {
 
@@ -56,8 +56,7 @@ export default function Tournament() {
     const [isTeamRemove, setIsTeamRemove] = useState(false);
     const [isLadderCompose, setIsLadderCompose] = useState(false);
     const [isLadderReset, setIsLadderReset] = useState(false);
-    const [isAddContest, setIsAddContest] = useState(false);
-
+    const [isAddAlbum, setIsAddAlbum] = useState(false);
 
     const isOpen = tournament?.isOpen;
 
@@ -248,10 +247,7 @@ export default function Tournament() {
                     </div>
                 ) : (<>
                     {(tournament && !isOpen) && (<>
-                        {tournament.groups.length > 1 && (<>
-                            <Groups groups={tournament.groups} />
-                            <Matches groups={tournament.groups} />
-                        </>)}
+
                         {tournament.ladder[0]?.matches[0].teamHome && <Ladder ladder={tournament.ladder} />}
                         <GuardComponent roles={[ROLES.Admin]}>
                             {tournament && tournament.groups.map((group) =>
@@ -278,49 +274,66 @@ export default function Tournament() {
                                     )
                                 )}
                         </GuardComponent>
+                        {tournament.groups.length > 1 && (<>
+                            <Groups groups={tournament.groups} />
+                            <Matches groups={tournament.groups} />
+                        </>)}
                     </>)}
                 </>)
             )}
 
 
-            {(tournament) && (<>
-                <h4>Konkursy</h4>
-                <GuardComponent roles={[ROLES.Admin]}>
-                    <Button
-                        value='Dodaj konkurs'
-                        onClick={() => setIsAddContest(true)}
-                    />
-                </GuardComponent>
+            {(tournament) && (<Contests contests={tournament.contests} />)}
 
+            {(tournament) && (
                 <div>
-                    {tournament.contests.map((contest) => (
-                        <Contest key={contest.id} contest={contest} />
-                    ))}
+                    <div className={styles.header}>
+                        <h4>Albumy</h4>
+                        <GuardComponent roles={[ROLES.Admin]}>
+                            <Button
+                                value='Dodaj album'
+                                onClick={() => setIsAddAlbum(true)}
+                            />
+                        </GuardComponent>
+                    </div>
+                    <ul className={styles.albums}>
+                        {tournament.albums.map((album, index) => (
+                            <li
+                                key={index}
+                                className={styles.item}
+                                style={album.profilePicture ? {
+                                    backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
+                                } : undefined}
+                                onClick={() => navigate(`/gallery/${id!}/albums/${album.id}`)}>
+                                <div className={styles.box}>
+                                    {(!album.profilePicture) && <ImageIcon className={styles.picture} />}
+                                    <h4>
+                                        {album.name}
+                                    </h4>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
-
-            </>)}
-
-            {(tournament && tournament.albums.length > 0) && (<>
-                <h4>Albumy</h4>
-                <ul className={styles.albums}>
-                    {tournament.albums.map((album, index) => (
-                        <li
-                            key={index}
-                            className={styles.item}
-                            style={album.profilePicture ? {
-                                backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
-                            } : undefined}
-                            onClick={() => navigate(`/gallery/${id!}/albums/${album.id}`)}>
-                            <div className={styles.box}>
-                                {(!album.profilePicture) && <ImageIcon className={styles.picture} />}
-                                <h4>
-                                    {album.name}
-                                </h4>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            </>)}
+            )}
+            {(tournament && isAddAlbum) && (
+                <Modal
+                    title='Dodaj album'
+                    close={() => setIsAddAlbum(false)}
+                    isClose
+                >
+                    <CreateAlbum
+                        tournamentId={id!}
+                        confirm={(album) => {
+                            setTournament({
+                                ...tournament,
+                                albums: tournament.albums.concat(album)
+                            });
+                            setIsAddAlbum(false);
+                        }}
+                    />
+                </Modal>
+            )}
 
             {(tournament && isPrepare) && (
                 <Modal
@@ -481,21 +494,6 @@ export default function Tournament() {
                         cancel={() => setIsLadderReset(false)}
                         label='Potwierdź'
                         style={ButtonStyle.Red}
-                    />
-                </Modal>
-            )}
-            {(isAddContest) && (
-                <Modal
-                    title='Dodanie konkursu'
-                    isClose
-                    close={() => setIsAddContest(false)}
-                >
-                    <CreateContest
-                        tournamentId={id!}
-                        confirm={(data) => {
-                            console.log(data);
-                            setIsAddContest(false);
-                        }}
                     />
                 </Modal>
             )}

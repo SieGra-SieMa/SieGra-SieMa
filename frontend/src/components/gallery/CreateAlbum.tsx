@@ -1,41 +1,46 @@
 import { FormEvent, useState } from 'react';
-import { Team } from '../../_lib/types';
+import { Album, AlbumRequest } from '../../_lib/_types/tournament';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
-import styles from './TeamDataEdit.module.css';
-type TeamDataEditProps = {
-    parameter: number,
-    confirm: (team: Team) => void;
-}
+import styles from './CreateAlbum.module.css';
 
-export default function TeamDataEdit({ confirm }: TeamDataEditProps, parametr: number) {
+
+type CreateAlbumProps = {
+    confirm: (album: Album) => void;
+    tournamentId: string;
+};
+
+export default function CreateAlbum({ confirm, tournamentId }: CreateAlbumProps) {
+
+    const { tournamentsService } = useApi();
 
     const [name, setName] = useState('');
-    const { teamsService } = useApi();
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        teamsService.updateTeam(parametr, name)
+        const album: AlbumRequest = {
+            name,
+            createDate: new Date().toISOString(),
+        };
+        tournamentsService.addAlbum(tournamentId, album)
             .then((data) => {
                 confirm(data);
             });
-    };
+    }
 
     return (
-        <form onSubmit={onSubmit}>  
-        <div className={styles.root}>
+        <form className={styles.root} onSubmit={onSubmit}>
             <Input
-                id='TeamChange-name'
+                id='TournamentAdd-name'
                 label='Name'
                 value={name}
                 required
                 onChange={(e) => setName(e.target.value)}
             />
             <VerticalSpacing size={15} />
-            <Button value='Add' />
-        </div>
+            <Button value='Dodaj' />
         </form>
     );
-}
+};

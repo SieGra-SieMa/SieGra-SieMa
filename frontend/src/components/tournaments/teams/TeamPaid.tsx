@@ -41,7 +41,7 @@ export default function TeamPaid({ team }: TeamUnpaidProps) {
                 <Button value='Nie zapłacono' onClick={() => setIsChange(true)} />
                 {(isChange) && (
                     <Modal
-                        title={`Potwierdzenie anulowania opłaty - Zespółu "${team.teamName}"`}
+                        title={`Potwierdzenie anulowania opłaty - Zespół "${team.teamName}"`}
                         isClose
                         close={() => setIsChange(false)}
                     >

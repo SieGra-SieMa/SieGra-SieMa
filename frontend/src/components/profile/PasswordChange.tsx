@@ -1,16 +1,16 @@
 import { FormEvent, useState } from 'react';
-import { PasswordChange } from '../../_lib/types';
+import { PasswordChange as PasswordChangeType } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
 import Button, { ButtonStyle } from '../form/Button';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
-import styles from './AccountPasswordChange.module.css';
+import styles from './PasswordChange.module.css';
 
-type AccountDataEditProps = {
+type PasswordChangeProps = {
     confirm: () => void;
 }
 
-export default function AccountPasswordChange({ confirm }: AccountDataEditProps) {
+export default function PasswordChange({ confirm }: PasswordChangeProps) {
 
     const { usersService } = useApi();
 
@@ -19,7 +19,7 @@ export default function AccountPasswordChange({ confirm }: AccountDataEditProps)
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        const updatedUser: PasswordChange = {
+        const updatedUser: PasswordChangeType = {
             oldPassword,
             newPassword
         };

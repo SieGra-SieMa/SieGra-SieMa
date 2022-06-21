@@ -6,7 +6,6 @@ import styles from './Ladder.module.css';
 import 'swiper/swiper-bundle.min.css';
 import 'swiper/swiper.min.css';
 
-
 type LadderProps = {
     ladder: PhaseType[];
 };

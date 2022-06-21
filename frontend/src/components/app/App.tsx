@@ -23,7 +23,7 @@ import TournamentsList from '../tournaments/list/TournamentsList';
 import UsersList from '../admin/UsersList';
 import Tournament from '../tournaments/page/Tournament';
 import Album from '../gallery/Album';
-import AccountData from '../account-data/AccountData';
+import AccountData from '../profile/Profile';
 
 const apiClient = new ApiClient();
 

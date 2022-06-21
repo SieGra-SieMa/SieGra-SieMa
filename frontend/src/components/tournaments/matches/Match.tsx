@@ -29,7 +29,7 @@ export default function Match({
                     <Modal
                         isClose
                         close={() => setIsEdit(false)}
-                        title={'Match result'}>
+                        title='Wynik meczu'>
                         <MatchResult
                             match={match}
                             confirm={() => setIsEdit(false)}

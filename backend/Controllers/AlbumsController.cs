@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs.AlbumDTO;
 using SieGraSieMa.DTOs.ErrorDTO;
@@ -8,6 +9,7 @@ using SieGraSieMa.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
@@ -20,12 +22,16 @@ namespace SieGraSieMa.Controllers
 
         private readonly IAlbumService _albumService;
         private readonly IMediaService _mediaService;
+        private readonly UserManager<User> _userManager;
+        private readonly ILogService _logService;
 
 
-        public AlbumsController(IAlbumService albumService, IMediaService mediaService)
+        public AlbumsController(IAlbumService albumService, IMediaService mediaService, UserManager<User> userManager, ILogService logService)
         {
             _albumService = albumService;
             _mediaService = mediaService;
+            _userManager = userManager;
+            _logService = logService;
         }
 
         [AllowAnonymous]
@@ -61,11 +67,13 @@ namespace SieGraSieMa.Controllers
             {
                 var list = await _mediaService.CreateMedia(id, null, files, IMediaService.MediaTypeEnum.photos);
 
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Media added to album number {id}"));
                 return Ok(list);
             }
             catch (Exception ex)
             {
-
                 return BadRequest(new ResponseErrorDTO { Error = ex.Message });
             }
         }
@@ -74,25 +82,41 @@ namespace SieGraSieMa.Controllers
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateAlbum(UpdateAlbumDTO album, int id)
         {
-            var newAlbum = new Models.Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = album.TournamentId };
+            try
+            {
+                var newAlbum = new Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = album.TournamentId };
+                var result = await _albumService.UpdateAlbum(id, newAlbum);
+                if (!result) return BadRequest(new ResponseErrorDTO { Error = "Album or tournament not found" });
 
-            var result = await _albumService.UpdateAlbum(id, newAlbum);
-            if (!result)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
-
-            return Ok();
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Album {id} updated"));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = ex.Message });
+            }
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAlbum(int id)
         {
-            var result = await _albumService.DeleteAlbum(id);
+            try
+            {
+                var result = await _albumService.DeleteAlbum(id);
+                if (!result) return NotFound(new ResponseErrorDTO { Error = "Album not found" });
 
-            if (!result)
-                return NotFound(new ResponseErrorDTO { Error = "Album not found" });
-
-            return Ok();
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Album {id} deleted"));
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = ex.Message });
+            }
         }
     }
 }

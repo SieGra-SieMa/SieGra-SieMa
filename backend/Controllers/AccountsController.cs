@@ -51,7 +51,7 @@ namespace SieGraSieMa.Controllers
                 return Unauthorized(new ResponseErrorDTO { Error = "Wrong provider" });
             }
 
-            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+            //var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
 
             //https://ethereal.email/
             //await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
@@ -85,7 +85,7 @@ namespace SieGraSieMa.Controllers
             if (!await _userManager.CheckPasswordAsync(user, login.Password))
             {
                 await _userManager.AccessFailedAsync(user);
-                await _logService.AddLog(new Log(user, "Account is locked out due to too much bad requests"));
+                await _logService.AddLog(new Log(user, $"Account is locked out due to too much bad requests"));
                 if (await _userManager.IsLockedOutAsync(user))
                     return BadRequest(new ResponseErrorDTO { Error = "Account is locked out due to too much bad requests" });
 
@@ -171,7 +171,7 @@ namespace SieGraSieMa.Controllers
 
             await _userManager.AddToRoleAsync(user, "User");
 
-            await _logService.AddLog(new Log(user, "Register succesfully"));
+            await _logService.AddLog(new Log(user, $"Register successfully"));
 
             return Ok(new MessageDTO { Message = "A verification link has been sent to your email!" });
 
@@ -220,7 +220,7 @@ namespace SieGraSieMa.Controllers
             {
                 return BadRequest(new ResponseErrorDTO { Error = "Email not confirmed" });
             }
-            await _logService.AddLog(new Log(userFound, "Email confirmed succesfully"));
+            await _logService.AddLog(new Log(userFound, $"Email confirmed successfully"));
             return Ok();
         }
 

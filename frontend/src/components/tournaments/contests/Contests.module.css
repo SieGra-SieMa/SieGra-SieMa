@@ -1,5 +1,64 @@
 .root {
+    display: flex;
+    flex-direction: column;
+    row-gap: 25px;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.header {
     display: grid;
-    row-gap: 15px;
-    grid-auto-rows: min-content;
+    grid-template-columns: .3fr 1fr .3fr;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.header>* {
+    justify-self: center;
+}
+
+.contests {
+    width: 100%;
+    height: 450px;
+    overflow-x: scroll;
+}
+
+/* Contest */
+.score {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--secondary-color);
+    gap: 25px;
+    padding: 0 25px;
+}
+
+.scores {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 450px;
+    min-width: 300px;
+    margin: auto;
+}
+
+/* Modal */
+
+.selectContest {
+    display: flex;
+	flex-direction: column;
+	gap: 20px;
+	width: fit-content;
+	align-items: center;
+	margin: auto;
+}
+
+Button.active {
+	border-color: var(--accent-color);
+}
+
+.selectContest>Button {
+    width: 100%;
 }

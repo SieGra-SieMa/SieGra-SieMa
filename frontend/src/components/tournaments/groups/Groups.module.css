@@ -23,18 +23,18 @@
     border-radius: 15px 0 0 15px;
 }
 
-h6 {
+#selectable {
     margin: 0;
     padding: 0;
     transition: all .3s ease-in-out;
 }
 
-h6:hover {
+#selectable:hover {
     cursor: pointer;
     color: var(--accent-color);
 }
 
-h6.active {
+#selectable.active {
     color: var(--accent-color);
 }
 

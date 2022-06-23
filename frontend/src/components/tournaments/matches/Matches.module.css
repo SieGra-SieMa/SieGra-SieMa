@@ -30,17 +30,6 @@
     overflow-y: scroll;
 }
 
-h6 {
-	margin: 0;
-	padding: 0;
-	transition: all 0.3s ease-in-out;
-}
-
-h6:hover {
-	cursor: pointer;
-	color: var(--accent-color);
-}
-
 Button.active {
 	border-color: var(--accent-color);
 }
@@ -77,6 +66,10 @@ Button.active {
 	font-size: 36px;
 	color: var(--accent-color);
 	grid-area: 1 / 2 / 3 / 3;
+}
+
+.teamName {
+    padding: 0;
 }
 
 @media all and (max-width: 500px) {

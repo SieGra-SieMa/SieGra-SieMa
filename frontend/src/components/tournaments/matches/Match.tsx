@@ -14,8 +14,8 @@ export default function Match({ match }: MatchProps) {
 	return (
 		<>
 			<div className={styles.match} onClick={() => setIsEdit(true)}>
-				<p>{match.teamHome}</p>
-				<p>{match.teamAway}</p>
+				<h6 className={styles.teamName}>{match.teamHome}</h6>
+				<h6 className={styles.teamName}>{match.teamAway}</h6>
 				<span className={styles.vs}>VS</span>
 				<p>{match.teamHomeScore ?? "-"}</p>
 				<p>{match.teamAwayScore ?? "-"}</p>

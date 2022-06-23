@@ -22,6 +22,7 @@ export default function Groups({ groups }: GroupsProps) {
 								className={
 									group === currentGroup ? styles.active : ""
 								}
+								id={styles.selectable}
 								onClick={() => {
                                     setOpacity(0);
                                     setTimeout(setCurrentGroup, 200, group);

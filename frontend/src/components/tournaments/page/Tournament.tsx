@@ -28,6 +28,8 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
+import RestartAltIcon from "@mui/icons-material/RestartAlt";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import Contests from "../contests/Contests";
 
@@ -177,32 +179,32 @@ export default function Tournament() {
 					<GuardComponent roles={[ROLES.Admin]}>
 						<div className={styles.adminControls}>
 							{isOpen ? (
-								<Button
-									value="Przygotuj turniej"
+								<PlayArrowIcon
+									className="interactiveIcon"
 									onClick={() => setIsPrepare(true)}
-									style={ButtonStyle.Yellow}
+									fontSize="medium"
 								/>
 							) : (
-								<Button
-									value="Resetuj turniej"
+								<RestartAltIcon
+									className="interactiveIcon"
 									onClick={() => setIsReset(true)}
-									style={ButtonStyle.Red}
+									fontSize="medium"
 								/>
 							)}
 							<InsertPhotoIcon
 								className="interactiveIcon"
 								onClick={() => setIsPicture(true)}
-								fontSize="large"
+								fontSize="medium"
 							/>
 							<EditIcon
 								className="interactiveIcon"
 								onClick={() => setIsEdit(true)}
-								fontSize="large"
+								fontSize="medium"
 							/>
 							<DeleteIcon
 								className="interactiveIcon"
 								onClick={() => setIsDelete(true)}
-								fontSize="large"
+								fontSize="medium"
 							/>
 						</div>
 					</GuardComponent>

@@ -24,13 +24,12 @@ import { SyncLoader } from "react-spinners";
 import TeamsList from "../teams/TeamsList";
 import Matches from "../matches/Matches";
 import ImageIcon from "@mui/icons-material/Image";
-import CreateContest from "../contests/CreateContest";
-import Contest from "../contests/Contest";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import InsertPhotoIcon from "@mui/icons-material/InsertPhoto";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import Contests from "../contests/Contests";
 
 export default function Tournament() {
 	const navigate = useNavigate();
@@ -65,7 +64,6 @@ export default function Tournament() {
 	const [isTeamRemove, setIsTeamRemove] = useState(false);
 	const [isLadderCompose, setIsLadderCompose] = useState(false);
 	const [isLadderReset, setIsLadderReset] = useState(false);
-	const [isAddContest, setIsAddContest] = useState(false);
 
 	const isOpen = tournament?.isOpen;
 
@@ -171,7 +169,7 @@ export default function Tournament() {
 		>
 			<div className={styles.top}>
 				<ArrowBackIosNewIcon
-					className={styles.interactiveIcon}
+					className="interactiveIcon"
 					onClick={() => navigate("..")}
 					fontSize="large"
 				/>
@@ -192,17 +190,17 @@ export default function Tournament() {
 								/>
 							)}
 							<InsertPhotoIcon
-								className={styles.interactiveIcon}
+								className="interactiveIcon"
 								onClick={() => setIsPicture(true)}
 								fontSize="large"
 							/>
 							<EditIcon
-								className={styles.interactiveIcon}
+								className="interactiveIcon"
 								onClick={() => setIsEdit(true)}
 								fontSize="large"
 							/>
 							<DeleteIcon
-								className={styles.interactiveIcon}
+								className="interactiveIcon"
 								onClick={() => setIsDelete(true)}
 								fontSize="large"
 							/>
@@ -280,13 +278,36 @@ export default function Tournament() {
 					</div>
 				) : (
 					<>
+						{tournament && (
+							<>
+								<div className={styles.matchesAndContests}>
+									<div className={styles.matchesContainer}>
+										{!isOpen && (
+											<>
+												{tournament.groups.length >
+													1 && (
+													<>
+														<Matches
+															groups={
+																tournament.groups
+															}
+														/>
+													</>
+												)}
+											</>
+										)}
+									</div>
+									<div className={styles.contestsContainer}>
+										<Contests
+											contests={tournament.contests}
+											tournamentId={id!}
+										/>
+									</div>
+								</div>
+							</>
+						)}
 						{tournament && !isOpen && (
 							<>
-								{tournament.groups.length > 1 && (
-									<>
-										<Matches groups={tournament.groups} />
-									</>
-								)}
 								{tournament.ladder[0]?.matches[0].teamHome && (
 									<Ladder ladder={tournament.ladder} />
 								)}
@@ -340,24 +361,6 @@ export default function Tournament() {
 						)}
 					</>
 				))}
-
-			{tournament && (
-				<>
-					<h4>Konkursy</h4>
-					<GuardComponent roles={[ROLES.Admin]}>
-						<Button
-							value="Dodaj konkurs"
-							onClick={() => setIsAddContest(true)}
-						/>
-					</GuardComponent>
-
-					<div>
-						{tournament.contests.map((contest) => (
-							<Contest key={contest.id} contest={contest} />
-						))}
-					</div>
-				</>
-			)}
 
 			{tournament && tournament.albums.length > 0 && (
 				<>
@@ -559,21 +562,6 @@ export default function Tournament() {
 						cancel={() => setIsLadderReset(false)}
 						label="Potwierdź"
 						style={ButtonStyle.Red}
-					/>
-				</Modal>
-			)}
-			{isAddContest && (
-				<Modal
-					title="Dodanie konkursu"
-					isClose
-					close={() => setIsAddContest(false)}
-				>
-					<CreateContest
-						tournamentId={id!}
-						confirm={(data) => {
-							console.log(data);
-							setIsAddContest(false);
-						}}
 					/>
 				</Modal>
 			)}

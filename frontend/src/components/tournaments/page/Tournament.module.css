@@ -69,18 +69,6 @@
     cursor: pointer;
 }
 
-.interactiveIcon {
-    transform: scale(1);
-    color: white;
-    transition: all .2s ease-in-out !important;
-}
-
-.interactiveIcon:hover {
-    cursor: pointer;
-    color: var(--accent-color);
-    transform: scale(1.1);
-}
-
 .team {
     background-color: var(--secondary-color);
     padding: 25px;
@@ -156,6 +144,18 @@
     gap: 25px;
     margin: 20px 0;
 }
+
+.matchesAndContests {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    column-gap: 25px;
+}
+
+.matchesAndContests>div {
+    width: 100%;
+}
+
 
 @media all and (max-width: 1000px) {
     .tournamentInfo {

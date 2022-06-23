@@ -11,6 +11,7 @@ type ContestProps = {
 };
 
 export default function Contest({ contest }: ContestProps) {
+    const [currentContest, setCurrentContest] = useState(contest);
 
     const [isAddScore, setIsAddScore] = useState(false)
 

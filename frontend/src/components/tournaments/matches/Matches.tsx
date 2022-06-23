@@ -17,7 +17,14 @@ export default function Matches({ groups }: MatchesProps) {
 		<>
 			<div className={styles.root}>
 				<div className={styles.container}>
-					<h4 className="underline" style={{ width: "fit-content" }}>
+					<h4
+						className="underline"
+						style={{
+							width: "fit-content",
+							padding: 0,
+							marginTop: "25px",
+						}}
+					>
 						Mecze
 					</h4>
 					<Button
@@ -48,7 +55,9 @@ export default function Matches({ groups }: MatchesProps) {
 												setIsSelectGroup(false);
 											}}
 											key={group.id}
-											style={ButtonStyle.TransparentBorder}
+											style={
+												ButtonStyle.TransparentBorder
+											}
 										/>
 									))}
 							</div>

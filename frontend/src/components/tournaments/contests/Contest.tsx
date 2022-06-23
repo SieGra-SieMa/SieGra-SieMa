@@ -9,6 +9,7 @@ import Modal from '../../modal/Modal';
 import AddScoreContest from './AddScoreContest';
 import EditContest from './EditContest';
 import styles from './Contests.module.css';
+import { useTournament } from '../TournamentContext';
 
 type ContestProps = {
     contest: ContestType;
@@ -17,6 +18,7 @@ type ContestProps = {
 export default function Contest({ contest }: ContestProps) {
 
     const { tournamentsService } = useApi();
+    const { tournament, setTournament } = useTournament();
 
     const [isAddScore, setIsAddScore] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
@@ -26,6 +28,10 @@ export default function Contest({ contest }: ContestProps) {
         tournamentsService.deleteContest(contest.tournamentId, contest.id)
             .then(() => {
                 setIsDelete(false);
+                setTournament({
+                    ...tournament!,
+                    contests: tournament!.contests.filter((e) => e.id !== contest.id)
+                });
             });
     };
 

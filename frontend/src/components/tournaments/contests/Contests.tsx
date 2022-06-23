@@ -43,8 +43,7 @@ export default function Contests({ contests }: ContestsProps) {
                 >
                     <CreateContest
                         tournamentId={tournament!.id}
-                        confirm={(data) => {
-                            console.log(data);
+                        confirm={() => {
                             setIsAddContest(false);
                         }}
                     />

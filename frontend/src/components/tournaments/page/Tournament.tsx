@@ -339,7 +339,7 @@ export default function Tournament() {
                 <Modal
                     isClose
                     close={() => setIsPrepare(false)}
-                    title={`Czy na pewno chcesz przygotuj turniej`}
+                    title='Czy na pewno chcesz przygotuj turniej'
                 >
                     <Confirm
                         cancel={() => setIsPrepare(false)}
@@ -353,7 +353,7 @@ export default function Tournament() {
                 <Modal
                     isClose
                     close={() => setIsReset(false)}
-                    title={`Czy na pewno chcesz zresetować turniej?"`}
+                    title='Czy na pewno chcesz zresetować turniej?'
                 >
                     <Confirm
                         cancel={() => setIsReset(false)}
@@ -367,7 +367,7 @@ export default function Tournament() {
                 <Modal
                     isClose
                     close={() => setIsEdit(false)}
-                    title={`Edytuj turniej  - "${tournament.name}"`}
+                    title='Edytuj turniej'
                 >
                     <EditTournament
                         tournament={tournament}
@@ -378,7 +378,7 @@ export default function Tournament() {
             {(tournament && isDelete) && (
                 <Modal
                     close={() => setIsDelete(false)}
-                    title='Czy na pewno chcesz usunąć turniej"?'
+                    title='Czy na pewno chcesz usunąć turniej?'
                 >
                     <Confirm
                         cancel={() => setIsDelete(false)}

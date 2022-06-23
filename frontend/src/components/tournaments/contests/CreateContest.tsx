@@ -7,7 +7,7 @@ import styles from './Contests.module.css';
 
 type CreateContestProps = {
     tournamentId: number;
-    confirm: (contest: any) => void;
+    confirm: () => void;
 };
 
 export default function CreateContest({ tournamentId, confirm }: CreateContestProps) {
@@ -20,7 +20,7 @@ export default function CreateContest({ tournamentId, confirm }: CreateContestPr
         e.preventDefault();
         tournamentsService.createContest(tournamentId, name)
             .then((data) => {
-                confirm(data);
+                confirm();
             });
     }
 

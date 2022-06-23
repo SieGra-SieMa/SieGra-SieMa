@@ -160,6 +160,12 @@
     width: 100%;
 }
 
+@media all and (max-width: 1280px) {
+    .matchesAndContests {
+        grid-template-columns: auto;
+        grid-template-rows: 1fr 1fr;
+    }
+}
 
 @media all and (max-width: 1000px) {
     .tournamentInfo {

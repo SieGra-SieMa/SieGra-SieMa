@@ -364,34 +364,38 @@ export default function Tournament() {
 
 			{tournament && tournament.albums.length > 0 && (
 				<>
-					<h4>Albumy</h4>
-					<ul className={styles.albums}>
-						{tournament.albums.map((album, index) => (
-							<li
-								key={index}
-								className={styles.item}
-								style={
-									album.profilePicture
-										? {
-												backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
-										  }
-										: undefined
-								}
-								onClick={() =>
-									navigate(
-										`/gallery/${id!}/albums/${album.id}`
-									)
-								}
-							>
-								<div className={styles.box}>
-									{!album.profilePicture && (
-										<ImageIcon className={styles.picture} />
-									)}
-									<h4>{album.name}</h4>
-								</div>
-							</li>
-						))}
-					</ul>
+					<div className={styles.albumsContainer}>
+						<h4 className="underline">Albumy</h4>
+						<ul className={styles.albums}>
+							{tournament.albums.map((album, index) => (
+								<li
+									key={index}
+									className={styles.item}
+									style={
+										album.profilePicture
+											? {
+													backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
+											  }
+											: undefined
+									}
+									onClick={() =>
+										navigate(
+											`/gallery/${id!}/albums/${album.id}`
+										)
+									}
+								>
+									<div className={styles.box}>
+										{!album.profilePicture && (
+											<ImageIcon
+												className={styles.picture}
+											/>
+										)}
+										<h4>{album.name}</h4>
+									</div>
+								</li>
+							))}
+						</ul>
+					</div>
 				</>
 			)}
 

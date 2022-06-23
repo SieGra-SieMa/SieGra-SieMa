@@ -93,12 +93,15 @@
     padding: 25px 0;
 }
 
+.albumsContainer>h4 {
+    width: fit-content;
+}
 
 .albums {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    display: flex;
     gap: 25px;
-    margin: 20px 0;
+    margin: 20px 0; 
+    overflow-x: scroll;
 }
 
 .item {
@@ -106,6 +109,7 @@
     overflow: hidden;
     transition: box-shadow .3s;
     min-height: 250px;
+    min-width: 250px;
     cursor: pointer;
     background-position: center;
     background-size: cover;
@@ -161,9 +165,16 @@
 }
 
 @media all and (max-width: 1280px) {
+    .description {
+        align-items: center;
+        margin: auto;
+    }
     .matchesAndContests {
         grid-template-columns: auto;
         grid-template-rows: 1fr 1fr;
+    }
+    .albumsContainer>h4 {
+        margin: auto;
     }
 }
 

@@ -12,9 +12,8 @@ export default function Groups({ groups }: GroupsProps) {
 
 	return (
 		<div className={styles.root}>
-			
 			<div className={styles.container}>
-                <h4 className="underline" style={{ width: "fit-content" }}>Grupy</h4>
+                <h4 className="underline" id={styles.caption} style={{ width: "fit-content" }}>Grupy</h4>
 				<div className={styles.groups}>
 					{groups
 						.filter((group) => !group.ladder)

@@ -30,7 +30,9 @@
 .yellowButton,
 .greyButton,
 .greenButton,
-.redButton {
+.redButton,
+.transparentButton,
+.transparentBorderButton {
     appearance: none;
     border: none;
     padding: 15px 20px;
@@ -92,6 +94,36 @@
 
 .redButton:active {
     background-color: #823131;
+}
+
+.transparentBorderButton {
+    color: #fff;
+    background-color: transparent;
+    border-color: #fff;
+    border: 2px solid;
+    transition: all .3s ease-in-out;
+}
+
+.transparentBorderButton:hover {
+    border-color: var(--accent-color);
+}
+
+.transparentBorderButton:active {
+    border-color: var(--accent-color);
+}
+
+.transparentButton {
+    color: #fff;
+    background-color: transparent;
+    transition: all .3s ease-in-out;
+}
+
+.transparentButton:hover {
+    color: var(--accent-color);
+}
+
+.transparentButton:active {
+    color: var(--accent-color);
 }
 
 .disabled {

@@ -1,14 +1,56 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.selectGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: fit-content;
+    align-items: center;
+    margin: auto;
+}
+
+#selectGroupButton {
+    width: fit-content;
+}
+
 .group {
     display: flex;
     flex-direction: column;
     text-align: center;
     padding: 10px;
+    grid-area: 2 / 1 / 3 / 3; 
+}
+
+h6 {
+    margin: 0;
+    padding: 0;
+    transition: all .3s ease-in-out;
+}
+
+h6:hover {
+    cursor: pointer;
+    color: var(--accent-color);
+}
+
+Button.active {
+    border-color: var(--accent-color);
+}
+
+.groups {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .matches {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    transition: all .2s ease-in-out;
 }
 
 /* Match */

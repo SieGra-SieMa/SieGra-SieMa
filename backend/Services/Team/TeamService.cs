@@ -12,7 +12,7 @@ namespace SieGraSieMa.Services
     public interface ITeamService
     {
         Team CreateTeam(string name, User captain);
-        void JoinTeam(string code, User user);
+        GetTeamsDTO JoinTeam(string code, User user);
         void LeaveTeam(int id, User user);
         void ChangeName(int id, string name);
         void RemoveTeam(int id);
@@ -60,9 +60,9 @@ namespace SieGraSieMa.Services
             return team;
         }
 
-        public void JoinTeam(string code, User user)
+        public GetTeamsDTO JoinTeam(string code, User user)
         {
-            var isExist = _SieGraSieMaContext.Teams.Where(e => e.Code == code)
+            var isExist = _SieGraSieMaContext.Teams.Include(t => t.Players).ThenInclude(p => p.User).Include(t=>t.Captain).Where(e => e.Code == code)
                 .SingleOrDefault();
 
             if (isExist == null)
@@ -76,6 +76,29 @@ namespace SieGraSieMa.Services
                 User = user
             });
             _SieGraSieMaContext.SaveChanges();
+            return new GetTeamsDTO
+            {
+                Id = isExist.Id,
+                Name = isExist.Name,
+                CaptainId = isExist.CaptainId.Value,
+                Captain = new PlayerDTO
+                {
+                    Id = isExist.CaptainId.Value,
+                    Name = isExist.Captain.Name,
+                    Surname = isExist.Captain.Surname
+
+                },
+                Code = isExist.Code,
+                Players = isExist.Players
+                        .Select(p => new PlayerDTO
+                        {
+                            Id = p.UserId,
+                            Name = p.User.Name,
+                            Surname = p.User.Surname
+
+                        }).ToList(),
+                ProfilePicture = isExist.Medium == null ? null : isExist.Medium.Url
+            };
         }
 
         public void LeaveTeam(int id, User user)

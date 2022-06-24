@@ -11,9 +11,9 @@ namespace SieGraSieMa.Services
 {
     public interface IContestService
     {
-        public Task<bool> CreateContest(Contest newContest);
-        public Task<bool> UpdateContest(int id, Contest newContest);
-        public Task<bool> DeleteContest(int id);
+        public Task<ResponseContestDTO> CreateContest(Contest newContest);
+        public Task<ResponseContestDTO> UpdateContest(int id, Contest newContest);
+        public Task<ResponseContestDTO> DeleteContest(int id);
         public Task<ICollection<ResponseContestDTO>> GetContests(int tournamentId);
         public Task<ResponseContestDTO> GetContest(int id);
         public Task<ResponseContestantDTO> SetScore(int id, AddContestantDTO addContestantDTO);
@@ -28,26 +28,66 @@ namespace SieGraSieMa.Services
             _SieGraSieMaContext = sieGraSieMaContext;
         }
 
-        public async Task<bool> CreateContest(Contest newContest)
+        public async Task<ResponseContestDTO> CreateContest(Contest newContest)
         {
             await _SieGraSieMaContext.Contests.AddAsync(newContest);
-            return await _SieGraSieMaContext.SaveChangesAsync() > 0;
+            if (await _SieGraSieMaContext.SaveChangesAsync() == 0) throw new Exception("Cannot add contest");
+            var contest = _SieGraSieMaContext.Contests.Where(c => c.TournamentId == newContest.TournamentId && c.Name == newContest.Name).FirstOrDefault();
+            var result = new ResponseContestDTO
+            {
+                Id = contest.Id,
+                Name = contest.Name,
+                TournamentId = contest.TournamentId,
+                /*Contestants = await _SieGraSieMaContext.Contestants.Include(c => c.User).Where(c => c.ContestId == id).Select(c => new ResponseContestantDTO
+                {
+                    Name = c.User.Name,
+                    Surname = c.User.Surname,
+                    Points = c.Points
+                }).ToListAsync()*/
+            };
+            return result;
         }
-        public async Task<bool> UpdateContest(int id, Contest newContest)
+        public async Task<ResponseContestDTO> UpdateContest(int id, Contest newContest)
         {
             var oldContest = await _SieGraSieMaContext.Contests.FindAsync(id);
             if (oldContest == null) throw new Exception("There is no contest with this id");
             oldContest.Name = newContest.Name;
             _SieGraSieMaContext.Contests.Update(oldContest);
-            return await _SieGraSieMaContext.SaveChangesAsync() > 0;
+            if (await _SieGraSieMaContext.SaveChangesAsync() == 0) throw new Exception("Cannot update contest");
+            var result = new ResponseContestDTO
+            {
+                Id = oldContest.Id,
+                Name = oldContest.Name,
+                TournamentId = oldContest.TournamentId,
+                Contestants = await _SieGraSieMaContext.Contestants.Include(c => c.User).Where(c => c.ContestId == id).Select(c => new ResponseContestantDTO
+                {
+                    Name = c.User.Name,
+                    Surname = c.User.Surname,
+                    Points = c.Points
+                }).ToListAsync()
+            };
+            return result;
         }
-        public async Task<bool> DeleteContest(int id)
+        public async Task<ResponseContestDTO> DeleteContest(int id)
         {
             var contest = await _SieGraSieMaContext.Contests.FindAsync(id);
             if (contest == null) throw new Exception("There is no contest with this id");
             if (_SieGraSieMaContext.Contestants.Where(c => c.ContestId == id).Any()) throw new Exception("Cant delete contest with contestans");
             _SieGraSieMaContext.Contests.Remove(contest);
-            return (await _SieGraSieMaContext.SaveChangesAsync() > 0);
+            await _SieGraSieMaContext.SaveChangesAsync();
+            var result = new ResponseContestDTO
+            {
+                Id = contest.Id,
+                Name = contest.Name,
+                TournamentId = contest.TournamentId,
+                /*Contestants = await _SieGraSieMaContext.Contestants.Include(c => c.User).Where(c => c.ContestId == id).Select(c => new ResponseContestantDTO
+                {
+                    Name = c.User.Name,
+                    Surname = c.User.Surname,
+                    Points = c.Points
+                }).ToListAsync()*/
+            };
+            return result;
         }
         public async Task<ResponseContestDTO> GetContest(int id)
         {
@@ -58,11 +98,11 @@ namespace SieGraSieMa.Services
                 Id = contest.Id,
                 Name = contest.Name,
                 TournamentId = contest.TournamentId,
-                Contestants = await _SieGraSieMaContext.Contestants.Include(c=>c.User).Where(c => c.ContestId == id).Select(c => new ResponseContestantDTO
+                Contestants = await _SieGraSieMaContext.Contestants.Include(c => c.User).Where(c => c.ContestId == id).Select(c => new ResponseContestantDTO
                 {
                     //ContestId = c.ContestId,
-                    Name=c.User.Name,
-                    Surname=c.User.Surname,
+                    Name = c.User.Name,
+                    Surname = c.User.Surname,
                     //UserId = c.UserId,
                     Points = c.Points
                 }).ToListAsync()

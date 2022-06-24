@@ -144,6 +144,22 @@ namespace SieGraSieMa.Controllers
         }
 
 
+        //-------------------------------------------------employer functions
+
+        [Authorize(Policy = "OnlyEmployeesAuthenticated")]
+        [HttpGet()]
+        public async Task<ActionResult> GetUsers(string filter)
+        {
+            var users = _userService.GetUsers(filter);
+            List<UserDTO> usersDTO = new();
+            foreach (var user in users)
+            {
+                usersDTO.Add(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
+            }
+            return Ok(usersDTO);
+        }
+
+
         //-------------------------------------------------admin functions
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
@@ -171,20 +187,6 @@ namespace SieGraSieMa.Controllers
             await _logService.AddLog(new Log(admin, $"Lock user {user.Id} due to deleting account"));
             //await _userManager.DeleteAsync(user);
             return Ok();
-        }
-        
-        [Authorize(Policy = "OnlyAdminAuthenticated")]
-        [HttpGet()]
-        public async Task<ActionResult> GetUsers()
-        {
-            var users = await _userManager.Users.ToListAsync();
-            List<UserDTO> usersDTO = new();
-            foreach(var user in users)
-            {
-                usersDTO.Add(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
-            }
-            
-            return Ok(usersDTO);
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]

@@ -15,7 +15,7 @@ namespace SieGraSieMa.Services
         void DeleteUser(int Id);
         User GetUser(int Id);
         User GetUser(string Email);
-        IEnumerable<User> GetUsers();
+        IEnumerable<User> GetUsers(string filter);
         public void JoinNewsletter(int userId);
         public void LeaveNewsletter(int userId);
         public Task<IEnumerable<User>> GetNewsletterSubscribers(int? id);
@@ -86,9 +86,10 @@ namespace SieGraSieMa.Services
         {
             return _SieGraSieMaContext.Users.Where(t => t.Email == Email).SingleOrDefault();
         }
-        public IEnumerable<User> GetUsers()
+        public IEnumerable<User> GetUsers(string filter)
         {
-            return _SieGraSieMaContext.Users.ToList();
+            if(filter == null) return _SieGraSieMaContext.Users.ToList();
+            return _SieGraSieMaContext.Users.Where(u=>u.NormalizedEmail.StartsWith(filter.ToUpper())).ToList();
         }
 
         public void JoinNewsletter(int userId)

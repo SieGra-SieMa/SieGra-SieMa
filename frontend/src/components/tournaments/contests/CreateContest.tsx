@@ -6,7 +6,7 @@ import VerticalSpacing from '../../spacing/VerticalSpacing';
 import styles from './Contests.module.css';
 
 type CreateContestProps = {
-    tournamentId: number;
+    tournamentId: string;
     confirm: (contest: any) => void;
 };
 

@@ -26,7 +26,7 @@ namespace SieGraSieMa.DTOs.TournamentDTO
         public virtual IEnumerable<ResponseAlbumDTO> Albums { get; set; }
         public virtual IEnumerable<ResponseContestDTO> Contests { get; set; }
         public virtual IEnumerable<ResponseGroupDTO> Groups { get; set; }
-        //public virtual IEnumerable<string> Teams { get; set; }
+        public virtual IEnumerable<ResponseTeamInTournamentDTO> Teams { get; set; } //todo 
         public virtual IEnumerable<GetLadderDTO> Ladder { get; set; }
 
 

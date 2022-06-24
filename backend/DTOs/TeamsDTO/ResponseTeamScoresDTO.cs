@@ -7,7 +7,8 @@ namespace SieGraSieMa.DTOs.TeamsDTO
 {
     public class ResponseTeamScoresDTO
     {
-        public string Name { get; set; }
+        public int IdTeam { get; set; }
+        //public string Name { get; set; }
         public int PlayedMatches { get; set; } = 0;
         public int WonMatches { get; set; } = 0;
         public int TiedMatches { get; set; } = 0;

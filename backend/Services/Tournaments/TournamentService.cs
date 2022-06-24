@@ -154,6 +154,14 @@ namespace SieGraSieMa.Services
                             Surname = cc.User.Surname,
                             Points = cc.Points
                         }).ToList()
+                    }).ToList(),
+                    Teams=t.TeamInTournaments.Select(tt=>new ResponseTeamInTournamentDTO
+                    {
+                        TeamId=tt.TeamId,
+                        TeamName=tt.Team.Name,
+                        TeamProfileUrl=tt.Team.Medium.Url,
+                        Paid=tt.Paid,
+                        TournamentId=t.Id
                     }).ToList()
                     //t.TeamInTournaments.Any(tt => tt.Team.Players.Any(p => p.User.Id == (user == null ? null : user.Id)))
                 })
@@ -177,7 +185,8 @@ namespace SieGraSieMa.Services
                         .Where(t => t.TeamInGroups.Any(tg => tg.Group.TournamentId == tournament.Id && tg.Group.TeamInGroups.Count == 1))
                         .Select(t => new ResponseTeamScoresDTO
                         {
-                            Name = t.Name
+                            IdTeam=t.Id
+                            //Name = t.Name
                         }
                         ).ToList()
                 });
@@ -620,8 +629,10 @@ namespace SieGraSieMa.Services
                                     TournamentId = m.TournamentId,
                                     Phase = m.Phase,
                                     MatchId = m.MatchId,
-                                    TeamHome = m.TeamHome.Team.Name,
-                                    TeamAway = m.TeamAway.Team.Name,
+                                    TeamHomeId=m.TeamHome.TeamId,
+                                    TeamAwayId=m.TeamAway.TeamId,
+                                    //TeamHome = m.TeamHome.Team.Name,
+                                    //TeamAway = m.TeamAway.Team.Name,
                                     TeamHomeScore = m.TeamHomeScore,
                                     TeamAwayScore = m.TeamAwayScore
                                 }).ToList();
@@ -650,8 +661,10 @@ namespace SieGraSieMa.Services
                                     TournamentId = m.TournamentId,
                                     Phase = m.Phase,
                                     MatchId = m.MatchId,
-                                    TeamHome = m.TeamHome.Team.Name,
-                                    TeamAway = m.TeamAway.Team.Name,
+                                    TeamHomeId = m.TeamHome.TeamId,
+                                    TeamAwayId = m.TeamAway.TeamId,
+                                    //TeamHome = m.TeamHome.Team.Name,
+                                    //TeamAway = m.TeamAway.Team.Name,
                                     TeamHomeScore = m.TeamHomeScore,
                                     TeamAwayScore = m.TeamAwayScore
                                 }).ToList();
@@ -714,7 +727,8 @@ namespace SieGraSieMa.Services
             tig.ForEach(t =>
             {
                 ResponseTeamScoresDTO team = new();
-                team.Name = t.Team.Name;
+                team.IdTeam = t.TeamId.Value;
+                //team.Name = t.Team.Name;
                 var matches = _SieGraSieMaContext.Matches
                             .Where(m => (m.TeamAwayId == t.Id || m.TeamHomeId == t.Id)
                                     && m.TeamAwayScore != null && m.TeamHomeScore != null)
@@ -829,8 +843,10 @@ namespace SieGraSieMa.Services
                 MatchId = match.MatchId,
                 TeamHomeScore = match.TeamHomeScore,
                 TeamAwayScore = match.TeamAwayScore,
-                TeamHome = match.TeamHome.Team.Name,
-                TeamAway = match.TeamAway.Team.Name
+                TeamHomeId = match.TeamHome.TeamId,
+                TeamAwayId = match.TeamAway.TeamId,
+                //TeamHome = match.TeamHome.Team.Name,
+                //TeamAway = match.TeamAway.Team.Name
             };
         }
         public async Task<GetAvailableGroupMatchesDTO> GetAvailableGroupMatches(int tournamentId, MatchesEnum matchesEnum = MatchesEnum.All)
@@ -859,8 +875,10 @@ namespace SieGraSieMa.Services
                     TournamentId = m.TournamentId,
                     Phase = m.Phase,
                     MatchId = m.MatchId,
-                    TeamHome = m.TeamHome.Team.Name,
-                    TeamAway = m.TeamAway.Team.Name,
+                    TeamHomeId = m.TeamHome.TeamId,
+                    TeamAwayId = m.TeamAway.TeamId,
+                    //TeamHome = m.TeamHome.Team.Name,
+                    //TeamAway = m.TeamAway.Team.Name,
                     TeamHomeScore = m.TeamHomeScore,
                     TeamAwayScore = m.TeamAwayScore
                 }).ToListAsync();
@@ -892,8 +910,10 @@ namespace SieGraSieMa.Services
                                     TournamentId = m.TournamentId,
                                     Phase = m.Phase,
                                     MatchId = m.MatchId,
-                                    TeamHome = m.TeamHome.Team.Name,
-                                    TeamAway = m.TeamAway.Team.Name,
+                                    TeamHomeId = m.TeamHome.TeamId,
+                                    TeamAwayId = m.TeamAway.TeamId,
+                                    //TeamHome = m.TeamHome.Team.Name,
+                                    //TeamAway = m.TeamAway.Team.Name,
                                     TeamHomeScore = m.TeamHomeScore,
                                     TeamAwayScore = m.TeamAwayScore
                                 }).ToList();
@@ -917,8 +937,10 @@ namespace SieGraSieMa.Services
                                     Phase = m.Phase,
                                     MatchId = m.MatchId,
                                     GroupId = m.TeamHome.GroupId,
-                                    TeamHome = m.TeamHome.Team.Name,
-                                    TeamAway = m.TeamAway.Team.Name,
+                                    TeamHomeId = m.TeamHome.TeamId.Value,
+                                    TeamAwayId = m.TeamAway.TeamId.Value,
+                                    //TeamHome = m.TeamHome.Team.Name,
+                                    //TeamAway = m.TeamAway.Team.Name,
                                     TeamHomeScore = m.TeamHomeScore,
                                     TeamAwayScore = m.TeamAwayScore
                                 }).ToListAsync();

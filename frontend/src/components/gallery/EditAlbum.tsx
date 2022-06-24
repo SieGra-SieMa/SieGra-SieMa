@@ -4,7 +4,7 @@ import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
-import styles from './AlbumAdd.module.css';
+import styles from './CreateAlbum.module.css';
 
 
 type EditAlbumProps = {

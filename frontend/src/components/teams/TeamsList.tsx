@@ -24,9 +24,12 @@ export default function TeamsList() {
 
     return (
         <TeamsContext.Provider value={{ teams, setTeams }}>
-            <div className="container">
+            <div className={[
+                'container',
+                styles.root,
+            ].join(' ')}>
                 <div className={styles.top}>
-                    <h1>My teams</h1>
+                    <h1>Moje zespoły</h1>
                 </div>
                 <TeamOptions />
                 <div className={styles.content}>

@@ -1,17 +1,17 @@
 import { FormEvent, useState } from 'react';
-import { User, UserDetailsRequest } from '../../_lib/types';
+import { UserDetailsRequest } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
 import { useUser } from '../user/UserContext';
-import styles from './AccountDataEdit.module.css';
+import styles from './EditProfile.module.css';
 
-type AccountDataEditProps = {
+type EditProfileProps = {
     confirm: () => void;
 }
 
-export default function AccountDataEdit({ confirm }: AccountDataEditProps) {
+export default function EditProfile({ confirm }: EditProfileProps) {
 
     const { usersService } = useApi();
     const { user, setUser } = useUser();

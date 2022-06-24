@@ -30,16 +30,16 @@ export default function AddScoreContest({
     }
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <form className={styles.form} onSubmit={onSubmit}>
             <Input
-                id='TournamentAdd-name'
+                id='AddScoreContest-name'
                 label='Email'
                 value={email}
                 required
                 onChange={(e) => setEmail(e.target.value)}
             />
             <Input
-                id='TournamentAdd-points'
+                id='AddScoreContest-points'
                 label='Punkty'
                 value={points.toString()}
                 required

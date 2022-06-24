@@ -7,7 +7,6 @@ type ContestProps = {
 
 export default function Contest({ contest }: ContestProps) {
 	
-
 	return (
 			<div className={styles.scores}>
 				{contest.contestants.map((player) => (

@@ -6,7 +6,7 @@ import { useApi } from '../api/ApiContext';
 import styles from './AlbumsList.module.css';
 import Button, { ButtonStyle } from '../form/Button';
 import Modal from '../modal/Modal';
-import MediaAdd from './MediaAdd';
+import CreateMedia from './CreateMedia';
 import GuardComponent from '../guard-components/GuardComponent';
 import { Album as AlbumType } from '../../_lib/_types/tournament';
 import Confirm from '../modal/Confirm';
@@ -50,7 +50,7 @@ export default function Album() {
 
     const removeAlbum = () => {
         albumsService.deleteAlbum(albumId!)
-            .then(() => navigate('..'));
+            .then(() => navigate(-1));
     }
 
     const deleteMedia = () => {
@@ -68,7 +68,7 @@ export default function Album() {
     return (
         <>
             <div className={styles.top}>
-                <Button value='Wstecz' onClick={() => navigate('..')} />
+                <Button value='Wstecz' onClick={() => navigate(-1)} />
                 <GuardComponent roles={[ROLES.Admin]}>
                     <div className={styles.adminControls}>
                         <Button
@@ -115,7 +115,7 @@ export default function Album() {
                     isClose
                     title='Dodaj zdjęcie'
                 >
-                    <MediaAdd
+                    <CreateMedia
                         albumId={album.id}
                         confirm={(media) => {
                             setAlbum({
@@ -145,7 +145,7 @@ export default function Album() {
                 <Modal
                     close={() => setIsRemove(false)}
                     isClose
-                    title='Dodaj zdjęcie'
+                    title='Usuń album'
                 >
                     <Confirm cancel={() => setIsRemove(false)}
                         confirm={removeAlbum}

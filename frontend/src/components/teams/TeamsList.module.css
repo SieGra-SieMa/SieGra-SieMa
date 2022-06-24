@@ -1,3 +1,7 @@
+.root {
+    margin: 25px auto;
+}
+
 .top {
     display: flex;
     flex-direction: column;

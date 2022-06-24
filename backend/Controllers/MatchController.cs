@@ -20,11 +20,13 @@ namespace SieGraSieMa.Controllers
         private readonly ITournamentsService _tournamentsService;
 
         private readonly UserManager<User> _userManager;
+        private readonly ILogService _logService;
 
-        public MatchController(ITournamentsService tournamentService, UserManager<User> userManager)
+        public MatchController(ITournamentsService tournamentService, UserManager<User> userManager, ILogService logService)
         {
             _tournamentsService = tournamentService;
             _userManager = userManager;
+            _logService = logService;
         }
 
         [Authorize(Policy = "OnlyEmployeesAuthenticated")]
@@ -37,6 +39,8 @@ namespace SieGraSieMa.Controllers
 
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = email != null ? await _userManager.FindByEmailAsync(email) : null;
+                await _logService.AddLog(new Log(user, $"Match result inserted: tournament: { matchResultDTO.TournamentId }, phase: {matchResultDTO.Phase}, id: {matchResultDTO.MatchId}, homeScore: {matchResultDTO.HomeTeamPoints}, awayScore: {matchResultDTO.AwayTeamPoints}"));
+
                 var tournament = await _tournamentsService.GetTournament(matchResultDTO.TournamentId, user);
 
                 return Ok(tournament);
@@ -49,7 +53,7 @@ namespace SieGraSieMa.Controllers
 
         [AllowAnonymous]
         [HttpGet("getGroupMatches/{tournamentId}")]
-        public async Task<IActionResult> GetAvailableMatchesInGroup(int tournamentId,[FromQuery]ITournamentsService.MatchesEnum filter)
+        public async Task<IActionResult> GetAvailableMatchesInGroup(int tournamentId, [FromQuery] ITournamentsService.MatchesEnum filter)
         {
             try
             {
@@ -77,7 +81,7 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
-        
-        
+
+
     }
 }

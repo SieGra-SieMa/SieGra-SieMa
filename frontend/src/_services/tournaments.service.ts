@@ -71,11 +71,19 @@ export default class TournamentsService extends Service {
         return super.post(`${Config.HOST}/api/tournaments/${id}/resetLadder`, {});
     }
 
-    createContest(id: string, name: string): Promise<{}> {
+    createContest(id: number, name: string): Promise<{}> {
         return super.post(`${Config.HOST}/api/tournaments/${id}/contests`, { name });
+    }
+
+    updateContest(tournamentId: number, contestId: number, name: string): Promise<{}> {
+        return super.patch(`${Config.HOST}/api/tournaments/${tournamentId}/contests/${contestId}`, { name });
     }
 
     addContestScore(tournamentId: number, contestId: number, email: string, points: number): Promise<{}> {
         return super.post(`${Config.HOST}/api/tournaments/${tournamentId}/contests/${contestId}/setScore`, { email, points });
+    }
+
+    deleteContest(tournamentId: number, contestId: number) {
+        return super.del(`${Config.HOST}/api/tournaments/${tournamentId}/contests/${contestId}`);
     }
 }

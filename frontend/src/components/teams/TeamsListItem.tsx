@@ -3,11 +3,11 @@ import { Team } from '../../_lib/types';
 import { useCallback, useState } from 'react';
 import Modal from '../modal/Modal';
 import Confirm from '../modal/Confirm';
-import TeamAdd from './TeamAdd';
+import AddParticipant from './AddParticipant';
 import { useApi } from '../api/ApiContext';
 import Button, { ButtonStyle } from '../form/Button';
 import { useUser } from '../user/UserContext';
-import TeamEdit from './TeamEdit';
+import EditTeam from './EditTeam';
 import { useTeams } from './TeamsContext';
 
 type TeamsListItemProp = {
@@ -134,9 +134,9 @@ export default function TeamsListItem({
                 <Modal
                     close={() => setIsAdd(false)}
                     isClose
-                    title={`Team "${team.name}" - Add participant`}
+                    title={`Team "${team.name}" - Dodaj gracza`}
                 >
-                    <TeamAdd />
+                    <AddParticipant />
                 </Modal>
             )}
             {isEdit && (
@@ -145,7 +145,7 @@ export default function TeamsListItem({
                     close={() => setIsEdit(false)}
                     title={'Edytuj zespół'}
                 >
-                    <TeamEdit
+                    <EditTeam
                         team={team}
                         confirm={(team) => {
                             setIsEdit(false);
@@ -165,7 +165,7 @@ export default function TeamsListItem({
             {isLeave && (
                 <Modal
                     close={() => setIsLeave(false)}
-                    title={`Czy na pewno chcesz opuścić zespół? - "${team.name}"`}
+                    title={`Czy na pewno chcesz opuścić zespół - "${team.name}"?`}
                 >
                     <Confirm
                         cancel={() => setIsLeave(false)}

@@ -3,9 +3,15 @@ import { Media } from '../../_lib/_types/response';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import VerticalSpacing from '../spacing/VerticalSpacing';
-import styles from './MediaAdd.module.css';
+import styles from './CreateMedia.module.css';
 
-export default function MediaAdd({ confirm, albumId }: { confirm: (media: Media) => void, albumId: number }) {
+
+type CreateMediaProps = {
+    confirm: (media: Media) => void;
+    albumId: number;
+};
+
+export default function CreateMedia({ confirm, albumId }: CreateMediaProps) {
 
     const { albumsService } = useApi();
 

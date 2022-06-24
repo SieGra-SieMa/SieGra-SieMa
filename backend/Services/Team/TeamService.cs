@@ -292,7 +292,7 @@ namespace SieGraSieMa.Services
 
                 },
                 Code = team.Code,
-                ProfilePicture = team.Medium == null ? null : team.Medium.Url,
+                ProfilePicture = team.Medium?.Url,
                 Players = team.Players
                         .Select(p => new PlayerDTO
                         {
@@ -326,7 +326,7 @@ namespace SieGraSieMa.Services
 
                 },
                 Code = team.Code,
-                ProfilePicture = team.Medium == null ? null : team.Medium.Url,
+                ProfilePicture = team.Medium?.Url,
                 Players = team.Players
                         .Select(p => new PlayerDTO
                         {
@@ -359,7 +359,7 @@ namespace SieGraSieMa.Services
 
                 },
                 Code = team.Code,
-                ProfilePicture = team.Medium == null ? null : team.Medium.Url,
+                ProfilePicture = team.Medium?.Url,
                 Players = team.Players
                         .Select(p => new PlayerDTO
                         {

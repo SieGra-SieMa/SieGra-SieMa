@@ -155,13 +155,13 @@ namespace SieGraSieMa.Services
                             Points = cc.Points
                         }).ToList()
                     }).ToList(),
-                    Teams=t.TeamInTournaments.Select(tt=>new ResponseTeamInTournamentDTO
+                    Teams = t.TeamInTournaments.Select(tt => new ResponseTeamInTournamentDTO
                     {
-                        TeamId=tt.TeamId,
-                        TeamName=tt.Team.Name,
-                        TeamProfileUrl=tt.Team.Medium.Url,
-                        Paid=tt.Paid,
-                        TournamentId=t.Id
+                        TeamId = tt.TeamId,
+                        TeamName = tt.Team.Name,
+                        TeamProfileUrl = tt.Team.Medium.Url,
+                        Paid = tt.Paid,
+                        TournamentId = tt.TournamentId
                     }).ToList()
                     //t.TeamInTournaments.Any(tt => tt.Team.Players.Any(p => p.User.Id == (user == null ? null : user.Id)))
                 })

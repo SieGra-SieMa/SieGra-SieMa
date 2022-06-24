@@ -16,7 +16,8 @@ namespace SieGraSieMa.Services
         public Task<bool> DeleteContest(int id);
         public Task<ICollection<ResponseContestDTO>> GetContests(int tournamentId);
         public Task<ResponseContestDTO> GetContest(int id);
-        public Task<bool> SetScore(int id, AddContestantDTO addContestantDTO);
+        public Task<ResponseContestantDTO> SetScore(int id, AddContestantDTO addContestantDTO);
+        public Task<ResponseContestantDTO> DeleteScore(int id, AddContestantDTO addContestantDTO);
     }
     public class ContestService : IContestService
     {
@@ -88,7 +89,7 @@ namespace SieGraSieMa.Services
                 }).ToListAsync();
             return await result;
         }
-        public async Task<bool> SetScore(int id, AddContestantDTO addContestantDTO)
+        public async Task<ResponseContestantDTO> SetScore(int id, AddContestantDTO addContestantDTO)
         {
             User user = await _SieGraSieMaContext.Users.Where(t => t.Email == addContestantDTO.Email).FirstOrDefaultAsync();
             if (user == null) throw new Exception("User with that email does not exist");
@@ -110,8 +111,40 @@ namespace SieGraSieMa.Services
                 contestant.Points = addContestantDTO.Points;
                 _SieGraSieMaContext.Contestants.Update(contestant);
             }
-            
-            return await _SieGraSieMaContext.SaveChangesAsync() > 0;
+
+            await _SieGraSieMaContext.SaveChangesAsync();
+            var result = new ResponseContestantDTO
+            {
+                Name = user.Name,
+                Surname = user.Surname,
+                Points = contestant.Points,
+                UserId = user.Id
+            };
+            return result;
+        }
+        public async Task<ResponseContestantDTO> DeleteScore(int id, AddContestantDTO addContestantDTO)
+        {
+            User user = await _SieGraSieMaContext.Users.Where(t => t.Email == addContestantDTO.Email).FirstOrDefaultAsync();
+            if (user == null) throw new Exception("User with that email does not exist");
+            Contest contest = await _SieGraSieMaContext.Contests.FindAsync(id);
+            if (contest == null) throw new Exception("Contest with that id does not exist");
+            Contestant contestant = await _SieGraSieMaContext.Contestants.FindAsync(id, user.Id);
+            if (contestant == null) throw new Exception("This contestant cannot be removed, because contestant does not exist already");
+            else
+            {
+                _SieGraSieMaContext.Contestants.Remove(contestant);
+                contestant.Points = 0;
+            }
+
+            await _SieGraSieMaContext.SaveChangesAsync();
+            var result = new ResponseContestantDTO
+            {
+                Name = user.Name,
+                Surname = user.Surname,
+                Points = contestant.Points,
+                UserId = user.Id
+            };
+            return result;
         }
     }
 }

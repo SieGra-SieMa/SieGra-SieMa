@@ -11,7 +11,7 @@ namespace SieGraSieMa.Services
 {
     public interface ITeamService
     {
-        Team CreateTeam(string name, User captain);
+        GetTeamsDTO CreateTeam(string name, User captain);
         GetTeamsDTO JoinTeam(string code, User user);
         void LeaveTeam(int id, User user);
         void ChangeName(int id, string name);
@@ -41,7 +41,7 @@ namespace SieGraSieMa.Services
             _SieGraSieMaContext = SieGraSieMaContext;
         }
 
-        public Team CreateTeam(string name, User captain)
+        public GetTeamsDTO CreateTeam(string name, User captain)
         {
             var team = new Team()
             {
@@ -56,8 +56,29 @@ namespace SieGraSieMa.Services
             });
             _SieGraSieMaContext.Teams.Add(team);
             _SieGraSieMaContext.SaveChanges();
+            return _SieGraSieMaContext.Teams.Include(t => t.Players).ThenInclude(p => p.User).Include(t => t.Medium).Where(t=>t.Code==team.Code).Select(t => new GetTeamsDTO
+            {
+                Id = t.Id,
+                Name = t.Name,
+                CaptainId = t.CaptainId.Value,
+                Captain = new PlayerDTO
+                {
+                    Id = t.CaptainId.Value,
+                    Name = t.Captain.Name,
+                    Surname = t.Captain.Surname
 
-            return team;
+                },
+                Code = t.Code,
+                ProfilePicture = t.Medium == null ? null : t.Medium.Url,
+                Players = t.Players
+                                .Select(p => new PlayerDTO
+                                {
+                                    Id = p.UserId,
+                                    Name = p.User.Name,
+                                    Surname = p.User.Surname
+
+                                }).ToList()
+            }).FirstOrDefault();
         }
 
         public GetTeamsDTO JoinTeam(string code, User user)

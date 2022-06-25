@@ -366,35 +366,44 @@ export default function Tournament() {
 				))}
 
 			{tournament && (
-					<div>
-                    <div className={styles.header}>
-                        <h4 className="underline">Albumy</h4>
-                        <GuardComponent roles={[ROLES.Admin]}>
-                            <Button
-                                value='Dodaj album'
-                                onClick={() => setIsAddAlbum(true)}
-                            />
-                        </GuardComponent>
-                    </div>
-                    <ul className={styles.albums}>
-                        {tournament.albums.map((album, index) => (
-                            <li
-                                key={index}
-                                className={styles.item}
-                                style={album.profilePicture ? {
-                                    backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
-                                } : undefined}
-                                onClick={() => navigate(`/gallery/${id!}/albums/${album.id}`)}>
-                                <div className={styles.box}>
-                                    {(!album.profilePicture) && <ImageIcon className={styles.picture} />}
-                                    <h4>
-                                        {album.name}
-                                    </h4>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+				<div>
+					<div className={styles.header}>
+						<h4 className="underline">Albumy</h4>
+						<GuardComponent roles={[ROLES.Admin]}>
+							<Button
+								value="Dodaj album"
+								onClick={() => setIsAddAlbum(true)}
+							/>
+						</GuardComponent>
+					</div>
+					<ul className={styles.albums}>
+						{tournament.albums.map((album, index) => (
+							<li
+								key={index}
+								className={styles.item}
+								style={
+									album.profilePicture
+										? {
+												backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
+										  }
+										: undefined
+								}
+								onClick={() =>
+									navigate(
+										`/gallery/${id!}/albums/${album.id}`
+									)
+								}
+							>
+								<div className={styles.box}>
+									{!album.profilePicture && (
+										<ImageIcon className={styles.picture} />
+									)}
+									<h4>{album.name}</h4>
+								</div>
+							</li>
+						))}
+					</ul>
+				</div>
 			)}
 
 			{tournament && isPrepare && (
@@ -567,24 +576,24 @@ export default function Tournament() {
 					/>
 				</Modal>
 			)}
-			{(tournament && isAddAlbum) && (
-                <Modal
-                    title='Dodaj album'
-                    close={() => setIsAddAlbum(false)}
-                    isClose
-                >
-                    <CreateAlbum
-                        tournamentId={id!}
-                        confirm={(album) => {
-                            setTournament({
-                                ...tournament,
-                                albums: tournament.albums.concat(album)
-                            });
-                            setIsAddAlbum(false);
-                        }}
-                    />
-                </Modal>
-            )}
+			{tournament && isAddAlbum && (
+				<Modal
+					title="Dodaj album"
+					close={() => setIsAddAlbum(false)}
+					isClose
+				>
+					<CreateAlbum
+						tournamentId={id!}
+						confirm={(album) => {
+							setTournament({
+								...tournament,
+								albums: tournament.albums.concat(album),
+							});
+							setIsAddAlbum(false);
+						}}
+					/>
+				</Modal>
+			)}
 		</TournamentContext.Provider>
 	);
 }

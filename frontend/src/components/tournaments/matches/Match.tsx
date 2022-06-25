@@ -11,14 +11,17 @@ type MatchProps = {
 export default function Match({ match }: MatchProps) {
 	const [isEdit, setIsEdit] = useState(false);
 
+	const [homeScore, setHomeScore] = useState(match.teamHomeScore);
+	const [awayScore, setAwayScore] = useState(match.teamAwayScore);
+
 	return (
 		<>
 			<div className={styles.match} onClick={() => setIsEdit(true)}>
 				<h6 className={styles.teamName}>{match.teamHome}</h6>
 				<h6 className={styles.teamName}>{match.teamAway}</h6>
 				<span className={styles.vs}>VS</span>
-				<p>{match.teamHomeScore ?? "-"}</p>
-				<p>{match.teamAwayScore ?? "-"}</p>
+				<p>{homeScore ?? "-"}</p>
+				<p>{awayScore ?? "-"}</p>
 			</div>
 			{isEdit && (
 				<Modal
@@ -29,6 +32,10 @@ export default function Match({ match }: MatchProps) {
 					<MatchResult
 						match={match}
 						confirm={() => setIsEdit(false)}
+						callback={(homeScore: number, awayScore: number) => {
+							setHomeScore(homeScore);
+							setAwayScore(awayScore);
+						}}
 					/>
 				</Modal>
 			)}

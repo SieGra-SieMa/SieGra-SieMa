@@ -12,6 +12,7 @@ namespace SieGraSieMa.Services
     {
         void AddUser(User User);
         UserDTO UpdateUser(string email, UserDetailsDTO userDetailsDTO);
+        UserDTO UpdateUser(int id, UserDetailsDTO userDetailsDTO);
         void DeleteUser(int Id);
         User GetUser(int Id);
         User GetUser(string Email);
@@ -114,6 +115,17 @@ namespace SieGraSieMa.Services
         public UserDTO UpdateUser(string email, UserDetailsDTO userDetails)
         {
             var user = GetUser(email);
+            if (user == null) throw new Exception("User not found");
+            user.Name = userDetails.Name;
+            user.Surname = userDetails.Surname;
+            _SieGraSieMaContext.Users.Update(user);
+            _SieGraSieMaContext.SaveChanges();
+            return new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Surname = user.Surname };
+        }
+        public UserDTO UpdateUser(int id, UserDetailsDTO userDetails)
+        {
+            var user = GetUser(id);
+            if (user == null) throw new Exception("User not found");
             user.Name = userDetails.Name;
             user.Surname = userDetails.Surname;
             _SieGraSieMaContext.Users.Update(user);

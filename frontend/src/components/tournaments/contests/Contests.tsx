@@ -56,6 +56,7 @@ export default function Contests({ contests, tournamentId }: ContestsProps) {
 					Konkursy
 				</h4>
 				<div className={styles.header}>
+					<div>
 					<GuardComponent roles={[ROLES.Admin]}>
 						<div className={styles.manageButtons}>
 							<AddIcon
@@ -75,6 +76,7 @@ export default function Contests({ contests, tournamentId }: ContestsProps) {
 							/>
 						</div>
 					</GuardComponent>
+					</div>
 					{currentContest && (
 						<>
 							<Button

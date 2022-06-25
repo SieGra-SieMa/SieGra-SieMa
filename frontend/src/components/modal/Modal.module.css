@@ -1,79 +1,83 @@
-@import '../../variables.css';
+@import "../../variables.css";
 
 .root {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 9999;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.7);
+	z-index: 9999;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	animation: backgroundAnim 0.3s ease-out;
+}
+
+@keyframes backgroundAnim {
+	from {
+		background-color: rgba(0, 0, 0, 0);
+	}
+
+	to {
+		background-color: rgba(0, 0, 0, 0.7);
+	}
 }
 
 .container {
-    min-width: 320px;
-    box-sizing: border-box;
-
-    background-color: var(--main-color);
-    border-radius: 10px;
-    padding: 30px;
-    display: grid;
-    row-gap: 25px;
-    animation: showup .3s ease-out;
-    box-shadow: 0 0 15px #000;
-    margin: 15px;
-    max-height: 100%;
-    overflow: auto;
+	min-width: 320px;
+	box-sizing: border-box;
+	background-color: var(--main-color);
+	border-radius: 10px;
+	display: grid;
+	box-shadow: 0 0 15px #000;
+	margin: 15px;
+	max-height: 100%;
+	overflow: auto;
+	animation: showup 0.3s ease-out;
 }
 
 @keyframes showup {
-    from {
-        transform: scale(0);
-    }
+	from {
+		/* transform: scale(0); */
+		opacity: 0;
+		transform: translateY(100px);
+	}
 
-    to {
-        transform: scale(1);
-    }
+	to {
+		/* transform: scale(1); */
+		opacity: 1;
+		transform: translateY(0px);
+	}
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    column-gap: 25px;
+	display: grid;
+    grid-template-columns: .7fr 1fr .7fr;
+	align-items: start;
+    margin-top: 20px;
 }
 
-.header>h3 {
-    padding: 0;
+.header > h5 {
+	padding: 0;
 }
 
 .close {
-    width: 50px;
-    height: 50px;
-    padding: 10px;
-    position: relative;
-    align-self: flex-start;
-    flex-shrink: 0;
+	width: 50px;
+	height: 50px;
+	padding: 15px;
+	flex-shrink: 0;
+    justify-self: end;
+    color: white;
+    transition: all .3s ease-in-out;
 }
 
-.close:before,
-.close:after {
-    content: " ";
-    position: absolute;
-    top: 5px;
-    height: 40px;
-    width: 2px;
-    background-color: #fff;
+.close:hover {
+    color: var(--accent-color);
+    cursor: pointer;
 }
 
-.close:before {
-    transform: translateX(-50%) rotate(45deg);
-}
-
-.close:after {
-    transform: translateX(-50%) rotate(-45deg);
+.content {
+    margin: 30px;
 }

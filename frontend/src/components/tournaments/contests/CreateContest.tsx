@@ -6,8 +6,8 @@ import VerticalSpacing from '../../spacing/VerticalSpacing';
 import styles from './Contests.module.css';
 
 type CreateContestProps = {
-    tournamentId: number;
-    confirm: () => void;
+    tournamentId: string;
+    confirm: (contest: any) => void;
 };
 
 export default function CreateContest({ tournamentId, confirm }: CreateContestProps) {
@@ -20,7 +20,7 @@ export default function CreateContest({ tournamentId, confirm }: CreateContestPr
         e.preventDefault();
         tournamentsService.createContest(tournamentId, name)
             .then((data) => {
-                confirm();
+                confirm(data);
             });
     }
 

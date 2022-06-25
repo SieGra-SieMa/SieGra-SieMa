@@ -49,7 +49,8 @@ namespace SieGraSieMa.Services
                     {
                         MediaTypeEnum.photos => $@"{year}{separator}{month}",
                         MediaTypeEnum.teams => $@"{id}",
-                        MediaTypeEnum.tournaments => $@"{id}"
+                        MediaTypeEnum.tournaments => $@"{id}",
+                        _ => throw new NotImplementedException()
                     };
 
                     if (!Directory.Exists($@"wwwroot{separator}{mediaType}{separator}{result}"))

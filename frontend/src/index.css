@@ -33,25 +33,25 @@ p {
 
 h1 {
 	font-size: 72px;
-	font-weight: 900;
+	font-weight: 600;
 	padding: 25px 0;
 }
 
 h2 {
 	font-size: 54px;
-	font-weight: 800;
+	font-weight: 400;
 	padding: 25px 0;
 }
 
 h3 {
 	font-size: 46px;
-	font-weight: 700;
+	font-weight: 600;
 	padding: 25px 0;
 }
 
 h4 {
 	font-size: 30px;
-	font-weight: 600;
+	font-weight: 400;
 	padding: 25px 0;
 }
 
@@ -74,7 +74,8 @@ p {
 
 h1::after,
 h2::after,
-h3::after {
+h3::after,
+.underline::after {
 	content: '';
 	display: block;
 	position: relative;
@@ -85,6 +86,18 @@ h3::after {
 	background-color: var(--accent-color);
 }
 
+.interactiveIcon {
+    transform: scale(1);
+    color: white;
+    transition: all .2s ease-in-out !important;
+}
+
+.interactiveIcon:hover {
+    cursor: pointer;
+    color: var(--accent-color);
+    transform: scale(1.1);
+}
+
 #root {
 	min-height: 100%;
 	display: grid;
@@ -92,32 +105,32 @@ h3::after {
 	grid-template-columns: 100%;
 }
 
-@media screen and (max-width: 720px) {
+@media screen and (max-width: 1280px) {
 	h1 {
-		font-size: 48px;
+		font-size: 36px;
 	}
 
 	h2 {
-		font-size: 40px;
-	}
-
-	h3 {
 		font-size: 30px;
 	}
 
-	h4 {
+	h3 {
 		font-size: 24px;
 	}
 
-	h5 {
+	h4 {
 		font-size: 20px;
 	}
 
-	h6 {
+	h5 {
 		font-size: 16px;
 	}
 
-	p {
+	h6 {
 		font-size: 14px;
+	}
+
+	p {
+		font-size: 12px;
 	}
 }

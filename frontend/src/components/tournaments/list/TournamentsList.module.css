@@ -78,6 +78,15 @@
     color: #fff;
 }
 
+.address {
+    display: flex;
+    align-items: center;
+}
+
+.address > * {
+    margin-right: 5px;
+}
+
 @media all and (max-width: 960px) {
     .item {
         flex-direction: column;

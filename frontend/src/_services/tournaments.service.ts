@@ -71,7 +71,7 @@ export default class TournamentsService extends Service {
         return super.post(`${Config.HOST}/api/tournaments/${id}/resetLadder`, {});
     }
 
-    createContest(id: number, name: string): Promise<{}> {
+    createContest(id: string, name: string): Promise<{}> {
         return super.post(`${Config.HOST}/api/tournaments/${id}/contests`, { name });
     }
 

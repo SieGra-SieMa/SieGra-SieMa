@@ -7,10 +7,35 @@
     flex: 1 1;
 }
 
+.root > h4 {
+    padding: 0;
+    margin: 0;  
+}
+
 .teams {
     background-color: var(--secondary-color);
     border-radius: 5px;
-    padding: 10px 0;
+    padding: 10px;
+    max-height: 100%;
+    width: 100%;
+    overflow-y: hidden;
+}
+
+.interactiveIcon {
+    transform: scale(1);
+    color: white;
+    transition: all .2s ease-in-out !important;
+}
+
+.interactiveIcon:hover {
+    cursor: pointer;
+    color: var(--accent-color);
+    transform: scale(1.1);
+}
+
+.teams > h6 {
+    padding: 0;
+    margin: 0;
 }
 
 .team {

@@ -23,19 +23,21 @@ namespace SieGraSieMa.Controllers
         private readonly IUserService _userService;
         private readonly IMediaService _mediaService;
         private readonly IEmailService _emailService;
+        private readonly ILogService _logService;
 
 
-        public TeamsController(ITeamService teamService, IUserService userService, IEmailService emailService, IMediaService mediaService)
+        public TeamsController(ITeamService teamService, IUserService userService, IEmailService emailService, IMediaService mediaService, ILogService logService)
         {
             _teamService = teamService;
             _userService = userService;
             _emailService = emailService;
             _mediaService = mediaService;
+            _logService = logService;
         }
 
         [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpGet]
-        public IActionResult GetTeamByMail()
+        public async Task<IActionResult> GetTeamByMail()
         {
             try
             {
@@ -47,7 +49,7 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
         }
-        
+
         [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpGet("teamsIAmCaptain")]
         public async Task<IActionResult> GetTeamByMailForCaptain()
@@ -65,13 +67,15 @@ namespace SieGraSieMa.Controllers
 
         [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpPost()]
-        public IActionResult Create(TeamDTO teamDTO)
+        public async Task<IActionResult> Create(TeamDTO teamDTO)
         {
             try
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var captain = _userService.GetUser(email);
-                return Ok(_teamService.CreateTeam(teamDTO.Name, captain));
+                var team = _teamService.CreateTeam(teamDTO.Name, captain);
+                await _logService.AddLog(new Log(captain, $"Team '{team.Name}' created successfully"));
+                return Ok(team);
             }
             catch (Exception e)
             {
@@ -86,29 +90,34 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
-                var captain = _userService.GetUser(email);
-                var response = await _teamService.IsUserAbleToJoinTeam(captain, teamCodeDTO.Code);
-                if(!response)
+                var user = _userService.GetUser(email);
+                var response = await _teamService.IsUserAbleToJoinTeam(user, teamCodeDTO.Code);
+                if (!response)
+                {
+                    await _logService.AddLog(new Log(user, $"Already belongs to another team which is in the same tournament as this one"));
                     return BadRequest(new ResponseErrorDTO { Error = "Player already belongs to another team which is in the same tournament as this one" });
-                _teamService.JoinTeam(teamCodeDTO.Code, captain);
-                return Ok();
+                }
+                var team = _teamService.JoinTeam(teamCodeDTO.Code, user);
+                await _logService.AddLog(new Log(user, $"Successfully joined to team with code {teamCodeDTO.Code}"));
+                return Ok(team);
             }
             catch (Exception e)
             {
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
-            
+
         }
 
         [Authorize(Policy = "EveryOneAuthenticated")]
         [HttpPost("leave")]
-        public IActionResult Leave(TeamLeaveDTO teamLeaveDTO)
+        public async Task<IActionResult> Leave(TeamLeaveDTO teamLeaveDTO)
         {
             try
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 _teamService.LeaveTeam(teamLeaveDTO.Id, user);
+                await _logService.AddLog(new Log(user, $"Successfully leave from team with id {teamLeaveDTO.Id}"));
                 return Ok();
             }
             catch (Exception e)
@@ -127,13 +136,13 @@ namespace SieGraSieMa.Controllers
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 var team = await _teamService.ChangeTeamDetails(user.Id, id, teamDetailsDTO);
+                await _logService.AddLog(new Log(user, $"Successfully changes details of team with number {id}"));
                 return Ok(team);
             }
             catch (Exception e)
             {
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
-
         }
 
         [Authorize(Policy = "EveryOneAuthenticated")]
@@ -145,6 +154,7 @@ namespace SieGraSieMa.Controllers
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 var team = await _teamService.DeleteUserFromTeam(userId, user.Id, id);
+                await _logService.AddLog(new Log(user, $"User with id {userId} was deleted from team with id {id}"));
                 return Ok(team);
             }
             catch (Exception e)
@@ -163,6 +173,7 @@ namespace SieGraSieMa.Controllers
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 var team = await _teamService.SwitchCaptain(id, user.Id, userId);
+                await _logService.AddLog(new Log(user, $"Switching captain for team with id {id} to user with id {userId}"));
                 return Ok(team);
             }
             catch (Exception e)
@@ -181,6 +192,7 @@ namespace SieGraSieMa.Controllers
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
                 await _teamService.DeleteTeam(id, user.Id);
+                await _logService.AddLog(new Log(user, $"Deleted team with id {id}"));
                 return Ok(new MessageDTO { Message = $"Team successfully deleted" });
             }
             catch (Exception e)
@@ -198,13 +210,13 @@ namespace SieGraSieMa.Controllers
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
-                //await _teamService.DeleteUserFromTeam(userId, user.Id, id);
                 var team = _teamService.GetTeam(id);
                 if (team == null)
                     return NotFound(new ResponseErrorDTO { Error = "Team not found" });
-                if(team.CaptainId != user.Id)
+                if (team.CaptainId != user.Id)
                     return BadRequest(new ResponseErrorDTO { Error = "You are not a captain" });
                 await _emailService.SendAsync(emailAdress, "Zaproszenie do zespołu SiegraSiema", $"Dołącz do naszego teamu, użyj tego kodu {team.Code} na stronie SiegraSiema");
+                await _logService.AddLog(new Log(user, $"Send mail with invite to team {team.Id} to user with mail {emailAdress}"));
                 return Ok(new MessageDTO { Message = $"Mail already sent" });
             }
             catch (Exception e)
@@ -230,7 +242,7 @@ namespace SieGraSieMa.Controllers
                     return BadRequest("There should be only one photo sent!");
 
                 var list = await _mediaService.CreateMedia(null, team.Id, file, IMediaService.MediaTypeEnum.teams);
-
+                await _logService.AddLog(new Log(user, $"Profile photo for team with id {team.Id} was set"));
                 return Ok(list);
             }
             catch (Exception e)
@@ -249,14 +261,16 @@ namespace SieGraSieMa.Controllers
         {
             try
             {
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = _userService.GetUser(email);
                 await _teamService.DeleteTeamByAdmin(id);
+                await _logService.AddLog(new Log(user, $"Team with id {id} was deleted"));
                 return Ok(new MessageDTO { Message = $"Team successfully deleted" });
             }
             catch (Exception e)
             {
                 return BadRequest(new ResponseErrorDTO { Error = e.Message });
             }
-
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]

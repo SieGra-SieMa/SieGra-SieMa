@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs;
 using SieGraSieMa.DTOs.AlbumDTO;
+using SieGraSieMa.DTOs.ContestantDTO;
 using SieGraSieMa.DTOs.ContestDTO;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.GroupDTO;
@@ -283,13 +284,26 @@ namespace SieGraSieMa.Controllers
         [HttpPost("{id}/contests/{contestId}/setScore")]
         public async Task<IActionResult> AddContestant(int contestId, AddContestantDTO addContestantDTO)
         {
-            var result = await _contestService.SetScore(contestId, addContestantDTO);
-            if (!result)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
-            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
-            var user = await _userManager.FindByEmailAsync(email);
-            await _logService.AddLog(new Log(user, $"Set score in contest with id {contestId} for {addContestantDTO.Email}"));
-            return Ok();
+            try
+            {
+                ResponseContestantDTO result;
+                if (addContestantDTO.Points <= 0)
+                {
+                    result = await _contestService.DeleteScore(contestId, addContestantDTO);
+                }
+                else
+                {
+                    result = await _contestService.SetScore(contestId, addContestantDTO);
+                }
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Set score in contest with id {contestId} for {addContestantDTO.Email}" + ((addContestantDTO.Points > 0) ? "" : $", set score to 0 to deleting the score")));
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
 
         //-------------------------------------------------admin functions
@@ -419,47 +433,63 @@ namespace SieGraSieMa.Controllers
         [HttpPost("{id}/contests")]
         public async Task<IActionResult> CreateContest(RequestContestDTO contest, int id)
         {
-            var newContest = new Contest { Name = contest.Name, TournamentId = id };
-            var result = await _contestService.CreateContest(newContest);
+            try
+            {
+                var newContest = new Contest { Name = contest.Name, TournamentId = id };
+                var result = await _contestService.CreateContest(newContest);
 
-            if (!result)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"New contest with name {contest.Name} in tournament with id {id}"));
 
-            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
-            var user = await _userManager.FindByEmailAsync(email);
-            await _logService.AddLog(new Log(user, $"New contest with name {contest.Name} in tournament with id {id}"));
-
-            return Ok();
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+            
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpPatch("{id}/contests/{contestId}")]
         public async Task<IActionResult> UpdateContest(RequestContestDTO contest, int id, int contestId)
         {
-            var newContest = new Contest { Name = contest.Name, TournamentId = id };
+            try
+            {
+                var newContest = new Contest { Name = contest.Name, TournamentId = id };
 
-            var result = await _contestService.UpdateContest(contestId, newContest);
+                var result = await _contestService.UpdateContest(contestId, newContest);
 
-            if (!result)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Contest with id {contestId} in tournament with id {id} was updated"));
 
-            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
-            var user = await _userManager.FindByEmailAsync(email);
-            await _logService.AddLog(new Log(user, $"Contest with id {contestId} in tournament with id {id} was updated"));
-
-            return Ok();
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpDelete("{id}/contests/{contestId}")]
         public async Task<IActionResult> DeleteContest(int id, int contestId)
         {
-            var result = await _contestService.DeleteContest(contestId);
-            if (!result) return NotFound(new ResponseErrorDTO { Error = "Contest not found" });
-            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
-            var user = await _userManager.FindByEmailAsync(email);
-            await _logService.AddLog(new Log(user, $"Contest with id {contestId} in tournament with id {id} was deleted"));
-            return Ok(result);
+            try
+            {
+                var result = await _contestService.DeleteContest(contestId);
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(user, $"Contest with id {contestId} in tournament with id {id} was deleted"));
+                return Ok(new MessageDTO { Message= $"Contest with name {result.Name} was deleted" });
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+            
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]

@@ -97,9 +97,9 @@ namespace SieGraSieMa.Controllers
                     await _logService.AddLog(new Log(user, $"Already belongs to another team which is in the same tournament as this one"));
                     return BadRequest(new ResponseErrorDTO { Error = "Player already belongs to another team which is in the same tournament as this one" });
                 }
-                _teamService.JoinTeam(teamCodeDTO.Code, user);
+                var team = _teamService.JoinTeam(teamCodeDTO.Code, user);
                 await _logService.AddLog(new Log(user, $"Successfully joined to team with code {teamCodeDTO.Code}"));
-                return Ok();
+                return Ok(team);
             }
             catch (Exception e)
             {

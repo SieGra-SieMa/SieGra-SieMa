@@ -41,11 +41,11 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
-                var newUser = _userService.UpdateUser(email, userDetailsDTO);
+                var user = _userService.UpdateUser(email, userDetailsDTO);
                 var roles = await _userManager.GetRolesAsync(await _userManager.FindByEmailAsync(email));
-                newUser.Roles = roles;
-                await _logService.AddLog(new Log(newUser.Id, $"Changed user details"));
-                return Ok(newUser);
+                user.Roles = roles;
+                await _logService.AddLog(new Log(user.Id, $"Changed user details"));
+                return Ok(user);
             }
             catch (Exception e)
             {
@@ -144,6 +144,22 @@ namespace SieGraSieMa.Controllers
         }
 
 
+        //-------------------------------------------------employer functions
+
+        [Authorize(Policy = "OnlyEmployeesAuthenticated")]
+        [HttpGet()]
+        public async Task<ActionResult> GetUsers(string filter)
+        {
+            var users = _userService.GetUsers(filter);
+            List<UserDTO> usersDTO = new();
+            foreach (var user in users)
+            {
+                usersDTO.Add(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
+            }
+            return Ok(usersDTO);
+        }
+
+
         //-------------------------------------------------admin functions
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
@@ -159,7 +175,7 @@ namespace SieGraSieMa.Controllers
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpDelete("admin/{id}")]
-        public async Task<ActionResult> DeleteUserByAdmin(string id)
+        public async Task<ActionResult> BlockUserByAdmin(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
@@ -172,19 +188,19 @@ namespace SieGraSieMa.Controllers
             //await _userManager.DeleteAsync(user);
             return Ok();
         }
-        
+
         [Authorize(Policy = "OnlyAdminAuthenticated")]
-        [HttpGet()]
-        public async Task<ActionResult> GetUsers()
+        [HttpPatch("admin/{id}")]
+        public async Task<ActionResult> UnblockUserByAdmin(string id)
         {
-            var users = await _userManager.Users.ToListAsync();
-            List<UserDTO> usersDTO = new();
-            foreach(var user in users)
-            {
-                usersDTO.Add(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
-            }
-            
-            return Ok(usersDTO);
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+                return NotFound(new ResponseErrorDTO { Error = "User not found" });
+            await _userManager.SetLockoutEndDateAsync(user, null);
+            var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+            var admin = await _userManager.FindByEmailAsync(email);
+            await _logService.AddLog(new Log(admin, $"Unlock user {user.Id}"));
+            return Ok();
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
@@ -223,6 +239,26 @@ namespace SieGraSieMa.Controllers
             }
             await _logService.AddLog(new Log(user, $"Remove roles {roles.Aggregate((i, j) => i + ", " + j)} from {user.Id}"));
             return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
+        }
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
+        [HttpPatch("{id}/update-user")]
+        public async Task<ActionResult> ChangeUserDetailsByAdmin(int id, UserDetailsDTO userDetailsDTO)
+        {
+            try
+            {
+                var user = _userService.UpdateUser(id, userDetailsDTO);
+                var roles = await _userManager.GetRolesAsync(await _userManager.FindByIdAsync(id.ToString()));
+                user.Roles = roles;
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var adminUser = await _userManager.FindByEmailAsync(email);
+                await _logService.AddLog(new Log(adminUser.Id, $"Changed user details"));
+                return Ok(adminUser);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]

@@ -44,4 +44,8 @@ export default class UsersService extends Service {
     adminBanUser(id: number): Promise<User> {
         return super.del(`${Config.HOST}/api/users/admin/${id}`);
     };
+
+    sendNewsletter(title: string, body: string, tournamentId?: string): Promise<Message> {
+        return super.post(`${Config.HOST}/api/users/newsletter/send`, { title, body, tournamentId });
+    };
 }

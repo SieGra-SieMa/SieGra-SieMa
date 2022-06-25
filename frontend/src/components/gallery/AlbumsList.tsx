@@ -4,7 +4,6 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ROLES } from "../../_lib/roles";
 import { useApi } from "../api/ApiContext";
 import styles from "./AlbumsList.module.css";
-import Button from "../form/Button";
 import Modal from "../modal/Modal";
 import CreateAlbum from "./CreateAlbum";
 import GuardComponent from "../guard-components/GuardComponent";

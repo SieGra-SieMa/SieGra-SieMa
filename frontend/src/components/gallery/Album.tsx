@@ -18,7 +18,6 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Delete } from "@mui/icons-material";
 
 export default function Album() {
 	const navigate = useNavigate();

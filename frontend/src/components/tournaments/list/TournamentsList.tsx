@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { ROLES } from "../../../_lib/roles";
-import Button from "../../form/Button";
 import GuardComponent from "../../guard-components/GuardComponent";
 import Modal from "../../modal/Modal";
 import CreateTournament from "./CreateTournament";

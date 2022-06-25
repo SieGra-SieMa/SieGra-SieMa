@@ -2,27 +2,31 @@ import styles from './UsersList.module.css';
 import UsersListItem from './UsersListItem';
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { User } from '../../_lib/types';
+import { User } from '../../../_lib/types';
 import SyncLoader from 'react-spinners/SyncLoader';
-import { useApi } from '../api/ApiContext';
+import { useApi } from '../../api/ApiContext';
+import { useUser } from '../../user/UserContext';
 
 export default function UsersList() {
 
     const { usersService } = useApi();
+    const { user } = useUser();
 
     const [users, setUsers] = useState<User[] | null>(null);
 
     useEffect(() => {
+        if (!user) return;
         usersService.getUsers()
             .then(
-                result => setUsers(result),
+                result => setUsers(result.filter((e) => user.id !== e.id)),
                 error => alert(error)
             );
-    }, [usersService]);
+    }, [user, usersService]);
 
     const onUserPropChange = (user: User) => {
         const data = users ? [...users] : [];
-        const index = data.findIndex(e => e.id === user.id) ?? -1;
+        const index = data.findIndex(e => e.id === user.id);
+        console.log(data, index, user)
         if (index >= 0) {
             data[index] = user;
             setUsers(data);
@@ -30,9 +34,9 @@ export default function UsersList() {
     };
 
     return (
-        <div className="container">
-            <h2>Users:</h2>
-            <div className={styles.list}>
+        <>
+            <h1>Użytkownicy</h1>
+            <div className={styles.content}>
                 {users ? users.map((user, index) => (
                     <UsersListItem
                         key={index}
@@ -45,6 +49,6 @@ export default function UsersList() {
                     </div>
                 )}
             </div>
-        </div>
+        </>
     );
 }

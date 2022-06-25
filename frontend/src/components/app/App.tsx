@@ -20,10 +20,11 @@ import { ApiContext } from '../api/ApiContext';
 import ApiClient from '../../_services';
 import UserProvider from '../user/UserProvider';
 import TournamentsList from '../tournaments/list/TournamentsList';
-import UsersList from '../admin/UsersList';
+import UsersList from '../admin/users/UsersList';
 import Tournament from '../tournaments/page/Tournament';
 import Album from '../gallery/Album';
 import AccountData from '../profile/Profile';
+import AdminPanel from '../admin/AdminPanel';
 
 const apiClient = new ApiClient();
 
@@ -51,6 +52,14 @@ export default function App() {
                             }>
                                 <Route index element={<TeamsList />} />
                             </Route>
+                            <Route path="admin" element={
+                                <GuardRoute roles={[ROLES.Admin]} />
+                            }>
+                                <Route path='' element={<AdminPanel />} >
+                                    <Route path="users" element={<UsersList />} />
+                                    <Route path="teams" element={<div style={{ color: '#fff' }}>TEAMS TEMPLATE</div>} />
+                                </Route>
+                            </Route>
                             <Route path="*" element={<Tournaments />}>
                                 <Route path="tournaments">
                                     <Route index element={<TournamentsList />} />
@@ -63,9 +72,6 @@ export default function App() {
                                         <Route path=":albumId" element={<Album />} />
                                     </Route>
                                 </Route>
-                            </Route>
-                            <Route path="admin" element={<GuardRoute roles={[ROLES.Admin]} />}>
-                                <Route index element={<UsersList />} />
                             </Route>
                         </Routes >
                         <Footer />

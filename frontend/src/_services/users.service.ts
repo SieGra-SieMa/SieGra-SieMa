@@ -36,4 +36,12 @@ export default class UsersService extends Service {
     removeUserRole(id: number, role: string[]): Promise<User> {
         return super.post(`${Config.HOST}/api/users/${id}/remove-role`, role);
     };
+
+    adminUpdateUser(id: number, user: UserDetailsRequest): Promise<User> {
+        return super.patch(`${Config.HOST}/api/users/${id}/update-user`, user);
+    };
+
+    adminBanUser(id: number): Promise<User> {
+        return super.del(`${Config.HOST}/api/users/admin/${id}`);
+    };
 }

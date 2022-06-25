@@ -253,7 +253,7 @@ namespace SieGraSieMa.Controllers
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var adminUser = await _userManager.FindByEmailAsync(email);
                 await _logService.AddLog(new Log(adminUser.Id, $"Changed user details"));
-                return Ok(adminUser);
+                return Ok(user);
             }
             catch (Exception e)
             {

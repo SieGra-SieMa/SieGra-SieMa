@@ -1,19 +1,19 @@
 import { FormEvent, useState } from 'react';
-import { User } from '../../_lib/types';
-import { useApi } from '../api/ApiContext';
-import { ROLES } from '../../_lib/roles';
-import Button from '../form/Button';
-import VerticalSpacing from '../spacing/VerticalSpacing';
+import { User } from '../../../_lib/types';
+import { useApi } from '../../api/ApiContext';
+import { ROLES } from '../../../_lib/roles';
+import Button from '../../form/Button';
+import VerticalSpacing from '../../spacing/VerticalSpacing';
 import styles from './RoleAssign.module.css';
 
 type TeamAssignProps = {
-    id: number;
+    user: User;
     confirm: (user: User) => void;
 };
 
 const roles = [ROLES.User, ROLES.Employee, ROLES.Admin];
 
-export default function RoleAssign({ id, confirm }: TeamAssignProps) {
+export default function RoleAssign({ user, confirm }: TeamAssignProps) {
 
     const { usersService } = useApi();
 
@@ -22,7 +22,7 @@ export default function RoleAssign({ id, confirm }: TeamAssignProps) {
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (!selectedRoles.length) return;
-        usersService.addUserRole(id, selectedRoles)
+        usersService.addUserRole(user.id, selectedRoles)
             .then((data) => {
                 confirm(data);
             });
@@ -31,7 +31,7 @@ export default function RoleAssign({ id, confirm }: TeamAssignProps) {
     return (
         <form className={styles.root} onSubmit={onSubmit}>
             <ul className={styles.list}>
-                {roles.map((role, index) => (
+                {roles.filter((role) => !user.roles.includes(role)).map((role, index) => (
                     <li
                         key={index}
                         className={[

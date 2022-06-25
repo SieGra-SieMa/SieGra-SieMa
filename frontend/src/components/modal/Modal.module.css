@@ -1,5 +1,3 @@
-@import "../../variables.css";
-
 .root {
 	position: fixed;
 	top: 0;
@@ -54,12 +52,12 @@
 
 .header {
 	display: grid;
-    grid-template-columns: .7fr 1fr .7fr;
+	grid-template-columns: .7fr 1fr .7fr;
 	align-items: start;
-    margin-top: 20px;
+	margin-top: 20px;
 }
 
-.header > h5 {
+.header>h5 {
 	padding: 0;
 }
 
@@ -68,16 +66,16 @@
 	height: 50px;
 	padding: 15px;
 	flex-shrink: 0;
-    justify-self: end;
-    color: white;
-    transition: all .3s ease-in-out;
+	justify-self: end;
+	color: white;
+	transition: all .3s ease-in-out;
 }
 
 .close:hover {
-    color: var(--accent-color);
-    cursor: pointer;
+	color: var(--accent-color);
+	cursor: pointer;
 }
 
 .content {
-    margin: 30px;
+	margin: 30px;
 }

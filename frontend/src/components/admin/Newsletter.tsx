@@ -1,5 +1,6 @@
 import Button, { ButtonStyle } from '../form/Button';
 import styles from './AdminPanel.module.css';
+import './Newsletter.css';
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useEffect, useState } from 'react';
@@ -53,11 +54,9 @@ export default function Newsletter() {
                 onChange={(e) => setTitle(e.target.value)} />
             <VerticalSpacing size={15} />
             <ReactQuill
-                className={styles.quill}
                 theme="snow"
                 value={body}
                 onChange={setBody}
-                style={{ minHeight: "30px", backgroundColor: "white" }}
             />
             <VerticalSpacing size={15} />
             {(tournaments) && (<>

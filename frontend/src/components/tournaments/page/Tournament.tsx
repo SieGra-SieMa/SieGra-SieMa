@@ -33,6 +33,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import Contests from "../contests/Contests";
 import CreateAlbum from "../../gallery/CreateAlbum";
+import AddIcon from '@mui/icons-material/Add';
 
 export default function Tournament() {
 	const navigate = useNavigate();
@@ -370,9 +371,10 @@ export default function Tournament() {
 					<div className={styles.header}>
 						<h4 className="underline">Albumy</h4>
 						<GuardComponent roles={[ROLES.Admin]}>
-							<Button
-								value="Dodaj album"
+							<AddIcon
+								className="interactiveIcon"
 								onClick={() => setIsAddAlbum(true)}
+								fontSize="large"
 							/>
 						</GuardComponent>
 					</div>

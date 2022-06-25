@@ -156,6 +156,7 @@ export default function TeamsListItem({
             {
                 isPicture && (
                     <Modal
+                        isClose
                         close={() => setIsPicture(false)}
                         title={`Zespół "${team.name}" - Wybierz zdjęcie profilowe`}
                     >
@@ -194,6 +195,7 @@ export default function TeamsListItem({
             {
                 isSetCapitan && (
                     <Modal
+                        isClose
                         close={() => setIsSetCapitan(false)}
                         title={`Zespół "${team.name}" -  Wybierz kapitana`}
                     >

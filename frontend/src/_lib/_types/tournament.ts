@@ -20,6 +20,7 @@ export type Tournament = TournamentListItem & {
     contests: Contest[];
     albums: Album[]
     groups: Group[];
+    teams: TeamInTournament[];
     ladder: Phase[];
 };
 
@@ -29,7 +30,7 @@ export type Group = {
     tournamentId: number;
     ladder: boolean;
     teams: {
-        name: string;
+        idTeam: number;
         playedMatches: number;
         wonMatches: number;
         tiedMatches: number;
@@ -48,8 +49,8 @@ export type Match = {
     tournamentId: number;
     phase: number
     matchId: number;
-    teamHome: string;
-    teamAway: string;
+    teamHomeId: number;
+    teamAwayId: number;
     teamHomeScore: number | null;
     teamAwayScore: number | null;
 };

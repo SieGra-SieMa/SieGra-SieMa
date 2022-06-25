@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Match as MatchType } from '../../../_lib/_types/tournament';
 import Modal from '../../modal/Modal';
+import { useTournament } from '../TournamentContext';
 import styles from './Ladder.module.css';
 import MatchResult from './MatchResult';
 
@@ -10,14 +11,19 @@ type MatchProps = {
 
 export default function Match({ match }: MatchProps) {
 
+    const { tournament } = useTournament();
+
     const [isEdit, setIsEdit] = useState(false);
+
+    const teamHome = tournament!.teams.find((team) => team.teamId === match.teamHomeId)?.teamName;
+    const teamAway = tournament!.teams.find((team) => team.teamId === match.teamAwayId)?.teamName;
 
     return (
         <div className={styles.matchItem}>
             <div className={styles.match} onClick={() => setIsEdit(true)}>
                 <div className={styles.team}>
                     <div>
-                        {match.teamHome ?? '---------'}
+                        {teamHome ?? '---------'}
                     </div>
                     <div>
                         {match.teamHomeScore ?? '-'}
@@ -25,7 +31,7 @@ export default function Match({ match }: MatchProps) {
                 </div>
                 <div className={styles.team}>
                     <div>
-                        {match.teamAway ?? '---------'}
+                        {teamAway ?? '---------'}
                     </div>
                     <div>
                         {match.teamAwayScore ?? '-'}

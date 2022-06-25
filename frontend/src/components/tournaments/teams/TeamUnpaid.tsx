@@ -16,8 +16,9 @@ type TeamUnpaidProps = {
 };
 
 export default function TeamUnpaid({ team }: TeamUnpaidProps) {
+
 	const { tournamentsService } = useApi();
-	const { teams, setTeams } = useTournament();
+	const { tournament, setTournament } = useTournament();
 
 	const [isChange, setIsChange] = useState(false);
 
@@ -25,8 +26,11 @@ export default function TeamUnpaid({ team }: TeamUnpaidProps) {
 		tournamentsService
 			.setTeamStatus(team.tournamentId, team.teamId, TeamPaidEnum.Paid)
 			.then((data) => {
-				const newTeams = teams!.filter((e) => e.teamId !== team.teamId);
-				setTeams([...newTeams, data]);
+				const newTeams = tournament!.teams.filter((e) => e.teamId !== team.teamId);
+				setTournament({
+					...tournament!,
+					teams: [...newTeams, data],
+				});
 				setIsChange(false);
 			});
 	};

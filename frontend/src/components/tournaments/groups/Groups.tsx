@@ -1,41 +1,38 @@
 import { useState } from "react";
-import { Group } from "../../../_lib/_types/tournament";
+import { Group, Tournament } from "../../../_lib/_types/tournament";
 import styles from "./Groups.module.css";
 
 type GroupsProps = {
-	groups: Group[];
+	tournament: Tournament;
 };
 
-export default function Groups({ groups }: GroupsProps) {
-	const [currentGroup, setCurrentGroup] = useState<Group>(groups[0]);
-    const [opacity, setOpacity] = useState(100);
+export default function Groups({ tournament }: GroupsProps) {
+
+	const [currentGroup, setCurrentGroup] = useState<Group>(tournament.groups[0]);
+	const [opacity, setOpacity] = useState(1);
 
 	return (
 		<div className={styles.root}>
 			<div className={styles.container}>
-                <h4 className="underline" id={styles.caption} style={{ width: "fit-content" }}>Grupy</h4>
+				<h4 className="underline" id={styles.caption} style={{ width: "fit-content" }}>Grupy</h4>
 				<div className={styles.groups}>
-					{groups
-						.filter((group) => !group.ladder)
-						.map((group) => (
-							<h6
-								className={
-									group === currentGroup ? styles.active : ""
-								}
-								id={styles.selectable}
-								onClick={() => {
-                                    setOpacity(0);
-                                    setTimeout(setCurrentGroup, 200, group);
-                                    setTimeout(setOpacity, 200, 100);
-								}}
-                                key={group.id}
-							>
-								Grupa {group.name}
-							</h6>
-						))}
+					{tournament.groups.filter((group) => !group.ladder).map((group) => (
+						<h6
+							key={group.id}
+							className={group === currentGroup ? styles.active : undefined}
+							id={styles.selectable}
+							onClick={() => {
+								setOpacity(0);
+								setTimeout(setCurrentGroup, 200, group);
+								setTimeout(setOpacity, 200, 1);
+							}}
+						>
+							Grupa {group.name}
+						</h6>
+					))}
 				</div>
 				<div className={styles.group}>
-					<table style={{ opacity: `${opacity}%` }}>
+					<table style={{ opacity: `${opacity}` }}>
 						<thead>
 							<tr>
 								<th>Miejsce</th>
@@ -57,7 +54,7 @@ export default function Groups({ groups }: GroupsProps) {
 									.map((team, index) => (
 										<tr key={index}>
 											<td>{index + 1}</td>
-											<td className={styles.sticky}>{team.name}</td>
+											<td className={styles.sticky}>{tournament.teams.find((e) => e.teamId === team.idTeam)?.teamName}</td>
 											<td>{team.playedMatches}</td>
 											<td>{team.wonMatches}</td>
 											<td>{team.lostMatches}</td>

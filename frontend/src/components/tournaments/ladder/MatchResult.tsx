@@ -76,24 +76,27 @@ export default function MatchResult({ match, confirm }: MatchResultProps) {
 
     const disabled = (
         user &&
-        match.teamAway &&
-        match.teamHome &&
+        match.teamAwayId &&
+        match.teamHomeId &&
         user.roles.some((role) => [ROLES.Employee, ROLES.Admin].includes(role)) &&
         isEditable()
     ) ? false : true;
+
+    const teamHome = tournament!.teams.find((team) => team.teamId === match.teamHomeId)?.teamName;
+    const teamAway = tournament!.teams.find((team) => team.teamId === match.teamAwayId)?.teamName;
 
     return (
         <form className={styles.matchDetails} onSubmit={onSubmit}>
             <Input
                 id='MatchResult-teamHomeScore'
-                label={`${match.teamHome ?? '-----------'}`}
+                label={teamHome ?? '-----------'}
                 value={`${teamHomeScore}`}
                 disabled={disabled}
                 onChange={(e) => createFunction(setTeamHomeScore)(e.target.value)}
             />
             <Input
                 id='MatchResult-teamAwayScore'
-                label={`${match.teamAway ?? '-----------'}`}
+                label={teamAway ?? '-----------'}
                 value={`${teamAwayScore}`}
                 disabled={disabled}
                 onChange={(e) => createFunction(setTeamAwayScore)(e.target.value)}

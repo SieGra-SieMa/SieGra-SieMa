@@ -26,7 +26,7 @@ export default function TeamsList({ teams }: TeamsListProps) {
 
 	return (
 		<>
-			<h4 className="underline" style={{ width: "fit-content"}}>Zespoły</h4>
+			<h4 className="underline" style={{ width: "fit-content" }}>Zespoły</h4>
 			{paidTeams ? (
 				<div className={styles.root}>
 					<div>
@@ -38,7 +38,7 @@ export default function TeamsList({ teams }: TeamsListProps) {
 							<GuardComponent
 								roles={[ROLES.Employee, ROLES.Admin]}
 							>
-								<h6 className="underline" style={{ width: "fit-content"}}>Oczekiwanie</h6>
+								<h6 className="underline" style={{ width: "fit-content" }}>Oczekiwanie</h6>
 								{unpaidTeams &&
 									unpaidTeams.map((team) => (
 										<TeamUnpaid

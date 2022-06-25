@@ -26,7 +26,6 @@ export default function NewsFeed(props?: NewsFeedProps) {
 			"get",
 			{ fields: "full_picture,message,created_time,permalink_url" },
 			function (response: FacebookFeed) {
-				console.log(1)
 				setFeed(response);
 			}
 		);

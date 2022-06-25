@@ -4,6 +4,7 @@ import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
 import Input from '../../form/Input';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
+import { useTournament } from '../TournamentContext';
 import styles from './Contests.module.css';
 
 type EditContestProps = {
@@ -17,6 +18,7 @@ export default function EditContest({
 }: EditContestProps) {
 
     const { tournamentsService } = useApi();
+    const { tournament, setTournament } = useTournament();
 
     const [name, setName] = useState(contest.name);
 
@@ -24,6 +26,16 @@ export default function EditContest({
         e.preventDefault();
         tournamentsService.updateContest(contest.tournamentId, contest.id, name)
             .then((data) => {
+                const id = tournament!.contests.findIndex((e) => e.id === contest.id);
+                const updatedContest = [...tournament!.contests];
+                updatedContest[id] = {
+                    ...updatedContest[id],
+                    name
+                }
+                setTournament({
+                    ...tournament!,
+                    contests: updatedContest
+                });
                 confirm();
             });
     }

@@ -282,34 +282,23 @@ export default function Tournament() {
 					</div>
 				) : (
 					<>
-						{tournament && (
-							<>
-								<div className={styles.matchesAndContests}>
-									<div className={styles.matchesContainer}>
-										{!isOpen && (
-											<>
-												{tournament.groups.length >
-													1 && (
-													<>
-														<Matches
-															groups={
-																tournament.groups
-															}
-														/>
-													</>
-												)}
-											</>
+						{tournament && (<>
+							<div className={styles.matchesAndContests}>
+								<div className={styles.matchesContainer}>
+									{!isOpen && (<>
+										{tournament.groups.length > 1 && (
+											<Matches groups={tournament.groups} />
 										)}
-									</div>
-									<div className={styles.contestsContainer}>
-										<Contests
-											contests={tournament.contests}
-											tournamentId={id!}
-										/>
-									</div>
+									</>)}
 								</div>
-							</>
-						)}
+								<div className={styles.contestsContainer}>
+									<Contests
+										contests={tournament.contests}
+										tournamentId={id!}
+									/>
+								</div>
+							</div>
+						</>)}
 						{tournament && !isOpen && (
 							<>
 								{tournament.ladder[0]?.matches[0].teamHome && (
@@ -324,9 +313,9 @@ export default function Tournament() {
 														?.map(
 															(e) =>
 																e.teamAwayScore !==
-																	null &&
+																null &&
 																e.teamHomeScore !==
-																	null
+																null
 														)
 														.every((e) => e) ?? true
 											)
@@ -386,8 +375,8 @@ export default function Tournament() {
 								style={
 									album.profilePicture
 										? {
-												backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
-										  }
+											backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
+										}
 										: undefined
 								}
 								onClick={() =>

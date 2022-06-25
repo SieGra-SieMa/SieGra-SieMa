@@ -55,15 +55,15 @@
 
 .selectContest {
     display: flex;
-	flex-direction: column;
-	gap: 20px;
-	width: fit-content;
-	align-items: center;
-	margin: auto;
+    flex-direction: column;
+    gap: 20px;
+    width: fit-content;
+    align-items: center;
+    margin: auto;
 }
 
 Button.active {
-	border-color: var(--accent-color);
+    border-color: var(--accent-color);
 }
 
 .selectContest>Button {

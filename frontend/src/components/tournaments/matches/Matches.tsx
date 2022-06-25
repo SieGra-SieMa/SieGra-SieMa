@@ -41,7 +41,7 @@ export default function Matches({ groups }: MatchesProps) {
 						>
 							<div className={styles.selectGroup}>
 								{groups
-									.filter((group) => !group.ladder)
+									.filter((group) => group.matches)
 									.map((group) => (
 										<Button
 											value={"Grupa " + group.name}

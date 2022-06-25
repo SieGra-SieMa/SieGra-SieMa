@@ -81,7 +81,7 @@ export default function Header() {
 									<NavLink to="/account" onClick={closeMenu}>
 										{user
 											? `${user.name} ${user.surname}`
-											: "USERNAME"}
+											: 'Użytkownik'}
 									</NavLink>
 								</li>
 								<li>

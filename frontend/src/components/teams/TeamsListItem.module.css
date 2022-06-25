@@ -7,36 +7,56 @@
     border-radius: 15px;
     background-color: var(--secondary-color);
     padding: 30px;
-    row-gap: 45px;
+    gap: 15px;
 }
 
-.teamMember {
+.content {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    gap: 15px;
 }
 
-.content>h3 {
-    font-size: 30px;
-}
-
-.codeBlock {
+.pictureBlock {
+    width: 150px;
+    height: 150px;
+    background-size: cover;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    align-self: center;
+    background-color: #3e555f;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    background-position: center;
+}
+
+.picture {
+    color: #fff;
+    font-size: 72px !important;
+}
+
+.title {
+    padding: 0;
+    text-align: center;
+}
+
+.players {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background-color: #313c41;
+    padding: 15px;
+    border-radius: 5px;
     align-items: center;
 }
 
-.codeBlock>span {
-    margin-right: 10px;
-    font-size: 20px;
-    color: #fff;
-}
-
-.codeBlock>h6 {
-    padding: 0;
-    font-weight: bold;
-}
-
-.footer {
+.controls {
     display: flex;
-    column-gap: 10px;
-    justify-content: space-between;
+    gap: 15px;
+}
+
+@media all and (max-width: 460px) {
+    .controls {
+        flex-direction: column;
+    }
 }

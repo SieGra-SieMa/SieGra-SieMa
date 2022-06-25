@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import Button from '../form/Button';
-import Input from '../form/Input';
-import VerticalSpacing from '../spacing/VerticalSpacing';
+import Button from '../../form/Button';
+import Input from '../../form/Input';
+import VerticalSpacing from '../../spacing/VerticalSpacing';
 import styles from './AddParticipant.module.css';
 
 

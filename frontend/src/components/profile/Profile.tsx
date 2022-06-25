@@ -43,7 +43,7 @@ export default function Profile() {
         ].join(' ')}>
             <div className={styles.container}>
                 <h1>Profil</h1>
-                <h4>{user ? `${user.name} ${user.surname}` : 'Username'}</h4>
+                <h4>{user ? `${user.name} ${user.surname}` : 'Użytkownik'}</h4>
                 <div className={styles.controls}>
                     <Button
                         value='Edytuj użytkownika'

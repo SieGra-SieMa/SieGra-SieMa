@@ -39,11 +39,11 @@ export default class TournamentsService extends Service {
         return super.post(`${Config.HOST}/api/tournaments/${id}/add-profile-photo`, data, headers, false);
     };
 
-    getTeamsInTournament(id: string): Promise<TeamInTournament[]> {
-        return super.get(`${Config.HOST}/api/tournaments/${id}/teams?filter=${TeamPaidEnum.All}`);
-    };
+    // getTeamsInTournament(id: string): Promise<TeamInTournament[]> {
+    //     return super.get(`${Config.HOST}/api/tournaments/${id}/teams?filter=${TeamPaidEnum.All}`);
+    // };
 
-    addTeam(tournamentId: number, teamId: number): Promise<any> {
+    addTeam(tournamentId: number, teamId: number): Promise<TeamInTournament> {
         return super.post(`${Config.HOST}/api/tournaments/${tournamentId}/teams/join?teamId=${teamId}`, {});
     };
 

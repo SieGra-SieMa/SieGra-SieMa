@@ -30,7 +30,7 @@ export default function TeamAssign({ id, confirm }: TeamAssignProps) {
         e.preventDefault();
         if (!selectedTeam) return;
         tournamentsService.addTeam(id, selectedTeam.id)
-            .then(() => {
+            .then((data) => {
                 confirm(selectedTeam);
             });
     };

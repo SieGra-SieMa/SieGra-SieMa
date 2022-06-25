@@ -3,7 +3,6 @@ import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROLES } from "../../../_lib/roles";
 import {
-	TeamInTournament,
 	Tournament as TournamentType,
 } from "../../../_lib/_types/tournament";
 import { useApi } from "../../api/ApiContext";
@@ -54,11 +53,11 @@ export default function Tournament() {
 			contests: [],
 			albums: [],
 			groups: [],
+			teams: [],
 			ladder: [],
 		};
 	});
 	const [isLoading, setIsLoading] = useState(true);
-	const [teams, setTeams] = useState<TeamInTournament[] | null>(null);
 	const [isPrepare, setIsPrepare] = useState(false);
 	const [isReset, setIsReset] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
@@ -77,18 +76,11 @@ export default function Tournament() {
 
 	useEffect(() => {
 		tournamentsService.getTournamentById(id!).then((data) => {
+			console.log(data)
 			setTournament(data);
 			setIsLoading(false);
 		});
 	}, [id, tournamentsService]);
-
-	useEffect(() => {
-		if (!isOpen) return;
-
-		tournamentsService.getTeamsInTournament(id!).then((data) => {
-			setTeams(data);
-		});
-	}, [isOpen, id, tournamentsService]);
 
 	const prepareTournament = () => {
 		tournamentsService.prepareTournamnet(id!).then((data) => {
@@ -136,20 +128,20 @@ export default function Tournament() {
 	const removeTeam = (teamId: number) => () => {
 		tournamentsService.removeTeam(id!, teamId).then(() => {
 			setIsTeamRemove(false);
+			if (!tournament) return;
 			const updatedTournament = {
-				...tournament!,
+				...tournament,
 				team: null,
+				teams: tournament.teams.filter((team) => team.teamId !== teamId)
 			};
 			setTournament(updatedTournament);
-			if (tournaments) {
-				const index = tournaments!.findIndex(
-					(e) => e.id === updatedTournament.id
-				);
-				const data = [...tournaments];
-				data[index] = updatedTournament;
-				setTournaments(data);
-			}
-			setTeams(teams && teams.filter((team) => team.teamId !== teamId));
+			if (!tournaments) return;
+			const index = tournaments!.findIndex(
+				(e) => e.id === updatedTournament.id
+			);
+			const data = [...tournaments];
+			data[index] = updatedTournament;
+			setTournaments(data);
 		});
 	};
 
@@ -169,7 +161,7 @@ export default function Tournament() {
 
 	return (
 		<TournamentContext.Provider
-			value={{ tournament, setTournament, teams, setTeams }}
+			value={{ tournament, setTournament }}
 		>
 			<div className={styles.top}>
 				<ArrowBackIosNewIcon
@@ -233,19 +225,14 @@ export default function Tournament() {
 						<div className={styles.tournamentInfo}>
 							<div className={styles.description}>
 								<h4 className="underline">Opis</h4>
-								<div
-									dangerouslySetInnerHTML={{
-										__html: `${tournament.description}`,
-									}}
-								></div>
+								<div dangerouslySetInnerHTML={{ __html: `${tournament.description}` }}></div>
 							</div>
 							<div>
-								{isOpen && <TeamsList teams={teams} />}
-								{tournament &&
-									!isOpen &&
-									tournament.groups.length > 1 && (
-										<Groups groups={tournament.groups} />
-									)}
+								{(isOpen) ? (
+									<TeamsList teams={tournament.teams} />
+								) : (
+									<Groups tournament={tournament} />
+								)}
 							</div>
 						</div>
 
@@ -301,54 +288,29 @@ export default function Tournament() {
 						</>)}
 						{tournament && !isOpen && (
 							<>
-								{tournament.ladder[0]?.matches[0].teamHome && (
+								{tournament.ladder[0]?.matches[0].teamHomeId && (
 									<Ladder ladder={tournament.ladder} />
 								)}
 								<GuardComponent roles={[ROLES.Admin]}>
-									{tournament &&
-										tournament.groups
-											.map(
-												(group) =>
-													group.matches
-														?.map(
-															(e) =>
-																e.teamAwayScore !==
-																null &&
-																e.teamHomeScore !==
-																null
-														)
-														.every((e) => e) ?? true
-											)
-											.every((e) => e) &&
-										(tournament.ladder[0]?.matches[0]
-											.teamHome ? (
-											<div
-												className={
-													styles.ladderControls
-												}
-											>
-												<Button
-													value="Zresetuj drabinke"
-													onClick={() =>
-														setIsLadderReset(true)
-													}
-													style={ButtonStyle.Red}
-												/>
-											</div>
-										) : (
-											<div
-												className={
-													styles.ladderControls
-												}
-											>
-												<Button
-													value="Zbuduj drabinke"
-													onClick={() =>
-														setIsLadderCompose(true)
-													}
-												/>
-											</div>
-										))}
+									{tournament && tournament.groups.map((group) => group.matches?.map((e) =>
+										e.teamAwayScore !== null &&
+										e.teamHomeScore !== null
+									).every((e) => e) ?? true).every((e) => e) && (tournament.ladder[0]?.matches[0].teamHomeId ? (
+										<div className={styles.ladderControls}>
+											<Button
+												value="Zresetuj drabinke"
+												onClick={() => setIsLadderReset(true)}
+												style={ButtonStyle.Red}
+											/>
+										</div>
+									) : (
+										<div className={styles.ladderControls}>
+											<Button
+												value="Zbuduj drabinke"
+												onClick={() => setIsLadderCompose(true)}
+											/>
+										</div>
+									))}
 								</GuardComponent>
 							</>
 						)}
@@ -495,6 +457,13 @@ export default function Tournament() {
 								const updatedTournament = {
 									...tournament,
 									team,
+									teams: tournament.teams.concat({
+										teamId: team.id,
+										tournamentId: tournament.id,
+										teamName: team.name,
+										teamProfileUrl: team.profilePicture,
+										paid: false,
+									})
 								};
 								setTournament(updatedTournament);
 								if (tournaments) {
@@ -505,18 +474,6 @@ export default function Tournament() {
 									data[index] = updatedTournament;
 									setTournaments(data);
 								}
-								const newTeams: TeamInTournament[] = [];
-								if (teams) {
-									newTeams.push(...teams);
-								}
-								newTeams.push({
-									teamId: team.id,
-									tournamentId: tournament.id,
-									teamName: team.name,
-									teamProfileUrl: team.profilePicture,
-									paid: false,
-								});
-								setTeams(newTeams);
 							}}
 						/>
 					</Modal>

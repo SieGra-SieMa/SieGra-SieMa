@@ -35,6 +35,7 @@ export default function MatchResult({
 	confirm,
 	callback,
 }: MatchResultProps) {
+
 	const { matchService } = useApi();
 	const { user } = useUser();
 	const { tournament, setTournament } = useTournament();
@@ -64,20 +65,24 @@ export default function MatchResult({
 
 	const disabled =
 		tournament &&
-		user &&
-		match.teamAway &&
-		match.teamHome &&
-		!tournament.ladder[0].matches[0].teamAway &&
-		!tournament.ladder[0].matches[0].teamHome &&
-		user.roles.some((role) => [ROLES.Employee, ROLES.Admin].includes(role))
+			user &&
+			match.teamHomeId &&
+			match.teamAwayId &&
+			!tournament.ladder[0].matches[0].teamHomeId &&
+			!tournament.ladder[0].matches[0].teamAwayId &&
+			user.roles.some((role) => [ROLES.Employee, ROLES.Admin].includes(role))
 			? false
 			: true;
+
+
+	const teamHome = tournament!.teams.find((team) => team.teamId === match.teamHomeId)?.teamName;
+	const teamAway = tournament!.teams.find((team) => team.teamId === match.teamAwayId)?.teamName;
 
 	return (
 		<form className={styles.matchDetails} onSubmit={onSubmit}>
 			<Input
-				id="MatchResult-teamHomeScore"
-				label={`${match.teamHome ?? "-----------"}`}
+				id='MatchResult-teamHomeScore'
+				label={teamHome ?? '-----------'}
 				value={`${teamHomeScore}`}
 				disabled={disabled}
 				onChange={(e) =>
@@ -85,8 +90,8 @@ export default function MatchResult({
 				}
 			/>
 			<Input
-				id="MatchResult-teamAwayScore"
-				label={`${match.teamAway ?? "-----------"}`}
+				id='MatchResult-teamAwayScore'
+				label={teamAway ?? '-----------'}
 				value={`${teamAwayScore}`}
 				disabled={disabled}
 				onChange={(e) =>
@@ -97,7 +102,7 @@ export default function MatchResult({
 				{!disabled && (
 					<>
 						<VerticalSpacing size={15} />
-						<Button value="Save" />
+						<Button value='Save' />
 					</>
 				)}
 			</GuardComponent>

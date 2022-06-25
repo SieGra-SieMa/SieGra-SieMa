@@ -52,8 +52,8 @@ export default function AdminTeamsList() {
             <div className={styles.content}>
                 {teams ? teams.filter((team) => {
                     return (
-                        team.name.includes(search) ||
-                        team.code.includes(search)
+                        team.name.toLowerCase().includes(search.toLowerCase()) ||
+                        team.code.toLowerCase().includes(search.toLowerCase())
                     )
                 }).map((team, index) => (
                     <TeamsListItem

@@ -47,9 +47,9 @@ export default function UsersList() {
             <div className={styles.content}>
                 {users ? users.filter((user) => {
                     return (
-                        user.name.includes(search) ||
-                        user.surname.includes(search) ||
-                        user.email.includes(search)
+                        user.name.toLowerCase().includes(search.toLowerCase()) ||
+                        user.surname.toLowerCase().includes(search.toLowerCase()) ||
+                        user.email.toLowerCase().includes(search.toLowerCase())
                     )
                 }).map((user, index) => (
                     <UsersListItem

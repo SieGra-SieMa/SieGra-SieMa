@@ -12,6 +12,7 @@ export default function AdminPanel() {
             <div className={styles.navigation}>
                 <Button value='Użytkownicy' onClick={() => navigate('users')} />
                 <Button value='Zespoły' onClick={() => navigate('teams')} />
+                <Button value='Newsletter' onClick={() => navigate('')} />
             </div>
             <Outlet />
         </div>

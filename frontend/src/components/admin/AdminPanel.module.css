@@ -2,3 +2,16 @@
     display: flex;
     justify-content: space-evenly;
 }
+
+.quill>*>*>* {
+    color: black;
+}
+
+.quill>* {
+    height: auto;
+}
+
+.select {
+    width: 100%;
+    font-size: 27px;
+}

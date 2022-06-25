@@ -1,11 +1,12 @@
 import styles from './UsersList.module.css';
 import UsersListItem from './UsersListItem';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { User } from '../../../_lib/types';
 import SyncLoader from 'react-spinners/SyncLoader';
 import { useApi } from '../../api/ApiContext';
 import { useUser } from '../../user/UserContext';
+import Input from '../../form/Input';
+import VerticalSpacing from '../../spacing/VerticalSpacing';
 
 export default function UsersList() {
 
@@ -13,6 +14,7 @@ export default function UsersList() {
     const { user } = useUser();
 
     const [users, setUsers] = useState<User[] | null>(null);
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
         if (!user) return;
@@ -36,8 +38,20 @@ export default function UsersList() {
     return (
         <>
             <h1>Użytkownicy</h1>
+            <Input
+                placeholder='Wyszukaj...'
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+            />
+            <VerticalSpacing size={15} />
             <div className={styles.content}>
-                {users ? users.map((user, index) => (
+                {users ? users.filter((user) => {
+                    return (
+                        user.name.includes(search) ||
+                        user.surname.includes(search) ||
+                        user.email.includes(search)
+                    )
+                }).map((user, index) => (
                     <UsersListItem
                         key={index}
                         user={user}

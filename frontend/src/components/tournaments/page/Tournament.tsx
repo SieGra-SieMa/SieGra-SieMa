@@ -231,13 +231,12 @@ export default function Tournament() {
 								{(isOpen) ? (
 									<TeamsList teams={tournament.teams} />
 								) : (
-									<Groups tournament={tournament} />
+									tournament.groups.length && <Groups tournament={tournament} />
 								)}
 							</div>
 						</div>
 
-						{session &&
-							tournament.isOpen &&
+						{session && tournament.isOpen &&
 							(tournament.team ? (
 								<div className={styles.team}>
 									<h6>{tournament.team.name}</h6>

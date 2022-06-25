@@ -25,6 +25,7 @@ import Tournament from '../tournaments/page/Tournament';
 import Album from '../gallery/Album';
 import AccountData from '../profile/Profile';
 import AdminPanel from '../admin/AdminPanel';
+import AdminTeamsList from '../admin/teams/AdminTeamsList';
 
 const apiClient = new ApiClient();
 
@@ -57,7 +58,7 @@ export default function App() {
                             }>
                                 <Route path='' element={<AdminPanel />} >
                                     <Route path="users" element={<UsersList />} />
-                                    <Route path="teams" element={<div style={{ color: '#fff' }}>TEAMS TEMPLATE</div>} />
+                                    <Route path="teams" element={<AdminTeamsList />} />
                                 </Route>
                             </Route>
                             <Route path="*" element={<Tournaments />}>

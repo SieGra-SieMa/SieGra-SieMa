@@ -117,109 +117,97 @@ export default function TeamsListItem({
                     style={ButtonStyle.Red}
                 />
             </div>
-            {
-                isAdd && (
-                    <Modal
-                        close={() => setIsAdd(false)}
-                        isClose
-                        title={`Zespół "${team.name}" - Dodaj gracza`}
-                    >
-                        <AddParticipant />
-                    </Modal>
-                )
-            }
-            {
-                isEdit && (
-                    <Modal
-                        isClose
-                        close={() => setIsEdit(false)}
-                        title={`Edytuj zespół - "${team.name}"`}
-                    >
-                        <EditTeam
-                            team={team}
-                            confirm={(team) => {
-                                setIsEdit(false);
-                                if (teams) {
-                                    const index = teams.findIndex((e) => e.id === team.id);
-                                    const data = [...teams];
-                                    data[index] = {
-                                        ...team,
-                                        players: teams[index].players,
-                                    };
-                                    setTeams(data);
-                                }
-                            }}
-                        />
-                    </Modal>
-                )
-            }
-            {
-                isPicture && (
-                    <Modal
-                        isClose
-                        close={() => setIsPicture(false)}
-                        title={`Zespół "${team.name}" - Wybierz zdjęcie profilowe`}
-                    >
-                        <EditTeamPicture
-                            team={team}
-                            confirm={(url) => {
-                                setIsPicture(false);
-                                if (teams) {
-                                    const index = teams.findIndex((e) => e.id === team.id);
-                                    const data = [...teams];
-                                    data[index] = {
-                                        ...team,
-                                        profilePicture: url,
-                                    };
-                                    setTeams(data);
-                                }
-                            }} />
-                    </Modal>
-                )
-            }
-            {
-                isLeave && (
-                    <Modal
-                        close={() => setIsLeave(false)}
-                        title={`Czy na pewno chcesz opuścić zespół - "${team.name}"?`}
-                    >
-                        <Confirm
-                            cancel={() => setIsLeave(false)}
-                            confirm={() => leaveTeam()}
-                            label='Opuść'
-                            style={ButtonStyle.Red}
-                        />
-                    </Modal>
-                )
-            }
-            {
-                isSetCapitan && (
-                    <Modal
-                        isClose
-                        close={() => setIsSetCapitan(false)}
-                        title={`Zespół "${team.name}" -  Wybierz kapitana`}
-                    >
-                        <PlayersToSetCapitan
-                            team={team}
-                            confirm={() => setIsSetCapitan(false)}
-                        />
-                    </Modal>
-                )
-            }
-            {
-                isRemove && (
-                    <Modal
-                        isClose
-                        close={() => setIsRemove(false)}
-                        title={`Zespół "${team.name}" - Wybierz gracza do usunięcia`}
-                    >
-                        <PlayersToRemove
-                            team={team}
-                            confirm={() => setIsRemove(false)}
-                        />
-                    </Modal>
-                )
-            }
+            {isAdd && (
+                <Modal
+                    close={() => setIsAdd(false)}
+                    isClose
+                    title={`Zespół "${team.name}" - Dodaj gracza`}
+                >
+                    <AddParticipant />
+                </Modal>
+            )}
+            {isEdit && (
+                <Modal
+                    isClose
+                    close={() => setIsEdit(false)}
+                    title={`Edytuj zespół - "${team.name}"`}
+                >
+                    <EditTeam
+                        team={team}
+                        confirm={(team) => {
+                            setIsEdit(false);
+                            if (teams) {
+                                const index = teams.findIndex((e) => e.id === team.id);
+                                const data = [...teams];
+                                data[index] = {
+                                    ...team,
+                                    players: teams[index].players,
+                                };
+                                setTeams(data);
+                            }
+                        }}
+                    />
+                </Modal>
+            )}
+            {isPicture && (
+                <Modal
+                    isClose
+                    close={() => setIsPicture(false)}
+                    title={`Zespół "${team.name}" - Wybierz zdjęcie profilowe`}
+                >
+                    <EditTeamPicture
+                        team={team}
+                        confirm={(url) => {
+                            setIsPicture(false);
+                            if (teams) {
+                                const index = teams.findIndex((e) => e.id === team.id);
+                                const data = [...teams];
+                                data[index] = {
+                                    ...team,
+                                    profilePicture: url,
+                                };
+                                setTeams(data);
+                            }
+                        }} />
+                </Modal>
+            )}
+            {isLeave && (
+                <Modal
+                    close={() => setIsLeave(false)}
+                    title={`Czy na pewno chcesz opuścić zespół - "${team.name}"?`}
+                >
+                    <Confirm
+                        cancel={() => setIsLeave(false)}
+                        confirm={() => leaveTeam()}
+                        label='Opuść'
+                        style={ButtonStyle.Red}
+                    />
+                </Modal>
+            )}
+            {isSetCapitan && (
+                <Modal
+                    isClose
+                    close={() => setIsSetCapitan(false)}
+                    title={`Zespół "${team.name}" -  Wybierz kapitana`}
+                >
+                    <PlayersToSetCapitan
+                        team={team}
+                        confirm={() => setIsSetCapitan(false)}
+                    />
+                </Modal>
+            )}
+            {isRemove && (
+                <Modal
+                    isClose
+                    close={() => setIsRemove(false)}
+                    title={`Zespół "${team.name}" - Wybierz gracza do usunięcia`}
+                >
+                    <PlayersToRemove
+                        team={team}
+                        confirm={() => setIsRemove(false)}
+                    />
+                </Modal>
+            )}
         </div >
     );
 }

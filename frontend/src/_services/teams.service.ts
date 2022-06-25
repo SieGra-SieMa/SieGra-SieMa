@@ -1,15 +1,15 @@
 import Config from '../config.json';
 import { Team } from '../_lib/types';
-import { Media } from '../_lib/_types/response';
+import { Media, Message } from '../_lib/_types/response';
 import Service from './service';
 
 export default class TeamsService extends Service {
 
-    joinTeam(code: string): Promise<{}> {
+    joinTeam(code: string): Promise<Team> {
         return super.post(`${Config.HOST}/api/teams/join`, { code });
     };
 
-    createTeam(name: string): Promise<{}> {
+    createTeam(name: string): Promise<Team> {
         return super.post(`${Config.HOST}/api/teams`, { name });
     };
 
@@ -17,8 +17,12 @@ export default class TeamsService extends Service {
         return super.get<Team[]>(`${Config.HOST}/api/teams`);
     };
 
+    getAllTeams(): Promise<Team[]> {
+        return super.get(`${Config.HOST}/api/teams/admin`);
+    };
+
     getTeamsIAmCaptain(): Promise<Team[]> {
-        return super.get<Team[]>(`${Config.HOST}/api/teams/teamsiamcaptain`);
+        return super.get(`${Config.HOST}/api/teams/teamsiamcaptain`);
     };
 
     leaveTeam(id: number): Promise<{}> {
@@ -40,5 +44,9 @@ export default class TeamsService extends Service {
     addProfilePhoto(id: number, data: FormData): Promise<Media[]> {
         const headers = new Headers();
         return super.post(`${Config.HOST}/api/teams/${id}/add-profile-photo`, data, headers, false);
+    };
+
+    admindDeleteTeam(id: number): Promise<Message> {
+        return super.del(`${Config.HOST}/api/teams/admin/${id}`);
     };
 }

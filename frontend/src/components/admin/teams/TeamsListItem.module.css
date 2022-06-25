@@ -1,0 +1,32 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 5px;
+    background-color: var(--secondary-color);
+    padding: 30px;
+    gap: 15px;
+}
+
+.title {
+    padding: 0;
+}
+
+.pictureBlock {
+    width: 150px;
+    height: 150px;
+    background-size: cover;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    align-self: center;
+    background-color: #3e555f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-position: center;
+}
+
+.picture {
+    color: #fff;
+    font-size: 72px !important;
+}

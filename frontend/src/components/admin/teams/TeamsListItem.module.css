@@ -2,16 +2,14 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-radius: 15px;
+    border-radius: 5px;
     background-color: var(--secondary-color);
     padding: 30px;
     gap: 15px;
 }
 
-.content {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
+.title {
+    padding: 0;
 }
 
 .pictureBlock {
@@ -31,30 +29,4 @@
 .picture {
     color: #fff;
     font-size: 72px !important;
-}
-
-.title {
-    padding: 0;
-    text-align: center;
-}
-
-.players {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    background-color: #313c41;
-    padding: 15px;
-    border-radius: 5px;
-    align-items: center;
-}
-
-.controls {
-    display: flex;
-    gap: 15px;
-}
-
-@media all and (max-width: 460px) {
-    .controls {
-        flex-direction: column;
-    }
 }

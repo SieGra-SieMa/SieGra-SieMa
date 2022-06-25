@@ -1,0 +1,34 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 5px;
+    background-color: var(--secondary-color);
+    padding: 30px;
+    gap: 15px;
+}
+
+.title {
+    padding: 0;
+}
+
+.roles {
+    display: flex;
+    flex-direction: column;
+    background-color: #313c41;
+    border-radius: 5px;
+    padding: 15px;
+    gap: 15px;
+}
+
+.roles>li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}

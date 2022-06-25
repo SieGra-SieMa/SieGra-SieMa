@@ -3,10 +3,13 @@ import styles from './TeamOptions.module.css';
 import Input from '../../form/Input';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
+import { useTeams } from '../TeamsContext';
 
 export default function JoinTeam() {
 
     const { teamsService } = useApi();
+
+    const { teams, setTeams } = useTeams();
 
     const [code, setCode] = useState<string>('');
 
@@ -14,7 +17,15 @@ export default function JoinTeam() {
         e.preventDefault();
         teamsService.joinTeam(code)
             .then(
-                _ => alert(`Dolączyłeś do zespołu`),
+                (team) => {
+                    if (teams) {
+                        setTeams([...teams, team]);
+                    } else {
+                        setTeams([team]);
+                    }
+                    setCode('');
+                    alert(`Dołączyłeś do zespołu - ${team.name}`);
+                },
                 error => alert(error)
             );
     }

@@ -3,10 +3,13 @@ import styles from './TeamOptions.module.css';
 import Input from '../../form/Input';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
+import { useTeams } from '../TeamsContext';
 
 export default function CreateTeam() {
 
     const { teamsService } = useApi();
+
+    const { teams, setTeams } = useTeams();
 
     const [name, setName] = useState<string>('');
 
@@ -14,7 +17,15 @@ export default function CreateTeam() {
         e.preventDefault();
         teamsService.createTeam(name)
             .then(
-                _ => alert(`Utworzyłeś zespół - "${name}"`),
+                (team) => {
+                    if (teams) {
+                        setTeams([...teams, team]);
+                    } else {
+                        setTeams([team]);
+                    }
+                    setName('');
+                    alert(`Utwoprzyłeś zespoł - ${team.name}`);
+                },
                 error => alert(error)
             );
     }

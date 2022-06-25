@@ -26,6 +26,7 @@ import Album from '../gallery/Album';
 import AccountData from '../profile/Profile';
 import AdminPanel from '../admin/AdminPanel';
 import AdminTeamsList from '../admin/teams/AdminTeamsList';
+import Newsletter from '../admin/Newsletter';
 
 const apiClient = new ApiClient();
 
@@ -57,6 +58,7 @@ export default function App() {
                                 <GuardRoute roles={[ROLES.Admin]} />
                             }>
                                 <Route path='' element={<AdminPanel />} >
+                                    <Route index element={<Newsletter />} />
                                     <Route path="users" element={<UsersList />} />
                                     <Route path="teams" element={<AdminTeamsList />} />
                                 </Route>

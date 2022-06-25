@@ -13,6 +13,8 @@ import Button, { ButtonStyle } from "../../form/Button";
 import EditContest from "./EditContest";
 import Confirm from "../../modal/Confirm";
 import { useApi } from "../../api/ApiContext";
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 type ContestsProps = {
 	contests: ContestType[];
@@ -55,22 +57,23 @@ export default function Contests({ contests, tournamentId }: ContestsProps) {
 				</h4>
 				<div className={styles.header}>
 					<GuardComponent roles={[ROLES.Admin]}>
-						<AddIcon
-							className="interactiveIcon"
-							onClick={() => setIsAddContest(true)}
-							fontSize="large"
-						/>
-						//TODO: Change buttons to icons
-						<Button
-							value="Edytuj konkurs"
-							onClick={() => setIsEditContest(true)}
-							style={ButtonStyle.DarkBlue}
-						/>
-						<Button
-							value="Usuń konkurs"
-							onClick={() => setIsDeleteContest(true)}
-							style={ButtonStyle.Red}
-						/>
+						<div className={styles.manageButtons}>
+							<AddIcon
+								className="interactiveIcon"
+								onClick={() => setIsAddContest(true)}
+								fontSize="medium"
+							/>
+							<EditIcon
+								className="interactiveIcon"
+								onClick={() => setIsEditContest(true)}
+								fontSize="medium"
+							/>
+							<DeleteIcon
+								className="interactiveIcon"
+								onClick={() => setIsDeleteContest(true)}
+								fontSize="medium"
+							/>
+						</div>
 					</GuardComponent>
 					{currentContest && (
 						<>
@@ -86,17 +89,14 @@ export default function Contests({ contests, tournamentId }: ContestsProps) {
 								<ScoreboardIcon
 									className="interactiveIcon"
 									onClick={() => setIsAddScore(true)}
+									fontSize="medium"
 								/>
 							</GuardComponent>
 						</>
 					)}
 				</div>
 				<div className={styles.contests}>
-					{currentContest && (
-						<Contest
-							contest={currentContest}
-						/>
-					)}
+					{currentContest && <Contest contest={currentContest} />}
 				</div>
 			</div>
 

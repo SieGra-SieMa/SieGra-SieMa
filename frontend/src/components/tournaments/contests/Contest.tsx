@@ -10,8 +10,8 @@ export default function Contest({ contest }: ContestProps) {
 	return (
 			<div className={styles.scores}>
 				{contest.contestants.map((player) => (
-					<div className={styles.score}>
-						<h6 key={player.userId}>
+					<div key={player.userId} className={styles.score}>
+						<h6>
 							{player.name} {player.surname}
 						</h6>
 						<p>{player.points}</p>

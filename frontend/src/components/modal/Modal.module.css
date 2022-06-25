@@ -55,7 +55,7 @@
 .header {
 	display: grid;
     grid-template-columns: .7fr 1fr .7fr;
-	align-items: center;
+	align-items: start;
     margin-top: 20px;
 }
 

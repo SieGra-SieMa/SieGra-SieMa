@@ -457,25 +457,31 @@ namespace SieGraSieMa.Services
         }
         public async Task DeleteTeamByAdmin(int teamId)
         {
-            var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).Where(t => t.Id == teamId).SingleOrDefaultAsync();
+            var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).Include(t => t.TeamInTournaments).Where(t => t.Id == teamId).SingleOrDefaultAsync();
 
             if (team == null) throw new Exception($"Team with {teamId} id does not exists");
 
-            if (_SieGraSieMaContext.Tournaments.Any(t => t.TeamInTournaments.Any(t => t.TeamId == team.Id)))
+            if (team.TeamInTournaments.Any())
             {
-                var tt = _SieGraSieMaContext.TeamInTournaments.Where(t => t.TeamId == team.Id).ToList();
+                var tt = team.TeamInTournaments.ToList();
                 tt.ForEach(tt => tt.Paid = false);
                 _SieGraSieMaContext.TeamInTournaments.UpdateRange(tt);
                 team.Players.Clear();
                 team.Captain = null;
+                team.Code = GenerateNewCode();
                 _SieGraSieMaContext.Update(team);
             }
-            else _SieGraSieMaContext.Teams.Remove(team);
+            else
+            {
+                team.Players.Clear();
+                _SieGraSieMaContext.Teams.Remove(team);
+            } 
+                
             await _SieGraSieMaContext.SaveChangesAsync();
         }
         public async Task<IEnumerable<GetTeamsDTO>> GetAllTeams()
         {
-            return await _SieGraSieMaContext.Teams.Include(e => e.Players).ThenInclude(e => e.User)
+            return await _SieGraSieMaContext.Teams.Include(e => e.Players).ThenInclude(e => e.User).Where(t=>t.CaptainId!=null)
                 .Select(t => new GetTeamsDTO
                 {
                     Id = t.Id,

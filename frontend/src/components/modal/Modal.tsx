@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import Button, { ButtonStyle } from '../form/Button';
 import styles from './Modal.module.css';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function Modal({
     title, close, isClose = false, children
@@ -25,10 +25,11 @@ export default function Modal({
                 onDoubleClick={(e) => e.stopPropagation()}
             >
                 <div className={styles.header}>
-                    <h3>{title}</h3>
-                    {isClose && <Button className={styles.close} value='' onClick={close} style={ButtonStyle.Red} />}
+                    <span></span>
+                    <h5 className='underline'>{title}</h5>
+                    {isClose && <CloseIcon className={styles.close} onClick={close} />}
                 </div>
-                <div>
+                <div className={styles.content}>
                     {children}
                 </div>
             </div>

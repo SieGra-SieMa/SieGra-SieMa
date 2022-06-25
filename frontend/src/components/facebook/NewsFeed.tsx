@@ -12,7 +12,7 @@ interface NewsFeedProps {
 export default function NewsFeed(props?: NewsFeedProps) {
 	const APP_ID = "102617622481951";
 	const ACCESS_TOKEN =
-		"EAAo3XMvZBYycBAHVdiapMw63KyWyPhsjxJP5FuEfAeqGqnBZCkYZBDtg3e5GE93HkiB1iyIMEwPYa1uJo21W8ZBdoTVPZBLCVlYTBUxtjXBK0NmIjPETMwrXaQDVVnzpHxF5HKO6nuepaG5WMTAkhV4411ojTUivZC7DIfNZBohiij9yGvCATDzVRo5hN7ZCJD0ZD";
+		"EAAo3XMvZBYycBACpK7VGHceN5x4YkHF36r3IsvEt8btZBH0Q5cMJg5il78AUm74yp3pp61zFydbzLAcTT4vhDrvzM02yUD321ecwArDrkHb2HtqxsArg0iGPz52b3bGX5FXFdO4fM4QZAXe4iAhiPTv9njiZCPezACVRXmQolUREyzcKQwYJQKjkdkZBhNsoZD";
 	const [feed, setFeed] = useState<FacebookFeed | null>(null);
 	const fetchLimit = props?.fetchLimit ? props?.fetchLimit : 10;
 

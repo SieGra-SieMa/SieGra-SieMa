@@ -41,7 +41,6 @@ export default function AdminTeamsList() {
 	return (
 		<>
 			<div className={styles.root}>
-				<h1>Zespoły</h1>
 				<Input
 					placeholder="Wyszukaj..."
 					value={search}

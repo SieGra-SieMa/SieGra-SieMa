@@ -1,7 +1,7 @@
 import Config from "../../../config.json";
 import styles from "./TeamsListItem.module.css";
 import { Team } from "../../../_lib/types";
-import Button, { ButtonStyle } from "../../form/Button";
+import { ButtonStyle } from "../../form/Button";
 import { useState } from "react";
 import Modal from "../../modal/Modal";
 import EditTeamPicture from "../../teams/controls/EditTeamPicture";

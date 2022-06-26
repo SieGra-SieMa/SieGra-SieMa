@@ -36,13 +36,12 @@ export default function UsersList() {
 	return (
 		<>
 			<div className={styles.root}>
-				<h1>Użytkownicy</h1>
 				<Input
 					placeholder="Wyszukaj..."
 					value={search}
 					onChange={(e) => setSearch(e.target.value)}
 				/>
-				<VerticalSpacing size={15} />
+				<VerticalSpacing size={25} />
 				<div className={styles.content}>
 					{users ? (
 						users

@@ -154,7 +154,7 @@ namespace SieGraSieMa.Controllers
             List<UserDTO> usersDTO = new();
             foreach (var user in users)
             {
-                usersDTO.Add(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
+                usersDTO.Add(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id), isLocked = user.LockoutEnd.HasValue?DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0:false });
             }
             return Ok(usersDTO);
         }
@@ -170,7 +170,7 @@ namespace SieGraSieMa.Controllers
             if (user == null)
                 return NotFound(new ResponseErrorDTO { Error = "User not found" });
             var roles = await _userManager.GetRolesAsync(user);
-            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = roles, Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
+            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = roles, Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id), isLocked = user.LockoutEnd.HasValue ? DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0 : false });
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
@@ -186,7 +186,7 @@ namespace SieGraSieMa.Controllers
             var admin = await _userManager.FindByEmailAsync(email);
             await _logService.AddLog(new Log(admin, $"Lock user {user.Id} due to deleting account"));
             //await _userManager.DeleteAsync(user);
-            return Ok();
+            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id), isLocked = user.LockoutEnd.HasValue ? DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0 : false });
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
@@ -200,7 +200,7 @@ namespace SieGraSieMa.Controllers
             var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
             var admin = await _userManager.FindByEmailAsync(email);
             await _logService.AddLog(new Log(admin, $"Unlock user {user.Id}"));
-            return Ok();
+            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id), isLocked = user.LockoutEnd.HasValue ? DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0 : false });
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
@@ -220,7 +220,7 @@ namespace SieGraSieMa.Controllers
                 await _logService.AddLog(new Log(user, $"Unlock user {user.Id} due to existing roles"));
             }
             await _logService.AddLog(new Log(user, $"Add roles {roles.Aggregate((i, j) => i + ", " + j)} to {user.Id}"));
-            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
+            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id), isLocked = user.LockoutEnd.HasValue ? DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0 : false });
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
@@ -238,7 +238,7 @@ namespace SieGraSieMa.Controllers
                 await _logService.AddLog(new Log(user, $"Lock user {user.Id} due to removing last role"));
             }
             await _logService.AddLog(new Log(user, $"Remove roles {roles.Aggregate((i, j) => i + ", " + j)} from {user.Id}"));
-            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id) });
+            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id), isLocked = user.LockoutEnd.HasValue ? DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0 : false });
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]

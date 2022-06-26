@@ -76,7 +76,7 @@ namespace SieGraSieMa.Services
             return await _SieGraSieMaContext.Newsletters.Include(n => n.User)
                 .ThenInclude(u => u.Teams)
                 .ThenInclude(u => u.TeamInTournaments)
-                .Where(u => u.User.Teams.Any(t => t.TeamInTournaments.Any(t => t.TournamentId == id))).Select(n => new UserDTO { Id = n.User.Id, Email = n.User.Email, Name = n.User.Name, Surname = n.User.Surname }).ToListAsync();
+                .Where(u => u.User.Teams.Any(t => t.TeamInTournaments.Any(t => t.TournamentId == id))).Select(n => new UserDTO { Id = n.User.Id, Email = n.User.Email, Name = n.User.Name, Surname = n.User.Surname, isLocked = n.User.LockoutEnd.HasValue ? DateTimeOffset.Compare(n.User.LockoutEnd.Value, DateTime.Now) > 0 : false }).ToListAsync();
         }
 
         public User GetUser(int Id)
@@ -90,8 +90,19 @@ namespace SieGraSieMa.Services
         }
         public IEnumerable<UserDTO> GetUsers(string filter)
         {
-            if(filter == null) return _SieGraSieMaContext.Users.Select(user=> new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Surname = user.Surname }).ToList();
-            return _SieGraSieMaContext.Users.Where(u=>u.NormalizedEmail.StartsWith(filter.ToUpper())).Select(user => new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Surname = user.Surname }).ToList();
+            if (filter == null) return _SieGraSieMaContext.Users.Include(u => u.Newsletters)
+                    .Select(user => new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Surname = user.Surname }).ToList();
+            var users = _SieGraSieMaContext.Users.Where(u => u.NormalizedEmail.StartsWith(filter.ToUpper()))
+                .Select(user => new UserDTO
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    isLocked = user.LockoutEnd.HasValue ? DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0 : false,
+                    Newsletter = user.Newsletters.Any()
+                }).ToList();
+            return users;
         }
         public IEnumerable<User> GetJustUsers(string filter)
         {
@@ -126,7 +137,7 @@ namespace SieGraSieMa.Services
             user.Surname = userDetails.Surname;
             _SieGraSieMaContext.Users.Update(user);
             _SieGraSieMaContext.SaveChanges();
-            return new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Surname = user.Surname };
+            return new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Surname = user.Surname, isLocked = user.LockoutEnd.HasValue ? DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0 : false };
         }
         public UserDTO UpdateUser(int id, UserDetailsDTO userDetails)
         {
@@ -136,7 +147,7 @@ namespace SieGraSieMa.Services
             user.Surname = userDetails.Surname;
             _SieGraSieMaContext.Users.Update(user);
             _SieGraSieMaContext.SaveChanges();
-            return new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Surname = user.Surname };
+            return new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Surname = user.Surname, isLocked = user.LockoutEnd.HasValue ? DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0 : false };
         }
 
         public async Task<bool> CheckIfUserIsSubscribed(int id)

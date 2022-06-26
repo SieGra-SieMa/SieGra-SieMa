@@ -23,7 +23,7 @@ namespace SieGraSieMa.Services
         Task<IEnumerable<GetTeamsDTO>> GetTeamsWhichUserIsCaptain(string email);
         IEnumerable<Team> GetTeams();
         Task<bool> IsUserAbleToJoinTeam(User user, string code);
-        Task<GetTeamsDTO> ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO);
+        Task<GetTeamsDTO> ChangeTeamDetails(bool checkCaptain, int userId, int teamId, TeamDetailsDTO teamDetailsDTO);
         Task<GetTeamsDTO> DeleteUserFromTeam(int userId, int captainId, int teamId);
         Task<GetTeamsDTO> SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId);
         Task DeleteTeam(int teamId, int captainId);
@@ -308,14 +308,14 @@ namespace SieGraSieMa.Services
             return _SieGraSieMaContext.Teams.Include(t => t.Players).Where(t => t.Id == id).SingleOrDefault();
         }
 
-        public async Task<GetTeamsDTO> ChangeTeamDetails(int userId, int teamId, TeamDetailsDTO teamDetailsDTO)
+        public async Task<GetTeamsDTO> ChangeTeamDetails(bool checkCaptain, int userId, int teamId, TeamDetailsDTO teamDetailsDTO)
         {
             var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).ThenInclude(e => e.User).Where(t => t.Id == teamId).SingleOrDefaultAsync();
 
             if (team == null)
                 throw new Exception($"Team with {teamId} id does not exists");
 
-            if (team.CaptainId != userId)
+            if (team.CaptainId != userId || !checkCaptain)
                 throw new Exception($"Current user is not a captain of this team");
 
             team.Name = teamDetailsDTO.Name;

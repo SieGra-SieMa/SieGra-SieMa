@@ -262,7 +262,7 @@ namespace SieGraSieMa.Controllers
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
-                var team = await _teamService.ChangeTeamDetails(true, user.Id, id, teamDetailsDTO);
+                var team = await _teamService.ChangeTeamDetails(false, user.Id, id, teamDetailsDTO);
                 await _logService.AddLog(new Log(user, $"Successfully changes details of team with number {id}"));
                 return Ok(team);
             }

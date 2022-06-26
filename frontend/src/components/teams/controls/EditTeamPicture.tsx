@@ -8,11 +8,13 @@ import styles from './EditTeamPicture.module.css';
 type EditTeamPictureProps = {
     team: Team;
     confirm: (url: string) => void;
+    checkCapt: boolean;
 }
 
 export default function EditTeamPicture({
     team,
     confirm,
+    checkCapt
 }: EditTeamPictureProps) {
 
     const { teamsService } = useApi();
@@ -24,10 +26,19 @@ export default function EditTeamPicture({
         if (!file) return;
         const data = new FormData();
         data.append('file', file);
-        teamsService.addProfilePhoto(team.id, data)
+        if(checkCapt){
+            teamsService.addProfilePhoto(team.id, data)
             .then((data) => {
                 confirm(data[0].url);
             });
+        }
+        else{
+            teamsService.addProfilePhotoAdmin(team.id, data)
+            .then((data) => {
+                confirm(data[0].url);
+            });
+        }
+        
     }
 
     return (

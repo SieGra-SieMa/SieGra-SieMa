@@ -186,7 +186,7 @@ namespace SieGraSieMa.Controllers
             var admin = await _userManager.FindByEmailAsync(email);
             await _logService.AddLog(new Log(admin, $"Lock user {user.Id} due to deleting account"));
             //await _userManager.DeleteAsync(user);
-            return Ok();
+            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id), isLocked = user.LockoutEnd.HasValue ? DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0 : false });
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
@@ -200,7 +200,7 @@ namespace SieGraSieMa.Controllers
             var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
             var admin = await _userManager.FindByEmailAsync(email);
             await _logService.AddLog(new Log(admin, $"Unlock user {user.Id}"));
-            return Ok();
+            return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id), isLocked = user.LockoutEnd.HasValue ? DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0 : false });
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]

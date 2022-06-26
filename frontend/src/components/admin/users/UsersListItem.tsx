@@ -20,6 +20,7 @@ export default function UserListItem({ user, onUserPropChange }: UsersListItemPr
     const [isAdd, setIsAdd] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [isBan, setIsBan] = useState(false);
+    const [isUnban, setIsUnban] = useState(false);
     const [roleToDelete, setRoleToDelete] = useState<string | null>(null);
 
     const removeRole = (role: string) => {
@@ -35,6 +36,14 @@ export default function UserListItem({ user, onUserPropChange }: UsersListItemPr
             .then((data) => {
                 onUserPropChange(data);
                 setIsBan(false);
+            });
+    };
+
+    const unbanUser = () => {
+        usersService.adminUnbanUser(user.id)
+            .then((data) => {
+                onUserPropChange(data);
+                setIsUnban(false);
             });
     };
 
@@ -65,11 +74,22 @@ export default function UserListItem({ user, onUserPropChange }: UsersListItemPr
                     onClick={() => setIsAdd(true)}
                     style={ButtonStyle.DarkBlue}
                 />
-                <Button
-                    value='Zablokuj'
-                    onClick={() => setIsBan(true)}
-                    style={ButtonStyle.Red}
-                />
+                {user && (
+                    user.isLocked ? (
+                        <Button
+                        value='Odblokuj'
+                        onClick={() => setIsUnban(true)}
+                        style={ButtonStyle.Yellow}
+                        />
+                    ) : (
+                        <Button
+                        value='Zablokuj'
+                        onClick={() => setIsBan(true)}
+                        style={ButtonStyle.Red}
+                        />
+                    )
+                )}
+                
             </div>
             {(roleToDelete) && (
                 <Modal
@@ -126,6 +146,20 @@ export default function UserListItem({ user, onUserPropChange }: UsersListItemPr
                         confirm={() => banUser()}
                         label='Zablokuj'
                         style={ButtonStyle.Red}
+                    />
+                </Modal>
+            )}
+            {(isUnban) && (
+                <Modal
+                    isClose
+                    title='Czy na pewno chcesz odblokować użytkownika?'
+                    close={() => setIsUnban(false)}
+                >
+                    <Confirm
+                        cancel={() => setIsUnban(false)}
+                        confirm={() => unbanUser()}
+                        label='Odblokuj'
+                        style={ButtonStyle.Yellow}
                     />
                 </Modal>
             )}

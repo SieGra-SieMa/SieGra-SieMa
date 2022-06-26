@@ -36,7 +36,7 @@ export default function AdminTeamsList() {
         if (!teams) return;
         const index = teams.findIndex((e) => e.id === team.id);
         if (index >= 0) {
-            setTeams(teams.filter((e) => e === team));
+            setTeams(teams.filter((e) => e !== team));
         }
     }
 

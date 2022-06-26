@@ -1,3 +1,8 @@
+.root {
+    width: fit-content;
+    margin: auto;
+}
+
 .content {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -5,6 +10,7 @@
     align-items: flex-start;
     max-height: 50vh;
     overflow-y: scroll;
+    width: fit-content;
 }
 
 .loader {

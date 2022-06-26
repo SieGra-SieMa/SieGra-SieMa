@@ -9,9 +9,10 @@ import styles from './EditTeam.module.css';
 type EditTeamProps = {
     team: Team;
     confirm: (team: Team) => void;
+    checkCapt: boolean;
 }
 
-export default function EditTeam({ team, confirm }: EditTeamProps) {
+export default function EditTeam({ team, confirm, checkCapt }: EditTeamProps) {
 
     const { teamsService } = useApi();
 
@@ -19,10 +20,18 @@ export default function EditTeam({ team, confirm }: EditTeamProps) {
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        teamsService.updateTeam(team.id, name)
+        if(checkCapt){
+            teamsService.updateTeam(team.id, name)
             .then((data) => {
                 confirm(data);
             });
+        }
+        else{
+            teamsService.updateTeamAdmin(team.id, name)
+            .then((data) => {
+                confirm(data);
+            });
+        }   
     };
 
     return (

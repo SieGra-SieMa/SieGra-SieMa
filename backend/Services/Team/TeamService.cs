@@ -310,12 +310,12 @@ namespace SieGraSieMa.Services
 
         public async Task<GetTeamsDTO> ChangeTeamDetails(bool checkCaptain, int userId, int teamId, TeamDetailsDTO teamDetailsDTO)
         {
-            var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).ThenInclude(e => e.User).Where(t => t.Id == teamId).SingleOrDefaultAsync();
+            var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).ThenInclude(e => e.User).Include(e => e.Medium).Where(t => t.Id == teamId).SingleOrDefaultAsync();
 
             if (team == null)
                 throw new Exception($"Team with {teamId} id does not exists");
 
-            if (team.CaptainId != userId || !checkCaptain)
+            if (team.CaptainId != userId && checkCaptain)
                 throw new Exception($"Current user is not a captain of this team");
 
             team.Name = teamDetailsDTO.Name;

@@ -3,8 +3,15 @@
     justify-content: space-evenly;
 }
 
+.container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 50px;
+    box-sizing: border-box;
+}
+
 .select {
     width: fit-content;
+    max-width: 80%;
     font-size: 16px;
-
 }

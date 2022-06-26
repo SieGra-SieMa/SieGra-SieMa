@@ -3,6 +3,8 @@
     grid-template-columns: 1fr 1fr 1fr;
     gap: 15px;
     align-items: flex-start;
+    max-height: 50vh;
+    overflow-y: scroll;
 }
 
 .loader {

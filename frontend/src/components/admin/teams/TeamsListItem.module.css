@@ -6,6 +6,7 @@
     background-color: var(--secondary-color);
     padding: 30px;
     gap: 15px;
+    height: max-content;
 }
 
 .title {

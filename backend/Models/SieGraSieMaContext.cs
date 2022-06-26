@@ -600,11 +600,11 @@ namespace SieGraSieMa.Models
     {
         public static void Seed(this ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<IdentityRole<int>>().HasData(
+            /*modelBuilder.Entity<IdentityRole<int>>().HasData(
                 new IdentityRole<int>() { Id = 1, Name = "Admin", NormalizedName = "Admin" },
                 new IdentityRole<int>() { Id = 2, Name = "Employee", NormalizedName = "Employee" },
                 new IdentityRole<int>() { Id = 3, Name = "User", NormalizedName = "User" }
-                );
+                );*/
         }
     }
 }

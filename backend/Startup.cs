@@ -204,6 +204,7 @@ namespace SieGraSieMa
             }));
 
             app.UseRouting();
+            SampleData.Initialize(app.ApplicationServices, Configuration);
 
             app.UseAuthentication();
             app.UseAuthorization();

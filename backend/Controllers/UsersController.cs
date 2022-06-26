@@ -150,7 +150,7 @@ namespace SieGraSieMa.Controllers
         [HttpGet()]
         public async Task<ActionResult> GetUsers(string filter)
         {
-            var users = _userService.GetUsers(filter);
+            var users = _userService.GetJustUsers(filter);
             List<UserDTO> usersDTO = new();
             foreach (var user in users)
             {
@@ -270,7 +270,7 @@ namespace SieGraSieMa.Controllers
                 var users = await _userService.GetNewsletterSubscribers(newsletter.TournamentId);
                 foreach(var user in users)
                 {
-                    await _emailService.SendAsync(user.NormalizedEmail, newsletter.Title, newsletter.Body);
+                    await _emailService.SendAsync(user.Email, newsletter.Title, newsletter.Body);
                 }
                 return Ok(new MessageDTO { Message = "Newsletter sent!" });
             }

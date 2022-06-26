@@ -135,7 +135,7 @@ namespace SieGraSieMa.Controllers
             {
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = _userService.GetUser(email);
-                var team = await _teamService.ChangeTeamDetails(user.Id, id, teamDetailsDTO);
+                var team = await _teamService.ChangeTeamDetails(true, user.Id, id, teamDetailsDTO);
                 await _logService.AddLog(new Log(user, $"Successfully changes details of team with number {id}"));
                 return Ok(team);
             }
@@ -254,6 +254,49 @@ namespace SieGraSieMa.Controllers
 
 
         //-------------------------------------------------admin functions
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
+        [HttpPatch("{id}/admin/change-details")]
+        public async Task<IActionResult> ChangeTeamDetailsAdmin(int id, TeamDetailsDTO teamDetailsDTO)
+        {
+            try
+            {
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = _userService.GetUser(email);
+                var team = await _teamService.ChangeTeamDetails(true, user.Id, id, teamDetailsDTO);
+                await _logService.AddLog(new Log(user, $"Successfully changes details of team with number {id}"));
+                return Ok(team);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+        }
+
+        [Authorize(Policy = "OnlyAdminAuthenticated")]
+        [HttpPost("{id}/admin/add-profile-photo")]
+        public async Task<IActionResult> AddPhotoAdmin(int id, IFormFile[] file)
+        {
+            try
+            {
+                var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
+                var user = _userService.GetUser(email);
+                var team = _teamService.GetTeam(id);
+                if (team == null)
+                    return NotFound(new ResponseErrorDTO { Error = $"Team with this id: {id} does not exists!" });
+
+                if (file.Length != 1)
+                    return BadRequest("There should be only one photo sent!");
+
+                var list = await _mediaService.CreateMedia(null, team.Id, file, IMediaService.MediaTypeEnum.teams);
+                await _logService.AddLog(new Log(user, $"Profile photo for team with id {team.Id} was set"));
+                return Ok(list);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
+
+        }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpDelete("admin/{id}")]

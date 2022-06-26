@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs.GenerateDTO;
 using SieGraSieMa.Services;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace SieGraSieMa.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = "OnlyAdminAuthenticated")]
     [Route("api/[controller]")]
     [ApiController]
     public class GenerateController : ControllerBase

@@ -24,13 +24,8 @@ namespace SieGraSieMa.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly IAccountIdentityServices _accountService;
-
         private readonly JwtHandler _jwtHandler;
-
         private readonly UserManager<User> _userManager;
-
-        //private readonly IMapper _mapper;
-
         private readonly IEmailService _emailService;
         private readonly ILogService _logService;
 
@@ -39,7 +34,6 @@ namespace SieGraSieMa.Controllers
             _accountService = accountServices;
             _userManager = userManager;
             _jwtHandler = jwtHandler;
-            //_mapper = mapper;
             _emailService = emailService;
             _logService = logService;
         }
@@ -50,11 +44,8 @@ namespace SieGraSieMa.Controllers
             {
                 return Unauthorized(new ResponseErrorDTO { Error = "Wrong provider" });
             }
-
-            //var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
-
-            //https://ethereal.email/
-            //await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
+            var token = await _userManager.GenerateTwoFactorTokenAsync(user, "Email");
+            await _emailService.SendAsync(user.Email, "Logowanie dwuetapowe", token);
 
             return Ok(new AuthenticateResponseDTO { Is2StepVerificationRequired = true, Provider = "Email" });
         }
@@ -74,22 +65,22 @@ namespace SieGraSieMa.Controllers
         {
             var user = await _userManager.FindByEmailAsync(login.Email);
             if (user == null)
-                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
+                return BadRequest(new ResponseErrorDTO { Error = "Błędy adres email lub hasło" });
 
             if (await _userManager.IsLockedOutAsync(user))
-                return BadRequest(new ResponseErrorDTO { Error = "Account is locked out" });
-            
+                return BadRequest(new ResponseErrorDTO { Error = "Konto jest zablokowane" });
+
             if (!await _userManager.IsEmailConfirmedAsync(user))
-                return BadRequest(new ResponseErrorDTO { Error = "Email is not confirmed" });
+                return BadRequest(new ResponseErrorDTO { Error = "Email nie został potwierdzony" });
 
             if (!await _userManager.CheckPasswordAsync(user, login.Password))
             {
                 await _userManager.AccessFailedAsync(user);
                 await _logService.AddLog(new Log(user, $"Account is locked out due to too much bad requests"));
                 if (await _userManager.IsLockedOutAsync(user))
-                    return BadRequest(new ResponseErrorDTO { Error = "Account is locked out due to too much bad requests" });
+                    return BadRequest(new ResponseErrorDTO { Error = "Konto zostało zablokowane, ze wzgledu na zbyt dużą ilość błędnych prób logowania. Proszę spróbować za 10 minut" });
 
-                return BadRequest(new ResponseErrorDTO { Error = "Incorrect email or password" });
+                return BadRequest(new ResponseErrorDTO { Error = "Błędy adres email lub hasło" });
             }
 
             if (await _userManager.GetTwoFactorEnabledAsync(user))
@@ -132,8 +123,6 @@ namespace SieGraSieMa.Controllers
             if (registerRequest == null || !ModelState.IsValid)
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
 
-            //var user = _mapper.Map<User>(registerRequest);
-
             var user = new User
             {
                 Name = registerRequest.Name,
@@ -173,7 +162,7 @@ namespace SieGraSieMa.Controllers
 
             await _logService.AddLog(new Log(user, $"Register successfully"));
 
-            return Ok(new MessageDTO { Message = "A verification link has been sent to your email!" });
+            return Ok(new MessageDTO { Message = "Link weryfikujący adres został wysłany na Twój adres email!" });
 
         }
         //refresh token

@@ -35,6 +35,13 @@
     align-items: center;
     justify-content: center;
     background-position: center;
+    transform: scale(1);
+    transition: all .3s ease-in-out;
+}
+
+.pictureBlock:hover {
+    cursor: pointer;
+    transform: scale(1.05);
 }
 
 .picture {

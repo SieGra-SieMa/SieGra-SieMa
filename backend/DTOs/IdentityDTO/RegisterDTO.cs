@@ -12,10 +12,10 @@ namespace SieGraSieMa.DTOs.IdentityDTO
 
         public string Surname { get; set; }
 
-        [Required(ErrorMessage = "Email is required.")]
+        [Required(ErrorMessage = "Email jest wymagany")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
+        [Required(ErrorMessage = "Hasło jest wymagane")]
         public string Password { get; set; }
 
         public string ClientURI { get; set; }

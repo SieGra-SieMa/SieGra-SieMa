@@ -46,7 +46,7 @@ export default function AdminTeamsList() {
 					value={search}
 					onChange={(e) => setSearch(e.target.value)}
 				/>
-				<VerticalSpacing size={15} />
+				<VerticalSpacing size={25} />
 				<div className={styles.content}>
 					{teams ? (
 						teams

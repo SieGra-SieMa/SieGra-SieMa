@@ -18,7 +18,6 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
 using SieGraSieMa.DTOs;
 using SieGraSieMa.DTOs.ResponseWrapper;
-using SieGraSieMa.Mappers;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
 
@@ -78,14 +77,6 @@ namespace SieGraSieMa
 
             services.AddDbContext<SieGraSieMaContext>(options => options.UseMySQL(Configuration.GetConnectionString("SieGraSieMaDatabase")));
 
-            //Configure Mapper
-            var mapperConfig = new MapperConfiguration(mc =>
-            {
-                mc.AddProfile(new MappingProfile());
-            });
-
-            IMapper mapper = mapperConfig.CreateMapper();
-            services.AddSingleton(mapper);
             services.AddSingleton<IActionResultExecutor<ObjectResult>, ResponseResultExecutor>();
 
             services.AddScoped<IAccountIdentityServices, AccountService>();
@@ -169,7 +160,7 @@ namespace SieGraSieMa
                                 Id="Bearer"
                             }
                         },
-                        new string[]{}
+                        Array.Empty<string>()
                     }
                 });
             });
@@ -204,6 +195,7 @@ namespace SieGraSieMa
             }));
 
             app.UseRouting();
+            SampleData.Initialize(app.ApplicationServices, Configuration);
 
             app.UseAuthentication();
             app.UseAuthorization();

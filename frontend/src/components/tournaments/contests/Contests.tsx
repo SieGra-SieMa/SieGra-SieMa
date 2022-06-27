@@ -105,8 +105,8 @@ export default function Contests({ contests, tournamentId }: ContestsProps) {
 			<GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
 				{isAddContest && (
 					<Modal
-						title="Dodaj konkursu"
 						isClose
+						title='Dodaj konkurs'
 						close={() => setIsAddContest(false)}
 					>
 						<CreateContest

@@ -9,10 +9,12 @@ services:
     environment:
       MYSQL_USER: user
       MYSQL_PASSWORD: user
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: shor+Amber60
       MYSQL_DATABASE: default_schema
     volumes:
-      - "mysqldata:/var/lib/mysql"
+      - mysqldata:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./siegrasiema.sql:/docker-entrypoint-initdb.d/siegrasiema.sql
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

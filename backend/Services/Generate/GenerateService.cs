@@ -126,12 +126,16 @@ namespace SieGraSieMa.Services
             _context.RemoveRange(_context.Newsletters.ToList());
             _context.RemoveRange(_context.Logs.ToList());
             _context.RemoveRange(_context.RefreshTokens.ToList());
-            _context.RemoveRange(_context.Users.ToList());
+            //_context.RemoveRange(_context.Users.ToList());
             _context.SaveChanges();
-
+            var users = _context.Users.Where(u => u.UserName != "admin@gmail.com").ToList();
+            foreach(var u in users)
+            {
+                await _userManager.DeleteAsync(u);
+            }
             var password = "Haslo+123";
 
-            var admin = new User
+            /*var admin = new User
             {
                 Name = "Jasio",
                 Surname = "Admin",
@@ -147,7 +151,7 @@ namespace SieGraSieMa.Services
             var result = await _userManager.CreateAsync(admin, password);
             await _userManager.AddToRoleAsync(admin, "Admin");
             await _userManager.AddToRoleAsync(admin, "Emp");
-            await _userManager.AddToRoleAsync(admin, "User");
+            await _userManager.AddToRoleAsync(admin, "User");*/
 
             var pracownik = new User
             {
@@ -162,7 +166,7 @@ namespace SieGraSieMa.Services
                 TwoFactorEnabled = false
             };
             await _userManager.CreateAsync(pracownik, password);
-            await _userManager.AddToRoleAsync(pracownik, "Emp");
+            await _userManager.AddToRoleAsync(pracownik, "Employee");
             await _userManager.AddToRoleAsync(pracownik, "User");
 
             var kapitan = new User
@@ -208,7 +212,7 @@ namespace SieGraSieMa.Services
 
             teams.ForEach(t => t.Players.Add(new Player() { Team = t, User = kapitan }));
 
-            var listaGraczy = new List<User>();
+            var playersList = new List<User>();
             for (int i = 0; i < 20; i++)
             {
                 var gracz = new User
@@ -225,46 +229,79 @@ namespace SieGraSieMa.Services
                 };
                 await _userManager.CreateAsync(gracz, password);
                 await _userManager.AddToRoleAsync(gracz, "User");
-                teams.ForEach(t => {
-                    if(t.Id%5==i%5)t.Players.Add(new Player() { Team = t, User = gracz });
-                    });
-                listaGraczy.Add(gracz);
+                teams.ForEach(t =>
+                {
+                    if (t.Id % 5 == i % 5) t.Players.Add(new Player() { Team = t, User = gracz });
+                });
+                playersList.Add(gracz);
             }
             await _context.SaveChangesAsync();
-            _context.Newsletters.Add(new Newsletter() { User = kapitan });
 
-            _context.Tournaments.AddRange(new Tournament()
+            var tournamentsList = new List<Tournament>{
+                new Tournament()
             {
-                Name = "Turniej testowy numer 1",
-                Address = "Zbożowa -1",
-                Description = "Taki tam turniej",
-                StartDate = DateTime.Parse("10.06.2022 10:00"),
-                EndDate = DateTime.Parse("10.06.2022 20:00")
+                Name = "SieGra SieMa 3x3 tournament - Gramy dla Fundacji Tymmmczasy",
+                Address = "Białołęcki Ośrodek Sportu, Strumykowa 21, 03-138 Warszawa",
+                Description = "<p>Siema<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/2757.png\" alt=\"❗️\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t33/1/16/2705.png\" alt=\"✅\" height=\"16\" width=\"16\">Po raz kolejny zmierzymy się w koszykówce 3x3 na VIII edycji turnieju SieGra SieMa<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tdf/1/16/1f51c.png\" alt=\"🔜\" height=\"16\" width=\"16\"><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tb8/1/16/1f3c0.png\" alt=\"🏀\" height=\"16\" width=\"16\">&nbsp;Tym razem zagramy dla naszych kochanych czworonogów i wspomożemy&nbsp;<a href=\"https://www.facebook.com/tyMMMczasy\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Fundacja Tymmmczasy</a>&nbsp;<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t6c/1/16/2764.png\" alt=\"❤️\" height=\"16\" width=\"16\"><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t2f/1/16/1f436.png\" alt=\"🐶\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t33/1/16/2705.png\" alt=\"✅\" height=\"16\" width=\"16\">Liczna drużyn jak może wziąć udział to 49 zespołów, wiec polecamy zapisywać się jak najszybciej zwłaszcza ze zostało już tylko mniej niż połowa miejsc<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/2757.png\" alt=\"❗️\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/2757.png\" alt=\"❗️\" height=\"16\" width=\"16\"><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tb8/1/16/1f3c0.png\" alt=\"🏀\" height=\"16\" width=\"16\"><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/2757.png\" alt=\"❗️\" height=\"16\" width=\"16\">Link do zapisów:&nbsp;<a href=\"https://siegrasiema.eu/zapisy-na-turniej/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--blue-link);\">https://siegrasiema.eu/zapisy-na-turniej/</a></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t33/1/16/2705.png\" alt=\"✅\" height=\"16\" width=\"16\">Co się będzie działo na evencie?</p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t9e/1/16/27a1.png\" alt=\"➡️\" height=\"16\" width=\"16\">&nbsp;wielki turniej 3x3<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tb8/1/16/1f3c0.png\" alt=\"🏀\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t9e/1/16/27a1.png\" alt=\"➡️\" height=\"16\" width=\"16\">&nbsp;konkursy indywidualne<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t3d/1/16/1f3c5.png\" alt=\"🏅\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t9e/1/16/27a1.png\" alt=\"➡️\" height=\"16\" width=\"16\">&nbsp;oprawa muzyczna&nbsp;<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t7e/1/16/1f3a4.png\" alt=\"🎤\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t9e/1/16/27a1.png\" alt=\"➡️\" height=\"16\" width=\"16\">&nbsp;relacja Foto<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tde/1/16/1f4f8.png\" alt=\"📸\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t9e/1/16/27a1.png\" alt=\"➡️\" height=\"16\" width=\"16\">&nbsp;woda/izotoniki/batony/owoce na miejscu<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tbd/1/16/1f34f.png\" alt=\"🍏\" height=\"16\" width=\"16\"><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tf7/1/16/1f36b.png\" alt=\"🍫\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t9e/1/16/27a1.png\" alt=\"➡️\" height=\"16\" width=\"16\">Zbiórka kocy/zabawek/karmy dla Psów i kotów<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t2f/1/16/1f436.png\" alt=\"🐶\" height=\"16\" width=\"16\"><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/taa/1/16/1f431.png\" alt=\"🐱\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t9e/1/16/27a1.png\" alt=\"➡️\" height=\"16\" width=\"16\">&nbsp;i wiele wiele więcej (o wszystkim będziemy informować na bieżąco)<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/1f525.png\" alt=\"🔥\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t33/1/16/2705.png\" alt=\"✅\" height=\"16\" width=\"16\">&nbsp;O co zagracie?</p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t94/1/16/1f947.png\" alt=\"🥇\" height=\"16\" width=\"16\">&nbsp;800PLN do&nbsp;<a href=\"https://www.facebook.com/skstore.warsaw/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Kicks Store</a>&nbsp;oraz voucher na wykonanie własnych strojów od&nbsp;<a href=\"https://www.facebook.com/uffo.sport\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">UFFO.PL</a></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t15/1/16/1f948.png\" alt=\"🥈\" height=\"16\" width=\"16\">600PLN od @Kickstore oraz rabat 35% do wykorzystania w&nbsp;<a href=\"https://www.facebook.com/sklepkoszykarza/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Sklep Koszykarza</a></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t96/1/16/1f949.png\" alt=\"🥉\" height=\"16\" width=\"16\">400PLN od&nbsp;<a href=\"https://www.facebook.com/skstore.warsaw/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Kicks Store</a>&nbsp;oraz pakiet koszulek również od&nbsp;<a href=\"https://www.facebook.com/skstore.warsaw/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Kicks Store</a></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tb5/1/16/23f1.png\" alt=\"⏱\" height=\"16\" width=\"16\">Zegarek od&nbsp;<a href=\"https://www.facebook.com/Timex/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Timex</a>&nbsp;dla MVP</p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t40/1/16/1f4a5.png\" alt=\"💥\" height=\"16\" width=\"16\">Dla zwyciezców konkursów indywidualnych niespodzianki</p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t9e/1/16/27a1.png\" alt=\"➡️\" height=\"16\" width=\"16\">Oczywiście będą rownież puchary oraz medale dla wszystkich najlepszych zawodników</p><p>Jak widzicie warto GRAĆ warto POMAGAĆ<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t6c/1/16/2764.png\" alt=\"❤️\" height=\"16\" width=\"16\"></p><p>Do zobaczenia<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/2757.png\" alt=\"❗️\" height=\"16\" width=\"16\"></p><p><br></p>",
+                StartDate = DateTime.Parse("9.02.2020 10:00"),
+                EndDate = DateTime.Parse("9.02.2020 20:00")
             },
-            new Tournament()
+                new Tournament()
             {
-                Name = "Turniej testowy numer 2",
-                Address = "Zbożowa -1",
-                Description = "Taki tam turniej",
-                StartDate = DateTime.Parse("10.06.2022 10:00"),
-                EndDate = DateTime.Parse("10.06.2022 20:00")
+                Name = "SieGra SieMa edycja Świąteczna Turniej 3x3",
+                Address = "Białołęcki Ośrodek Sportu, Strumykowa 21, 03-138 Warszawa",
+                Description = "<p>Siema<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/2757.png\" alt=\"❗️\" height=\"16\" width=\"16\"></p><p>Już 8 Grudnia zapraszamy Was na ŚWIĄTECZNĄ edycję SieGra SieMa<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tdf/1/16/1f51c.png\" alt=\"🔜\" height=\"16\" width=\"16\"><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tb8/1/16/1f3c0.png\" alt=\"🏀\" height=\"16\" width=\"16\"></p><p>Znowu zmierzymy się w koszykarskim turnieju 3x3, ale będzie również bardzo dużoj zabawy, konkursów, muzyki, oraz dobrej atmosfery<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t7a/1/16/1f44f_1f3fc.png\" alt=\"👏🏼\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/2757.png\" alt=\"❗️\" height=\"16\" width=\"16\">Link do zapisów macie tutaj<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t9e/1/16/27a1.png\" alt=\"➡️\" height=\"16\" width=\"16\">&nbsp;<a href=\"https://siegrasiema.eu/zapisy-na-turniej\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--blue-link);\">https://siegrasiema.eu/zapisy-na-turniej/</a>&nbsp;(warto rejestrować się szybko, ponieważ dla pierwszych zespołów mamy promocyjną cenę wpisowego. Warto spieszyć się również dlatego, że ilość miejsc jest ograniczona).<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/2757.png\" alt=\"❗️\" height=\"16\" width=\"16\"></p><p>Podczas eventu przeprowadzona zostanie równiez zbiórka odzieży oraz żywności dla Domu Samotnej Matki&nbsp;<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t6c/1/16/2764.png\" alt=\"❤\" height=\"16\" width=\"16\">. Gorąca prośba o wsparcie od Was. Zapraszamy do wzięcia udziału zawodników, ale i kibiców oraz wszystkich którzy są w okolicy. Dla każdego będziemy mieli mały upominek, ale dla zespołu który przyniesie najwięcej dodatkowe 10 PKT do naszego RANKINGU.</p><p>POMAGAJMY POMAGAĆ</p><p>Warto również dodać, że tą edycją rozpoczynamy już drugi sezon naszej działalności. Oznacza to, że mamy dla Was przygotowane naprawdę niesamowite rzeczy, o których będziemy informować na bieżąco<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t38/1/16/1f918.png\" alt=\"🤘\" height=\"16\" width=\"16\"><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/1f525.png\" alt=\"🔥\" height=\"16\" width=\"16\"></p><p>CO BĘDZIE SIĘ DZIAŁO:</p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t33/1/16/2705.png\" alt=\"✅\" height=\"16\" width=\"16\">&nbsp;Wielki Turniej 3x3<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tb8/1/16/1f3c0.png\" alt=\"🏀\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t33/1/16/2705.png\" alt=\"✅\" height=\"16\" width=\"16\">&nbsp;Konkursy indywidualne, oraz konkurs drużynowy<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t40/1/16/1f4a5.png\" alt=\"💥\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t33/1/16/2705.png\" alt=\"✅\" height=\"16\" width=\"16\">&nbsp;Fajne świąteczne prezenty do kupienia<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/1f525.png\" alt=\"🔥\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t33/1/16/2705.png\" alt=\"✅\" height=\"16\" width=\"16\">&nbsp;Super nagrody, które będziemy \"odsłaniać\" w nadchodzących tygodniach<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t6c/1/16/2764.png\" alt=\"❤️\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t33/1/16/2705.png\" alt=\"✅\" height=\"16\" width=\"16\">&nbsp;Relelacja FOTO oraz VIDEO z dnia turniejowego<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t7b/1/16/1f44c.png\" alt=\"👌\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t33/1/16/2705.png\" alt=\"✅\" height=\"16\" width=\"16\">Opaski SieGra SieMa dla każdego kto będzie u nas po raz pierwszy<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t7f/1/16/1f60a.png\" alt=\"😊\" height=\"16\" width=\"16\"></p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t33/1/16/2705.png\" alt=\"✅\" height=\"16\" width=\"16\">&nbsp;I wiele, wiele więcej</p><p>Nie pozostaje nam nic innego niż raz jeszcze gorąco zaprosić do GRY<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/2757.png\" alt=\"❗️\" height=\"16\" width=\"16\"></p><p>Do zobaczenia<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tb8/1/16/1f3c0.png\" alt=\"🏀\" height=\"16\" width=\"16\"></p><p><br></p>",
+                StartDate = DateTime.Parse("8.12.2019 09:00"),
+                EndDate = DateTime.Parse("8.12.2019 17:00")
             },
-            new Tournament()
+                new Tournament()
             {
-                Name = "Turniej testowy numer 3",
-                Address = "Zbożowa -1",
-                Description = "Taki tam turniej",
-                StartDate = DateTime.Parse("10.06.2022 10:00"),
-                EndDate = DateTime.Parse("10.06.2022 20:00")
-            },
-            new Tournament()
+                Name = "Wielki FINAŁ sezonu SieGra SieMa",
+                Address = "Ursynowskie Centrum Sportu i Rekreacji",
+                Description = "<p>Siema&nbsp;<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t40/1/16/1f4a5.png\" alt=\"💥\" height=\"16\" width=\"16\"></p><p>Już 28 września odbędzie się Największe koszykarskie wydarzenie roku jakim jest finał tego sezonu SieGra SieMa. 28 września na Arenie Ursynów zmierzy się ponad 80 zespołów, a pula nagród wyniesie blisko 15 000 zł!</p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/2757.png\" alt=\"❗️\" height=\"16\" width=\"16\"></p><p>I miejsce→4500zł*</p><p>II miejsce→3000zł*</p><p>III miejsce→1500zł*</p><p><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/2757.png\" alt=\"❗️\" height=\"16\" width=\"16\"></p><p>*- do zrealizowania w&nbsp;<a href=\"https://www.facebook.com/sklepkoszykarza/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Sklep Koszykarza</a></p><p>Link do zapisów:&nbsp;<a href=\"https://siegrasiema.eu/zapisy-na-turniej/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--blue-link);\">https://siegrasiema.eu/zapisy-na-turniej/</a></p><p>A co się będzie działo na imprezie?</p><p>→ Na początek rejestracja zespołów i odbiór starterpacków ufundowanych przez&nbsp;<a href=\"https://www.facebook.com/skstore.warsaw/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Kicks Store</a><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/te7/1/16/1f4aa_1f3fb.png\" alt=\"💪🏻\" height=\"16\" width=\"16\"></p><p>→ Knockout challenge, który rozgrzeje nam imprezę od samego początku<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/1f525.png\" alt=\"🔥\" height=\"16\" width=\"16\"></p><p>→ Rozgrywki grupowe</p><p>→ Pokaz wsadów i freestyl'u (będzie niespodzianka)<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t77/1/16/203c.png\" alt=\"‼️\" height=\"16\" width=\"16\"></p><p>→ NIESAMOWITY KONKURS WSADÓW, na którym do wygrania będzie 1500 zł<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t40/1/16/1f4a5.png\" alt=\"💥\" height=\"16\" width=\"16\">( 1000 PLN do&nbsp;<a href=\"https://www.facebook.com/sklepkoszykarza/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Sklep Koszykarza</a>&nbsp;500 PLN od&nbsp;<a href=\"https://www.facebook.com/siegrasiema.inicjatywa/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">SieGra SieMa</a>)</p><p>→ 3pt battle, nowość jakiej nie było nigdzie indziej, będziecie zachwyceni</p><p>→ Faza pucharowa&nbsp;<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tbe/1/16/1f3c6.png\" alt=\"🏆\" height=\"16\" width=\"16\"></p><p>→ Wielki finał&nbsp;<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tb8/1/16/1f3c0.png\" alt=\"🏀\" height=\"16\" width=\"16\"></p><p>Oczywiście podczas imprezy będziemy znów zbierać pieniądze, aby kolejny raz pomóc uratować życie i zdrowie chorego dziecka. Tym małym wojownikiem tym razem jest Patryk chory na Klątwę Ondyny. Jego historie możecie przeczytać tutaj:&nbsp;<a href=\"https://www.siepomaga.pl/siegrasiemadlapatryka\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--blue-link);\">https://www.siepomaga.pl/siegrasiemadlapatryka</a>&nbsp;<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t6c/1/16/2764.png\" alt=\"❤️\" height=\"16\" width=\"16\"></p><p>Podsumowując wiemy jedno, to będzie NAJLEPSZE i NAJWIĘKSZE koszykarskie wydarzenie w POLSCE. Znaczy to, że nie może Was u nas zabraknąć&nbsp;<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tf9/1/16/1f44f_1f3fb.png\" alt=\"👏🏻\" height=\"16\" width=\"16\"><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t6c/1/16/2764.png\" alt=\"❤️\" height=\"16\" width=\"16\"><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/t50/1/16/1f525.png\" alt=\"🔥\" height=\"16\" width=\"16\"></p><p>Partnerzy imprezy:</p><p><a href=\"https://www.facebook.com/skstore.warsaw/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Kicks Store</a>&amp;&nbsp;<a href=\"https://www.facebook.com/sklepkoszykarza/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Sklep Koszykarza</a></p><p><a href=\"https://www.facebook.com/AvivaPoland/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Aviva</a></p><p><a href=\"https://www.facebook.com/dailyfruitspl\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Dailyfruits | www.dailyfruits.pl | owoce w pracy</a></p><p><a href=\"https://www.facebook.com/CzasInspiracji/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Timex Poland</a></p><p><a href=\"https://www.facebook.com/warszawa.ursynow/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Dzielnica Ursynów m.st. Warszawy</a></p><p><a href=\"https://www.facebook.com/Ursynowskie-Centrum-Sportu-i-Rekreacji-210543632293001/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">Ursynowskie Centrum Sportu i Rekreacji</a></p><p><a href=\"https://www.facebook.com/pasjaAZS/\" rel=\"noopener noreferrer\" target=\"_blank\" style=\"background-color: transparent; color: var(--primary-text);\">AZS Akademicki Związek Sportowy</a></p><p>Do zobaczenia&nbsp;<img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tdf/1/16/1f51c.png\" alt=\"🔜\" height=\"16\" width=\"16\"><img src=\"https://static.xx.fbcdn.net/images/emoji.php/v9/tb8/1/16/1f3c0.png\" alt=\"🏀\" height=\"16\" width=\"16\"></p><p><br></p>",
+                StartDate = DateTime.Parse("28.09.2019 9:00"),
+                EndDate = DateTime.Parse("28.09.2019 19:00")
+            }
+            };
+
+            var contestList = new List<Contest>
             {
-                Name = "Turniej testowy numer 4",
-                Address = "Zbożowa -1",
-                Description = "Taki tam turniej",
-                StartDate = DateTime.Parse("10.06.2022 10:00"),
-                EndDate = DateTime.Parse("10.06.2022 20:00")
-            });
+                new Contest(){Tournament=tournamentsList[0],Name="3Pt battle"},
+                new Contest(){Tournament=tournamentsList[0],Name="Skills challenge"},
+                new Contest(){Tournament=tournamentsList[0],Name="Dunk contest"},
+                new Contest(){Tournament=tournamentsList[1],Name="3Pt battle"},
+                new Contest(){Tournament=tournamentsList[1],Name="Skills challenge"},
+                new Contest(){Tournament=tournamentsList[1],Name="Dunk contest"},
+                new Contest(){Tournament=tournamentsList[2],Name="3Pt battle"},
+                new Contest(){Tournament=tournamentsList[2],Name="Skills challenge"},
+                new Contest(){Tournament=tournamentsList[2],Name="Dunk contest"},
+            };
+            var contestantList = new List<Contestant>
+            {
+                new Contestant(){Contest=contestList[0],User=playersList[0], Points=4},
+                new Contestant(){Contest=contestList[0],User=playersList[1], Points=7},
+                new Contestant(){Contest=contestList[0],User=playersList[2], Points=5},
+                new Contestant(){Contest=contestList[0],User=playersList[3], Points=9},
+                new Contestant(){Contest=contestList[1],User=playersList[0], Points=4},
+                new Contestant(){Contest=contestList[1],User=playersList[1], Points=7},
+                new Contestant(){Contest=contestList[3],User=playersList[0], Points=4},
+                new Contestant(){Contest=contestList[3],User=playersList[1], Points=7},
+                new Contestant(){Contest=contestList[3],User=playersList[2], Points=5},
+                new Contestant(){Contest=contestList[3],User=playersList[3], Points=9},
+                new Contestant(){Contest=contestList[4],User=playersList[0], Points=4},
+                new Contestant(){Contest=contestList[4],User=playersList[1], Points=7},
+                new Contestant(){Contest=contestList[6],User=playersList[0], Points=4},
+                new Contestant(){Contest=contestList[6],User=playersList[1], Points=7},
+                new Contestant(){Contest=contestList[6],User=playersList[2], Points=5},
+                new Contestant(){Contest=contestList[6],User=playersList[3], Points=9},
+                new Contestant(){Contest=contestList[7],User=playersList[0], Points=4},
+                new Contestant(){Contest=contestList[7],User=playersList[1], Points=7},
+            };
+
+            _context.Tournaments.AddRange(tournamentsList);
+            _context.Contests.AddRange(contestList);
+
+
 
             await _context.SaveChangesAsync();
         }

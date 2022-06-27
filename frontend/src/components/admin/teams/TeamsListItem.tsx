@@ -88,6 +88,7 @@ export default function TeamsListItem({
 							});
 							setIsPicture(false);
 						}}
+						checkCapt={false}
 					/>
 				</Modal>
 			)}
@@ -103,6 +104,7 @@ export default function TeamsListItem({
 							onTeamChange(team);
 							setIsEdit(false);
 						}}
+						checkCapt={false}
 					/>
 				</Modal>
 			)}

@@ -11,6 +11,7 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BlockIcon from "@mui/icons-material/Block";
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 type UsersListItemProp = {
 	user: User;
@@ -26,6 +27,7 @@ export default function UserListItem({
 	const [isAdd, setIsAdd] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
 	const [isBan, setIsBan] = useState(false);
+	const [isUnban, setIsUnban] = useState(false);
 	const [roleToDelete, setRoleToDelete] = useState<string | null>(null);
 
 	const removeRole = (role: string) => {
@@ -41,6 +43,14 @@ export default function UserListItem({
 			setIsBan(false);
 		});
 	};
+
+    const unbanUser = () => {
+        usersService.adminUnbanUser(user.id)
+            .then((data) => {
+                onUserPropChange(data);
+                setIsUnban(false);
+            });
+    };
 
 	return (
 		<div className={styles.root}>
@@ -69,10 +79,15 @@ export default function UserListItem({
 					className="interactiveIcon"
 					onClick={() => setIsAdd(true)}
 				/>
-				<BlockIcon
+                {user && (
+                    user.isLocked ? <LockOpenIcon
 					className="interactiveIcon"
 					onClick={() => setIsBan(true)}
-				/>
+				/> : <BlockIcon
+					className="interactiveIcon"
+					onClick={() => setIsBan(true)}
+				/>)}
+
 			</div>
 			{roleToDelete && (
 				<Modal
@@ -128,6 +143,20 @@ export default function UserListItem({
 					/>
 				</Modal>
 			)}
+            {(isUnban) && (
+                <Modal
+                    isClose
+                    title='Czy na pewno chcesz odblokować użytkownika?'
+                    close={() => setIsUnban(false)}
+                >
+                    <Confirm
+                        cancel={() => setIsUnban(false)}
+                        confirm={() => unbanUser()}
+                        label='Odblokuj'
+                        style={ButtonStyle.Yellow}
+                    />
+                </Modal>
+            )}
 		</div>
 	);
 }

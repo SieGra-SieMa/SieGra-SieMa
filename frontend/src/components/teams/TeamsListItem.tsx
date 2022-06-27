@@ -146,6 +146,7 @@ export default function TeamsListItem({
                                 setTeams(data);
                             }
                         }}
+                        checkCapt={true}
                     />
                 </Modal>
             )}
@@ -168,7 +169,9 @@ export default function TeamsListItem({
                                 };
                                 setTeams(data);
                             }
-                        }} />
+                        }} 
+                        checkCapt={true}
+                        />
                 </Modal>
             )}
             {isLeave && (

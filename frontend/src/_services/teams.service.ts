@@ -46,6 +46,15 @@ export default class TeamsService extends Service {
         return super.post(`${Config.HOST}/api/teams/${id}/add-profile-photo`, data, headers, false);
     };
 
+    addProfilePhotoAdmin(id: number, data: FormData): Promise<Media[]> {
+        const headers = new Headers();
+        return super.post(`${Config.HOST}/api/teams/${id}/admin/add-profile-photo`, data, headers, false);
+    };
+
+    updateTeamAdmin(id: number, name: string): Promise<Team> {
+        return super.patch(`${Config.HOST}/api/teams/${id}/admin/change-details`, { name });
+    };
+
     admindDeleteTeam(id: number): Promise<Message> {
         return super.del(`${Config.HOST}/api/teams/admin/${id}`);
     };

@@ -343,7 +343,7 @@ namespace SieGraSieMa.Services
                 var teams = await _SieGraSieMaContext.Teams.Include(t => t.TeamInTournaments)
                                 .Where(t => t.TeamInTournaments.Any(tr => tr.TournamentId == tournamentId && tr.Paid == true))
                                 .ToListAsync();
-                if (teams.Count == 0) throw new Exception("There is no teams for this tournament");
+                if (teams.Count == 0) throw new Exception("Brakuje drużyn w tym wydarzeniu");
                 List<Group> groups = new();
                 char nonLadderGroupCount; //oznacza ilość grup niedrabinkowych
                 int ladderGroupCount; //oznacza ilość grup w drabince
@@ -351,7 +351,7 @@ namespace SieGraSieMa.Services
                 switch (teams.Count)
                 {
                     case < 4:
-                        throw new Exception("Not enough teams to start a tournament");
+                        throw new Exception("Nie wystarczająco drużyn aby rozpocząć turniej");
                     case < 8://wzór pseudodrabinki, gdzie w każdej grupie są 2 lub 1 zespół
                         nonLadderGroupCount = 'D';
                         ladderGroupCount = 4;

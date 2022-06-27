@@ -1,0 +1,14 @@
+.quill {
+    background-color: white;
+    min-height: 200px;
+    width: 100%;
+}
+
+.quill>*>*>* {
+    color: black;
+}
+
+.quill>.ql-container {
+    height: 300px;
+    overflow-y: scroll;
+}

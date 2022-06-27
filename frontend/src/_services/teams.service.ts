@@ -58,4 +58,9 @@ export default class TeamsService extends Service {
     admindDeleteTeam(id: number): Promise<Message> {
         return super.del(`${Config.HOST}/api/teams/admin/${id}`);
     };
+
+    sendInvite(id: number, email: string): Promise<Message> {
+        const headers = new Headers();
+        return super.post(`${Config.HOST}/api/teams/${id}/send-invite?emailAdress=${email}`, {}, headers, false);
+    }
 }

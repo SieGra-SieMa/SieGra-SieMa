@@ -1,8 +1,15 @@
 .top {
-    display: flex;
-    flex-direction: column;
-    row-gap: 25px;
+    display: grid;
+    grid-template-columns: .3fr 1fr .3fr;
     align-items: center;
+    justify-content: center;
+}
+
+.top>* {
+    align-self: center;
+    text-align: center;
+    width: fit-content;
+    margin: auto;
 }
 
 .content {

@@ -1,10 +1,21 @@
-.content {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 15px;
-    align-items: flex-start;
+.root {
+    width: 100%;
+    margin: 0 auto;
 }
 
+.root>h1 {
+    width: fit-content;
+}
+
+.content {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 25px;
+    max-height: 50vh;
+    overflow-y: scroll;
+}
 .loader {
     display: flex;
     justify-content: center;

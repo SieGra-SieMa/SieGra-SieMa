@@ -1,12 +1,14 @@
-import React, { FormEvent, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import styles from './AccountEntry.module.css';
 import SyncLoader from 'react-spinners/SyncLoader';
 import { useAuth } from '../auth/AuthContext';
 import Input from '../form/Input';
 import { useNavigate } from 'react-router-dom';
 import { useApi } from '../api/ApiContext';
-import Button from '../form/Button';
+import Button, { ButtonStyle } from '../form/Button';
 import VerticalSpacing from '../spacing/VerticalSpacing';
+import Modal from '../modal/Modal';
+import ForgetPassword from './ForgetPassword';
 
 export default function SignIn() {
 
@@ -20,6 +22,9 @@ export default function SignIn() {
     const [password, setPassword] = useState('Haslo+123');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const [isForget, setIsForget] = useState(false);
+
 
     const signIn = (e: FormEvent) => {
         e.preventDefault();
@@ -37,6 +42,7 @@ export default function SignIn() {
                 }
             );
     };
+
 
     return (
         <form className={styles.block} onSubmit={signIn}>
@@ -65,6 +71,23 @@ export default function SignIn() {
                 </div>
             ) : (
                 <Button value='Zaloguj się' />
+            )}
+            <Button
+                onClick={() => setIsForget(true)}
+                type='button'
+                value='Zapomniałeś hasło?'
+                style={ButtonStyle.DarkBlue}
+            />
+            {(isForget) && (
+                <Modal
+                    isClose
+                    title='Zresetuj hasło'
+                    close={() => setIsForget(false)}
+                >
+                    <ForgetPassword
+                        confirm={() => setIsForget(false)}
+                    />
+                </Modal>
             )}
         </form>
     );

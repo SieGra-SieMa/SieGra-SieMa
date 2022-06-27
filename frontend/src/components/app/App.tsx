@@ -27,6 +27,7 @@ import AccountData from '../profile/Profile';
 import AdminPanel from '../admin/AdminPanel';
 import AdminTeamsList from '../admin/teams/AdminTeamsList';
 import Newsletter from '../admin/Newsletter';
+import ConfirmEmail from '../account-entry/ConfirmEmail';
 
 const apiClient = new ApiClient();
 
@@ -76,6 +77,7 @@ export default function App() {
                                     </Route>
                                 </Route>
                             </Route>
+                            <Route path='email-confirmation' element={<ConfirmEmail />} />
                         </Routes >
                         <Footer />
                     </BrowserRouter >

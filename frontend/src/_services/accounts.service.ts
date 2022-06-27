@@ -1,5 +1,6 @@
 import Config from '../config.json';
 import { Session } from '../_lib/types';
+import { Message } from '../_lib/_types/response';
 import Service from './service';
 
 export default class AccountsService extends Service {
@@ -9,14 +10,14 @@ export default class AccountsService extends Service {
     };
 
     authenticate(email: string, password: string): Promise<Session> {
-        return super.post<Session>(`${Config.HOST}/api/accounts/authenticate`, { email, password })
+        return super.post(`${Config.HOST}/api/accounts/authenticate`, { email, password })
     };
 
-    // refresh(refreshToken: string): Promise<Tokens> {
-    //     return super.post<Tokens>(`${Config.HOST}/api/accounts/refresh-token`, { refreshToken });
-    // };
+    forgetPassword(email: string): Promise<{}> {
+        return super.get(`${Config.HOST}/api/accounts/forget-password?email=${email}`)
+    };
 
-    logout() {
-        return Promise.resolve();
+    confirmEmail(userId: string, token: string): Promise<Message> {
+        return super.get(`${Config.HOST}/api/accounts/confirm-email?userid=${userId}&token=${token}`)
     };
 };

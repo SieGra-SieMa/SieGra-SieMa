@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using SieGraSieMa.DTOs;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.IdentityDTO;
@@ -28,14 +29,18 @@ namespace SieGraSieMa.Controllers
         private readonly UserManager<User> _userManager;
         private readonly IEmailService _emailService;
         private readonly ILogService _logService;
+        public IConfiguration _configuration { get; set; }
 
-        public AccountsController(UserManager<User> userManager, JwtHandler jwtHandler, IEmailService emailService, IAccountIdentityServices accountServices, ILogService logService)
+
+
+        public AccountsController(UserManager<User> userManager, JwtHandler jwtHandler, IEmailService emailService, IAccountIdentityServices accountServices, ILogService logService, IConfiguration configuration)
         {
             _accountService = accountServices;
             _userManager = userManager;
             _jwtHandler = jwtHandler;
             _emailService = emailService;
             _logService = logService;
+            _configuration = configuration;
         }
         private async Task<IActionResult> GenerateOTPFor2StepVerification(User user)
         {
@@ -223,12 +228,13 @@ namespace SieGraSieMa.Controllers
                 if (user == null)
                     return BadRequest(new ResponseErrorDTO { Error = "User with this email doesn't exists!" });
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var front = _configuration.GetConnectionString("front");
                 var param = new Dictionary<string, string>
                 {
                     {"userid", Convert.ToString(user.Id) },
                     {"token", token }
                 };
-                var link = $"{Request.Scheme}://{Request.Host}/api/Accounts/Confirm-Email";
+                var link = $"{front}/email-confirmation?";
                 var callback = QueryHelpers.AddQueryString(link, param);
                 await _emailService.SendAsync(user.Email, "Siegra Siema - reset hasła", callback);
                 await _logService.AddLog(new Log(user, $"Email with password reset sent!"));
@@ -241,8 +247,8 @@ namespace SieGraSieMa.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("Reset-Password")]
-        public async Task<IActionResult> ResetPassword(string userid, string token, string newPassword)
+        [HttpPost("Reset-Password")]
+        public async Task<IActionResult> ResetPassword(string userid, string token,[FromBody] string newPassword)
         {
 
             var userFound = await _userManager.FindByIdAsync(userid);

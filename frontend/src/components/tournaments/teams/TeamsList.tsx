@@ -34,12 +34,16 @@ export default function TeamsList({ teams }: TeamsListProps) {
 					<div>
 						<div className={styles.teamsContainer}>
 							<div>
-								<h6
-									className="underline"
-									style={{ width: "fit-content" }}
+								<GuardComponent
+									roles={[ROLES.Employee, ROLES.Admin]}
 								>
-									Opłacone
-								</h6>
+									<h6
+										className="underline"
+										style={{ width: "fit-content" }}
+									>
+										Opłacone
+									</h6>
+								</GuardComponent>
 								<ul className={styles.teams}>
 									{paidTeams.map((team) => (
 										<TeamPaid

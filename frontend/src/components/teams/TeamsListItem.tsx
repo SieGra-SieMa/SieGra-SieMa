@@ -123,7 +123,12 @@ export default function TeamsListItem({
                     isClose
                     title={`Zespół "${team.name}" - Dodaj gracza`}
                 >
-                    <AddParticipant />
+                    <AddParticipant 
+                    team={team}
+                    confirm={(msg) => {
+                            setIsAdd(false);
+                            alert(msg);
+                        }}/>
                 </Modal>
             )}
             {isEdit && (

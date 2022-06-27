@@ -168,7 +168,7 @@ namespace SieGraSieMa.Controllers
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
-                return NotFound(new ResponseErrorDTO { Error = "User not found" });
+                return NotFound(new ResponseErrorDTO { Error = "Nie znaleziono użytkownika!" });
             var roles = await _userManager.GetRolesAsync(user);
             return Ok(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = roles, Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id), isLocked = user.LockoutEnd.HasValue ? DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0 : false });
         }
@@ -179,7 +179,7 @@ namespace SieGraSieMa.Controllers
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
-                return NotFound(new ResponseErrorDTO { Error = "User not found" });
+                return NotFound(new ResponseErrorDTO { Error = "Nie znaleziono użytkownika!" });
             await _userService.PreparingUserToBlock(user.Id);
             await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Parse("2038-01-19 00:00:00"));//to jest maksimum dla timestampu xD
             var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
@@ -195,7 +195,7 @@ namespace SieGraSieMa.Controllers
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
-                return NotFound(new ResponseErrorDTO { Error = "User not found" });
+                return NotFound(new ResponseErrorDTO { Error = "Nie znaleziono użytkownika!" });
             await _userManager.SetLockoutEndDateAsync(user, null);
             var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
             var admin = await _userManager.FindByEmailAsync(email);
@@ -209,7 +209,7 @@ namespace SieGraSieMa.Controllers
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
-                return NotFound(new ResponseErrorDTO { Error = "User not found" });
+                return NotFound(new ResponseErrorDTO { Error = "Nie znaleziono użytkownika!" });
             foreach(var role in roles)
             {
                 await _userManager.AddToRoleAsync(user, role);
@@ -230,7 +230,7 @@ namespace SieGraSieMa.Controllers
         {
             var user = await _userManager.FindByIdAsync(id.ToString());
             if (user == null)
-                return NotFound(new ResponseErrorDTO { Error = "User not found" });
+                return NotFound(new ResponseErrorDTO { Error = "Nie znaleziono użytkownika!" });
             await _userManager.RemoveFromRolesAsync(user, roles);
             if (!(await _userManager.GetRolesAsync(user)).Any())
             {
@@ -272,7 +272,7 @@ namespace SieGraSieMa.Controllers
                 {
                     await _emailService.SendAsync(user.Email, newsletter.Title, newsletter.Body);
                 }
-                return Ok(new MessageDTO { Message = "Newsletter sent!" });
+                return Ok(new MessageDTO { Message = "Newsletter został wysłany!" });
             }
             catch (Exception ex)
             {

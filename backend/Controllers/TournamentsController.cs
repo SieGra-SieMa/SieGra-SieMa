@@ -72,22 +72,10 @@ namespace SieGraSieMa.Controllers
             var tournament = await _tournamentsService.GetTournament(id, user);
 
             if (tournament == null)
-                return NotFound(new ResponseErrorDTO { Error = "Tournament not found" });
+                return NotFound(new ResponseErrorDTO { Error = "Nie znaleziono konkursu!" });
 
             return Ok(tournament);
         }
-
-        /*[AllowAnonymous]
-        [HttpGet("{id}/description")]
-        public async Task<IActionResult> GetDescription(int id)
-        {
-            var desc = await _tournamentsService.GetDescription(id);
-
-            if (desc == null)
-                return NotFound(new ResponseErrorDTO { Error = "Description not found" });
-
-            return Ok(new MessageDTO { Message = desc });
-        }*/
 
         [AllowAnonymous]
         [HttpGet("{id}/teams")]
@@ -112,7 +100,7 @@ namespace SieGraSieMa.Controllers
             var contest = await _contestService.GetContest(contestId);
 
             if (contest == null)
-                return NotFound(new ResponseErrorDTO { Error = "Contest not found" });
+                return NotFound(new ResponseErrorDTO { Error = "Nie znaleziono kontestu!" });
 
             return Ok(contest);
         }
@@ -125,7 +113,7 @@ namespace SieGraSieMa.Controllers
             {
                 var result = await _tournamentsService.GetTournamentWithAlbums(id);
                 if (result == null)
-                    return BadRequest(new ResponseErrorDTO { Error = "Tournament not found!" });
+                    return BadRequest(new ResponseErrorDTO { Error = "Nie znaleziono konkursu!" });
 
                 return Ok(result);
             }
@@ -145,7 +133,7 @@ namespace SieGraSieMa.Controllers
             {
                 var team = _teamService.GetTeamWithPlayers(teamId);
                 if (team == null)
-                    return BadRequest(new ResponseErrorDTO { Error = "Team does not exists" });
+                    return BadRequest(new ResponseErrorDTO { Error = "Nie znaleziono zespołu!" });
                 List<User> listOfUsers = new();
                 foreach (var player in team.Players) listOfUsers.Add(await _userManager.FindByIdAsync(player.UserId.ToString()));
                 var response = await _tournamentsService.CheckUsersInTeam(listOfUsers, id);
@@ -153,14 +141,14 @@ namespace SieGraSieMa.Controllers
                 {
                     var response2 = await _tournamentsService.AddTeamToTournament(team.Id, id);
                     if (!response2)
-                        return BadRequest(new ResponseErrorDTO { Error = "Tournament does not exists" });
+                        return BadRequest(new ResponseErrorDTO { Error = "Nie znaleziono konkursu!" });
                     var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                     var user = await _userManager.FindByEmailAsync(email);
                     await _logService.AddLog(new Log(user, $"Team with id {teamId} was added to tournament with id {id}"));
                     return Ok();
                 }
 
-                return BadRequest(new ResponseErrorDTO { Error = "One of the players already belongs to another team" });
+                return BadRequest(new ResponseErrorDTO { Error = "Jeden z graczy obecnie należy do innego zespołu zapisanego na ten sam turniej!" });
             }
             catch (Exception e)
             {
@@ -175,12 +163,12 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var team = _teamService.GetTeamWithPlayers(teamId);
-                if (team == null) return BadRequest(new ResponseErrorDTO { Error = "Team does not exists" });
+                if (team == null) return BadRequest(new ResponseErrorDTO { Error = "Nie znaleziono zespołu!" });
 
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = await _userManager.FindByEmailAsync(email);
                 if(team.CaptainId != user.Id)
-                    return BadRequest(new ResponseErrorDTO { Error = "You are not the captain of this team!" });
+                    return BadRequest(new ResponseErrorDTO { Error = "Nie jesteś kapitanem tego zespołu!" });
 
                 var resp = await _tournamentsService.RemoveTeamFromTournament(team.Id, id);
 
@@ -203,7 +191,7 @@ namespace SieGraSieMa.Controllers
         public async Task<IActionResult> CountTeams(int id, [FromQuery] ITournamentsService.TeamPaidEnum filter)
         {
             var response = await _tournamentsService.CheckCountTeamsInTournament(id, filter);
-            if (response == 0) return BadRequest(new { message = "Bad tournament number or no teams registered for tournament" });
+            if (response == 0) return BadRequest(new { message = "Niepoprawny numer konkursu lub brak zespołów zapisanych na ten konkurs!" }); 
 
             return Ok(new { count = response });
         }
@@ -368,7 +356,7 @@ namespace SieGraSieMa.Controllers
             var user = await _userManager.FindByEmailAsync(email);
             await _logService.AddLog(new Log(user, $"Tournament with id {id} deleted"));
 
-            return Ok(new MessageDTO { Message = $"Tournament with {id} id successfully deleted" });
+            return Ok(new MessageDTO { Message = $"Konkurs o id: {id} został pomyślnie usunięty!" });
         }
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
@@ -487,7 +475,7 @@ namespace SieGraSieMa.Controllers
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = await _userManager.FindByEmailAsync(email);
                 await _logService.AddLog(new Log(user, $"Contest with id {contestId} in tournament with id {id} was deleted"));
-                return Ok(new MessageDTO { Message= $"Contest with name {result.Name} was deleted" });
+                return Ok(new MessageDTO { Message= $"Konktest o nazwie: {result.Name} został pomyślnie usunięty!" });
             }
             catch (Exception e)
             {
@@ -530,10 +518,10 @@ namespace SieGraSieMa.Controllers
             {
                 var tournament = await _tournamentsService.GetTournament(id, null);
                 if (tournament == null)
-                    return NotFound("Tournament not found!");
+                    return NotFound("Konkurs nie został znaleziony!");
 
                 if (file.Length != 1)
-                    return BadRequest("There should be only one photo sent!");
+                    return BadRequest("Należy wysłać tylko jedno zdjęcie!");
 
                 var list = await _mediaService.CreateMedia(null, tournament.Id, file, MediaTypeEnum.tournaments);
 

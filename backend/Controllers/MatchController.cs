@@ -73,7 +73,7 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var response = await _tournamentsService.GetLadderMatches(tournamentId);
-                if (!response.Any()) return NotFound(new ResponseErrorDTO { Error = "No matches found for this ladder" });
+                if (!response.Any()) return NotFound(new ResponseErrorDTO { Error = "Nie znaleziono meczów dla tej drabinki!" });
                 return Ok(response);
             }
             catch (Exception e)

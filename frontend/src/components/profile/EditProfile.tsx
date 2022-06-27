@@ -36,7 +36,7 @@ export default function EditProfile({ confirm }: EditProfileProps) {
         <form className={styles.root} onSubmit={onSubmit}>
             <Input
                 id='AccountData-name'
-                label='Imie'
+                label='Imię'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
             />

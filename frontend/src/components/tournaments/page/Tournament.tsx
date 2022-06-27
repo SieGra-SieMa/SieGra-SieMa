@@ -32,13 +32,14 @@ import Contests from "../contests/Contests";
 import CreateAlbum from "../../gallery/CreateAlbum";
 import AddIcon from "@mui/icons-material/Add";
 import { useUser } from "../../user/UserContext";
+import { Team } from "../../../_lib/types";
 
 export default function Tournament() {
 	const navigate = useNavigate();
 
 	const { id } = useParams<{ id: string }>();
 
-	const { tournamentsService } = useApi();
+	const { teamsService, tournamentsService } = useApi();
 	const { session } = useAuth();
 	const { user } = useUser();
 	const { tournaments, setTournaments } = useTournaments();
@@ -69,14 +70,20 @@ export default function Tournament() {
 	const [isLadderReset, setIsLadderReset] = useState(false);
 	const [isAddAlbum, setIsAddAlbum] = useState(false);
 	const isOpen = tournament?.isOpen;
+	const [teams, setTeams] = useState<Team[] | null>(null);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
 
 	useEffect(() => {
+		teamsService.getTeamsIAmCaptain().then((data) => {
+			setTeams(data);
+		});
+	}, [teamsService]);
+
+	useEffect(() => {
 		tournamentsService.getTournamentById(id!).then((data) => {
-			console.log(data);
 			setTournament(data);
 			setIsLoading(false);
 		});
@@ -520,6 +527,7 @@ export default function Tournament() {
 									setTournaments(data);
 								}
 							}}
+							teams={teams}
 						/>
 					</Modal>
 				)}

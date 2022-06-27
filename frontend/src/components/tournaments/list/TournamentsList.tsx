@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ROLES } from "../../../_lib/roles";
 import GuardComponent from "../../guard-components/GuardComponent";
 import Modal from "../../modal/Modal";
@@ -8,11 +8,23 @@ import styles from "./TournamentsList.module.css";
 import TournamentsListItem from "./TournamentsListItem";
 import { SyncLoader } from "react-spinners";
 import AddIcon from "@mui/icons-material/Add";
+import { useApi } from "../../api/ApiContext";
+import { Team } from "../../../_lib/types";
 
 export default function TournamentsList() {
 	const { tournaments, setTournaments } = useTournaments();
+	const { teamsService } = useApi();
+
+    const [teams, setTeams] = useState<Team[] | null>(null);
 
 	const [isAdd, setIsAdd] = useState(false);
+
+	useEffect(() => {
+        teamsService.getTeamsIAmCaptain()
+            .then((data) => {
+                setTeams(data);
+            });
+    }, [teamsService]);
 
 	return (
 		<>
@@ -33,6 +45,7 @@ export default function TournamentsList() {
 						<TournamentsListItem
 							key={index}
 							tournament={tournament}
+							captainTeams={teams}
 						/>
 					))
 				) : (

@@ -65,3 +65,17 @@ export type PasswordChange = {
 	oldPassword: string;
 	newPassword: string;
 };
+
+
+
+
+export enum AlertTypeEnum {
+	success,
+	error,
+}
+
+export type Alert = {
+	id: number;
+	message: string;
+	type: AlertTypeEnum;
+}

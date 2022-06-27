@@ -27,60 +27,63 @@ import AccountData from '../profile/Profile';
 import AdminPanel from '../admin/AdminPanel';
 import AdminTeamsList from '../admin/teams/AdminTeamsList';
 import Newsletter from '../admin/Newsletter';
+import AlertProvider from '../alert/AlertProvider';
 
 const apiClient = new ApiClient();
 
 export default function App() {
     return (
-        <ApiContext.Provider value={apiClient}>
-            <AuthProvider>
-                <UserProvider>
-                    <BrowserRouter>
-                        <Header />
-                        <Routes>
-                            <Route index element={<Home />} />
-                            <Route path="about-us" element={<AboutUs />} />
-                            <Route path="entry" element={<AccountEntry />} />
-                            <Route path="access-denied" element={
-                                <div style={{ color: '#fff' }}>ACCESS DENIED</div>
-                            } />
-                            <Route path="account" element={
-                                <GuardRoute roles={[ROLES.User, ROLES.Employee, ROLES.Admin]} />
-                            }>
-                                <Route index element={<AccountData />} />
-                            </Route>
-                            <Route path="myteams" element={
-                                <GuardRoute roles={[ROLES.User, ROLES.Employee, ROLES.Admin]} />
-                            }>
-                                <Route index element={<TeamsList />} />
-                            </Route>
-                            <Route path="admin" element={
-                                <GuardRoute roles={[ROLES.Admin]} />
-                            }>
-                                <Route path='' element={<AdminPanel />} >
-                                    <Route index element={<Newsletter />} />
-                                    <Route path="users" element={<UsersList />} />
-                                    <Route path="teams" element={<AdminTeamsList />} />
+        <AlertProvider errorTimeout={3000} successTimeout={7000}>
+            <ApiContext.Provider value={apiClient}>
+                <AuthProvider>
+                    <UserProvider>
+                        <BrowserRouter>
+                            <Header />
+                            <Routes>
+                                <Route index element={<Home />} />
+                                <Route path="about-us" element={<AboutUs />} />
+                                <Route path="entry" element={<AccountEntry />} />
+                                <Route path="access-denied" element={
+                                    <div style={{ color: '#fff' }}>ACCESS DENIED</div>
+                                } />
+                                <Route path="account" element={
+                                    <GuardRoute roles={[ROLES.User, ROLES.Employee, ROLES.Admin]} />
+                                }>
+                                    <Route index element={<AccountData />} />
                                 </Route>
-                            </Route>
-                            <Route path="*" element={<Tournaments />}>
-                                <Route path="tournaments">
-                                    <Route index element={<TournamentsList />} />
-                                    <Route path=":id" element={<Tournament />} />
+                                <Route path="myteams" element={
+                                    <GuardRoute roles={[ROLES.User, ROLES.Employee, ROLES.Admin]} />
+                                }>
+                                    <Route index element={<TeamsList />} />
                                 </Route>
-                                <Route path="gallery">
-                                    <Route index element={<GalleryList />} />
-                                    <Route path=":id/albums">
-                                        <Route index element={<AlbumsList />} />
-                                        <Route path=":albumId" element={<Album />} />
+                                <Route path="admin" element={
+                                    <GuardRoute roles={[ROLES.Admin]} />
+                                }>
+                                    <Route path='' element={<AdminPanel />} >
+                                        <Route index element={<Newsletter />} />
+                                        <Route path="users" element={<UsersList />} />
+                                        <Route path="teams" element={<AdminTeamsList />} />
                                     </Route>
                                 </Route>
-                            </Route>
-                        </Routes >
-                        <Footer />
-                    </BrowserRouter >
-                </UserProvider >
-            </AuthProvider >
-        </ApiContext.Provider >
+                                <Route path="*" element={<Tournaments />}>
+                                    <Route path="tournaments">
+                                        <Route index element={<TournamentsList />} />
+                                        <Route path=":id" element={<Tournament />} />
+                                    </Route>
+                                    <Route path="gallery">
+                                        <Route index element={<GalleryList />} />
+                                        <Route path=":id/albums">
+                                            <Route index element={<AlbumsList />} />
+                                            <Route path=":albumId" element={<Album />} />
+                                        </Route>
+                                    </Route>
+                                </Route>
+                            </Routes >
+                            <Footer />
+                        </BrowserRouter >
+                    </UserProvider >
+                </AuthProvider >
+            </ApiContext.Provider >
+        </AlertProvider>
     );
 };

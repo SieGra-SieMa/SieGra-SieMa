@@ -1,4 +1,4 @@
-import React, { FormEvent, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import styles from './AccountEntry.module.css';
 import SyncLoader from 'react-spinners/SyncLoader';
 import { useAuth } from '../auth/AuthContext';
@@ -7,9 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import VerticalSpacing from '../spacing/VerticalSpacing';
+import { useAlert } from '../alert/AlertContext';
 
 export default function SignIn() {
 
+    const alert = useAlert();
     const { accountsService } = useApi();
 
     const navigate = useNavigate();
@@ -19,11 +21,9 @@ export default function SignIn() {
     const [email, setEmail] = useState('kapitan@gmail.com');
     const [password, setPassword] = useState('Haslo+123');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     const signIn = (e: FormEvent) => {
         e.preventDefault();
-        setError(null);
         setLoading(true);
         accountsService.authenticate(email, password)
             .then(
@@ -32,8 +32,8 @@ export default function SignIn() {
                     navigate('/account');
                 },
                 (e) => {
-                    setError(e);
                     setLoading(false);
+                    alert.error(e);
                 }
             );
     };
@@ -41,7 +41,6 @@ export default function SignIn() {
     return (
         <form className={styles.block} onSubmit={signIn}>
             <h3>Zaloguj się</h3>
-            {error && <div className={styles.failed}>FAILED: {error}</div>}
             <Input
                 id='SignIn-email'
                 label='Email'

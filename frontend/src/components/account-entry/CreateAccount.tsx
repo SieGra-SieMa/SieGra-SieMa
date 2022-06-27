@@ -5,9 +5,11 @@ import Input from '../form/Input';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import VerticalSpacing from '../spacing/VerticalSpacing';
+import { useAlert } from '../alert/AlertContext';
 
 export default function CreateAccount() {
 
+    const alert = useAlert();
     const { accountsService } = useApi();
 
     const [email, setEmail] = useState('');
@@ -15,18 +17,23 @@ export default function CreateAccount() {
     const [surname, setSurname] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     const createAccount = (e: FormEvent) => {
         e.preventDefault();
-        setError(null);
         setLoading(true);
         accountsService.register(name, surname, email, password)
             .then(
-                () => { },
-                (e) => {
-                    setError(e);
+                (data) => {
                     setLoading(false);
+                    setEmail('');
+                    setName('');
+                    setSurname('');
+                    setPassword('');
+                    alert.success(data.message);
+                },
+                (e) => {
+                    setLoading(false);
+                    alert.error(e)
                 }
             );
     };
@@ -34,7 +41,6 @@ export default function CreateAccount() {
     return (
         <form className={styles.block} onSubmit={createAccount}>
             <h3>Stwórz konto</h3>
-            {error && <div className={styles.failed}>{error}</div>}
             <Input
                 id='CreateAccount-email'
                 label='Email'

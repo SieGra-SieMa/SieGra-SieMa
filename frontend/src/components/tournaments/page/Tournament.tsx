@@ -33,12 +33,14 @@ import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import Contests from "../contests/Contests";
 import CreateAlbum from "../../gallery/CreateAlbum";
 import AddIcon from '@mui/icons-material/Add';
+import { useAlert } from "../../alert/AlertContext";
 
 export default function Tournament() {
 	const navigate = useNavigate();
 
 	const { id } = useParams<{ id: string }>();
 
+	const alert = useAlert();
 	const { tournamentsService } = useApi();
 	const { session } = useAuth();
 	const { tournaments, setTournaments } = useTournaments();
@@ -83,10 +85,14 @@ export default function Tournament() {
 	}, [id, tournamentsService]);
 
 	const prepareTournament = () => {
-		tournamentsService.prepareTournamnet(id!).then((data) => {
-			setTournament(data);
-			setIsPrepare(false);
-		});
+		tournamentsService.prepareTournamnet(id!)
+			.then(
+				(data) => {
+					setTournament(data);
+					setIsPrepare(false);
+				},
+				(error) => alert.error(error)
+			);
 	};
 
 	const resetTournament = () => {

@@ -40,7 +40,7 @@ export default function TeamPaid({ team }: TeamUnpaidProps) {
 			<p>{team.teamName}</p>
 			<GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
 				<RemoveIcon
-					className={styles.interactiveIcon}
+					className='interactiveIcon'
 					onClick={() => setIsChange(true)}
 					fontSize="medium"
 					style={{ color: "var(--accent-color)" }}

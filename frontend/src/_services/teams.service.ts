@@ -55,7 +55,7 @@ export default class TeamsService extends Service {
         return super.patch(`${Config.HOST}/api/teams/${id}/admin/change-details`, { name });
     };
 
-    admindDeleteTeam(id: number): Promise<Message> {
+    adminDeleteTeam(id: number): Promise<Message> {
         return super.del(`${Config.HOST}/api/teams/admin/${id}`);
     };
 }

@@ -18,12 +18,14 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useAlert } from "../alert/AlertContext";
 
 export default function Album() {
 	const navigate = useNavigate();
 
 	const { albumId } = useParams<{ albumId: string }>();
 
+	const alert = useAlert();
 	const { albumsService, mediaService } = useApi();
 	const { tournaments } = useTournaments();
 
@@ -58,7 +60,7 @@ export default function Album() {
 
 	const deleteMedia = () => {
 		if (!selectedImage || !album) return;
-		mediaService.deleteMedia(selectedImage.id).then(() => {
+		mediaService.deleteMedia(selectedImage.id).then((data) => {
 			setAlbum({
 				...album,
 				mediaList: album.mediaList.filter(
@@ -66,6 +68,7 @@ export default function Album() {
 				),
 			});
 			setSelectedImage(null);
+			alert.success(data.message);
 		});
 	};
 

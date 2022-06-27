@@ -16,7 +16,6 @@ import AccountEntry from '../account-entry/AccountEntry';
 import TeamsList from '../teams/TeamsList';
 import Tournaments from '../tournaments/Tournaments';
 import { ROLES } from '../../_lib/roles';
-import { ApiContext } from '../api/ApiContext';
 import ApiClient from '../../_services';
 import UserProvider from '../user/UserProvider';
 import TournamentsList from '../tournaments/list/TournamentsList';
@@ -28,13 +27,17 @@ import AdminPanel from '../admin/AdminPanel';
 import AdminTeamsList from '../admin/teams/AdminTeamsList';
 import Newsletter from '../admin/Newsletter';
 import AlertProvider from '../alert/AlertProvider';
+import ApiProvider from '../api/ApiProvider';
 
 const apiClient = new ApiClient();
 
 export default function App() {
     return (
-        <AlertProvider errorTimeout={3000} successTimeout={7000}>
-            <ApiContext.Provider value={apiClient}>
+        <AlertProvider options={{
+            errorTimeout: 3000,
+            successTimeout: 7000
+        }}>
+            <ApiProvider value={apiClient}>
                 <AuthProvider>
                     <UserProvider>
                         <BrowserRouter>
@@ -83,7 +86,7 @@ export default function App() {
                         </BrowserRouter >
                     </UserProvider >
                 </AuthProvider >
-            </ApiContext.Provider >
+            </ApiProvider>
         </AlertProvider>
     );
 };

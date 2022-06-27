@@ -8,11 +8,13 @@ import Alert from './Alert';
 
 type AlertProviderProps = {
     children: React.ReactNode;
-    errorTimeout: number;
-    successTimeout: number;
+    options: {
+        errorTimeout: number;
+        successTimeout: number;
+    }
 }
 
-export default function AlertProvider({ children, errorTimeout, successTimeout }: AlertProviderProps) {
+export default function AlertProvider({ children, options }: AlertProviderProps) {
 
     const [alerts, setAlerts] = useState<AlertType[]>([]);
     const uuid = useRef(0);
@@ -47,7 +49,11 @@ export default function AlertProvider({ children, errorTimeout, successTimeout }
                         <Alert
                             key={alert.id}
                             alert={alert}
-                            timeout={alert.type === AlertTypeEnum.error ? errorTimeout : successTimeout}
+                            timeout={
+                                alert.type === AlertTypeEnum.error ?
+                                    options.errorTimeout :
+                                    options.successTimeout
+                            }
                             close={() => setAlerts(
                                 (alerts) => alerts.filter(e => e !== alert)
                             )}

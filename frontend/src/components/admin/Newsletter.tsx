@@ -10,9 +10,11 @@ import Modal from '../modal/Modal';
 import Confirm from '../modal/Confirm';
 import { useApi } from '../api/ApiContext';
 import { Tournament } from '../../_lib/_types/tournament';
+import { useAlert } from '../alert/AlertContext';
 
 export default function Newsletter() {
 
+    const alert = useAlert();
     const { usersService, tournamentsService } = useApi();
 
     const [title, setTitle] = useState('');
@@ -34,13 +36,10 @@ export default function Newsletter() {
         usersService.sendNewsletter(title, body, tournamentId ?? undefined)
             .then(
                 (data) => {
-                    alert(data.message);
+                    alert.success(data.message);
                     setIsConfirmation(false);
                     setTitle('');
                     setBody('');
-                },
-                (error) => {
-                    alert(error);
                 }
             )
     };

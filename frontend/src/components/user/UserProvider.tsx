@@ -14,12 +14,7 @@ export default function UserProvider({ children }: { children: React.ReactNode }
     useEffect(() => {
         if (session) {
             usersService.currentUser()
-                .then(
-                    (user) => setUser(user),
-                    (error) => {
-                        alert(error);
-                    }
-                );
+                .then((user) => setUser(user));
         } else {
             setUser(null);
         }

@@ -1,5 +1,6 @@
 import { FormEvent, useState } from 'react';
 import { PasswordChange as PasswordChangeType } from '../../_lib/types';
+import { useAlert } from '../alert/AlertContext';
 import { useApi } from '../api/ApiContext';
 import Button, { ButtonStyle } from '../form/Button';
 import Input from '../form/Input';
@@ -12,6 +13,7 @@ type PasswordChangeProps = {
 
 export default function PasswordChange({ confirm }: PasswordChangeProps) {
 
+    const alert = useAlert();
     const { usersService } = useApi();
 
     const [oldPassword, setOldPassword] = useState('');
@@ -24,14 +26,10 @@ export default function PasswordChange({ confirm }: PasswordChangeProps) {
             newPassword
         };
         usersService.changePassword(updatedUser)
-            .then(
-                (data) => {
-                    alert(data.message);
-                    confirm();
-                }, (error) => {
-                    alert(error);
-                }
-            );
+            .then((data) => {
+                alert.success(data.message);
+                confirm();
+            });
     };
 
     return (

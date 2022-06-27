@@ -4,6 +4,7 @@ import {
 	Match as MatchType,
 	MatchResult as MatchResultType,
 } from "../../../_lib/_types/tournament";
+import { useAlert } from "../../alert/AlertContext";
 import { useApi } from "../../api/ApiContext";
 import Button from "../../form/Button";
 import Input from "../../form/Input";
@@ -36,6 +37,7 @@ export default function MatchResult({
 	callback,
 }: MatchResultProps) {
 
+	const alert = useAlert();
 	const { matchService } = useApi();
 	const { user } = useUser();
 	const { tournament, setTournament } = useTournament();
@@ -59,6 +61,7 @@ export default function MatchResult({
 		matchService.insertResults(result).then((data) => {
 			setTournament(data);
 			confirm();
+			alert.success('Wynik został zapisany');
 		});
 		callback(result.homeTeamPoints, result.awayTeamPoints);
 	};

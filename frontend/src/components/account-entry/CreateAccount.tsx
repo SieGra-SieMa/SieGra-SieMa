@@ -31,10 +31,7 @@ export default function CreateAccount() {
                     setPassword('');
                     alert.success(data.message);
                 },
-                (e) => {
-                    setLoading(false);
-                    alert.error(e)
-                }
+                () => setLoading(false)
             );
     };
 

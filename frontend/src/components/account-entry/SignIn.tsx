@@ -7,11 +7,9 @@ import { useNavigate } from 'react-router-dom';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import VerticalSpacing from '../spacing/VerticalSpacing';
-import { useAlert } from '../alert/AlertContext';
 
 export default function SignIn() {
 
-    const alert = useAlert();
     const { accountsService } = useApi();
 
     const navigate = useNavigate();
@@ -31,10 +29,7 @@ export default function SignIn() {
                     setSession(session);
                     navigate('/account');
                 },
-                (e) => {
-                    setLoading(false);
-                    alert.error(e);
-                }
+                () => setLoading(false)
             );
     };
 

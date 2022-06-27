@@ -77,29 +77,27 @@ export default function Tournament() {
 	}, []);
 
 	useEffect(() => {
-		tournamentsService.getTournamentById(id!).then((data) => {
-			console.log(data)
-			setTournament(data);
-			setIsLoading(false);
-		});
+		tournamentsService.getTournamentById(id!)
+			.then((data) => {
+				setTournament(data);
+				setIsLoading(false);
+			});
 	}, [id, tournamentsService]);
 
 	const prepareTournament = () => {
 		tournamentsService.prepareTournamnet(id!)
-			.then(
-				(data) => {
-					setTournament(data);
-					setIsPrepare(false);
-				},
-				(error) => alert.error(error)
-			);
+			.then((data) => {
+				setTournament(data);
+				setIsPrepare(false);
+			});
 	};
 
 	const resetTournament = () => {
-		tournamentsService.resetTournament(id!).then((data) => {
-			setTournament(data);
-			setIsReset(false);
-		});
+		tournamentsService.resetTournament(id!)
+			.then((data) => {
+				setTournament(data);
+				setIsReset(false);
+			});
 	};
 
 	const editTournament = useCallback(
@@ -119,17 +117,19 @@ export default function Tournament() {
 	);
 
 	const deleteTournament = useCallback(() => {
-		tournamentsService.deleteTournament(id!).then((data) => {
-			setIsDelete(false);
-			navigate("..");
-			if (tournaments) {
-				const updatedTournaments = tournaments.filter(
-					(tournament) => tournament.id !== parseInt(id!)
-				);
-				setTournaments(updatedTournaments);
-			}
-		});
-	}, [id, tournaments, setTournaments, tournamentsService, navigate]);
+		tournamentsService.deleteTournament(id!)
+			.then((data) => {
+				setIsDelete(false);
+				navigate("..");
+				if (tournaments) {
+					const updatedTournaments = tournaments.filter(
+						(tournament) => tournament.id !== parseInt(id!)
+					);
+					setTournaments(updatedTournaments);
+				}
+				alert.success(data.message);
+			});
+	}, [id, tournaments, setTournaments, alert, tournamentsService, navigate]);
 
 	const removeTeam = (teamId: number) => () => {
 		tournamentsService.removeTeam(id!, teamId).then(() => {

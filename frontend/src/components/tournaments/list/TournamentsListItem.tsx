@@ -19,7 +19,7 @@ type TournamentsListItemProps = {
 
 export default function TournamentsListItem({
 	tournament,
-	captainTeams
+	captainTeams,
 }: TournamentsListItemProps) {
 	const navigate = useNavigate();
 
@@ -65,21 +65,30 @@ export default function TournamentsListItem({
 						</div>
 						<div
 							dangerouslySetInnerHTML={{
-								__html: `${tournament.description}`,
+								__html: `${tournament.description.slice(
+									0,
+									600
+								)}`,
 							}}
 						></div>
+						{tournament.description.length > 600 && (
+							<p className={styles.readMore}>Read more</p>
+						)}
 					</div>
-					{session && tournament.isOpen && !tournament.team && captainTeams?.length !== 0 && (
-						<>
-							<Button
-								value="Zapisz zespół"
-								onClick={(e) => {
-									e.stopPropagation();
-									setIsTeamAssign(true);
-								}}
-							/>
-						</>
-					)}
+					{session &&
+						tournament.isOpen &&
+						!tournament.team &&
+						captainTeams?.length !== 0 && (
+							<>
+								<Button
+									value="Zapisz zespół"
+									onClick={(e) => {
+										e.stopPropagation();
+										setIsTeamAssign(true);
+									}}
+								/>
+							</>
+						)}
 				</div>
 			</li>
 			{session && tournament.isOpen && !tournament.team && isTeamAssign && (

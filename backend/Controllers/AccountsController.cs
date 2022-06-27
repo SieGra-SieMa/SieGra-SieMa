@@ -210,24 +210,51 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = "Email not confirmed" });
             }
             await _logService.AddLog(new Log(userFound, $"Email confirmed successfully"));
-            return Ok();
+            return Ok(new MessageDTO { Message = "Email is confirmed!" });
         }
 
-
-        /*[HttpGet("users")]
-        public async Task<IActionResult> GetAll()
+        [AllowAnonymous]
+        [HttpGet("Forget-Password")]
+        public async Task<IActionResult> ForgetPassword(string email)
         {
-            var users = await _accountService.GetAll();
-            return Ok(users);
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user == null)
+                    return BadRequest(new ResponseErrorDTO { Error = "User with this email doesn't exists!" });
+                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var param = new Dictionary<string, string>
+                {
+                    {"userid", Convert.ToString(user.Id) },
+                    {"token", token }
+                };
+                var link = $"{Request.Scheme}://{Request.Host}/api/Accounts/Confirm-Email";
+                var callback = QueryHelpers.AddQueryString(link, param);
+                await _emailService.SendAsync(user.Email, "Siegra Siema - reset hasła", callback);
+                await _logService.AddLog(new Log(user, $"Email with password reset sent!"));
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = e.Message });
+            }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [AllowAnonymous]
+        [HttpGet("Reset-Password")]
+        public async Task<IActionResult> ResetPassword(string userid, string token, string newPassword)
         {
-            var user = await _accountService.GetById(id);
-            if (user == null) return NotFound();
 
-            return Ok("user");
-        }*/
+            var userFound = await _userManager.FindByIdAsync(userid);
+            if (userFound == null)
+                return BadRequest(new ResponseErrorDTO { Error = "Wrong user id!" });
+            var result = (await _userManager.ResetPasswordAsync(userFound, token, newPassword));
+            if (!result.Succeeded)
+            {
+                return BadRequest(new ResponseErrorDTO { Error = "Bad password!" });
+            }
+            await _logService.AddLog(new Log(userFound, $"Password changed successfully!"));
+            return Ok(new MessageDTO { Message = "Password was changed!" });
+        }
     }
 }

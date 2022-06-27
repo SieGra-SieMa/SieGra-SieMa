@@ -105,11 +105,11 @@ export default function Header() {
 									</NavLink>
 								</li>
 								<li id={styles.profile}>
-									<NavLink to="/account" onClick={closeMenu}>
+									<h6 style={{ cursor: "pointer" }}>
 										{user
 											? `${user.name} ${user.surname}`
 											: "Użytkownik"}
-									</NavLink>
+									</h6>
 									<div className={styles.dropdown}>
 										<div className={styles.dropdownTabs}>
 											<Button
@@ -155,8 +155,18 @@ export default function Header() {
 												id={styles.logout}
 												onClick={logout}
 											>
-												<h6>Wyloguj</h6>
-												<LogoutIcon font-size="small" />
+												<Button
+													value="Wyloguj"
+													onClick={() =>
+														setIsPasswordChange(
+															true
+														)
+													}
+													style={
+														ButtonStyle.Transparent
+													}
+												/>
+												<LogoutIcon fontSize="small" />
 											</div>
 										</div>
 									</div>

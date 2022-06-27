@@ -52,13 +52,15 @@
 
 .header {
 	display: grid;
-	grid-template-columns: .7fr 1fr .7fr;
+	grid-template-columns: .3fr 1fr .3fr;
 	align-items: start;
-	margin-top: 20px;
+	margin: 20px 20px 0 20px;
 }
 
 .header>h5 {
 	padding: 0;
+	width: fit-content;
+	margin: auto;
 }
 
 .close {
@@ -77,5 +79,6 @@
 }
 
 .content {
-	margin: 30px;
+	margin: 30px auto;
+	width: fit-content;
 }

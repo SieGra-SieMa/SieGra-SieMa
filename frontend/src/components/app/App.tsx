@@ -28,6 +28,7 @@ import AdminPanel from '../admin/AdminPanel';
 import AdminTeamsList from '../admin/teams/AdminTeamsList';
 import Newsletter from '../admin/Newsletter';
 import ConfirmEmail from '../account-entry/ConfirmEmail';
+import ResetPassword from '../account-entry/ResetPassword'
 
 const apiClient = new ApiClient();
 
@@ -78,6 +79,7 @@ export default function App() {
                                 </Route>
                             </Route>
                             <Route path='email-confirmation' element={<ConfirmEmail />} />
+                            <Route path='reset-password' element={<ResetPassword />} />
                         </Routes >
                         <Footer />
                     </BrowserRouter >

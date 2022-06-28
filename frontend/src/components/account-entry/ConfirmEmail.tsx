@@ -11,11 +11,12 @@ export default function ConfirmEmail() {
 
     const [isConfirmed, setIsConfirmed] = useState(false);
 
-    const token = query.get('token');
+    const token = decodeURIComponent(query.get('token')!);
     const userId = query.get('userid');
 
     useEffect(() => {
         if (!token || !userId) return;
+        console.log(token)
         accountsService.confirmEmail(userId, token)
             .then((data) => {
                 setIsConfirmed(true);

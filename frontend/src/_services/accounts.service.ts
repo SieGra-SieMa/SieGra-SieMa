@@ -17,6 +17,10 @@ export default class AccountsService extends Service {
         return super.get(`${Config.HOST}/api/accounts/forget-password?email=${email}`)
     };
 
+    resetPassword(userId: string, token: string, password: string): Promise<{}> {
+        return super.post(`${Config.HOST}/api/accounts/reset-password?userid=${userId}&token=${token}`, password)
+    };
+
     confirmEmail(userId: string, token: string): Promise<Message> {
         return super.get(`${Config.HOST}/api/accounts/confirm-email?userid=${userId}&token=${token}`)
     };

@@ -14,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using AuthenticateResponseDTO = SieGraSieMa.DTOs.IdentityDTO.AuthenticateResponseDTO;
 using RevokeTokenDTO = SieGraSieMa.DTOs.IdentityDTO.RevokeTokenDTO;
 
@@ -150,7 +151,8 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = errors });
             }
 
-            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var token = HttpUtility.UrlEncode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
+            var front = _configuration.GetConnectionString("front");
             var param = new Dictionary<string, string>
             {
                {"userid", Convert.ToString(user.Id) },
@@ -158,7 +160,8 @@ namespace SieGraSieMa.Controllers
             };
 
             //Email
-            var link = $"{Request.Scheme}://{Request.Host}/api/Accounts/Confirm-Email";
+            //var link = $"{Request.Scheme}://{Request.Host}/api/Accounts/Confirm-Email";
+            var link = $"{front}/email-confirmation?";
             var callback = QueryHelpers.AddQueryString(link, param);
 
             await _emailService.SendAsync(user.Email, "Potwierdź konto email", callback);
@@ -209,6 +212,8 @@ namespace SieGraSieMa.Controllers
             var userFound = await _userManager.FindByIdAsync(userid);
             if (userFound == null)
                 return BadRequest(new ResponseErrorDTO { Error = "Wrong user id" });
+            token = HttpUtility.UrlDecode(token);
+            token = token.Replace(" ", "+");
             var result = (await _userManager.ConfirmEmailAsync(userFound, token));
             if (!result.Succeeded)
             {
@@ -227,14 +232,14 @@ namespace SieGraSieMa.Controllers
                 var user = await _userManager.FindByEmailAsync(email);
                 if (user == null)
                     return BadRequest(new ResponseErrorDTO { Error = "User with this email doesn't exists!" });
-                var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                var token = HttpUtility.UrlEncode((await _userManager.GeneratePasswordResetTokenAsync(user)));
                 var front = _configuration.GetConnectionString("front");
                 var param = new Dictionary<string, string>
                 {
                     {"userid", Convert.ToString(user.Id) },
                     {"token", token }
                 };
-                var link = $"{front}/email-confirmation?";
+                var link = $"{front}/reset-password?";
                 var callback = QueryHelpers.AddQueryString(link, param);
                 await _emailService.SendAsync(user.Email, "Siegra Siema - reset hasła", callback);
                 await _logService.AddLog(new Log(user, $"Email with password reset sent!"));
@@ -254,6 +259,8 @@ namespace SieGraSieMa.Controllers
             var userFound = await _userManager.FindByIdAsync(userid);
             if (userFound == null)
                 return BadRequest(new ResponseErrorDTO { Error = "Wrong user id!" });
+            token = HttpUtility.UrlDecode(token);
+            token = token.Replace(" ", "+");
             var result = (await _userManager.ResetPasswordAsync(userFound, token, newPassword));
             if (!result.Succeeded)
             {

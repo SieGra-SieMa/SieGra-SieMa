@@ -75,7 +75,7 @@ export default function SignIn() {
             <Button
                 onClick={() => setIsForget(true)}
                 type='button'
-                value='Zapomniałeś hasło?'
+                value='Zapomniałeś hasła?'
                 style={ButtonStyle.DarkBlue}
             />
             {(isForget) && (

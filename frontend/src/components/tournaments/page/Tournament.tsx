@@ -251,25 +251,27 @@ export default function Tournament() {
 						{session &&
 							user &&
 							tournament.isOpen &&
-							(tournament.team ? (
-								tournament.team.captainId === user.id && (
-									<div className={styles.team}>
-										<h6>{tournament.team.name}</h6>
+							(tournament.team
+								? tournament.team.captainId === user.id && (
+										<div className={styles.team}>
+											<h6>{tournament.team.name}</h6>
+											<Button
+												value="Usuń zespół"
+												onClick={() =>
+													setIsTeamRemove(true)
+												}
+												style={ButtonStyle.Red}
+											/>
+										</div>
+								  )
+								: (teams && teams.length > 0 && (
 										<Button
-											value="Usuń zespół"
+											value="Zapisz zespół"
 											onClick={() =>
-												setIsTeamRemove(true)
+												setIsTeamAssign(true)
 											}
-											style={ButtonStyle.Red}
 										/>
-									</div>
-								)
-							) : (
-								<Button
-									value="Zapisz zespół"
-									onClick={() => setIsTeamAssign(true)}
-								/>
-							))}
+								  )))}
 					</div>
 				</div>
 			)}

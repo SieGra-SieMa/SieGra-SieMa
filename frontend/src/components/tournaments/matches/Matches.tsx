@@ -67,7 +67,7 @@ export default function Matches({ groups }: MatchesProps) {
 						<div className={styles.matches}>
 							{currentGroup.matches &&
 								currentGroup.matches.map((match) => (
-									<Match key={match.matchId} match={match} />
+									<Match key={`${match.groupId}-${match.matchId}`} match={match} />
 								))}
 						</div>
 					</div>

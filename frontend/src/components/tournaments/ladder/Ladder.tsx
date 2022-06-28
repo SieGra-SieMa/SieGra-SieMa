@@ -13,12 +13,39 @@ type LadderProps = {
 export default function Ladder({ ladder }: LadderProps) {
 	const phases = useMemo(() => {
 		const phases = [...ladder];
-		const last = phases.pop();
-		if (last) {
-			const final = phases.pop();
-			phases.push(last);
-			if (final) {
-				phases.push(final);
+		const final = phases.pop();
+		if (final) {
+			const thirdPlace = phases.pop();
+			const semiFinal = phases.pop();
+			const quarterFinal = phases.pop();
+			const firstPhase = phases.pop();
+			if (firstPhase) {
+				phases.push({
+					...firstPhase,
+					name: '1/8 finału'
+				});
+			}
+			if (quarterFinal) {
+				phases.push({
+					...quarterFinal,
+					name: 'Ćwierć finał'
+				});
+			}
+			if (semiFinal) {
+				phases.push({
+					...semiFinal,
+					name: 'Pół finał'
+				});
+			}
+			phases.push({
+				...final,
+				name: 'Finał'
+			});
+			if (thirdPlace) {
+				phases.push({
+					...thirdPlace,
+					name: 'Mecz o 3 miejsce'
+				});
 			}
 		}
 		return phases;

@@ -21,14 +21,12 @@ export default function SignIn() {
     const [email, setEmail] = useState('kapitan@gmail.com');
     const [password, setPassword] = useState('Haslo+123');
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     const [isForget, setIsForget] = useState(false);
 
 
     const signIn = (e: FormEvent) => {
         e.preventDefault();
-        setError(null);
         setLoading(true);
         accountsService.authenticate(email, password)
             .then(
@@ -36,10 +34,7 @@ export default function SignIn() {
                     setSession(session);
                     navigate('/account');
                 },
-                (e) => {
-                    setError(e);
-                    setLoading(false);
-                }
+                () => setLoading(false)
             );
     };
 
@@ -47,7 +42,6 @@ export default function SignIn() {
     return (
         <form className={styles.block} onSubmit={signIn}>
             <h3>Zaloguj się</h3>
-            {error && <div className={styles.failed}>FAILED: {error}</div>}
             <Input
                 id='SignIn-email'
                 label='Email'

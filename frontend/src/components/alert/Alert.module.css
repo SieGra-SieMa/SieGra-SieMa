@@ -1,0 +1,38 @@
+.root {
+    position: fixed;
+    z-index: 9999;
+    bottom: 0;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.alert {
+    padding: 15px;
+    border-radius: 5px;
+    align-self: flex-start;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.success {
+    background-color: #deffe1;
+    color: #3f9700;
+}
+
+.error {
+    background-color: #ffd7d7;
+    color: #b60000;
+}
+
+.close {
+    cursor: pointer;
+    transition: all .2s ease-in-out !important;
+    transform: scale(1);
+}
+
+.close:hover {
+    transform: scale(1.1);
+}

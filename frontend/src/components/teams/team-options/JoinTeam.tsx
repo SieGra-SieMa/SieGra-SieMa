@@ -4,9 +4,11 @@ import Input from '../../form/Input';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
 import { useTeams } from '../TeamsContext';
+import { useAlert } from '../../alert/AlertContext';
 
 export default function JoinTeam() {
 
+    const alert = useAlert();
     const { teamsService } = useApi();
 
     const { teams, setTeams } = useTeams();
@@ -16,18 +18,15 @@ export default function JoinTeam() {
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
         teamsService.joinTeam(code)
-            .then(
-                (team) => {
-                    if (teams) {
-                        setTeams([...teams, team]);
-                    } else {
-                        setTeams([team]);
-                    }
-                    setCode('');
-                    alert(`Dołączyłeś do zespołu - ${team.name}`);
-                },
-                error => alert(error)
-            );
+            .then((team) => {
+                if (teams) {
+                    setTeams([...teams, team]);
+                } else {
+                    setTeams([team]);
+                }
+                setCode('');
+                alert.success(`Dołączyłeś do zespołu - ${team.name}`);
+            });
     }
 
     return (

@@ -23,6 +23,7 @@ export default class Service {
             localStorage.setItem('session', JSON.stringify(session));
         },
     };
+    static alert: ((message: string) => void) | null = null;
     static refresh: Promise<Tokens> | null = null;
 
     handleResponse<T>(
@@ -103,8 +104,10 @@ export default class Service {
 
         return fetch(url, options)
             .then(res => this.handleResponse<T>(res, options))
-            .catch((e) => Promise.reject(e.message || e));
-
+            .catch((e) => {
+                if (Service.alert) Service.alert(e.message || e);
+                return Promise.reject(e.message || e)
+            });
     }
 
     get<T>(url: string, headers?: Headers): Promise<T> {

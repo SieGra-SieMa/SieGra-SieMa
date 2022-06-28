@@ -1,4 +1,5 @@
 import { FormEvent, useState } from 'react';
+import { useAlert } from '../../alert/AlertContext';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
 import Input from '../../form/Input';
@@ -12,6 +13,7 @@ type CreateContestProps = {
 
 export default function CreateContest({ tournamentId, confirm }: CreateContestProps) {
 
+    const alert = useAlert();
     const { tournamentsService } = useApi();
 
     const [name, setName] = useState('');
@@ -21,6 +23,7 @@ export default function CreateContest({ tournamentId, confirm }: CreateContestPr
         tournamentsService.createContest(tournamentId, name)
             .then((data) => {
                 confirm(data);
+                alert.success('Konkurs został dodany');
             });
     }
 

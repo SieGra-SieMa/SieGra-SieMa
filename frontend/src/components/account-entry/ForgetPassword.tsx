@@ -14,7 +14,7 @@ export default function ForgetPassword({ confirm }: ForgetPasswordProps) {
 
     const [email, setEmail] = useState('');
 
-    const signIn = (e: FormEvent) => {
+    const resetPassword = (e: FormEvent) => {
         e.preventDefault();
         accountsService.forgetPassword(email)
             .then(() => {
@@ -23,10 +23,10 @@ export default function ForgetPassword({ confirm }: ForgetPasswordProps) {
     };
 
     return (
-        <form onSubmit={signIn}>
+        <form onSubmit={resetPassword}>
             <Input
-                id='SignIn-email'
-                label='Email'
+                id='Reset-email'
+                label='E-mail'
                 type='email'
                 value={email}
                 required

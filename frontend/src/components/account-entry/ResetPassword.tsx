@@ -3,7 +3,6 @@ import { Navigate, useSearchParams } from 'react-router-dom';
 import { useApi } from '../api/ApiContext';
 import Input from '../form/Input';
 import Button from '../form/Button';
-import { useNavigate } from 'react-router-dom';
 
 
 export default function ResetPassword() {
@@ -15,7 +14,6 @@ export default function ResetPassword() {
     const [isConfirmed, setIsConfirmed] = useState(false);
     const [password, setPassword] = useState<string>('');
     const [error, setError] = useState<string | null>(null);
-    const navigate = useNavigate();
 
     const token = decodeURIComponent(query.get('token')!);
     const userId = query.get('userid');

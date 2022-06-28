@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import { SyncLoader } from 'react-spinners';
 import { Team } from '../../../_lib/types';
 import { useApi } from '../../api/ApiContext';
@@ -9,22 +9,14 @@ import styles from './TeamAssign.module.css';
 type TeamAssignProps = {
     id: number;
     confirm: (team: Team) => void;
+    teams: Team[] | null;
 };
 
-export default function TeamAssign({ id, confirm }: TeamAssignProps) {
+export default function TeamAssign({ id, confirm, teams }: TeamAssignProps) {
 
-    const { teamsService, tournamentsService } = useApi();
-
-    const [teams, setTeams] = useState<Team[] | null>(null);
+    const { tournamentsService } = useApi();
 
     const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
-
-    useEffect(() => {
-        teamsService.getTeamsIAmCaptain()
-            .then((data) => {
-                setTeams(data);
-            });
-    }, [teamsService]);
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();

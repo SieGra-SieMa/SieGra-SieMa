@@ -26,28 +26,56 @@ export default function TeamsList({ teams }: TeamsListProps) {
 
 	return (
 		<>
-			<h4 className="underline" style={{ width: "fit-content" }}>Zespoły</h4>
+			<h4 className="underline" style={{ width: "fit-content" }}>
+				Zespoły
+			</h4>
 			{paidTeams ? (
 				<div className={styles.root}>
 					<div>
-						<ul className={styles.teams}>
-							{paidTeams.map((team) => (
-								<TeamPaid key={team.teamId} team={team} />
-							))}
-
-							<GuardComponent
-								roles={[ROLES.Employee, ROLES.Admin]}
-							>
-								<h6 className="underline" style={{ width: "fit-content" }}>Oczekiwanie</h6>
-								{unpaidTeams &&
-									unpaidTeams.map((team) => (
-										<TeamUnpaid
+						<div className={styles.teamsContainer}>
+							<div>
+								<GuardComponent
+									roles={[ROLES.Employee, ROLES.Admin]}
+								>
+									<h6
+										className="underline"
+										style={{ width: "fit-content" }}
+									>
+										Opłacone
+									</h6>
+								</GuardComponent>
+								<ul className={styles.teams}>
+									{paidTeams.map((team) => (
+										<TeamPaid
 											key={team.teamId}
 											team={team}
 										/>
 									))}
+								</ul>
+							</div>
+
+							<GuardComponent
+								roles={[ROLES.Employee, ROLES.Admin]}
+							>
+								<div>
+									<h6
+										className="underline"
+										style={{ width: "fit-content" }}
+									>
+										Oczekiwanie
+									</h6>
+									<ul className={styles.teams}>
+										{unpaidTeams &&
+											unpaidTeams.map((team) => (
+												<TeamUnpaid
+													key={team.teamId}
+													team={team}
+												/>
+											))}
+									</ul>
+								</div>
 							</GuardComponent>
-						</ul>
+						</div>
 					</div>
 				</div>
 			) : (

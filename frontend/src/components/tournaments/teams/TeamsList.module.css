@@ -12,13 +12,19 @@
     margin: 0;
 }
 
+.teamsContainer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
 .teams {
     background-color: var(--secondary-color);
     border-radius: 5px;
     padding: 10px;
-    max-height: 100%;
-    width: 100%;
-    overflow-y: hidden;
+    max-height: 400px;
+    width: auto;
+    overflow: auto;
 }
 
 .teams>h6 {
@@ -31,4 +37,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+@media all and (max-width: 1000px) {
+	.teamsContainer {
+        grid-template-columns: auto;
+        gap: 15px;
+    }
 }

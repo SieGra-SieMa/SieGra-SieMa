@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Group, Tournament } from "../../../_lib/_types/tournament";
+import Button, { ButtonStyle } from "../../form/Button";
+import Modal from "../../modal/Modal";
 import styles from "./Groups.module.css";
 
 type GroupsProps = {
@@ -7,30 +9,28 @@ type GroupsProps = {
 };
 
 export default function Groups({ tournament }: GroupsProps) {
-
-	const [currentGroup, setCurrentGroup] = useState<Group>(tournament.groups[0]);
+	const [currentGroup, setCurrentGroup] = useState<Group>(
+		tournament.groups[0]
+	);
+	const [isSelectGroup, setIsSelectGroup] = useState(false);
 	const [opacity, setOpacity] = useState(1);
 
 	return (
 		<div className={styles.root}>
 			<div className={styles.container}>
-				<h4 className="underline" id={styles.caption} style={{ width: "fit-content" }}>Grupy</h4>
-				<div className={styles.groups}>
-					{tournament.groups.filter((group) => !group.ladder).map((group) => (
-						<h6
-							key={group.id}
-							className={group === currentGroup ? styles.active : undefined}
-							id={styles.selectable}
-							onClick={() => {
-								setOpacity(0);
-								setTimeout(setCurrentGroup, 200, group);
-								setTimeout(setOpacity, 200, 1);
-							}}
-						>
-							Grupa {group.name}
-						</h6>
-					))}
-				</div>
+				<h4
+					className="underline"
+					id={styles.caption}
+					style={{ width: "fit-content" }}
+				>
+					Grupy
+				</h4>
+				<Button
+					id={styles.selectGroupButton}
+					value={"Grupa " + currentGroup.name}
+					onClick={() => setIsSelectGroup(true)}
+					style={ButtonStyle.TransparentBorder}
+				/>
 				<div className={styles.group}>
 					<table style={{ opacity: `${opacity}` }}>
 						<thead>
@@ -54,7 +54,15 @@ export default function Groups({ tournament }: GroupsProps) {
 									.map((team, index) => (
 										<tr key={index}>
 											<td>{index + 1}</td>
-											<td className={styles.sticky}>{tournament.teams.find((e) => e.teamId === team.idTeam)?.teamName}</td>
+											<td className={styles.sticky}>
+												{
+													tournament.teams.find(
+														(e) =>
+															e.teamId ===
+															team.idTeam
+													)?.teamName
+												}
+											</td>
 											<td>{team.playedMatches}</td>
 											<td>{team.wonMatches}</td>
 											<td>{team.lostMatches}</td>
@@ -68,6 +76,36 @@ export default function Groups({ tournament }: GroupsProps) {
 					</table>
 				</div>
 			</div>
+			{tournament && isSelectGroup && (
+				<Modal
+					title="Wybierz grupę"
+					isClose
+					close={() => setIsSelectGroup(false)}
+				>
+					<div className={styles.selectGroup}>
+						{tournament.groups
+							.filter((group) => group.matches)
+							.map((group) => (
+								<Button
+									value={"Grupa " + group.name}
+									className={
+										group === currentGroup
+											? styles.active
+											: ""
+									}
+									onClick={() => {
+										setOpacity(0);
+										setTimeout(setCurrentGroup, 200, group);
+										setTimeout(setOpacity, 200, 1);
+										setIsSelectGroup(false);
+									}}
+									key={group.id}
+									style={ButtonStyle.TransparentBorder}
+								/>
+							))}
+					</div>
+				</Modal>
+			)}
 		</div>
 	);
 }

@@ -2,9 +2,7 @@ import Config from "../../../config.json";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROLES } from "../../../_lib/roles";
-import {
-	Tournament as TournamentType,
-} from "../../../_lib/_types/tournament";
+import { Tournament as TournamentType } from "../../../_lib/_types/tournament";
 import { useApi } from "../../api/ApiContext";
 import Button, { ButtonStyle } from "../../form/Button";
 import GuardComponent from "../../guard-components/GuardComponent";
@@ -34,6 +32,8 @@ import Contests from "../contests/Contests";
 import CreateAlbum from "../../gallery/CreateAlbum";
 import AddIcon from '@mui/icons-material/Add';
 import { useAlert } from "../../alert/AlertContext";
+import { useUser } from "../../user/UserContext";
+import { Team } from "../../../_lib/types";
 
 export default function Tournament() {
 	const navigate = useNavigate();
@@ -41,8 +41,9 @@ export default function Tournament() {
 	const { id } = useParams<{ id: string }>();
 
 	const alert = useAlert();
-	const { tournamentsService } = useApi();
+	const { teamsService, tournamentsService } = useApi();
 	const { session } = useAuth();
+	const { user } = useUser();
 	const { tournaments, setTournaments } = useTournaments();
 
 	const [tournament, setTournament] = useState<TournamentType | null>(() => {
@@ -71,17 +72,23 @@ export default function Tournament() {
 	const [isLadderReset, setIsLadderReset] = useState(false);
 	const [isAddAlbum, setIsAddAlbum] = useState(false);
 	const isOpen = tournament?.isOpen;
+	const [teams, setTeams] = useState<Team[] | null>(null);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
 	}, []);
 
 	useEffect(() => {
-		tournamentsService.getTournamentById(id!)
-			.then((data) => {
-				setTournament(data);
-				setIsLoading(false);
-			});
+		teamsService.getTeamsIAmCaptain().then((data) => {
+			setTeams(data);
+		});
+	}, [teamsService]);
+
+	useEffect(() => {
+		tournamentsService.getTournamentById(id!).then((data) => {
+			setTournament(data);
+			setIsLoading(false);
+		});
 	}, [id, tournamentsService]);
 
 	const prepareTournament = () => {
@@ -138,7 +145,9 @@ export default function Tournament() {
 			const updatedTournament = {
 				...tournament,
 				team: null,
-				teams: tournament.teams.filter((team) => team.teamId !== teamId)
+				teams: tournament.teams.filter(
+					(team) => team.teamId !== teamId
+				),
 			};
 			setTournament(updatedTournament);
 			if (!tournaments) return;
@@ -166,9 +175,7 @@ export default function Tournament() {
 	};
 
 	return (
-		<TournamentContext.Provider
-			value={{ tournament, setTournament }}
-		>
+		<TournamentContext.Provider value={{ tournament, setTournament }}>
 			<div className={styles.top}>
 				<ArrowBackIosNewIcon
 					className="interactiveIcon"
@@ -231,33 +238,46 @@ export default function Tournament() {
 						<div className={styles.tournamentInfo}>
 							<div className={styles.description}>
 								<h4 className="underline">Opis</h4>
-								<div dangerouslySetInnerHTML={{ __html: `${tournament.description}` }}></div>
+								<div
+									dangerouslySetInnerHTML={{
+										__html: `${tournament.description}`,
+									}}
+								></div>
 							</div>
 							<div>
-								{(isOpen) ? (
+								{isOpen ? (
 									<TeamsList teams={tournament.teams} />
 								) : (
-									tournament.groups.length && <Groups tournament={tournament} />
+									tournament.groups.length && (
+										<Groups tournament={tournament} />
+									)
 								)}
 							</div>
 						</div>
-
-						{session && tournament.isOpen &&
-							(tournament.team ? (
-								<div className={styles.team}>
-									<h6>{tournament.team.name}</h6>
-									<Button
-										value="Usuń zespół"
-										onClick={() => setIsTeamRemove(true)}
-										style={ButtonStyle.Red}
-									/>
-								</div>
-							) : (
-								<Button
-									value="Zapisz zespół"
-									onClick={() => setIsTeamAssign(true)}
-								/>
-							))}
+						{session &&
+							user &&
+							tournament.isOpen &&
+							(tournament.team
+								? tournament.team.captainId === user.id && (
+										<div className={styles.team}>
+											<h6>{tournament.team.name}</h6>
+											<Button
+												value="Usuń zespół"
+												onClick={() =>
+													setIsTeamRemove(true)
+												}
+												style={ButtonStyle.Red}
+											/>
+										</div>
+								  )
+								: (teams && teams.length > 0 && (
+										<Button
+											value="Zapisz zespół"
+											onClick={() =>
+												setIsTeamAssign(true)
+											}
+										/>
+								  )))}
 					</div>
 				</div>
 			)}
@@ -274,48 +294,83 @@ export default function Tournament() {
 					</div>
 				) : (
 					<>
-						{tournament && (<>
-							<div className={styles.matchesAndContests}>
-								<div className={styles.matchesContainer}>
-									{!isOpen && (<>
-										{tournament.groups.length > 1 && (
-											<Matches groups={tournament.groups} />
+						{tournament && (
+							<>
+								<div className={styles.matchesAndContests}>
+									<div className={styles.matchesContainer}>
+										{!isOpen && (
+											<>
+												{tournament.groups.length >
+													1 && (
+													<Matches
+														groups={
+															tournament.groups
+														}
+													/>
+												)}
+											</>
 										)}
-									</>)}
+									</div>
+									<div className={styles.contestsContainer}>
+										<Contests
+											contests={tournament.contests}
+											tournamentId={id!}
+										/>
+									</div>
 								</div>
-								<div className={styles.contestsContainer}>
-									<Contests
-										contests={tournament.contests}
-										tournamentId={id!}
-									/>
-								</div>
-							</div>
-						</>)}
+							</>
+						)}
 						{tournament && !isOpen && (
 							<>
-								{tournament.ladder[0]?.matches[0].teamHomeId && (
+								{tournament.ladder[0]?.matches[0]
+									.teamHomeId && (
 									<Ladder ladder={tournament.ladder} />
 								)}
 								<GuardComponent roles={[ROLES.Admin]}>
-									{tournament && tournament.groups.map((group) => group.matches?.map((e) =>
-										e.teamAwayScore !== null &&
-										e.teamHomeScore !== null
-									).every((e) => e) ?? true).every((e) => e) && (tournament.ladder[0]?.matches[0].teamHomeId ? (
-										<div className={styles.ladderControls}>
-											<Button
-												value="Zresetuj drabinke"
-												onClick={() => setIsLadderReset(true)}
-												style={ButtonStyle.Red}
-											/>
-										</div>
-									) : (
-										<div className={styles.ladderControls}>
-											<Button
-												value="Zbuduj drabinke"
-												onClick={() => setIsLadderCompose(true)}
-											/>
-										</div>
-									))}
+									{tournament &&
+										tournament.groups
+											.map(
+												(group) =>
+													group.matches
+														?.map(
+															(e) =>
+																e.teamAwayScore !==
+																	null &&
+																e.teamHomeScore !==
+																	null
+														)
+														.every((e) => e) ?? true
+											)
+											.every((e) => e) &&
+										(tournament.ladder[0]?.matches[0]
+											.teamHomeId ? (
+											<div
+												className={
+													styles.ladderControls
+												}
+											>
+												<Button
+													value="Zresetuj drabinke"
+													onClick={() =>
+														setIsLadderReset(true)
+													}
+													style={ButtonStyle.Red}
+												/>
+											</div>
+										) : (
+											<div
+												className={
+													styles.ladderControls
+												}
+											>
+												<Button
+													value="Zbuduj drabinke"
+													onClick={() =>
+														setIsLadderCompose(true)
+													}
+												/>
+											</div>
+										))}
 								</GuardComponent>
 							</>
 						)}
@@ -342,8 +397,8 @@ export default function Tournament() {
 								style={
 									album.profilePicture
 										? {
-											backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
-										}
+												backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
+										  }
 										: undefined
 								}
 								onClick={() =>
@@ -468,7 +523,7 @@ export default function Tournament() {
 										teamName: team.name,
 										teamProfileUrl: team.profilePicture,
 										paid: false,
-									})
+									}),
 								};
 								setTournament(updatedTournament);
 								if (tournaments) {
@@ -480,6 +535,7 @@ export default function Tournament() {
 									setTournaments(data);
 								}
 							}}
+							teams={teams}
 						/>
 					</Modal>
 				)}

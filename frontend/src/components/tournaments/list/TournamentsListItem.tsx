@@ -10,13 +10,16 @@ import TeamAssign from "./TeamAssign";
 import { useTournaments } from "../TournamentsContext";
 import { useAuth } from "../../auth/AuthContext";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import { Team } from "../../../_lib/types";
 
 type TournamentsListItemProps = {
 	tournament: TournamentListItemType;
+	captainTeams: Team[] | null;
 };
 
 export default function TournamentsListItem({
 	tournament,
+	captainTeams,
 }: TournamentsListItemProps) {
 	const navigate = useNavigate();
 
@@ -62,19 +65,30 @@ export default function TournamentsListItem({
 						</div>
 						<div
 							dangerouslySetInnerHTML={{
-								__html: `${tournament.description}`,
+								__html: `${tournament.description.slice(
+									0,
+									600
+								)}`,
 							}}
 						></div>
+						{tournament.description.length > 600 && (
+							<p className={styles.readMore}>Read more</p>
+						)}
 					</div>
-					{session && tournament.isOpen && !tournament.team && (
-						<Button
-							value="Zapisz zespół"
-							onClick={(e) => {
-								e.stopPropagation();
-								setIsTeamAssign(true);
-							}}
-						/>
-					)}
+					{session &&
+						tournament.isOpen &&
+						!tournament.team &&
+						captainTeams?.length !== 0 && (
+							<>
+								<Button
+									value="Zapisz zespół"
+									onClick={(e) => {
+										e.stopPropagation();
+										setIsTeamAssign(true);
+									}}
+								/>
+							</>
+						)}
 				</div>
 			</li>
 			{session && tournament.isOpen && !tournament.team && isTeamAssign && (
@@ -98,6 +112,7 @@ export default function TournamentsListItem({
 							data[index] = updatedTournament;
 							setTournaments(data);
 						}}
+						teams={captainTeams}
 					/>
 				</Modal>
 			)}

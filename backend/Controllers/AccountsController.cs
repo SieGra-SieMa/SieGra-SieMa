@@ -104,11 +104,11 @@ namespace SieGraSieMa.Controllers
 
             var user = await _userManager.FindByEmailAsync(twoFactorDto.Email);
             if (user == null)
-                return BadRequest(new ResponseErrorDTO { Error = "Wrong email" });
+                return BadRequest(new ResponseErrorDTO { Error = "Błędy adres email" });
 
             var validVerification = await _userManager.VerifyTwoFactorTokenAsync(user, twoFactorDto.Provider, twoFactorDto.Token);
             if (!validVerification)
-                return BadRequest(new ResponseErrorDTO { Error = "Wrong token" });
+                return BadRequest(new ResponseErrorDTO { Error = "Błędny token" });
 
             var token = await _jwtHandler.GenerateToken(user);
             var refreshingToken = await _accountService.CreateRefreshToken(user);
@@ -174,7 +174,7 @@ namespace SieGraSieMa.Controllers
             var response = await _accountService.RefreshToken(refreshToken);
 
             if (!response.IsAuthenticated)
-                return Unauthorized(new ResponseErrorDTO { Error = "Wrong token" });
+                return Unauthorized(new ResponseErrorDTO { Error = "Błędny token" });
 
             if (!string.IsNullOrEmpty(response.RefreshToken))
                 SetRefreshTokenInCookie(response.RefreshToken);
@@ -192,7 +192,7 @@ namespace SieGraSieMa.Controllers
                 return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
             var response = _accountService.RevokeToken(token);
             if (!await response)
-                return NotFound(new ResponseErrorDTO { Error = "Token not found" });
+                return NotFound(new ResponseErrorDTO { Error = "Nie znaleziono tokenu!" });
             return Ok();
         }
 
@@ -203,14 +203,14 @@ namespace SieGraSieMa.Controllers
 
             var userFound = await _userManager.FindByIdAsync(userid);
             if (userFound == null)
-                return BadRequest(new ResponseErrorDTO { Error = "Wrong user id" });
+                return BadRequest(new ResponseErrorDTO { Error = "Niepoprawne id użytkownika!" });
             var result = (await _userManager.ConfirmEmailAsync(userFound, token));
             if (!result.Succeeded)
             {
-                return BadRequest(new ResponseErrorDTO { Error = "Email not confirmed" });
+                return BadRequest(new ResponseErrorDTO { Error = "Email nie został potwierdzony!" });
             }
             await _logService.AddLog(new Log(userFound, $"Email confirmed successfully"));
-            return Ok(new MessageDTO { Message = "Email is confirmed!" });
+            return Ok(new MessageDTO { Message = "Email został potwierdzony!" });
         }
 
         [AllowAnonymous]
@@ -221,7 +221,7 @@ namespace SieGraSieMa.Controllers
             {
                 var user = await _userManager.FindByEmailAsync(email);
                 if (user == null)
-                    return BadRequest(new ResponseErrorDTO { Error = "User with this email doesn't exists!" });
+                    return BadRequest(new ResponseErrorDTO { Error = "Użytkownik z takim adresem email nie istnieje!" });
                 var token = await _userManager.GeneratePasswordResetTokenAsync(user);
                 var param = new Dictionary<string, string>
                 {
@@ -247,14 +247,14 @@ namespace SieGraSieMa.Controllers
 
             var userFound = await _userManager.FindByIdAsync(userid);
             if (userFound == null)
-                return BadRequest(new ResponseErrorDTO { Error = "Wrong user id!" });
+                return BadRequest(new ResponseErrorDTO { Error = "Niepoprawne id użytkownika!" });
             var result = (await _userManager.ResetPasswordAsync(userFound, token, newPassword));
             if (!result.Succeeded)
             {
-                return BadRequest(new ResponseErrorDTO { Error = "Bad password!" });
+                return BadRequest(new ResponseErrorDTO { Error = "Błędne hasło!" });
             }
             await _logService.AddLog(new Log(userFound, $"Password changed successfully!"));
-            return Ok(new MessageDTO { Message = "Password was changed!" });
+            return Ok(new MessageDTO { Message = "Hasło zostało zmienione!" });
         }
     }
 }

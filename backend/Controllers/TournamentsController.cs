@@ -177,10 +177,14 @@ namespace SieGraSieMa.Controllers
                 var team = _teamService.GetTeamWithPlayers(teamId);
                 if (team == null) return BadRequest(new ResponseErrorDTO { Error = "Team does not exists" });
 
-                var resp = await _tournamentsService.RemoveTeamFromTournament(team.Id, id);
-
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = await _userManager.FindByEmailAsync(email);
+                if(team.CaptainId != user.Id)
+                    return BadRequest(new ResponseErrorDTO { Error = "You are not the captain of this team!" });
+
+                var resp = await _tournamentsService.RemoveTeamFromTournament(team.Id, id);
+
+                
                 await _logService.AddLog(new Log(user, $"Team with id {teamId} was removed from tournament with id {id}"));
 
                 return Ok();

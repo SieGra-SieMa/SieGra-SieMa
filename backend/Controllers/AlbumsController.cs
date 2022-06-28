@@ -50,7 +50,7 @@ namespace SieGraSieMa.Controllers
             var album = await _albumService.GetAlbum(id);
 
             if (album == null)
-                return NotFound(new ResponseErrorDTO { Error = "Album not found" });
+                return NotFound(new ResponseErrorDTO { Error = "Nie znaleziono albumu!" });
 
             return Ok(album);
         }
@@ -86,7 +86,7 @@ namespace SieGraSieMa.Controllers
             {
                 var newAlbum = new Album { CreateDate = album.CreateDate, Name = album.Name, TournamentId = album.TournamentId };
                 var result = await _albumService.UpdateAlbum(id, newAlbum);
-                if (!result) return BadRequest(new ResponseErrorDTO { Error = "Album or tournament not found" });
+                if (!result) return BadRequest(new ResponseErrorDTO { Error = "Nie znaleziono albumu lub konkursu!" });
 
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = await _userManager.FindByEmailAsync(email);
@@ -106,7 +106,7 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var result = await _albumService.DeleteAlbum(id);
-                if (!result) return NotFound(new ResponseErrorDTO { Error = "Album not found" });
+                if (!result) return NotFound(new ResponseErrorDTO { Error = "Nie znaleziono albumu!" });
 
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = await _userManager.FindByEmailAsync(email);

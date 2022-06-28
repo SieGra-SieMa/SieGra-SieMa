@@ -37,8 +37,6 @@ namespace SieGraSieMa.Controllers
         public async Task<IActionResult> GetMedia()
         {
             var media = await _mediaService.GetMedia();
-            //await _emailService.SendAsync("jan.biniek@gmail.com", "Logowanie dwuetapowe", "acb");
-
             return Ok(media);
         }
 
@@ -54,34 +52,6 @@ namespace SieGraSieMa.Controllers
             return Ok(medium);
         }
 
-        /*[HttpPost()]
-        public async Task<IActionResult> CreateMedium(IFormFile[] files)
-        {
-            try
-            {
-                var list = await _mediaService.CreateMedia(files);
-
-                return Ok(list);
-            }
-            catch (Exception ex)
-            {
-
-                return BadRequest(new ResponseErrorDTO { Error = ex.Message });
-            }
-        }*/
-
-        /*[HttpPatch("{id}")]
-        public async Task<IActionResult> UpdateMedium(RequestMediumDTO medium, int id)
-        {
-            //var newMedium = new Medium { Url = medium.Url, AlbumId = medium.AlbumId };
-
-            var result = await _mediaService.UpdateMedia(id, medium);
-            if (!result)
-                return BadRequest(new ResponseErrorDTO { Error = "Bad request" });
-
-            return Ok();
-        }*/
-
         [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMedium(int id)
@@ -89,12 +59,12 @@ namespace SieGraSieMa.Controllers
             try
             {
                 var result = await _mediaService.DeleteMedia(id);
-                if (!result) return NotFound(new ResponseErrorDTO { Error = "Medium not found" });
+                if (!result) return NotFound(new ResponseErrorDTO { Error = "Nie znaleziono mediów!" });
 
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = await _userManager.FindByEmailAsync(email);
                 await _logService.AddLog(new Log(user, $"Medium with id {id} deleted"));
-                return Ok(new MessageDTO { Message = "Medium deleted!" });
+                return Ok(new MessageDTO { Message = "Usunięto media!" });
             }
             catch (Exception e)
             {
@@ -132,7 +102,7 @@ namespace SieGraSieMa.Controllers
                 var email = HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value;
                 var user = await _userManager.FindByEmailAsync(email);
                 await _logService.AddLog(new Log(user, $"Mediumwith id {id} deleted from album with id {albumId}"));
-                return Ok(new MessageDTO { Message = "Photo deleted from album" });
+                return Ok(new MessageDTO { Message = "Zdjęcie usunięte z albumu!" });
             }
             catch (Exception e)
             {

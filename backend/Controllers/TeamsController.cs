@@ -95,8 +95,8 @@ namespace SieGraSieMa.Controllers
                 if (!response)
                 {
                     await _logService.AddLog(new Log(user, $"Already belongs to another team which is in the same tournament as this one"));
-                    return BadRequest(new ResponseErrorDTO { Error = "Player already belongs to another team which is in the same tournament as this one" });
-                }
+                    return BadRequest(new ResponseErrorDTO { Error = "Gracz obecnie należy do innego zespołu zapisanego na ten sam turniej!" });
+                } 
                 var team = _teamService.JoinTeam(teamCodeDTO.Code, user);
                 await _logService.AddLog(new Log(user, $"Successfully joined to team with code {teamCodeDTO.Code}"));
                 return Ok(team);
@@ -193,7 +193,7 @@ namespace SieGraSieMa.Controllers
                 var user = _userService.GetUser(email);
                 await _teamService.DeleteTeam(id, user.Id);
                 await _logService.AddLog(new Log(user, $"Deleted team with id {id}"));
-                return Ok(new MessageDTO { Message = $"Team successfully deleted" });
+                return Ok(new MessageDTO { Message = $"Zespół pomyślnie usunięty!" });
             }
             catch (Exception e)
             {
@@ -212,12 +212,12 @@ namespace SieGraSieMa.Controllers
                 var user = _userService.GetUser(email);
                 var team = _teamService.GetTeam(id);
                 if (team == null)
-                    return NotFound(new ResponseErrorDTO { Error = "Team not found" });
+                    return NotFound(new ResponseErrorDTO { Error = "Nie znaleziono zespołu!" });
                 if (team.CaptainId != user.Id)
-                    return BadRequest(new ResponseErrorDTO { Error = "You are not a captain" });
+                    return BadRequest(new ResponseErrorDTO { Error = "Nie jesteś kapitanem zespołu!" });
                 await _emailService.SendAsync(emailAdress, "Zaproszenie do zespołu SiegraSiema", $"Dołącz do naszego teamu, użyj tego kodu {team.Code} na stronie SiegraSiema");
                 await _logService.AddLog(new Log(user, $"Send mail with invite to team {team.Id} to user with mail {emailAdress}"));
-                return Ok(new MessageDTO { Message = $"Mail already sent" });
+                return Ok(new MessageDTO { Message = $"Email został wysłany!" });
             }
             catch (Exception e)
             {
@@ -236,10 +236,10 @@ namespace SieGraSieMa.Controllers
                 var user = _userService.GetUser(email);
                 var team = _teamService.GetTeam(id);
                 if (team.CaptainId != user.Id)
-                    return Unauthorized(new ResponseErrorDTO { Error = "You are not the captain!" });
+                    return Unauthorized(new ResponseErrorDTO { Error = "Nie jesteś kapitanem zespołu!" });
 
                 if (file.Length != 1)
-                    return BadRequest("There should be only one photo sent!");
+                    return BadRequest("Należy wysłać tylko jedno zdjęcie!"); 
 
                 var list = await _mediaService.CreateMedia(null, team.Id, file, IMediaService.MediaTypeEnum.teams);
                 await _logService.AddLog(new Log(user, $"Profile photo for team with id {team.Id} was set"));
@@ -282,7 +282,7 @@ namespace SieGraSieMa.Controllers
                 var user = _userService.GetUser(email);
                 var team = _teamService.GetTeam(id);
                 if (team == null)
-                    return NotFound(new ResponseErrorDTO { Error = $"Team with this id: {id} does not exists!" });
+                    return NotFound(new ResponseErrorDTO { Error = $"Zespół o id: {id} nie istnieje!" });
 
                 if (file.Length != 1)
                     return BadRequest("There should be only one photo sent!");
@@ -308,7 +308,7 @@ namespace SieGraSieMa.Controllers
                 var user = _userService.GetUser(email);
                 await _teamService.DeleteTeamByAdmin(id);
                 await _logService.AddLog(new Log(user, $"Team with id {id} was deleted"));
-                return Ok(new MessageDTO { Message = $"Team successfully deleted" });
+                return Ok(new MessageDTO { Message = $"Zespół pomyślnie usunięty!" });
             }
             catch (Exception e)
             {

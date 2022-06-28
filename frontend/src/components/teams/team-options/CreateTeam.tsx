@@ -4,9 +4,11 @@ import Input from '../../form/Input';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
 import { useTeams } from '../TeamsContext';
+import { useAlert } from '../../alert/AlertContext';
 
 export default function CreateTeam() {
 
+    const alert = useAlert();
     const { teamsService } = useApi();
 
     const { teams, setTeams } = useTeams();
@@ -16,18 +18,15 @@ export default function CreateTeam() {
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
         teamsService.createTeam(name)
-            .then(
-                (team) => {
-                    if (teams) {
-                        setTeams([...teams, team]);
-                    } else {
-                        setTeams([team]);
-                    }
-                    setName('');
-                    alert(`Utwoprzyłeś zespoł - ${team.name}`);
-                },
-                error => alert(error)
-            );
+            .then((team) => {
+                if (teams) {
+                    setTeams([...teams, team]);
+                } else {
+                    setTeams([team]);
+                }
+                setName('');
+                alert.success(`Utwoprzyłeś zespoł - ${team.name}`);
+            });
     }
 
     return (

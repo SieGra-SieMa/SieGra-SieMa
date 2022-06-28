@@ -17,10 +17,10 @@ export default function UsersList() {
 
 	useEffect(() => {
 		if (!user) return;
-		usersService.getUsers().then(
-			(result) => setUsers(result.filter((e) => user.id !== e.id)),
-			(error) => alert(error)
-		);
+		usersService.getUsers()
+			.then((result) => setUsers(result.filter(
+				(e) => user.id !== e.id
+			)));
 	}, [user, usersService]);
 
 	const onUserPropChange = (user: User) => {

@@ -3,7 +3,7 @@ import TeamsService from './teams.service';
 import AccountsService from './accounts.service';
 import TournamentsService from './tournaments.service';
 import UsersService from './users.service';
-import { AuthState } from './service';
+import Service, { AuthState } from './service';
 import AlbumsService from './albums.service';
 import MatchService from './match.service';
 import MediaService from './media.service';
@@ -36,5 +36,9 @@ export default class ApiClient {
 		this.albumsService.authState = authState;
 		this.matchService.authState = authState;
 		this.mediaService.authState = authState;
+	}
+
+	setAlert(alert: (message: string) => void) {
+		Service.alert = alert;
 	}
 }

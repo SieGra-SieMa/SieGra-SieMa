@@ -57,6 +57,7 @@ export type Match = {
 
 export type Phase = {
     phase: number;
+    name: string; // created on frontend
     matches: Match[];
 };
 

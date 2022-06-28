@@ -11,6 +11,7 @@ import Confirm from "../../modal/Confirm";
 import { useApi } from "../../api/ApiContext";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useAlert } from "../../alert/AlertContext";
 
 type TeamsListItemProps = {
 	team: Team;
@@ -23,6 +24,8 @@ export default function TeamsListItem({
 	onTeamChange,
 	onTeamDelete,
 }: TeamsListItemProps) {
+
+	const alert = useAlert();
 	const { teamsService } = useApi();
 
 	const [isPicture, setIsPicture] = useState(false);
@@ -32,10 +35,12 @@ export default function TeamsListItem({
 	const capitan = team.players.find((player) => player.id === team.captainId);
 
 	const onDelete = () => {
-		teamsService.admindDeleteTeam(team.id).then((data) => {
-			onTeamDelete(team);
-			setIsDelete(false);
-		});
+		teamsService.adminDeleteTeam(team.id)
+			.then((data) => {
+				onTeamDelete(team);
+				setIsDelete(false);
+				alert.success(data.message);
+			});
 	};
 
 	return (
@@ -46,8 +51,8 @@ export default function TeamsListItem({
 				style={
 					team.profilePicture
 						? {
-								backgroundImage: `url(${Config.HOST}${team.profilePicture})`,
-						  }
+							backgroundImage: `url(${Config.HOST}${team.profilePicture})`,
+						}
 						: undefined
 				}
 			>

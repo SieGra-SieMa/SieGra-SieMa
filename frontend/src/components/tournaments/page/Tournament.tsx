@@ -30,7 +30,8 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import Contests from "../contests/Contests";
 import CreateAlbum from "../../gallery/CreateAlbum";
-import AddIcon from "@mui/icons-material/Add";
+import AddIcon from '@mui/icons-material/Add';
+import { useAlert } from "../../alert/AlertContext";
 import { useUser } from "../../user/UserContext";
 import { Team } from "../../../_lib/types";
 
@@ -39,6 +40,7 @@ export default function Tournament() {
 
 	const { id } = useParams<{ id: string }>();
 
+	const alert = useAlert();
 	const { teamsService, tournamentsService } = useApi();
 	const { session } = useAuth();
 	const { user } = useUser();
@@ -90,17 +92,19 @@ export default function Tournament() {
 	}, [id, tournamentsService]);
 
 	const prepareTournament = () => {
-		tournamentsService.prepareTournamnet(id!).then((data) => {
-			setTournament(data);
-			setIsPrepare(false);
-		});
+		tournamentsService.prepareTournamnet(id!)
+			.then((data) => {
+				setTournament(data);
+				setIsPrepare(false);
+			});
 	};
 
 	const resetTournament = () => {
-		tournamentsService.resetTournament(id!).then((data) => {
-			setTournament(data);
-			setIsReset(false);
-		});
+		tournamentsService.resetTournament(id!)
+			.then((data) => {
+				setTournament(data);
+				setIsReset(false);
+			});
 	};
 
 	const editTournament = useCallback(
@@ -120,17 +124,19 @@ export default function Tournament() {
 	);
 
 	const deleteTournament = useCallback(() => {
-		tournamentsService.deleteTournament(id!).then((data) => {
-			setIsDelete(false);
-			navigate("..");
-			if (tournaments) {
-				const updatedTournaments = tournaments.filter(
-					(tournament) => tournament.id !== parseInt(id!)
-				);
-				setTournaments(updatedTournaments);
-			}
-		});
-	}, [id, tournaments, setTournaments, tournamentsService, navigate]);
+		tournamentsService.deleteTournament(id!)
+			.then((data) => {
+				setIsDelete(false);
+				navigate("..");
+				if (tournaments) {
+					const updatedTournaments = tournaments.filter(
+						(tournament) => tournament.id !== parseInt(id!)
+					);
+					setTournaments(updatedTournaments);
+				}
+				alert.success(data.message);
+			});
+	}, [id, tournaments, setTournaments, alert, tournamentsService, navigate]);
 
 	const removeTeam = (teamId: number) => () => {
 		tournamentsService.removeTeam(id!, teamId).then(() => {

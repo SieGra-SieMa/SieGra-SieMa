@@ -24,13 +24,6 @@
 	justify-content: center;
 }
 
-.failed {
-	padding: 15px 20px;
-	border-radius: 5px;
-	background-color: #ffd7d7;
-	color: #b60000;
-}
-
 .divider {
 	text-align: center;
 	color: #fff;

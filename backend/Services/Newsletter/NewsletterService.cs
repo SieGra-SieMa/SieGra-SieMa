@@ -35,7 +35,7 @@ namespace SieGraSieMa.Services
         {
             if(await CheckNewsletter(UserId))
             {
-                throw new Exception("User already added to newsletter");
+                throw new Exception("Użytkownik jest aktualnie zapisany do newslettera");
             }
             var result = await _SieGraSieMaContext.Newsletters.AddAsync(new Newsletter { UserId = UserId });
             await _SieGraSieMaContext.SaveChangesAsync();
@@ -49,7 +49,7 @@ namespace SieGraSieMa.Services
         {
             if (!await CheckNewsletter(UserId))
             {
-                throw new Exception("User is not subscribed to newsletter");
+                throw new Exception("Użytkownik nie jest zapisany na newsletter");
             }
             _SieGraSieMaContext.Newsletters.Remove(await GetNewsletter(UserId));
             return _SieGraSieMaContext.SaveChanges()>0;

@@ -31,13 +31,14 @@ namespace SieGraSieMa.Services
         public async Task<ResponseContestDTO> CreateContest(Contest newContest)
         {
             await _SieGraSieMaContext.Contests.AddAsync(newContest);
-            if (await _SieGraSieMaContext.SaveChangesAsync() == 0) throw new Exception("Cannot add contest");
+            if (await _SieGraSieMaContext.SaveChangesAsync() == 0) throw new Exception("Nie można dodać konkursu");
             var contest = _SieGraSieMaContext.Contests.Where(c => c.TournamentId == newContest.TournamentId && c.Name == newContest.Name).FirstOrDefault();
             var result = new ResponseContestDTO
             {
                 Id = contest.Id,
                 Name = contest.Name,
                 TournamentId = contest.TournamentId,
+                Contestants = new List<ResponseContestantDTO>()
                 /*Contestants = await _SieGraSieMaContext.Contestants.Include(c => c.User).Where(c => c.ContestId == id).Select(c => new ResponseContestantDTO
                 {
                     Name = c.User.Name,
@@ -50,10 +51,10 @@ namespace SieGraSieMa.Services
         public async Task<ResponseContestDTO> UpdateContest(int id, Contest newContest)
         {
             var oldContest = await _SieGraSieMaContext.Contests.FindAsync(id);
-            if (oldContest == null) throw new Exception("There is no contest with this id");
+            if (oldContest == null) throw new Exception("Nie ma konkursu o takim numerze");
             oldContest.Name = newContest.Name;
             _SieGraSieMaContext.Contests.Update(oldContest);
-            if (await _SieGraSieMaContext.SaveChangesAsync() == 0) throw new Exception("Cannot update contest");
+            if (await _SieGraSieMaContext.SaveChangesAsync() == 0) throw new Exception("Nie można zaktualizować konkursu");
             var result = new ResponseContestDTO
             {
                 Id = oldContest.Id,
@@ -71,8 +72,8 @@ namespace SieGraSieMa.Services
         public async Task<ResponseContestDTO> DeleteContest(int id)
         {
             var contest = await _SieGraSieMaContext.Contests.FindAsync(id);
-            if (contest == null) throw new Exception("There is no contest with this id");
-            if (_SieGraSieMaContext.Contestants.Where(c => c.ContestId == id).Any()) throw new Exception("Cant delete contest with contestans");
+            if (contest == null) throw new Exception("Nie ma konkursu o takim numerze");
+            if (_SieGraSieMaContext.Contestants.Where(c => c.ContestId == id).Any()) throw new Exception("Nie można usunąć konkursu z uczestnikami");
             _SieGraSieMaContext.Contests.Remove(contest);
             await _SieGraSieMaContext.SaveChangesAsync();
             var result = new ResponseContestDTO
@@ -92,7 +93,7 @@ namespace SieGraSieMa.Services
         public async Task<ResponseContestDTO> GetContest(int id)
         {
             var contest = await _SieGraSieMaContext.Contests.FindAsync(id);
-            if (contest == null) throw new Exception("No contest with this id");
+            if (contest == null) throw new Exception("Nie ma konkursu o takim numerze");
             var result = new ResponseContestDTO
             {
                 Id = contest.Id,
@@ -132,9 +133,9 @@ namespace SieGraSieMa.Services
         public async Task<ResponseContestantDTO> SetScore(int id, AddContestantDTO addContestantDTO)
         {
             User user = await _SieGraSieMaContext.Users.Where(t => t.Email == addContestantDTO.Email).FirstOrDefaultAsync();
-            if (user == null) throw new Exception("User with that email does not exist");
+            if (user == null) throw new Exception("Użytkownik z takim mailem nie istnieje");
             Contest contest = await _SieGraSieMaContext.Contests.FindAsync(id);
-            if (contest == null) throw new Exception("Contest with that id does not exist");
+            if (contest == null) throw new Exception("Nie ma konkursu o takim numerze");
             Contestant contestant = await _SieGraSieMaContext.Contestants.FindAsync(id, user.Id);
             if (contestant == null)
             {
@@ -165,11 +166,11 @@ namespace SieGraSieMa.Services
         public async Task<ResponseContestantDTO> DeleteScore(int id, AddContestantDTO addContestantDTO)
         {
             User user = await _SieGraSieMaContext.Users.Where(t => t.Email == addContestantDTO.Email).FirstOrDefaultAsync();
-            if (user == null) throw new Exception("User with that email does not exist");
+            if (user == null) throw new Exception("Użytkownik z takim mailem nie istnieje");
             Contest contest = await _SieGraSieMaContext.Contests.FindAsync(id);
-            if (contest == null) throw new Exception("Contest with that id does not exist");
+            if (contest == null) throw new Exception("Nie ma konkursu o takim numerze");
             Contestant contestant = await _SieGraSieMaContext.Contestants.FindAsync(id, user.Id);
-            if (contestant == null) throw new Exception("This contestant cannot be removed, because contestant does not exist already");
+            if (contestant == null) throw new Exception("Ten wynik nie może zostać usunięty, ponieważ nie istnieje");
             else
             {
                 _SieGraSieMaContext.Contestants.Remove(contestant);

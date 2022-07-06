@@ -66,17 +66,17 @@ namespace SieGraSieMa.Services
 
         public async Task<TournamentListDTO> CreateTournament(Tournament tournament)
         {
-            if (tournament.EndDate < tournament.StartDate || tournament.StartDate < DateTime.UtcNow) throw new Exception("Unable to add because of invalid dates");
+            if (tournament.EndDate < tournament.StartDate || tournament.StartDate < DateTime.UtcNow) throw new Exception("Nie można dodać ze względu na błędne daty");
             await _SieGraSieMaContext.Tournaments.AddAsync(tournament);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return new TournamentListDTO { Id = tournament.Id, Name = tournament.Name, StartDate = tournament.StartDate, EndDate = tournament.EndDate, Description = tournament.Description, Address = tournament.Address };
 
-            throw new Exception("Unable to add tournament");
+            throw new Exception("Nie dodano turnieju");
         }
         public async Task<bool> DeleteTournament(int id)
         {
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
-            if (tournament == null) throw new Exception("Tournament with this id not found");
+            if (tournament == null) throw new Exception("Turniej z tym id nie istnieje");
             var albums = await _SieGraSieMaContext.Albums.Where(a => a.TournamentId == id).ToListAsync();
             albums.ForEach(a =>
             {
@@ -230,7 +230,7 @@ namespace SieGraSieMa.Services
         {
             var oldTournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
             if (oldTournament == null)
-                throw new Exception("Tournament not found");
+                throw new Exception("Turnieju nie znaleziono");
             oldTournament.Name = tournament.Name;
             oldTournament.StartDate = tournament.StartDate;
             oldTournament.EndDate = tournament.EndDate;
@@ -244,13 +244,13 @@ namespace SieGraSieMa.Services
         public async Task<string> GetDescription(int id)
         {
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
-            if (tournament == null) throw new Exception("Tournament not found");
+            if (tournament == null) throw new Exception("Turnieju nie znaleziono");
             return tournament.Description;
         }
         public async Task<string> SetDescription(int id, string data)
         {
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(id);
-            if (tournament == null) throw new Exception("Tournament not found");
+            if (tournament == null) throw new Exception("Turnieju nie znaleziono");
             tournament.Description = data;
             _SieGraSieMaContext.Update(tournament);
             await _SieGraSieMaContext.SaveChangesAsync();
@@ -288,7 +288,7 @@ namespace SieGraSieMa.Services
         {
             var tit = await _SieGraSieMaContext.TeamInTournaments.Include(t => t.Team).ThenInclude(tt => tt.Medium)
                 .Where(t => t.TournamentId == tournamentId && t.TeamId == teamId).FirstOrDefaultAsync();
-            if (tit == null) throw new Exception("No team with this id is signed up for tournament with this id");
+            if (tit == null) throw new Exception("Żadna drużyna o tym id nie zapisała się na turniej o tym id");
             tit.Paid = teamsEnum == TeamPaidEnum.Paid;
             _SieGraSieMaContext.Update(tit);
             await _SieGraSieMaContext.SaveChangesAsync();
@@ -313,7 +313,7 @@ namespace SieGraSieMa.Services
                                 .Include(t => t.TeamInTournaments)
                                 .Where(t => t.TeamInTournaments.Any(tr => tr.TournamentId == tournamentId && tr.Paid == true))
                                 .ToListAsync();
-            if (teams.Count == 0) throw new Exception("Bad tournament or no teams register for it");
+            if (teams.Count == 0) throw new Exception("Zły numer turnieju lub brak drużyn zapisanych na niego");
             var users = new Dictionary<int, int>();
             teams.ForEach(team =>
             {
@@ -336,8 +336,8 @@ namespace SieGraSieMa.Services
         }
         public async Task<IEnumerable<Group>> CreateBasicGroups(int tournamentId)
         {
-            if ((await CheckCorectnessOfTeams(tournamentId)).Any()) throw new Exception("Teams for this tournament are not correct");
-            else if (_SieGraSieMaContext.Groups.Where(g => g.TournamentId == tournamentId).Any()) throw new Exception("Groups for this tournament already exist");
+            if ((await CheckCorectnessOfTeams(tournamentId)).Any()) throw new Exception("Drużyny zapisane na ten turniej nie są prawidłowe");
+            else if (_SieGraSieMaContext.Groups.Where(g => g.TournamentId == tournamentId).Any()) throw new Exception("Grupy w tym turnieju już istnieją");
             else
             {
                 var teams = await _SieGraSieMaContext.Teams.Include(t => t.TeamInTournaments)
@@ -373,7 +373,7 @@ namespace SieGraSieMa.Services
                         ladderGroupCount = 16;
                         break;
                     default:
-                        throw new Exception("Too much teams");
+                        throw new Exception("Za dużo drużyn");
                 }
 
                 for (char i = 'A'; i <= nonLadderGroupCount; i++)
@@ -435,7 +435,7 @@ namespace SieGraSieMa.Services
         }
         public async Task<IEnumerable<TeamInGroup>> AddTeamsToGroup(int tournamentId)
         {
-            if (_SieGraSieMaContext.TeamInGroups.Include(g => g.Group).Where(g => g.Group.TournamentId == tournamentId).Any()) throw new Exception("TeamsInGroup for this tournament already exist");
+            if (_SieGraSieMaContext.TeamInGroups.Include(g => g.Group).Where(g => g.Group.TournamentId == tournamentId).Any()) throw new Exception("Drużyny są już zapisane do grup w tym turnieju");
             var groups = await _SieGraSieMaContext.Groups
                                 .Where(t => t.TournamentId == tournamentId && t.Ladder == false)
                                 .Select(s => new { s.Id })
@@ -466,7 +466,7 @@ namespace SieGraSieMa.Services
         public async Task<IEnumerable<Match>> CreateMatchTemplates(int tournamentId)
         {
             if (_SieGraSieMaContext.Matches.Where(m => m.TournamentId == tournamentId && m.Phase == 0).Any())
-                throw new Exception("Matches for this tournament already exist");
+                throw new Exception("Mecze w tym turnieju już istnieją");
             var groupsNonLadder = await _SieGraSieMaContext.Groups
                                 .Where(t => t.TournamentId == tournamentId && t.Ladder == false)
                                 .Select(s => new { s.Id }).ToListAsync();
@@ -578,7 +578,7 @@ namespace SieGraSieMa.Services
                 4 => new int[] { 1, 4, 3, 2 },//to nie są losowe numerki :) 
                 8 => new int[] { 1, 8, 5, 4, 6, 3, 7, 2 },
                 16 => new int[] { 1, 16, 8, 9, 5, 12, 4, 13, 6, 11, 3, 14, 7, 10, 2, 15 },
-                _ => throw new Exception("Incorrect teams to ladder number")
+                _ => throw new Exception("Nieprawidłowa ilość drużyn po przeliczeniu wyników")
             };
             var matches = _SieGraSieMaContext.Matches.Include(m => m.TeamAway)
                                           .Include(m => m.TeamHome)
@@ -673,7 +673,7 @@ namespace SieGraSieMa.Services
         public async Task ResetTournament(int tournamentId)
         {
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(tournamentId);
-            if (tournament == null) throw new Exception("Tournament with this id not found");
+            if (tournament == null) throw new Exception("Turnieju nie znaleziono");
             _SieGraSieMaContext.RemoveRange(await _SieGraSieMaContext.Matches.Where(m => m.TournamentId == tournamentId).ToListAsync());
             var groups = await _SieGraSieMaContext.Groups.Include(g => g.TeamInGroups).Where(g => g.TournamentId == tournamentId).ToListAsync();
             groups.ToList().ForEach(g => _SieGraSieMaContext.RemoveRange(g.TeamInGroups));
@@ -710,11 +710,11 @@ namespace SieGraSieMa.Services
         {
             var team = await _SieGraSieMaContext.Teams.FindAsync(teamId);
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(tournamentId);
-            if (team == null && tournament == null) throw new Exception("Team or tournament does not exist");
+            if (team == null && tournament == null) throw new Exception("Drużyna lub turniej o tym id nie istnieje");
             var tit = await _SieGraSieMaContext.TeamInTournaments.FindAsync(tournamentId, teamId);
-            if (tit == null) throw new Exception("This team does not belong to this tournament");
+            if (tit == null) throw new Exception("Ta drużyna nie była zapisana na turniej");
             _SieGraSieMaContext.Entry(tournament).Collection(t => t.Groups).Load();
-            if (tournament.Groups.Any()) throw new Exception("Cannot leave tournament which already started");
+            if (tournament.Groups.Any()) throw new Exception("Nie można opuścić turnieju który już został rozpoczęty");
             _SieGraSieMaContext.TeamInTournaments.Remove(tit);
             await _SieGraSieMaContext.SaveChangesAsync();
             return true;
@@ -769,7 +769,7 @@ namespace SieGraSieMa.Services
                         team.GoalScored += m.TeamAwayScore.GetValueOrDefault();
                         team.GoalConceded += m.TeamHomeScore.GetValueOrDefault();
                     }
-                    else throw new Exception("Error while counting results matches for team");
+                    else throw new Exception("Błąd podczas liczenia wyników");
                 });
                 list.Add(team);
             });
@@ -778,14 +778,14 @@ namespace SieGraSieMa.Services
 
         public async Task<GetMatchDTO> InsertMatchResult(MatchResultDTO DTO)
         {
-            if(DTO.Phase!=0 && DTO.HomeTeamPoints==DTO.AwayTeamPoints) throw new Exception("Ivalid score: cannot be a tie");
+            if(DTO.Phase!=0 && DTO.HomeTeamPoints==DTO.AwayTeamPoints) throw new Exception("Błęny wynik: nie można wpisać remisu");
             var match = _SieGraSieMaContext.Matches.Find(DTO.TournamentId, DTO.Phase, DTO.MatchId);
             _SieGraSieMaContext.Entry(match).Reference(m => m.TeamHome).Load();
             _SieGraSieMaContext.Entry(match).Reference(m => m.TeamAway).Load();
             _SieGraSieMaContext.Entry(match.TeamHome).Reference(tt => tt.Team).Load();
             _SieGraSieMaContext.Entry(match.TeamAway).Reference(tt => tt.Team).Load();
-            if (match == null) throw new Exception("No match found with this PKs");
-            if (match.TeamHome.Team == null || match.TeamAway.Team == null) throw new Exception("Match has no teams");
+            if (match == null) throw new Exception("Nie znaleziono meczu o podanych kluczach");
+            if (match.TeamHome.Team == null || match.TeamAway.Team == null) throw new Exception("Mecz nie ma drużyn");
             int phases = _SieGraSieMaContext.Groups.Where(g => g.TournamentId == DTO.TournamentId).Select(g => g.Phase).Max();
 
             bool isPlayedPhaseOne = await _SieGraSieMaContext.Matches.Where(m => m.TournamentId == DTO.TournamentId && m.Phase == 1 && m.TeamHomeScore != null && m.TeamAwayScore != null).AnyAsync();
@@ -793,7 +793,7 @@ namespace SieGraSieMa.Services
 
             if (DTO.Phase == 0 && isPlayedPhaseOne || //mecz jest z fazy grupowej a w drabince rozegrano mecze
                 DTO.Phase > 0 && DTO.Phase < phases - 1 && NextMatch.IsMatchPlayed) //mecz jest w fazie drabinki, nie jest to mecz finałowy ani o 3 miejsce oraz następny mecz został rozegrany
-                throw new Exception("Match cannot be edited, because next match is already played");
+                throw new Exception("Mecz nie może być edytowany, ponieważ następny mecz został już rozegrany");
             match.TeamHomeScore = DTO.HomeTeamPoints;
             match.TeamAwayScore = DTO.AwayTeamPoints;
             _SieGraSieMaContext.Matches.Update(match);

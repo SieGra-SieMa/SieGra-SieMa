@@ -114,7 +114,7 @@ namespace SieGraSieMa.Services
         {
             var currentNewsletter = _SieGraSieMaContext.Newsletters.SingleOrDefault(n => n.UserId == userId);
             if (currentNewsletter != null)
-                throw new Exception("User is already subscribed to newsletter");
+                throw new Exception("Użytkownik jest już zapisany na newsletter");
             _SieGraSieMaContext.Newsletters.Add(new Newsletter { UserId = userId });
             _SieGraSieMaContext.SaveChanges();
         }
@@ -123,7 +123,7 @@ namespace SieGraSieMa.Services
         {
             var currentNewsletter = _SieGraSieMaContext.Newsletters.SingleOrDefault(n => n.UserId == userId);
             if (currentNewsletter == null)
-                throw new Exception("User currently not in any newsletter");
+                throw new Exception("Użytkownik nie był zapisany na newsletter");
 
             _SieGraSieMaContext.Newsletters.Remove(currentNewsletter);
             _SieGraSieMaContext.SaveChanges();
@@ -132,7 +132,7 @@ namespace SieGraSieMa.Services
         public UserDTO UpdateUser(string email, UserDetailsDTO userDetails)
         {
             var user = GetUser(email);
-            if (user == null) throw new Exception("User not found");
+            if (user == null) throw new Exception("Użytkownika nie znaleziono");
             user.Name = userDetails.Name;
             user.Surname = userDetails.Surname;
             _SieGraSieMaContext.Users.Update(user);
@@ -142,7 +142,7 @@ namespace SieGraSieMa.Services
         public UserDTO UpdateUser(int id, UserDetailsDTO userDetails)
         {
             var user = GetUser(id);
-            if (user == null) throw new Exception("User not found");
+            if (user == null) throw new Exception("Użytkownika nie znaleziono");
             user.Name = userDetails.Name;
             user.Surname = userDetails.Surname;
             _SieGraSieMaContext.Users.Update(user);

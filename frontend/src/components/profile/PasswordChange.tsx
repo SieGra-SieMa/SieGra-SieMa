@@ -3,15 +3,16 @@ import { PasswordChange as PasswordChangeType } from '../../_lib/types';
 import { useAlert } from '../alert/AlertContext';
 import { useApi } from '../api/ApiContext';
 import Button, { ButtonStyle } from '../form/Button';
+import Form from '../form/Form';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
-import styles from './PasswordChange.module.css';
 
-type PasswordChangeProps = {
+
+type Props = {
     confirm: () => void;
 }
 
-export default function PasswordChange({ confirm }: PasswordChangeProps) {
+export default function PasswordChange({ confirm }: Props) {
 
     const alert = useAlert();
     const { usersService } = useApi();
@@ -33,9 +34,9 @@ export default function PasswordChange({ confirm }: PasswordChangeProps) {
     };
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <Input
-                id='AccountPasswordChange-pass1'
+                id='PasswordChange-oldPassword'
                 label='Stare hasło'
                 type='password'
                 value={oldPassword}
@@ -43,7 +44,7 @@ export default function PasswordChange({ confirm }: PasswordChangeProps) {
                 onChange={(e) => setOldPassword(e.target.value)}
             />
             <Input
-                id='AccountPasswordChange-pass2'
+                id='PasswordChange-newPassword'
                 label='Nowe hasło'
                 type='password'
                 value={newPassword}
@@ -52,6 +53,6 @@ export default function PasswordChange({ confirm }: PasswordChangeProps) {
             />
             <VerticalSpacing size={15} />
             <Button value='Zmień' style={ButtonStyle.Red} />
-        </form>
+        </Form>
     );
 }

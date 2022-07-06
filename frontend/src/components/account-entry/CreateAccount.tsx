@@ -1,11 +1,12 @@
-import React, { FormEvent, useState } from 'react';
+import { FormEvent, useState } from 'react';
 import styles from './AccountEntry.module.css';
-import SyncLoader from 'react-spinners/SyncLoader';
 import Input from '../form/Input';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import VerticalSpacing from '../spacing/VerticalSpacing';
 import { useAlert } from '../alert/AlertContext';
+import Loader from '../loader/Loader';
+import Form from '../form/Form';
 
 export default function CreateAccount() {
 
@@ -36,7 +37,7 @@ export default function CreateAccount() {
     };
 
     return (
-        <form className={styles.block} onSubmit={createAccount}>
+        <Form className={styles.block} onSubmit={createAccount}>
             <h3>Stwórz konto</h3>
             <Input
                 id='CreateAccount-email'
@@ -70,12 +71,10 @@ export default function CreateAccount() {
             />
             <VerticalSpacing size={30} />
             {loading ? (
-                <div className={styles.loader}>
-                    <SyncLoader loading={true} size={7} margin={20} color='#fff' />
-                </div>
+                <Loader />
             ) : (
                 <Button value='Zarejestruj się' />
             )}
-        </form>
+        </Form>
     );
 }

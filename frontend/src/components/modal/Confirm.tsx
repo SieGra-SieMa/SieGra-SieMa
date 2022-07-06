@@ -1,6 +1,7 @@
 import Button, { ButtonStyle } from '../form/Button';
 import styles from './Confirm.module.css';
 
+
 type ConfirmProps = {
     cancel: () => void;
     confirm: () => void;

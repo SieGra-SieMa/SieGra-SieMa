@@ -13,6 +13,11 @@
 	animation: backgroundAnim 0.3s ease-out;
 }
 
+.root.closed {
+	animation: backgroundReverseAnim 0.3s ease-out;
+	animation-fill-mode: forwards;
+}
+
 @keyframes backgroundAnim {
 	from {
 		background-color: rgba(0, 0, 0, 0);
@@ -20,6 +25,16 @@
 
 	to {
 		background-color: rgba(0, 0, 0, 0.7);
+	}
+}
+
+@keyframes backgroundReverseAnim {
+	from {
+		background-color: rgba(0, 0, 0, 0.7);
+	}
+
+	to {
+		background-color: rgba(0, 0, 0, 0);
 	}
 }
 
@@ -33,20 +48,36 @@
 	margin: 15px;
 	max-height: 100%;
 	overflow: auto;
-	animation: showup 0.3s ease-out;
+	animation: containerAnim 0.3s ease-out;
 }
 
-@keyframes showup {
+.container.closed {
+	animation: containerReverseAnim 0.3s ease-out;
+	animation-fill-mode: forwards;
+}
+
+@keyframes containerAnim {
 	from {
-		/* transform: scale(0); */
 		opacity: 0;
 		transform: translateY(100px);
 	}
 
 	to {
-		/* transform: scale(1); */
 		opacity: 1;
 		transform: translateY(0px);
+	}
+}
+
+
+@keyframes containerReverseAnim {
+	from {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+
+	to {
+		opacity: 0;
+		transform: translateY(100px);
 	}
 }
 

@@ -3,13 +3,17 @@ import Input from '../form/Input';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
 import VerticalSpacing from '../spacing/VerticalSpacing';
+import Form from '../form/Form';
+import { useAlert } from '../alert/AlertContext';
 
-type ForgetPasswordProps = {
+
+type Props = {
     confirm: () => void;
 }
 
-export default function ForgetPassword({ confirm }: ForgetPasswordProps) {
+export default function ForgetPassword({ confirm }: Props) {
 
+    const alert = useAlert();
     const { accountsService } = useApi();
 
     const [email, setEmail] = useState('');
@@ -19,21 +23,22 @@ export default function ForgetPassword({ confirm }: ForgetPasswordProps) {
         accountsService.forgetPassword(email)
             .then(() => {
                 confirm();
+                alert.success('Link do resetowania hasła został wysłany');
             });
     };
 
     return (
-        <form onSubmit={resetPassword}>
+        <Form onSubmit={resetPassword}>
             <Input
-                id='Reset-email'
-                label='E-mail'
+                id='ForgetPassword-email'
+                label='Email'
                 type='email'
                 value={email}
                 required
                 onChange={(e) => setEmail(e.target.value)}
             />
-            <VerticalSpacing size={30} />
+            <VerticalSpacing size={15} />
             <Button value='Zresetuj' />
-        </form>
+        </Form>
     );
 }

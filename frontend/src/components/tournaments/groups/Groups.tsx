@@ -4,11 +4,12 @@ import Button, { ButtonStyle } from "../../form/Button";
 import Modal from "../../modal/Modal";
 import styles from "./Groups.module.css";
 
-type GroupsProps = {
+
+type Props = {
 	tournament: Tournament;
 };
 
-export default function Groups({ tournament }: GroupsProps) {
+export default function Groups({ tournament }: Props) {
 	const [currentGroup, setCurrentGroup] = useState<Group>(
 		tournament.groups[0]
 	);

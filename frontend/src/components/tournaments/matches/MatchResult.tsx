@@ -7,14 +7,15 @@ import {
 import { useAlert } from "../../alert/AlertContext";
 import { useApi } from "../../api/ApiContext";
 import Button from "../../form/Button";
+import Form from "../../form/Form";
 import Input from "../../form/Input";
 import GuardComponent from "../../guard-components/GuardComponent";
 import VerticalSpacing from "../../spacing/VerticalSpacing";
 import { useUser } from "../../user/UserContext";
 import { useTournament } from "../TournamentContext";
-import styles from "./Matches.module.css";
 
-type MatchResultProps = {
+
+type Props = {
 	match: MatchType & { groupId: number };
 	confirm: () => void;
 	callback: (homeScore: number, awayScore: number) => void;
@@ -35,7 +36,7 @@ export default function MatchResult({
 	match,
 	confirm,
 	callback,
-}: MatchResultProps) {
+}: Props) {
 
 	const alert = useAlert();
 	const { matchService } = useApi();
@@ -82,7 +83,7 @@ export default function MatchResult({
 	const teamAway = tournament!.teams.find((team) => team.teamId === match.teamAwayId)?.teamName;
 
 	return (
-		<form className={styles.matchDetails} onSubmit={onSubmit}>
+		<Form onSubmit={onSubmit}>
 			<Input
 				id='MatchResult-teamHomeScore'
 				label={teamHome ?? '-----------'}
@@ -109,6 +110,6 @@ export default function MatchResult({
 					</>
 				)}
 			</GuardComponent>
-		</form>
+		</Form>
 	);
 }

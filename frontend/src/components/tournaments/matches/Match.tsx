@@ -5,11 +5,12 @@ import { useTournament } from "../TournamentContext";
 import styles from "./Matches.module.css";
 import MatchResult from "./MatchResult";
 
-type MatchProps = {
+
+type Props = {
 	match: MatchType & { groupId: number };
 };
 
-export default function Match({ match }: MatchProps) {
+export default function Match({ match }: Props) {
 
 	const { tournament } = useTournament();
 

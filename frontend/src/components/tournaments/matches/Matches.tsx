@@ -5,11 +5,12 @@ import Modal from "../../modal/Modal";
 import Match from "./Match";
 import styles from "./Matches.module.css";
 
-type MatchesProps = {
+
+type Props = {
 	groups: Group[];
 };
 
-export default function Matches({ groups }: MatchesProps) {
+export default function Matches({ groups }: Props) {
 	const [currentGroup, setCurrentGroup] = useState<Group>(groups[0]);
 	const [isSelectGroup, setIsSelectGroup] = useState(false);
 

@@ -1,17 +1,11 @@
-.root {
-    display: grid;
-    row-gap: 15px;
-    grid-auto-rows: min-content;
-}
-
 .quill {
     height: fit-content;
 }
 
-.quill > * > * > *{
+.quill>*>*>* {
     color: black;
 }
 
-.quill > *{
+.quill>* {
     height: fit-content;
 }

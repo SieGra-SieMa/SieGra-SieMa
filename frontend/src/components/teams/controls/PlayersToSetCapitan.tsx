@@ -2,11 +2,13 @@ import { FormEvent, useState } from 'react';
 import { Player, Team } from '../../../_lib/types';
 import { useApi } from '../../api/ApiContext';
 import Button, { ButtonStyle } from '../../form/Button';
+import Form from '../../form/Form';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
 import { useTeams } from '../TeamsContext';
 import styles from './Players.module.css';
 
-type PlayersToSetCapitanProps = {
+
+type Props = {
     team: Team;
     confirm: () => void;
 }
@@ -14,7 +16,7 @@ type PlayersToSetCapitanProps = {
 export default function PlayersToSetCapitan({
     team,
     confirm,
-}: PlayersToSetCapitanProps) {
+}: Props) {
 
     const { teamsService } = useApi();
     const { teams, setTeams } = useTeams();
@@ -37,7 +39,7 @@ export default function PlayersToSetCapitan({
     }
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <ul className={styles.list}>
                 {team.players.filter((player) => player.id !== team.captainId)
                     .map((player, index) => (
@@ -60,7 +62,6 @@ export default function PlayersToSetCapitan({
                 disabled={selectedPlayer === null}
                 style={ButtonStyle.Red}
             />
-        </form >
-
+        </Form >
     );
 }

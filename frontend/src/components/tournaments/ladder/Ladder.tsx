@@ -6,11 +6,12 @@ import styles from "./Ladder.module.css";
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
 
-type LadderProps = {
+
+type Props = {
 	ladder: PhaseType[];
 };
 
-export default function Ladder({ ladder }: LadderProps) {
+export default function Ladder({ ladder }: Props) {
 	const phases = useMemo(() => {
 		const phases = [...ladder];
 		const final = phases.pop();

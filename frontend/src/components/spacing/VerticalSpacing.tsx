@@ -1,8 +1,8 @@
-type VerticalSpacingProps = {
+type Props = {
     size: number;
 }
 
-export default function VerticalSpacing({ size }: VerticalSpacingProps) {
+export default function VerticalSpacing({ size }: Props) {
     return (
         <div style={{ height: `${size}px` }}></div>
     );

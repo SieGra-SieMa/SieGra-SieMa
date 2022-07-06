@@ -2,20 +2,22 @@ import { FormEvent, useState } from 'react';
 import { Team } from '../../../_lib/types';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
+import Form from '../../form/Form';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
 import styles from './EditTeamPicture.module.css';
 
-type EditTeamPictureProps = {
+
+type Props = {
     team: Team;
     confirm: (url: string) => void;
-    checkCapt: boolean;
+    isAdmin: boolean;
 }
 
 export default function EditTeamPicture({
     team,
     confirm,
-    checkCapt
-}: EditTeamPictureProps) {
+    isAdmin = false,
+}: Props) {
 
     const { teamsService } = useApi();
 
@@ -26,23 +28,22 @@ export default function EditTeamPicture({
         if (!file) return;
         const data = new FormData();
         data.append('file', file);
-        if(checkCapt){
-            teamsService.addProfilePhoto(team.id, data)
-            .then((data) => {
-                confirm(data[0].url);
-            });
-        }
-        else{
+        if (isAdmin) {
             teamsService.addProfilePhotoAdmin(team.id, data)
-            .then((data) => {
-                confirm(data[0].url);
-            });
+                .then((data) => {
+                    confirm(data[0].url);
+                });
+
+        } else {
+            teamsService.addProfilePhoto(team.id, data)
+                .then((data) => {
+                    confirm(data[0].url);
+                });
         }
-        
-    }
+    };
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <label
                 className={styles.selectImage}
                 style={file ? {
@@ -62,6 +63,6 @@ export default function EditTeamPicture({
             </label>
             <VerticalSpacing size={15} />
             <Button value='Zatwierdź' />
-        </form>
+        </Form>
     );
 }

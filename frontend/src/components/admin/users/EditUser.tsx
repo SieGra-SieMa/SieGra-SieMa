@@ -2,16 +2,17 @@ import { FormEvent, useState } from 'react';
 import { User, UserDetailsRequest } from '../../../_lib/types';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
+import Form from '../../form/Form';
 import Input from '../../form/Input';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
-import styles from './EditUser.module.css';
 
-type EditUserProps = {
+
+type Props = {
     user: User;
     confirm: (user: User) => void;
 }
 
-export default function EditUser({ user, confirm }: EditUserProps) {
+export default function EditUser({ user, confirm }: Props) {
 
     const { usersService } = useApi();
 
@@ -31,21 +32,21 @@ export default function EditUser({ user, confirm }: EditUserProps) {
     };
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <Input
-                id='AccountData-name'
+                id='EditUser-name'
                 label='Imie'
                 value={name}
                 onChange={(e) => setName(e.target.value)}
             />
             <Input
-                id='AccountData-surname'
+                id='EditUser-surname'
                 label='Nazwisko'
                 value={surname}
                 onChange={(e) => setSurname(e.target.value)}
             />
             <VerticalSpacing size={15} />
             <Button value='Zapisz' />
-        </form>
+        </Form>
     );
 }

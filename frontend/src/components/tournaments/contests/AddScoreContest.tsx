@@ -1,20 +1,21 @@
 import { FormEvent, useState } from 'react';
-import { Contest } from '../../../_lib/_types/tournament';
+import { Contest, Contestant } from '../../../_lib/_types/tournament';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
+import Form from '../../form/Form';
 import Input from '../../form/Input';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
-import styles from './Contests.module.css';
 
-type AddScoreContestProps = {
+
+type Props = {
     contest: Contest;
-    confirm: () => void;
+    confirm: (data: Contestant) => void;
 }
 
 export default function AddScoreContest({
     contest,
     confirm,
-}: AddScoreContestProps) {
+}: Props) {
 
     const { tournamentsService } = useApi();
 
@@ -25,12 +26,12 @@ export default function AddScoreContest({
         e.preventDefault();
         tournamentsService.addContestScore(contest.tournamentId, contest.id, email, points)
             .then((data) => {
-                confirm();
+                confirm(data);
             });
     }
 
     return (
-        <form className={styles.form} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <Input
                 id='AddScoreContest-name'
                 label='Email'
@@ -54,6 +55,6 @@ export default function AddScoreContest({
             />
             <VerticalSpacing size={15} />
             <Button value='Dodaj wynik' />
-        </form>
+        </Form>
     );
 }

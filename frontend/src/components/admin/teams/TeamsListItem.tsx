@@ -13,7 +13,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useAlert } from "../../alert/AlertContext";
 
-type TeamsListItemProps = {
+
+type Props = {
 	team: Team;
 	onTeamChange: (team: Team) => void;
 	onTeamDelete: (team: Team) => void;
@@ -23,7 +24,7 @@ export default function TeamsListItem({
 	team,
 	onTeamChange,
 	onTeamDelete,
-}: TeamsListItemProps) {
+}: Props) {
 
 	const alert = useAlert();
 	const { teamsService } = useApi();
@@ -85,6 +86,7 @@ export default function TeamsListItem({
 					close={() => setIsPicture(false)}
 				>
 					<EditTeamPicture
+						isAdmin
 						team={team}
 						confirm={(url) => {
 							onTeamChange({
@@ -93,7 +95,6 @@ export default function TeamsListItem({
 							});
 							setIsPicture(false);
 						}}
-						checkCapt={false}
 					/>
 				</Modal>
 			)}
@@ -104,12 +105,12 @@ export default function TeamsListItem({
 					close={() => setIsEdit(false)}
 				>
 					<EditTeam
+						isAdmin
 						team={team}
 						confirm={(team) => {
 							onTeamChange(team);
 							setIsEdit(false);
 						}}
-						checkCapt={false}
 					/>
 				</Modal>
 			)}

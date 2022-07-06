@@ -5,6 +5,7 @@ import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
 import { useTeams } from '../TeamsContext';
 import { useAlert } from '../../alert/AlertContext';
+import Form from '../../form/Form';
 
 export default function JoinTeam() {
 
@@ -30,7 +31,7 @@ export default function JoinTeam() {
     }
 
     return (
-        <form className={styles.option} onSubmit={onSubmit}>
+        <Form className={styles.option} onSubmit={onSubmit}>
             <h4>Dołącz do zespołu</h4>
             <p>Wpisz kod, który otrzymałeś od znajomego.</p>
             <Input
@@ -46,6 +47,6 @@ export default function JoinTeam() {
                 value='Dołącz'
                 disabled={code.length !== 5}
             />
-        </form>
+        </Form>
     );
 }

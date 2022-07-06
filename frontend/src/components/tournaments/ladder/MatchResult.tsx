@@ -3,14 +3,15 @@ import { ROLES } from '../../../_lib/roles';
 import { Match as MatchType, MatchResult as MatchResultType } from '../../../_lib/_types/tournament';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
+import Form from '../../form/Form';
 import Input from '../../form/Input';
 import GuardComponent from '../../guard-components/GuardComponent';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
 import { useUser } from '../../user/UserContext';
 import { useTournament } from '../TournamentContext';
-import styles from './Ladder.module.css';
 
-type MatchResultProps = {
+
+type Props = {
     match: MatchType;
     confirm: () => void;
 };
@@ -26,7 +27,7 @@ const createFunction = (fn: (data: number) => void) => {
     }
 };
 
-export default function MatchResult({ match, confirm }: MatchResultProps) {
+export default function MatchResult({ match, confirm }: Props) {
 
     const { matchService } = useApi();
     const { user } = useUser();
@@ -86,7 +87,7 @@ export default function MatchResult({ match, confirm }: MatchResultProps) {
     const teamAway = tournament!.teams.find((team) => team.teamId === match.teamAwayId)?.teamName;
 
     return (
-        <form className={styles.matchDetails} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <Input
                 id='MatchResult-teamHomeScore'
                 label={teamHome ?? '-----------'}
@@ -107,6 +108,6 @@ export default function MatchResult({ match, confirm }: MatchResultProps) {
                     <Button value='Zapisz' disabled={teamAwayScore === teamHomeScore} />
                 </>)}
             </GuardComponent>
-        </form>
+        </Form>
     );
 };

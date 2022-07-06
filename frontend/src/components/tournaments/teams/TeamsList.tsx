@@ -7,11 +7,12 @@ import TeamPaid from "./TeamPaid";
 import GuardComponent from "../../guard-components/GuardComponent";
 import { ROLES } from "../../../_lib/roles";
 
-type TeamsListProps = {
+
+type Props = {
 	teams: TeamInTournament[] | null;
 };
 
-export default function TeamsList({ teams }: TeamsListProps) {
+export default function TeamsList({ teams }: Props) {
 	const [paidTeams, setPaidTeams] = useState(
 		teams?.filter((team) => team.paid)
 	);

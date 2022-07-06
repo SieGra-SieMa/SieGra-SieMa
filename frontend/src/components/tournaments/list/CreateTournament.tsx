@@ -7,6 +7,7 @@ import {
 import { useApi } from "../../api/ApiContext";
 import Button from "../../form/Button";
 import DatePicker from "../../form/DatePicker";
+import Form from "../../form/Form";
 import Input from "../../form/Input";
 import VerticalSpacing from "../../spacing/VerticalSpacing";
 import styles from "./CreateTournament.module.css";
@@ -18,9 +19,9 @@ type CreateTournamentType = {
 export default function CreateTournament({ confirm }: CreateTournamentType) {
 	const { tournamentsService } = useApi();
 
-	const [name, setName] = useState("");
-	const [address, setAddress] = useState("");
-	const [description, setDescription] = useState("");
+	const [name, setName] = useState('');
+	const [address, setAddress] = useState('');
+	const [description, setDescription] = useState('');
 
 	const [startDate, setStartDate] = useState<Date | null>(null);
 	const [endDate, setEndDate] = useState<Date | null>(null);
@@ -40,7 +41,7 @@ export default function CreateTournament({ confirm }: CreateTournamentType) {
 	};
 
 	return (
-		<form className={styles.root} onSubmit={onSubmit}>
+		<Form onSubmit={onSubmit}>
 			<Input
 				id="TournamentAdd-name"
 				label="Nazwa"
@@ -85,6 +86,6 @@ export default function CreateTournament({ confirm }: CreateTournamentType) {
 			/>
 			<VerticalSpacing size={15} />
 			<Button value="Zatwierdź" />
-		</form>
+		</Form>
 	);
 }

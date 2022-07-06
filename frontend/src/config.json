@@ -1,3 +1,5 @@
 {
-    "HOST": "https://localhost:44333"
+    "HOST": "https://localhost:44333",
+    "APP_ID": "102617622481951",
+    "ACCESS_TOKEN": "EAAo3XMvZBYycBACpK7VGHceN5x4YkHF36r3IsvEt8btZBH0Q5cMJg5il78AUm74yp3pp61zFydbzLAcTT4vhDrvzM02yUD321ecwArDrkHb2HtqxsArg0iGPz52b3bGX5FXFdO4fM4QZAXe4iAhiPTv9njiZCPezACVRXmQolUREyzcKQwYJQKjkdkZBhNsoZD"
 }

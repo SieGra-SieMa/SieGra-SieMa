@@ -8,8 +8,10 @@ import VerticalSpacing from "../../spacing/VerticalSpacing";
 import styles from "./EditTournament.module.css";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import Form from "../../form/Form";
 
-type EditTournamentProps = {
+
+type Props = {
 	tournament: Tournament;
 	confirm: (tournament: Tournament) => void;
 };
@@ -17,7 +19,7 @@ type EditTournamentProps = {
 export default function EditTournament({
 	tournament,
 	confirm,
-}: EditTournamentProps) {
+}: Props) {
 	const { tournamentsService } = useApi();
 
 	const [name, setName] = useState(tournament.name);
@@ -49,7 +51,7 @@ export default function EditTournament({
 	};
 
 	return (
-		<form className={styles.root} onSubmit={onSubmit}>
+		<Form onSubmit={onSubmit}>
 			<Input
 				id="TournamentAdd-name"
 				label="Nazwa"
@@ -94,6 +96,6 @@ export default function EditTournament({
 			/>
 			<VerticalSpacing size={15} />
 			<Button value="Zatwierdź" />
-		</form>
+		</Form>
 	);
 }

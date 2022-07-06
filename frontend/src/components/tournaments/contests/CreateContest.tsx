@@ -1,17 +1,19 @@
 import { FormEvent, useState } from 'react';
+import { Contest } from '../../../_lib/_types/tournament';
 import { useAlert } from '../../alert/AlertContext';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
+import Form from '../../form/Form';
 import Input from '../../form/Input';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
-import styles from './Contests.module.css';
 
-type CreateContestProps = {
+
+type Props = {
     tournamentId: string;
-    confirm: (contest: any) => void;
+    confirm: (contest: Contest) => void;
 };
 
-export default function CreateContest({ tournamentId, confirm }: CreateContestProps) {
+export default function CreateContest({ tournamentId, confirm }: Props) {
 
     const alert = useAlert();
     const { tournamentsService } = useApi();
@@ -28,7 +30,7 @@ export default function CreateContest({ tournamentId, confirm }: CreateContestPr
     }
 
     return (
-        <form className={styles.form} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <Input
                 id='CreateContest-name'
                 label='Nazwa'
@@ -38,6 +40,6 @@ export default function CreateContest({ tournamentId, confirm }: CreateContestPr
             />
             <VerticalSpacing size={15} />
             <Button value='Dodaj' />
-        </form>
+        </Form>
     );
 }

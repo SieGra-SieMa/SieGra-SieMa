@@ -2,17 +2,18 @@ import { FormEvent, useState } from 'react';
 import { Team } from '../../../_lib/types';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
+import Form from '../../form/Form';
 import Input from '../../form/Input';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
-import styles from './EditTeam.module.css';
 
-type EditTeamProps = {
+
+type Props = {
     team: Team;
     confirm: (team: Team) => void;
-    checkCapt: boolean;
+    isAdmin?: boolean;
 }
 
-export default function EditTeam({ team, confirm, checkCapt }: EditTeamProps) {
+export default function EditTeam({ team, confirm, isAdmin = false }: Props) {
 
     const { teamsService } = useApi();
 
@@ -20,22 +21,21 @@ export default function EditTeam({ team, confirm, checkCapt }: EditTeamProps) {
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        if(checkCapt){
-            teamsService.updateTeam(team.id, name)
-            .then((data) => {
-                confirm(data);
-            });
-        }
-        else{
+        if (isAdmin) {
             teamsService.updateTeamAdmin(team.id, name)
-            .then((data) => {
-                confirm(data);
-            });
-        }   
+                .then((data) => {
+                    confirm(data);
+                });
+        } else {
+            teamsService.updateTeam(team.id, name)
+                .then((data) => {
+                    confirm(data);
+                });
+        }
     };
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <Input
                 id='TeamEdit-name'
                 label='Nazwa'
@@ -45,6 +45,6 @@ export default function EditTeam({ team, confirm, checkCapt }: EditTeamProps) {
             />
             <VerticalSpacing size={15} />
             <Button value='Zapisz' />
-        </form>
+        </Form>
     );
 }

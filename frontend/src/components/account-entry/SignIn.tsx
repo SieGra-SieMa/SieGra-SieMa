@@ -1,6 +1,5 @@
 import { FormEvent, useState } from "react";
 import styles from "./AccountEntry.module.css";
-import SyncLoader from "react-spinners/SyncLoader";
 import { useAuth } from "../auth/AuthContext";
 import Input from "../form/Input";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +8,8 @@ import Button, { ButtonStyle } from "../form/Button";
 import VerticalSpacing from "../spacing/VerticalSpacing";
 import Modal from "../modal/Modal";
 import ForgetPassword from "./ForgetPassword";
+import Loader from "../loader/Loader";
+import Form from "../form/Form";
 
 export default function SignIn() {
 	const { accountsService } = useApi();
@@ -37,7 +38,7 @@ export default function SignIn() {
 
 	return (
 		<div className={styles.signInRoot}>
-			<form className={styles.block} onSubmit={signIn}>
+			<Form className={styles.block} onSubmit={signIn}>
 				<h3>Zaloguj się</h3>
 				<Input
 					id="SignIn-email"
@@ -57,33 +58,26 @@ export default function SignIn() {
 				/>
 				<VerticalSpacing size={30} />
 				{loading ? (
-					<div className={styles.loader}>
-						<SyncLoader
-							loading={true}
-							size={7}
-							margin={20}
-							color="#fff"
-						/>
-					</div>
+					<Loader />
 				) : (
 					<Button value="Zaloguj się" />
 				)}
-			</form>
-            <Button
-                    id={styles.forgotButton}
+				<Button
+					type="button"
 					onClick={() => setIsForget(true)}
 					value="Zapomniałeś hasła?"
 					style={ButtonStyle.Transparent}
 				/>
-			{isForget && (
-				<Modal
-					isClose
-					title="Zresetuj hasło"
-					close={() => setIsForget(false)}
-				>
-					<ForgetPassword confirm={() => setIsForget(false)} />
-				</Modal>
-			)}
+				{isForget && (
+					<Modal
+						isClose
+						title="Zresetuj hasło"
+						close={() => setIsForget(false)}
+					>
+						<ForgetPassword confirm={() => setIsForget(false)} />
+					</Modal>
+				)}
+			</Form>
 		</div>
 	);
 }

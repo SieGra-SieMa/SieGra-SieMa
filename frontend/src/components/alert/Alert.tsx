@@ -3,6 +3,7 @@ import styles from './Alert.module.css';
 import { useEffect, useState } from 'react';
 import DeleteIcon from "@mui/icons-material/Delete";
 
+
 type AlertProps = {
     alert: AlertType;
     timeout: number;

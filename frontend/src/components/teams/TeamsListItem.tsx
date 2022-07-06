@@ -79,20 +79,20 @@ export default function TeamsListItem({
                             Null
                         </div>
                     )}
-                    <div className={styles.controls}>
-                        <Button
-                            value='Dodaj gracza'
-                            onClick={() => setIsAdd(true)}
-                        />
-                        {user && team.captainId === user.id && (<>
+                    {user && team.captainId === user.id && (
+                        <div className={styles.controls}>
+
+                            <Button
+                                value='Dodaj gracza'
+                                onClick={() => setIsAdd(true)}
+                            />
                             <Button
                                 value='Usuń gracza'
                                 onClick={() => setIsRemove(true)}
                                 style={ButtonStyle.Red}
                             />
-                        </>)}
-                    </div>
-
+                        </div>
+                    )}
                 </ul>
                 {user && team.captainId === user.id && (<>
                     <Button
@@ -123,12 +123,12 @@ export default function TeamsListItem({
                     isClose
                     title={`Zespół "${team.name}" - Dodaj gracza`}
                 >
-                    <AddParticipant 
-                    team={team}
-                    confirm={(msg) => {
+                    <AddParticipant
+                        team={team}
+                        confirm={() => {
                             setIsAdd(false);
-                            alert(msg);
-                        }}/>
+                        }}
+                    />
                 </Modal>
             )}
             {isEdit && (
@@ -151,7 +151,6 @@ export default function TeamsListItem({
                                 setTeams(data);
                             }
                         }}
-                        checkCapt={true}
                     />
                 </Modal>
             )}
@@ -174,9 +173,9 @@ export default function TeamsListItem({
                                 };
                                 setTeams(data);
                             }
-                        }} 
-                        checkCapt={true}
-                        />
+                        }}
+                        isAdmin
+                    />
                 </Modal>
             )}
             {isLeave && (

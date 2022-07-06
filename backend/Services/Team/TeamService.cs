@@ -277,7 +277,7 @@ namespace SieGraSieMa.Services
             var team = _SieGraSieMaContext.Teams.Where(e => e.Code == code).SingleOrDefaultAsync();
 
             if (await team == null)
-                return false;
+                throw new Exception("Drużyna o podanym kodzie nie istnieje!");
 
             var result = await _SieGraSieMaContext.Tournaments
                 .Where(t => t.StartDate > DateTime.Now)

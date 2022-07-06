@@ -36,13 +36,13 @@ namespace SieGraSieMa.Services
         {
             var tournament = await _SieGraSieMaContext.Tournaments.FindAsync(album.TournamentId);
             if(tournament == null)
-                throw new Exception("Tournament not found!");
+                throw new Exception("Turnieju nie znaleziono");
 
             await _SieGraSieMaContext.Albums.AddAsync(album);
             if (await _SieGraSieMaContext.SaveChangesAsync() > 0)
                 return album;
 
-            throw new Exception("Album not added!");
+            throw new Exception("Album nie został dodany");
         }
 
         public async Task<bool> DeleteAlbum(int id)

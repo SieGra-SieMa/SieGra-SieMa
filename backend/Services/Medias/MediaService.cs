@@ -91,7 +91,7 @@ namespace SieGraSieMa.Services
         {
             var medium = await _SieGraSieMaContext.Media.FindAsync(id);
             if (medium == null)
-                throw new Exception("Medium not found!");
+                throw new Exception("Medium nie znalezione");
 
  
             _SieGraSieMaContext.Media.Remove(medium);
@@ -127,11 +127,11 @@ namespace SieGraSieMa.Services
             var album = await _SieGraSieMaContext.Media.FindAsync(mediumInAlbum.AlbumId);
             if (medium == null || album == null)
             {
-                throw new Exception("Medium or album does not exist");
+                throw new Exception("Medium albo album nie istnieje");
             }
             else if((await _SieGraSieMaContext.MediumInAlbum.FindAsync(mediumInAlbum.MediumId, mediumInAlbum.AlbumId)) != null)
             {
-                throw new Exception("Medium already added to this album");
+                throw new Exception("Medium już jest dodane do tego albumu");
             }
             await _SieGraSieMaContext.MediumInAlbum.AddAsync(mediumInAlbum);
             await _SieGraSieMaContext.SaveChangesAsync();
@@ -141,7 +141,7 @@ namespace SieGraSieMa.Services
         {
             var mediumInAlbum = await _SieGraSieMaContext.MediumInAlbum.FindAsync(albumId, mediaId);
             if (mediumInAlbum == null)
-                throw new Exception("Medium doesnt belong to this album");
+                throw new Exception("Medium nie jest dodane do tego albumu");
 
             _SieGraSieMaContext.MediumInAlbum.Remove(mediumInAlbum);
             var medium = await _SieGraSieMaContext.Media.FindAsync(mediaId);

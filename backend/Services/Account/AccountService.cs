@@ -47,7 +47,7 @@ namespace SieGraSieMa.Services
             if (user == null)
             {
                 refreshTokenDTO.IsAuthenticated = false;
-                refreshTokenDTO.Message = $"Token did not match any users.";
+                refreshTokenDTO.Message = $"Token nie pasuje do żadnego użytkownika";
                 return refreshTokenDTO;
             }
 
@@ -56,7 +56,7 @@ namespace SieGraSieMa.Services
             if (!refreshToken.IsActive)
             {
                 refreshTokenDTO.IsAuthenticated = false;
-                refreshTokenDTO.Message = $"Token Not Active.";
+                refreshTokenDTO.Message = $"Token nie aktywny";
                 return refreshTokenDTO;
             }
 

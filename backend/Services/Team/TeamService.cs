@@ -88,7 +88,7 @@ namespace SieGraSieMa.Services
 
             if (isExist == null)
             {
-                throw new Exception("Team with this code doesn`t exist");
+                throw new Exception("Drużyna o takim kodzie nie istnieje");
             }
 
             isExist.Players.Add(new Player()
@@ -132,7 +132,7 @@ namespace SieGraSieMa.Services
 
             if (team == null)
             {
-                throw new Exception("Team with this id doesn`t exist");
+                throw new Exception("Drużyna o takim id nie istnieje");
             }
 
             var player = team.Players
@@ -313,10 +313,10 @@ namespace SieGraSieMa.Services
             var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).ThenInclude(e => e.User).Include(e => e.Medium).Where(t => t.Id == teamId).SingleOrDefaultAsync();
 
             if (team == null)
-                throw new Exception($"Team with {teamId} id does not exists");
+                throw new Exception($"Drużyna o id {teamId} nie istnieje");
 
             if (team.CaptainId != userId && checkCaptain)
-                throw new Exception($"Current user is not a captain of this team");
+                throw new Exception($"Aktualny użytkownik nie ma praw kapitańskich tej drużyny");
 
             team.Name = teamDetailsDTO.Name;
 
@@ -420,15 +420,15 @@ namespace SieGraSieMa.Services
             var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).ThenInclude(e => e.User).Where(t => t.Id == teamId).SingleOrDefaultAsync();
 
             if (team == null)
-                throw new Exception($"Team with {teamId} id does not exists");
+                throw new Exception($"Drużyna o id {teamId} nie istnieje");
 
             if (team.CaptainId != captainId)
-                throw new Exception($"Current user is not a captain of this team");
+                throw new Exception($"Aktualny użytkownik nie ma praw kapitańskich tej drużyny");
 
             var player = team.Players.Where(p => p.UserId == playerId).SingleOrDefault();
 
             if (player == null)
-                throw new Exception($"User is not a part of this team");
+                throw new Exception($"Użytkownik nie jest członkiem tej drużyny");
 
             return team;
         }
@@ -438,10 +438,10 @@ namespace SieGraSieMa.Services
             var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).Where(t => t.Id == teamId).SingleOrDefaultAsync();
 
             if (team == null)
-                throw new Exception($"Team with {teamId} id does not exists");
+                throw new Exception($"Drużyna o id {teamId} nie istnieje");
 
             if (team.CaptainId != captainId)
-                throw new Exception($"Current user is not a captain of this team");
+                throw new Exception($"Aktualny użytkownik nie ma praw kapitańskich tej drużyny");
 
             if (_SieGraSieMaContext.Tournaments.Any(t => t.TeamInTournaments.Any(t => t.TeamId == team.Id)))
             {
@@ -459,7 +459,7 @@ namespace SieGraSieMa.Services
         {
             var team = await _SieGraSieMaContext.Teams.Include(t => t.Players).Include(t => t.TeamInTournaments).Where(t => t.Id == teamId).SingleOrDefaultAsync();
 
-            if (team == null) throw new Exception($"Team with {teamId} id does not exists");
+            if (team == null) throw new Exception($"Drużyna o id {teamId} nie istnieje");
 
             if (team.TeamInTournaments.Any())
             {

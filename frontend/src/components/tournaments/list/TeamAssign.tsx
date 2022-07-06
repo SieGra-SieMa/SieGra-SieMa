@@ -3,16 +3,18 @@ import { SyncLoader } from 'react-spinners';
 import { Team } from '../../../_lib/types';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
+import Form from '../../form/Form';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
 import styles from './TeamAssign.module.css';
 
-type TeamAssignProps = {
+
+type Props = {
     id: number;
     confirm: (team: Team) => void;
     teams: Team[] | null;
 };
 
-export default function TeamAssign({ id, confirm, teams }: TeamAssignProps) {
+export default function TeamAssign({ id, confirm, teams }: Props) {
 
     const { tournamentsService } = useApi();
 
@@ -28,7 +30,7 @@ export default function TeamAssign({ id, confirm, teams }: TeamAssignProps) {
     };
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             {teams ? (
                 <ul className={styles.list}>
                     {teams.map((team, index) => (
@@ -53,6 +55,6 @@ export default function TeamAssign({ id, confirm, teams }: TeamAssignProps) {
             )}
             <VerticalSpacing size={15} />
             <Button className={styles.button} value='Zapisz' disabled={selectedTeam === null} />
-        </form>
+        </Form>
     );
 };

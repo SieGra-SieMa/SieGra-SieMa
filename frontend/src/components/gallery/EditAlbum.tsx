@@ -2,17 +2,17 @@ import { FormEvent, useState } from 'react';
 import { Album } from '../../_lib/_types/tournament';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
+import Form from '../form/Form';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
-import styles from './CreateAlbum.module.css';
 
 
-type EditAlbumProps = {
+type Props = {
     confirm: (album: Album) => void;
     album: Album;
 };
 
-export default function EditAlbum({ confirm, album }: EditAlbumProps) {
+export default function EditAlbum({ confirm, album }: Props) {
 
     const { albumsService } = useApi();
 
@@ -31,7 +31,7 @@ export default function EditAlbum({ confirm, album }: EditAlbumProps) {
     }
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <Input
                 id='EditAlbum-name'
                 label='Name'
@@ -41,6 +41,6 @@ export default function EditAlbum({ confirm, album }: EditAlbumProps) {
             />
             <VerticalSpacing size={15} />
             <Button value='Zapisz' />
-        </form>
+        </Form>
     );
 };

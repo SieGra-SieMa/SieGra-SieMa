@@ -2,18 +2,20 @@ import { FormEvent, useState } from 'react';
 import { Tournament } from '../../../_lib/_types/tournament';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
+import Form from '../../form/Form';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
 import styles from './EditTournamentPicture.module.css';
 
-type EditTournamentProps = {
+
+type Props = {
     tournament: Tournament;
     confirm: (url: string) => void;
-}
+};
 
 export default function EditTournamentPicture({
     tournament,
     confirm,
-}: EditTournamentProps) {
+}: Props) {
 
     const { tournamentsService } = useApi();
 
@@ -31,7 +33,7 @@ export default function EditTournamentPicture({
     }
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <label
                 className={styles.selectImage}
                 style={file ? {
@@ -51,6 +53,6 @@ export default function EditTournamentPicture({
             </label>
             <VerticalSpacing size={15} />
             <Button value='Zatwierdź' />
-        </form>
+        </Form>
     );
 }

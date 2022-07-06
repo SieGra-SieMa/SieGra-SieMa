@@ -1,7 +1,7 @@
 import Config from '../config.json';
 import { TeamPaidEnum } from '../_lib/types';
 import { Media, Message } from '../_lib/_types/response';
-import { Album, AlbumRequest, TeamInTournament, Tournament, TournamentListItem, TournamentRequest, TournamentWithAlbums } from '../_lib/_types/tournament';
+import { Album, AlbumRequest, Contest, Contestant, TeamInTournament, Tournament, TournamentListItem, TournamentRequest, TournamentWithAlbums } from '../_lib/_types/tournament';
 import Service from './service';
 
 export default class TournamentsService extends Service {
@@ -67,19 +67,19 @@ export default class TournamentsService extends Service {
         return super.post(`${Config.HOST}/api/tournaments/${id}/resetLadder`, {});
     }
 
-    createContest(id: string, name: string): Promise<{}> {
+    createContest(id: string, name: string): Promise<Contest> {
         return super.post(`${Config.HOST}/api/tournaments/${id}/contests`, { name });
     }
 
-    updateContest(tournamentId: number, contestId: number, name: string): Promise<{}> {
+    updateContest(tournamentId: number, contestId: number, name: string): Promise<Contest> {
         return super.patch(`${Config.HOST}/api/tournaments/${tournamentId}/contests/${contestId}`, { name });
     }
 
-    addContestScore(tournamentId: number, contestId: number, email: string, points: number): Promise<{}> {
+    addContestScore(tournamentId: number, contestId: number, email: string, points: number): Promise<Contestant> {
         return super.post(`${Config.HOST}/api/tournaments/${tournamentId}/contests/${contestId}/setScore`, { email, points });
     }
 
-    deleteContest(tournamentId: number, contestId: number) {
+    deleteContest(tournamentId: number, contestId: number): Promise<Message> {
         return super.del(`${Config.HOST}/api/tournaments/${tournamentId}/contests/${contestId}`);
     }
 }

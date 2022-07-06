@@ -5,15 +5,15 @@ import { ROLES } from '../../../_lib/roles';
 import Button from '../../form/Button';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
 import styles from './RoleAssign.module.css';
+import Form from '../../form/Form';
 
-type TeamAssignProps = {
+
+type Props = {
     user: User;
     confirm: (user: User) => void;
 };
 
-const roles = [ROLES.User, ROLES.Employee, ROLES.Admin];
-
-export default function RoleAssign({ user, confirm }: TeamAssignProps) {
+export default function RoleAssign({ user, confirm }: Props) {
 
     const { usersService } = useApi();
 
@@ -29,29 +29,31 @@ export default function RoleAssign({ user, confirm }: TeamAssignProps) {
     };
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <ul className={styles.list}>
-                {roles.filter((role) => !user.roles.includes(role)).map((role, index) => (
-                    <li
-                        key={index}
-                        className={[
-                            styles.item,
-                            (selectedRoles.includes(role) ? styles.selected : undefined)
-                        ].filter((e) => e).join(' ')}
-                        onClick={() => {
-                            selectedRoles.includes(role) ?
-                                setSelectedRoles(selectedRoles.filter((e) => e !== role)) :
-                                setSelectedRoles([...selectedRoles, role]);
-                        }}
-                    >
-                        <p>
-                            {role}
-                        </p>
-                    </li>
-                ))}
+                {Object.values(ROLES).filter((role) => !user.roles.includes(role))
+                    .map((role, index) => (
+                        <li
+                            key={index}
+                            className={[
+                                styles.item,
+                                (selectedRoles.includes(role) ? styles.selected : undefined)
+                            ].filter((e) => e).join(' ')}
+                            onClick={() => {
+                                const roles = selectedRoles.includes(role) ?
+                                    selectedRoles.filter((e) => e !== role) :
+                                    [...selectedRoles, role];
+                                setSelectedRoles(roles);
+                            }}
+                        >
+                            <p>
+                                {role}
+                            </p>
+                        </li>
+                    ))}
             </ul>
             <VerticalSpacing size={15} />
             <Button className={styles.button} value='Dodaj' disabled={!selectedRoles.length} />
-        </form >
+        </Form >
     );
 };

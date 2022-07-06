@@ -1,11 +1,12 @@
 import { Contest as ContestType } from "../../../_lib/_types/tournament";
 import styles from "./Contests.module.css";
 
-type ContestProps = {
+
+type Props = {
     contest: ContestType;
 };
 
-export default function Contest({ contest }: ContestProps) {
+export default function Contest({ contest }: Props) {
 
     return (
         <div className={styles.scores}>

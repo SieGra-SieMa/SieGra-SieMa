@@ -27,7 +27,7 @@ export default function Input({
     onChange,
 }: InputProp) {
     return (
-        <div className={styles.root}>
+        <div className={styles.inputRoot}>
             {label && (<label htmlFor={id}>{label}</label>)}
             <input
                 id={id}

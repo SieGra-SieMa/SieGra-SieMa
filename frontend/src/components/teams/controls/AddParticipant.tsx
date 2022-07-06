@@ -4,28 +4,33 @@ import { Team } from '../../../_lib/types';
 import Button from '../../form/Button';
 import Input from '../../form/Input';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
-import styles from './AddParticipant.module.css';
-type AddParticipantProps = {
+import Form from '../../form/Form';
+import { useAlert } from '../../alert/AlertContext';
+
+
+type Props = {
     team: Team;
-    confirm: (team: string) => void;
+    confirm: () => void;
 }
 
-export default function AddParticipant({ team, confirm}: AddParticipantProps) {
+export default function AddParticipant({ team, confirm }: Props) {
 
-    const [email, setEmail] = useState('');
+    const alert = useAlert();
     const { teamsService } = useApi();
 
+    const [email, setEmail] = useState('');
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
         teamsService.sendInvite(team.id, email)
             .then((data) => {
-                confirm(data.message);
+                alert.success(data.message);
+                confirm();
             });
     };
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <Input
                 id='AddParticipant-email'
                 label='Email'
@@ -35,6 +40,6 @@ export default function AddParticipant({ team, confirm}: AddParticipantProps) {
             />
             <VerticalSpacing size={15} />
             <Button value='Dodaj' />
-        </form>
+        </Form>
     );
 }

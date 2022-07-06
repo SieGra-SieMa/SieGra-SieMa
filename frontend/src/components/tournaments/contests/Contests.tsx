@@ -3,7 +3,7 @@ import { Contest as ContestType } from "../../../_lib/_types/tournament";
 import GuardComponent from "../../guard-components/GuardComponent";
 import AddIcon from "@mui/icons-material/Add";
 import styles from "./Contests.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Contest from "./Contest";
 import Modal from "../../modal/Modal";
 import CreateContest from "./CreateContest";
@@ -15,30 +15,44 @@ import Confirm from "../../modal/Confirm";
 import { useApi } from "../../api/ApiContext";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useTournament } from "../TournamentContext";
+import { useAlert } from "../../alert/AlertContext";
 
-type ContestsProps = {
+
+type Props = {
 	contests: ContestType[];
 	tournamentId: string;
 };
 
-export default function Contests({ contests, tournamentId }: ContestsProps) {
-	const { tournamentsService } = useApi();
+export default function Contests({ contests, tournamentId }: Props) {
 
-	const [currentContest, setCurrentContest] = useState<
-		ContestType | undefined
-	>(contests[0]);
+	const alert = useAlert();
+	const { tournamentsService } = useApi();
+	const { tournament, setTournament } = useTournament();
+
+	const [currentContest, setCurrentContest] = useState<ContestType | undefined>(
+		contests[0]
+	);
 	const [isAddContest, setIsAddContest] = useState(false);
 	const [isAddScore, setIsAddScore] = useState(false);
 	const [isEditContest, setIsEditContest] = useState(false);
 	const [isDeleteContest, setIsDeleteContest] = useState(false);
 	const [isSelectContest, setIsSelectContest] = useState(false);
 
+	useEffect(() => {
+		setCurrentContest(contests[0]);
+	}, [contests]);
+
 	const onDelete = () => {
 		if (!currentContest) return;
-		tournamentsService
-			.deleteContest(currentContest.tournamentId, currentContest.id)
-			.then(() => {
+		tournamentsService.deleteContest(currentContest.tournamentId, currentContest.id)
+			.then((data) => {
 				setIsDeleteContest(false);
+				alert.success(data.message);
+				setTournament({
+					...tournament,
+					contests: tournament.contests.filter((e) => currentContest.id !== e.id)
+				})
 			});
 	};
 
@@ -57,25 +71,25 @@ export default function Contests({ contests, tournamentId }: ContestsProps) {
 				</h4>
 				<div className={styles.header}>
 					<div style={{ width: '100%' }}>
-					<GuardComponent roles={[ROLES.Admin]}>
-						<div className={styles.manageButtons}>
-							<AddIcon
-								className="interactiveIcon"
-								onClick={() => setIsAddContest(true)}
-								fontSize="medium"
-							/>
-							<EditIcon
-								className="interactiveIcon"
-								onClick={() => setIsEditContest(true)}
-								fontSize="medium"
-							/>
-							<DeleteIcon
-								className="interactiveIcon"
-								onClick={() => setIsDeleteContest(true)}
-								fontSize="medium"
-							/>
-						</div>
-					</GuardComponent>
+						<GuardComponent roles={[ROLES.Admin]}>
+							<div className={styles.manageButtons}>
+								<AddIcon
+									className="interactiveIcon"
+									onClick={() => setIsAddContest(true)}
+									fontSize="medium"
+								/>
+								<EditIcon
+									className="interactiveIcon"
+									onClick={() => setIsEditContest(true)}
+									fontSize="medium"
+								/>
+								<DeleteIcon
+									className="interactiveIcon"
+									onClick={() => setIsDeleteContest(true)}
+									fontSize="medium"
+								/>
+							</div>
+						</GuardComponent>
 					</div>
 					{currentContest && (
 						<>
@@ -112,7 +126,10 @@ export default function Contests({ contests, tournamentId }: ContestsProps) {
 						<CreateContest
 							tournamentId={tournamentId}
 							confirm={(data) => {
-								console.log(data);
+								setTournament({
+									...tournament,
+									contests: tournament.contests.concat(data),
+								})
 								setIsAddContest(false);
 							}}
 						/>
@@ -126,7 +143,27 @@ export default function Contests({ contests, tournamentId }: ContestsProps) {
 					>
 						<AddScoreContest
 							contest={currentContest}
-							confirm={() => {
+							confirm={(data) => {
+								const index = currentContest.contestants.findIndex((e) => e.userId === data.userId);
+								const updatedContest = { ...currentContest };
+								if (index >= 0) {
+									updatedContest.contestants[index] = data;
+								} else {
+									updatedContest.contestants = updatedContest.contestants.concat(data);
+								}
+								if (data.points === 0) {
+									updatedContest.contestants = updatedContest.contestants.filter((e) => e.userId !== data.userId)
+								}
+								updatedContest.contestants = updatedContest.contestants.sort((a, b) => b.points - a.points);
+								const contestIndex = tournament.contests.findIndex((e) => e.id === updatedContest.id);
+								const updatedContests = [
+									...tournament.contests
+								];
+								updatedContests[contestIndex] = updatedContest;
+								setTournament({
+									...tournament,
+									contests: updatedContests,
+								})
 								setIsAddScore(false);
 							}}
 						/>

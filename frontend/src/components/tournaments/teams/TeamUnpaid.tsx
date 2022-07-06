@@ -11,11 +11,12 @@ import { ROLES } from "../../../_lib/roles";
 import AddIcon from "@mui/icons-material/Add";
 import { ButtonStyle } from "../../form/Button";
 
-type TeamUnpaidProps = {
+
+type Props = {
 	team: TeamInTournament;
 };
 
-export default function TeamUnpaid({ team }: TeamUnpaidProps) {
+export default function TeamUnpaid({ team }: Props) {
 
 	const { tournamentsService } = useApi();
 	const { tournament, setTournament } = useTournament();

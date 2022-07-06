@@ -10,26 +10,30 @@ import { SyncLoader } from "react-spinners";
 import AddIcon from "@mui/icons-material/Add";
 import { useApi } from "../../api/ApiContext";
 import { Team } from "../../../_lib/types";
+import { useAuth } from "../../auth/AuthContext";
 
 export default function TournamentsList() {
-	const { tournaments, setTournaments } = useTournaments();
-	const { teamsService } = useApi();
 
-    const [teams, setTeams] = useState<Team[] | null>(null);
+	const { teamsService } = useApi();
+	const { session } = useAuth();
+	const { tournaments, setTournaments } = useTournaments();
+
+	const [teams, setTeams] = useState<Team[] | null>(null);
 
 	const [isAdd, setIsAdd] = useState(false);
 
 	useEffect(() => {
-        teamsService.getTeamsIAmCaptain()
-            .then((data) => {
-                setTeams(data);
-            });
-    }, [teamsService]);
+		if (!session) return;
+		teamsService.getTeamsIAmCaptain()
+			.then((data) => {
+				setTeams(data);
+			});
+	}, [session, teamsService]);
 
 	return (
 		<>
 			<div className={styles.top}>
-                <span></span>
+				<span></span>
 				<h1>Turnieje</h1>
 				<GuardComponent roles={[ROLES.Admin]}>
 					<AddIcon

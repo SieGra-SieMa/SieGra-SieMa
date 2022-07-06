@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { AlertContext } from './AlertContext';
 import { createPortal } from 'react-dom';
 import styles from './Alert.module.css';
@@ -6,7 +6,7 @@ import { Alert as AlertType, AlertTypeEnum } from '../../_lib/types';
 import Alert from './Alert';
 
 
-type AlertProviderProps = {
+type Props = {
     children: React.ReactNode;
     options: {
         errorTimeout: number;
@@ -14,31 +14,31 @@ type AlertProviderProps = {
     }
 }
 
-export default function AlertProvider({ children, options }: AlertProviderProps) {
+export default function AlertProvider({ children, options }: Props) {
 
     const [alerts, setAlerts] = useState<AlertType[]>([]);
     const uuid = useRef(0);
 
-    const success = (message: string) => {
+    const success = useCallback((message: string) => {
         setAlerts((alerts) => ([...alerts, {
             id: uuid.current++,
             message: message,
             type: AlertTypeEnum.success,
         }]));
-    };
+    }, [setAlerts]);
 
-    const error = (message: string) => {
+    const error = useCallback((message: string) => {
         setAlerts((alerts) => ([...alerts, {
             id: uuid.current++,
             message: message,
             type: AlertTypeEnum.error,
         }]));
-    }
+    }, [setAlerts]);
 
-    const value = {
+    const value = useMemo(() => ({
         success,
         error,
-    };
+    }), [success, error]);
 
     return (
         <AlertContext.Provider value={value}>

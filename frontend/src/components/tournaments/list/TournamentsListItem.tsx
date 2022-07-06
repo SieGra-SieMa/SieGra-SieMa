@@ -12,7 +12,8 @@ import { useAuth } from "../../auth/AuthContext";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import { Team } from "../../../_lib/types";
 
-type TournamentsListItemProps = {
+
+type Props = {
 	tournament: TournamentListItemType;
 	captainTeams: Team[] | null;
 };
@@ -20,7 +21,7 @@ type TournamentsListItemProps = {
 export default function TournamentsListItem({
 	tournament,
 	captainTeams,
-}: TournamentsListItemProps) {
+}: Props) {
 	const navigate = useNavigate();
 
 	const { session } = useAuth();
@@ -39,8 +40,8 @@ export default function TournamentsListItem({
 					style={
 						tournament.profilePicture
 							? {
-									backgroundImage: `url(${Config.HOST}${tournament.profilePicture})`,
-							  }
+								backgroundImage: `url(${Config.HOST}${tournament.profilePicture})`,
+							}
 							: undefined
 					}
 				>

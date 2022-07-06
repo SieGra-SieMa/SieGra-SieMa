@@ -2,12 +2,13 @@ import { FormEvent, useState } from 'react';
 import { Contest } from '../../../_lib/_types/tournament';
 import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
+import Form from '../../form/Form';
 import Input from '../../form/Input';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
 import { useTournament } from '../TournamentContext';
-import styles from './Contests.module.css';
 
-type EditContestProps = {
+
+type Props = {
     contest: Contest;
     confirm: () => void;
 }
@@ -15,7 +16,7 @@ type EditContestProps = {
 export default function EditContest({
     contest,
     confirm,
-}: EditContestProps) {
+}: Props) {
 
     const { tournamentsService } = useApi();
     const { tournament, setTournament } = useTournament();
@@ -28,10 +29,7 @@ export default function EditContest({
             .then((data) => {
                 const id = tournament!.contests.findIndex((e) => e.id === contest.id);
                 const updatedContest = [...tournament!.contests];
-                updatedContest[id] = {
-                    ...updatedContest[id],
-                    name
-                }
+                updatedContest[id] = data;
                 setTournament({
                     ...tournament!,
                     contests: updatedContest
@@ -41,7 +39,7 @@ export default function EditContest({
     }
 
     return (
-        <form className={styles.form} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <Input
                 id='EditContest-name'
                 label='Name'
@@ -51,6 +49,6 @@ export default function EditContest({
             />
             <VerticalSpacing size={15} />
             <Button value='Zapisz' />
-        </form>
+        </Form>
     );
 }

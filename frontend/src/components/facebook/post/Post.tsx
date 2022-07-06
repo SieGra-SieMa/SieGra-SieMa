@@ -8,13 +8,9 @@ export default function Post(post: FacebookPost) {
 				<div className={styles.post}>
 					<div
 						className={styles.pictureBlock}
-						style={
-							post.full_picture
-								? {
-										backgroundImage: `url(${post.full_picture})`,
-								  }
-								: undefined
-						}
+						style={post.full_picture ? {
+							backgroundImage: `url(${post.full_picture})`,
+						} : undefined}
 					></div>
 					<div className={styles.itemContent}>
 						<div className={styles.itemDetails}>

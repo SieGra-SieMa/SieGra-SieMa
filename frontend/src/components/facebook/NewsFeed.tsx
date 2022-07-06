@@ -1,3 +1,4 @@
+import Config from '../../config.json';
 import { useEffect, useState } from 'react';
 import { FacebookFeed } from '../../_lib/types';
 import './NewsFeed.css';
@@ -5,16 +6,15 @@ import Post from './post/Post';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 
-interface NewsFeedProps {
+
+type Props = {
 	fetchLimit?: number;
 }
 
-export default function NewsFeed(props?: NewsFeedProps) {
-	const APP_ID = "102617622481951";
-	const ACCESS_TOKEN =
-		"EAAo3XMvZBYycBACpK7VGHceN5x4YkHF36r3IsvEt8btZBH0Q5cMJg5il78AUm74yp3pp61zFydbzLAcTT4vhDrvzM02yUD321ecwArDrkHb2HtqxsArg0iGPz52b3bGX5FXFdO4fM4QZAXe4iAhiPTv9njiZCPezACVRXmQolUREyzcKQwYJQKjkdkZBhNsoZD";
+export default function NewsFeed(props: Props) {
+
 	const [feed, setFeed] = useState<FacebookFeed | null>(null);
-	const fetchLimit = props?.fetchLimit ? props?.fetchLimit : 10;
+	const fetchLimit = props.fetchLimit ?? 10;
 
 	const [slide, setSlide] = useState(0);
 	const [nextVisible, setNextVisible] = useState(true);
@@ -22,7 +22,7 @@ export default function NewsFeed(props?: NewsFeedProps) {
 
 	useEffect(() => {
 		FB.api(
-			`/${APP_ID}/posts?access_token=${ACCESS_TOKEN}&limit=${fetchLimit}`,
+			`/${Config.APP_ID}/posts?access_token=${Config.ACCESS_TOKEN}&limit=${fetchLimit}`,
 			"get",
 			{ fields: "full_picture,message,created_time,permalink_url" },
 			function (response: FacebookFeed) {

@@ -2,17 +2,17 @@ import { FormEvent, useState } from 'react';
 import { Album, AlbumRequest } from '../../_lib/_types/tournament';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
+import Form from '../form/Form';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
-import styles from './CreateAlbum.module.css';
 
 
-type CreateAlbumProps = {
+type Props = {
     confirm: (album: Album) => void;
     tournamentId: string;
 };
 
-export default function CreateAlbum({ confirm, tournamentId }: CreateAlbumProps) {
+export default function CreateAlbum({ confirm, tournamentId }: Props) {
 
     const { tournamentsService } = useApi();
 
@@ -31,9 +31,9 @@ export default function CreateAlbum({ confirm, tournamentId }: CreateAlbumProps)
     }
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <Input
-                id='TournamentAdd-name'
+                id='CreateAlbum-name'
                 label='Name'
                 value={name}
                 required
@@ -41,6 +41,6 @@ export default function CreateAlbum({ confirm, tournamentId }: CreateAlbumProps)
             />
             <VerticalSpacing size={15} />
             <Button value='Dodaj' />
-        </form>
+        </Form>
     );
 };

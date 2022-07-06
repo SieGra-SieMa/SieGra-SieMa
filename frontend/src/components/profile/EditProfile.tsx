@@ -2,16 +2,17 @@ import { FormEvent, useState } from 'react';
 import { UserDetailsRequest } from '../../_lib/types';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
+import Form from '../form/Form';
 import Input from '../form/Input';
 import VerticalSpacing from '../spacing/VerticalSpacing';
 import { useUser } from '../user/UserContext';
-import styles from './EditProfile.module.css';
 
-type EditProfileProps = {
+
+type Props = {
     confirm: () => void;
-}
+};
 
-export default function EditProfile({ confirm }: EditProfileProps) {
+export default function EditProfile({ confirm }: Props) {
 
     const { usersService } = useApi();
     const { user, setUser } = useUser();
@@ -33,7 +34,7 @@ export default function EditProfile({ confirm }: EditProfileProps) {
     };
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <Input
                 id='AccountData-name'
                 label='Imie'
@@ -48,6 +49,6 @@ export default function EditProfile({ confirm }: EditProfileProps) {
             />
             <VerticalSpacing size={15} />
             <Button value='Zapisz' />
-        </form>
+        </Form>
     );
 }

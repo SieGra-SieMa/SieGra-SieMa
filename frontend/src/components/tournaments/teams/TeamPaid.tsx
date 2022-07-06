@@ -11,11 +11,12 @@ import GuardComponent from "../../guard-components/GuardComponent";
 import { ROLES } from "../../../_lib/roles";
 import RemoveIcon from "@mui/icons-material/Remove";
 
-type TeamUnpaidProps = {
+
+type Props = {
 	team: TeamInTournament;
 };
 
-export default function TeamPaid({ team }: TeamUnpaidProps) {
+export default function TeamPaid({ team }: Props) {
 
 	const { tournamentsService } = useApi();
 	const { tournament, setTournament } = useTournament();

@@ -1,35 +1,32 @@
-import { useEffect, useState } from 'react';
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { useAlert } from '../alert/AlertContext';
 import { useApi } from '../api/ApiContext';
-
+import Loader from '../loader/Loader';
 
 export default function ConfirmEmail() {
 
     const [query] = useSearchParams();
-
-    const { accountsService } = useApi();
-
-    const [isConfirmed, setIsConfirmed] = useState(false);
-
     const token = decodeURIComponent(query.get('token')!);
     const userId = query.get('userid');
 
+    const navigate = useNavigate();
+
+    const alert = useAlert();
+    const { accountsService } = useApi();
+
     useEffect(() => {
         if (!token || !userId) return;
-        console.log(token)
         accountsService.confirmEmail(userId, token)
             .then((data) => {
-                setIsConfirmed(true);
-            })
-    }, [token, userId, accountsService])
+                navigate('/entry');
+                alert.success(data.message);
+            });
+    }, [token, userId, accountsService, alert, navigate])
 
     if (!token || !userId) {
-        return <Navigate to='/entry' />;;
+        return (<Navigate to='/entry' />);
     }
 
-    return (
-        <div className='container'>
-            <h1>{isConfirmed ? 'Konto zostało potwierdzone' : 'Potwierdzenie...'}</h1>
-        </div>
-    );
+    return (<Loader size={20} margin={40} />);
 }

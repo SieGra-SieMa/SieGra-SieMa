@@ -5,6 +5,7 @@ import { useApi } from '../../api/ApiContext';
 import Button from '../../form/Button';
 import { useTeams } from '../TeamsContext';
 import { useAlert } from '../../alert/AlertContext';
+import Form from '../../form/Form';
 
 export default function CreateTeam() {
 
@@ -30,7 +31,7 @@ export default function CreateTeam() {
     }
 
     return (
-        <form className={styles.option} onSubmit={onSubmit}>
+        <Form className={styles.option} onSubmit={onSubmit}>
             <h4>Utwórz zespół</h4>
             <p>Jeśli Ty i Twoi znajomi chcecie brać udział w naszych turniejach, możecie stworzyć własną drużynę.</p>
             <Input
@@ -45,6 +46,6 @@ export default function CreateTeam() {
                 value='Utworzyć'
                 disabled={name.length === 0}
             />
-        </form>
+        </Form>
     );
 }

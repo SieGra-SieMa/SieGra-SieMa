@@ -1,37 +1,34 @@
-import { useEffect, useState, FormEvent } from 'react';
-import { Navigate, useSearchParams } from 'react-router-dom';
+import { useState, FormEvent } from 'react';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useApi } from '../api/ApiContext';
 import Input from '../form/Input';
 import Button from '../form/Button';
-
+import Form from '../form/Form';
+import { useAlert } from '../alert/AlertContext';
+import VerticalSpacing from '../spacing/VerticalSpacing';
+import styles from './AccountEntry.module.css';
 
 export default function ResetPassword() {
 
     const [query] = useSearchParams();
-
-    const { accountsService } = useApi();
-
-    const [isConfirmed, setIsConfirmed] = useState(false);
-    const [password, setPassword] = useState<string>('');
-    const [error, setError] = useState<string | null>(null);
-
     const token = decodeURIComponent(query.get('token')!);
     const userId = query.get('userid');
 
-    useEffect(() => {
-        if (!token || !userId) return;
-    }, [token, userId, accountsService])
+    const navigate = useNavigate();
+
+    const alert = useAlert();
+    const { accountsService } = useApi();
+
+    const [password, setPassword] = useState<string>('');
 
     const resetPassword = (e: FormEvent) => {
         e.preventDefault();
-        console.log(token)
         if (!token || !userId) return;
         accountsService.resetPassword(userId!, token, password)
             .then((data) => {
-                setIsConfirmed(true);
-            },(e) => {
-                setError(e);
-            })
+                navigate('/entry');
+                alert.success(data.message);
+            });
     };
 
     if (!token || !userId) {
@@ -39,20 +36,25 @@ export default function ResetPassword() {
     }
 
     return (
-        <div className='container'>
-            <h1>{isConfirmed ? 'Hasło zostało zresetowane!' : 'Resetowanie...'}</h1>
-            {error &&<h2>FAILED: {error}</h2>}
-            <form onSubmit={resetPassword}>
-            <Input
-                id='Reset-password'
-                label='Password'
-                type='password'
-                value={password}
-                required
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button value='Zresetuj hasło' />
-            </form>
+        <div className={[
+            'container',
+            styles.resetPasswordRoot,
+        ].join(' ')}>
+            <h1>Zmiana hasła</h1>
+            <div className={styles.resetPasswordContainer}>
+                <Form onSubmit={resetPassword}>
+                    <Input
+                        id='ResetPassword-password'
+                        label='Nowe hasło'
+                        type='password'
+                        value={password}
+                        required
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    <VerticalSpacing size={15} />
+                    <Button value='Zresetuj' />
+                </Form>
+            </div>
         </div>
     );
 }

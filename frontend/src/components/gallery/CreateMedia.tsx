@@ -2,16 +2,17 @@ import { FormEvent, useState } from 'react';
 import { Media } from '../../_lib/_types/response';
 import { useApi } from '../api/ApiContext';
 import Button from '../form/Button';
+import Form from '../form/Form';
 import VerticalSpacing from '../spacing/VerticalSpacing';
 import styles from './CreateMedia.module.css';
 
 
-type CreateMediaProps = {
+type Props = {
     confirm: (media: Media) => void;
     albumId: number;
 };
 
-export default function CreateMedia({ confirm, albumId }: CreateMediaProps) {
+export default function CreateMedia({ confirm, albumId }: Props) {
 
     const { albumsService } = useApi();
 
@@ -29,17 +30,17 @@ export default function CreateMedia({ confirm, albumId }: CreateMediaProps) {
     }
 
     return (
-        <form className={styles.root} onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit}>
             <label
                 className={styles.selectImage}
                 style={file ? {
                     backgroundImage: `url(${URL.createObjectURL(file)})`,
                 } : undefined}
-                htmlFor="MediaAdd-file"
+                htmlFor="CreateMedia-file"
             >
                 {file ? file.name : 'Wybierz zdjęcie'}
                 <input
-                    id="MediaAdd-file"
+                    id="CreateMedia-file"
                     type="file"
                     accept="image/png, image/jpeg"
                     hidden
@@ -49,6 +50,6 @@ export default function CreateMedia({ confirm, albumId }: CreateMediaProps) {
             </label>
             <VerticalSpacing size={15} />
             <Button value='Zatwierdź' />
-        </form>
+        </Form>
     );
 }

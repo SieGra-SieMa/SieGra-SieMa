@@ -4,12 +4,12 @@ import { useAlert } from "../alert/AlertContext";
 import { ApiContext } from "./ApiContext";
 
 
-type ApiProviderProps = {
+type Props = {
     children: React.ReactNode;
     value: ApiClient;
 }
 
-export default function ApiProvider({ children, value }: ApiProviderProps) {
+export default function ApiProvider({ children, value }: Props) {
 
     const alert = useAlert();
 

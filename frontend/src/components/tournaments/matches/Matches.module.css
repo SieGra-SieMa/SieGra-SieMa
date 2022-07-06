@@ -79,11 +79,3 @@ Button.active {
 		grid-area: 1 / 2 / 3 / 3;
 	}
 }
-
-/* MatchResult */
-
-.matchDetails {
-	display: grid;
-	row-gap: 15px;
-	grid-auto-rows: min-content;
-}

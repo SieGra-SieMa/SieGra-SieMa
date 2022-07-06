@@ -1,5 +1,11 @@
 .root {
     display: grid;
+    row-gap: 15px;
+    grid-auto-rows: min-content;
+}
+
+.inputRoot {
+    display: grid;
     row-gap: 5px;
     grid-auto-rows: min-content;
 }

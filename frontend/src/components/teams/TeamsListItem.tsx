@@ -174,7 +174,6 @@ export default function TeamsListItem({
                                 setTeams(data);
                             }
                         }}
-                        isAdmin
                     />
                 </Modal>
             )}

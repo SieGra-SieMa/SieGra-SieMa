@@ -10,7 +10,7 @@ import styles from './EditTeamPicture.module.css';
 type Props = {
     team: Team;
     confirm: (url: string) => void;
-    isAdmin: boolean;
+    isAdmin?: boolean;
 }
 
 export default function EditTeamPicture({

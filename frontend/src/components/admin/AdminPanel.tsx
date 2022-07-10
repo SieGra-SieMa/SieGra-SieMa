@@ -1,36 +1,21 @@
-import { useEffect, useState } from "react";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Button, { ButtonStyle } from "../form/Button";
 import styles from "./AdminPanel.module.css";
 
-export default function AdminPanel() {
-	const navigate = useNavigate();
-	const location = useLocation();
-	const [currentPage, setCurrentPage] = useState("");
 
-	useEffect(() => {
-		switch (location.pathname) {
-			case "/admin/users":
-				setCurrentPage("Użytkownicy");
-				break;
-			case "/admin":
-				setCurrentPage("Newsletter");
-				break;
-			case "/admin/teams":
-				setCurrentPage("Zespoły");
-				break;
-		}
-	}, [location]);
+export default function AdminPanel() {
+
+	const navigate = useNavigate();
 
 	return (
-		<div className={styles.container}>
-			<h1>{currentPage}</h1>
+		<div className={[
+			'container',
+			styles.root,
+		].join(' ')}>
 			<div className={styles.navigation}>
 				<Button
 					value="Użytkownicy"
-					onClick={() => {
-						navigate("users");
-					}}
+					onClick={() => navigate("users")}
 					style={ButtonStyle.Transparent}
 				/>
 				<Button
@@ -48,9 +33,7 @@ export default function AdminPanel() {
 					style={ButtonStyle.Transparent}
 				/>
 			</div>
-			<div className={styles.outlet}>
-				<Outlet />
-			</div>
+			<Outlet />
 		</div>
 	);
 }

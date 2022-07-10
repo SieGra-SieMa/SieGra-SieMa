@@ -12,12 +12,12 @@ export default function UserProvider({ children }: { children: React.ReactNode }
     const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
-        if (session) {
-            usersService.currentUser()
-                .then((user) => setUser(user));
-        } else {
+        if (!session) {
             setUser(null);
+            return;
         }
+        usersService.currentUser()
+            .then((user) => setUser(user));
     }, [session, setUser, usersService]);
 
     const value = { user, setUser };

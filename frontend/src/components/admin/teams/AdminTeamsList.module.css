@@ -1,10 +1,13 @@
 .root {
-    width: 100%;
-    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    flex: 1;
 }
 
-.root>h1 {
-    width: fit-content;
+.top {
+    display: flex;
+    justify-content: center;
 }
 
 .content {
@@ -13,24 +16,4 @@
     align-items: center;
     justify-content: center;
     gap: 25px;
-    max-height: 50vh;
-    overflow-y: scroll;
-}
-.loader {
-    display: flex;
-    justify-content: center;
-    padding: 150px 50px;
-    grid-column: 2;
-}
-
-@media all and (max-width: 1270px) {
-    .content {
-        grid-template-columns: 1fr 1fr;
-    }
-}
-
-@media all and (max-width: 760px) {
-    .content {
-        grid-template-columns: 1fr;
-    }
 }

@@ -1,0 +1,16 @@
+.root {
+	display: grid;
+	row-gap: 15px;
+}
+
+.top {
+	display: flex;
+	justify-content: center;
+}
+
+.select {
+	width: 100%;
+	font-size: 17px;
+	padding: 15px !important;
+	-webkit-appearance: none;
+}

@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { ROLES } from '../../_lib/roles';
 import { useAuth } from '../auth/AuthContext';
+import Loader from '../loader/Loader';
 import { useUser } from '../user/UserContext';
 
 type GuardRouteProp = {
@@ -19,7 +20,7 @@ export default function GuardRoute({
     }
 
     if (!user) {
-        return null;
+        return <Loader size={20} margin={40} />;
     }
 
     if (!user.roles.some((role) => roles.includes(role))) {

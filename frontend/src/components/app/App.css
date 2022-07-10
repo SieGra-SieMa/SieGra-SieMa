@@ -84,6 +84,21 @@
     width: 100%;
 }
 
+.quill {
+    background-color: white;
+    width: 100%;
+    height: fit-content;
+}
+
+.quill * {
+    color: black;
+}
+
+.quill>.ql-container {
+    height: 300px;
+    overflow-y: scroll;
+}
+
 @media all and (max-width: 1600px) {
     .container {
         width: 100%;

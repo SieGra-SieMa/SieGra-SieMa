@@ -10,7 +10,6 @@ import DatePicker from "../../form/DatePicker";
 import Form from "../../form/Form";
 import Input from "../../form/Input";
 import VerticalSpacing from "../../spacing/VerticalSpacing";
-import styles from "./CreateTournament.module.css";
 
 type CreateTournamentType = {
 	confirm: (tournament: TournamentListItem) => void;
@@ -58,7 +57,7 @@ export default function CreateTournament({ confirm }: CreateTournamentType) {
 			/>
 			<p>Opis</p>
 			<ReactQuill
-				className={styles.quill}
+				className="quill"
 				theme="snow"
 				value={description}
 				onChange={setDescription}

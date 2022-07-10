@@ -5,7 +5,6 @@ import Button from "../../form/Button";
 import DatePicker from "../../form/DatePicker";
 import Input from "../../form/Input";
 import VerticalSpacing from "../../spacing/VerticalSpacing";
-import styles from "./EditTournament.module.css";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import Form from "../../form/Form";
@@ -68,7 +67,7 @@ export default function EditTournament({
 			/>
 			<p>Opis</p>
 			<ReactQuill
-				className={styles.quill}
+				className="quill"
 				theme="snow"
 				value={description}
 				onChange={setDescription}

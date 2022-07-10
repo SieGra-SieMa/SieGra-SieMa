@@ -2,11 +2,10 @@ import styles from "./UsersList.module.css";
 import UsersListItem from "./UsersListItem";
 import { useState, useEffect } from "react";
 import { User } from "../../../_lib/types";
-import SyncLoader from "react-spinners/SyncLoader";
 import { useApi } from "../../api/ApiContext";
 import { useUser } from "../../user/UserContext";
 import Input from "../../form/Input";
-import VerticalSpacing from "../../spacing/VerticalSpacing";
+import Loader from "../../loader/Loader";
 
 export default function UsersList() {
 	const { usersService } = useApi();
@@ -34,49 +33,32 @@ export default function UsersList() {
 	};
 
 	return (
-		<>
-			<div className={styles.root}>
-				<Input
-					placeholder="Wyszukaj..."
-					value={search}
-					onChange={(e) => setSearch(e.target.value)}
-				/>
-				<VerticalSpacing size={25} />
-				<div className={styles.content}>
-					{users ? (
-						users
-							.filter((user) => {
-								return (
-									user.name
-										.toLowerCase()
-										.includes(search.toLowerCase()) ||
-									user.surname
-										.toLowerCase()
-										.includes(search.toLowerCase()) ||
-									user.email
-										.toLowerCase()
-										.includes(search.toLowerCase())
-								);
-							})
-							.map((user, index) => (
-								<UsersListItem
-									key={index}
-									user={user}
-									onUserPropChange={onUserPropChange}
-								/>
-							))
-					) : (
-						<div className={styles.loader}>
-							<SyncLoader
-								loading={true}
-								size={20}
-								margin={20}
-								color="#fff"
-							/>
-						</div>
-					)}
-				</div>
+		<div className={styles.root}>
+			<div className={styles.top}>
+				<h1>Użytkownicy</h1>
 			</div>
-		</>
+			<Input
+				placeholder="Wyszukaj..."
+				value={search}
+				onChange={(e) => setSearch(e.target.value)}
+			/>
+			{users ? (
+				<div className={styles.content}>
+					{users.filter((user) =>
+						user.name.toLowerCase().includes(search.toLowerCase()) ||
+						user.surname.toLowerCase().includes(search.toLowerCase()) ||
+						user.email.toLowerCase().includes(search.toLowerCase())
+					).map((user, index) => (
+						<UsersListItem
+							key={index}
+							user={user}
+							onUserPropChange={onUserPropChange}
+						/>
+					))}
+				</div>
+			) : (
+				<Loader size={20} margin={40} />
+			)}
+		</div>
 	);
 }

@@ -1,11 +1,11 @@
 import styles from "./AdminTeamsList.module.css";
 import { useState, useEffect } from "react";
 import { Team } from "../../../_lib/types";
-import SyncLoader from "react-spinners/SyncLoader";
 import { useApi } from "../../api/ApiContext";
 import TeamsListItem from "./TeamsListItem";
 import Input from "../../form/Input";
-import VerticalSpacing from "../../spacing/VerticalSpacing";
+import Loader from "../../loader/Loader";
+
 
 export default function AdminTeamsList() {
 	const { teamsService } = useApi();
@@ -37,47 +37,32 @@ export default function AdminTeamsList() {
 	};
 
 	return (
-		<>
-			<div className={styles.root}>
-				<Input
-					placeholder="Wyszukaj..."
-					value={search}
-					onChange={(e) => setSearch(e.target.value)}
-				/>
-				<VerticalSpacing size={25} />
-				<div className={styles.content}>
-					{teams ? (
-						teams
-							.filter((team) => {
-								return (
-									team.name
-										.toLowerCase()
-										.includes(search.toLowerCase()) ||
-									team.code
-										.toLowerCase()
-										.includes(search.toLowerCase())
-								);
-							})
-							.map((team, index) => (
-								<TeamsListItem
-									key={index}
-									team={team}
-									onTeamChange={onTeamChange}
-									onTeamDelete={onTeamDelete}
-								/>
-							))
-					) : (
-						<div className={styles.loader}>
-							<SyncLoader
-								loading={true}
-								size={20}
-								margin={20}
-								color="#fff"
-							/>
-						</div>
-					)}
-				</div>
+		<div className={styles.root}>
+			<div className={styles.top}>
+				<h1>Zespoły</h1>
 			</div>
-		</>
+			<Input
+				placeholder="Wyszukaj..."
+				value={search}
+				onChange={(e) => setSearch(e.target.value)}
+			/>
+			{teams ? (
+				<div className={styles.content}>
+					{teams.filter((team) =>
+						team.name.toLowerCase().includes(search.toLowerCase()) ||
+						team.code.toLowerCase().includes(search.toLowerCase())
+					).map((team, index) => (
+						<TeamsListItem
+							key={index}
+							team={team}
+							onTeamChange={onTeamChange}
+							onTeamDelete={onTeamDelete}
+						/>
+					))}
+				</div>
+			) : (
+				<Loader size={20} margin={40} />
+			)}
+		</div>
 	);
 }

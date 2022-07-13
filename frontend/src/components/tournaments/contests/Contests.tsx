@@ -3,7 +3,7 @@ import { Contest as ContestType } from "../../../_lib/_types/tournament";
 import GuardComponent from "../../guard-components/GuardComponent";
 import AddIcon from "@mui/icons-material/Add";
 import styles from "./Contests.module.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Contest from "./Contest";
 import Modal from "../../modal/Modal";
 import CreateContest from "./CreateContest";
@@ -30,18 +30,14 @@ export default function Contests({ contests, tournamentId }: Props) {
 	const { tournamentsService } = useApi();
 	const { tournament, setTournament } = useTournament();
 
-	const [currentContest, setCurrentContest] = useState<ContestType | undefined>(
-		contests[0]
-	);
+	const [currentContestId, setCurrentContestId] = useState<number | undefined>(undefined);
 	const [isAddContest, setIsAddContest] = useState(false);
 	const [isAddScore, setIsAddScore] = useState(false);
 	const [isEditContest, setIsEditContest] = useState(false);
 	const [isDeleteContest, setIsDeleteContest] = useState(false);
 	const [isSelectContest, setIsSelectContest] = useState(false);
 
-	useEffect(() => {
-		setCurrentContest(contests[0]);
-	}, [contests]);
+	const currentContest = contests.find((c) => !currentContestId || c.id === currentContestId);
 
 	const onDelete = () => {
 		if (!currentContest) return;
@@ -53,6 +49,7 @@ export default function Contests({ contests, tournamentId }: Props) {
 					...tournament,
 					contests: tournament.contests.filter((e) => currentContest.id !== e.id)
 				})
+				setCurrentContestId(undefined);
 			});
 	};
 
@@ -214,7 +211,7 @@ export default function Contests({ contests, tournamentId }: Props) {
 										: ""
 								}
 								onClick={() => {
-									setCurrentContest(contest);
+									setCurrentContestId(contest.id);
 									setIsSelectContest(false);
 								}}
 								key={contest.id}

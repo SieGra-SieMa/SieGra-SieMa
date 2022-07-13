@@ -21,7 +21,8 @@ export default function NewsFeed(props: Props) {
 	const [prevVisible, setPrevVisible] = useState(false);
 
 	useEffect(() => {
-		FB.api(
+		try{
+			FB.api(
 			`/${Config.APP_ID}/posts?access_token=${Config.ACCESS_TOKEN}&limit=${fetchLimit}`,
 			"get",
 			{ fields: "full_picture,message,created_time,permalink_url" },
@@ -29,7 +30,11 @@ export default function NewsFeed(props: Props) {
 				setFeed(response);
 			}
 		);
-
+		}
+		catch(e){
+			console.log(e);
+		}
+		
 	}, [fetchLimit]);
 
 	useEffect(() => {

@@ -11,8 +11,11 @@ type Props = {
 };
 
 export default function Matches({ groups }: Props) {
-	const [currentGroup, setCurrentGroup] = useState<Group>(groups[0]);
+
+	const [currentGroupId, setCurrentGroupId] = useState<number | null>(null);
 	const [isSelectGroup, setIsSelectGroup] = useState(false);
+
+	const currentGroup = groups.find((g) => currentGroupId === null || g.id === currentGroupId);
 
 	return (
 		<>
@@ -28,12 +31,14 @@ export default function Matches({ groups }: Props) {
 					>
 						Mecze
 					</h4>
-					<Button
-						id={styles.selectGroupButton}
-						value={"Grupa " + currentGroup.name}
-						onClick={() => setIsSelectGroup(true)}
-						style={ButtonStyle.TransparentBorder}
-					/>
+					{currentGroup && (
+						<Button
+							id={styles.selectGroupButton}
+							value={"Grupa " + currentGroup.name}
+							onClick={() => setIsSelectGroup(true)}
+							style={ButtonStyle.TransparentBorder}
+						/>
+					)}
 					{groups && isSelectGroup && (
 						<Modal
 							title="Wybierz grupę"
@@ -52,7 +57,7 @@ export default function Matches({ groups }: Props) {
 													: ""
 											}
 											onClick={() => {
-												setCurrentGroup(group);
+												setCurrentGroupId(group.id);
 												setIsSelectGroup(false);
 											}}
 											key={group.id}
@@ -66,7 +71,7 @@ export default function Matches({ groups }: Props) {
 					)}
 					<div className={styles.group}>
 						<div className={styles.matches}>
-							{currentGroup.matches &&
+							{currentGroup && currentGroup.matches &&
 								currentGroup.matches.map((match) => (
 									<Match key={`${match.groupId}-${match.matchId}`} match={match} />
 								))}

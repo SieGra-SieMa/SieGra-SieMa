@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SieGraSieMa.DTOs;
 using SieGraSieMa.DTOs.ErrorDTO;
+using SieGraSieMa.DTOs.Pagging;
 using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
@@ -318,11 +319,11 @@ namespace SieGraSieMa.Controllers
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpGet("admin")]
-        public async Task<IActionResult> GetAllTeamsByAdmin()
+        public async Task<IActionResult> GetAllTeamsByAdmin([FromQuery] PaggingParam pp)
         {
             try
             {
-                var result = await _teamService.GetAllTeams();
+                var result = await _teamService.GetAllTeams(pp);
                 return Ok(result);
             }
             catch (Exception e)

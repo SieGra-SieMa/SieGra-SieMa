@@ -55,12 +55,12 @@ export default function Album() {
 	}, [albumId, albumsService]);
 
 	const removeAlbum = () => {
-		albumsService.deleteAlbum(albumId!).then(() => navigate(-1));
+		return albumsService.deleteAlbum(albumId!).then(() => navigate(-1));
 	};
 
 	const deleteMedia = () => {
 		if (!selectedImage || !album) return;
-		mediaService.deleteMedia(selectedImage.id).then((data) => {
+		return mediaService.deleteMedia(selectedImage.id).then((data) => {
 			setAlbum({
 				...album,
 				mediaList: album.mediaList.filter(

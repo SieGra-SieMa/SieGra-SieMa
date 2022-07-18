@@ -31,7 +31,7 @@ export default function Newsletter() {
     }, [tournamentsService]);
 
     const onConfirm = () => {
-        usersService.sendNewsletter(title, body, tournamentId ?? undefined)
+        return usersService.sendNewsletter(title, body, tournamentId ?? undefined)
             .then((data) => {
                 alert.success(data.message);
                 setIsConfirmation(false);

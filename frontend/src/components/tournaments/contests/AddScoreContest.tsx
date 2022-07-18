@@ -24,14 +24,17 @@ export default function AddScoreContest({
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        tournamentsService.addContestScore(contest.tournamentId, contest.id, email, points)
+        return tournamentsService.addContestScore(contest.tournamentId, contest.id, email, points)
             .then((data) => {
                 confirm(data);
             });
     }
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Dodaj wynik' />
+        </>}>
             <Input
                 id='AddScoreContest-name'
                 label='Email'
@@ -53,8 +56,6 @@ export default function AddScoreContest({
                     setPoints(Math.abs(result));
                 }}
             />
-            <VerticalSpacing size={15} />
-            <Button value='Dodaj wynik' />
         </Form>
     );
 }

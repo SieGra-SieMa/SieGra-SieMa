@@ -23,14 +23,21 @@ export default function TeamAssign({ id, confirm, teams }: Props) {
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (!selectedTeam) return;
-        tournamentsService.addTeam(id, selectedTeam.id)
+        return tournamentsService.addTeam(id, selectedTeam.id)
             .then((data) => {
                 confirm(selectedTeam);
             });
     };
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button
+                className={styles.button}
+                value='Zapisz'
+                disabled={selectedTeam === null}
+            />
+        </>}>
             {teams ? (
                 <ul className={styles.list}>
                     {teams.map((team, index) => (
@@ -53,8 +60,6 @@ export default function TeamAssign({ id, confirm, teams }: Props) {
                     <SyncLoader loading={true} size={7} margin={20} color='#fff' />
                 </div>
             )}
-            <VerticalSpacing size={15} />
-            <Button className={styles.button} value='Zapisz' disabled={selectedTeam === null} />
         </Form>
     );
 };

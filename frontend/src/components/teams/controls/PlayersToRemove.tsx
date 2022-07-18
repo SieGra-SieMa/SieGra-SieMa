@@ -26,7 +26,7 @@ export default function PlayersToRemove({
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (!selectedPlayer) return;
-        teamsService.removePlayer(team.id, selectedPlayer.id)
+        return teamsService.removePlayer(team.id, selectedPlayer.id)
             .then((team) => {
                 const data = teams ? [...teams] : [];
                 const index = data.findIndex(e => e.id === team.id) ?? -1;
@@ -39,7 +39,15 @@ export default function PlayersToRemove({
     }
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button
+                className={styles.button}
+                value='Usuń'
+                disabled={selectedPlayer === null}
+                style={ButtonStyle.Red}
+            />
+        </>}>
             <ul className={styles.list}>
                 {team.players.filter((player) => player.id !== team.captainId)
                     .map((player, index) => (
@@ -55,13 +63,6 @@ export default function PlayersToRemove({
                         </li>
                     ))}
             </ul>
-            <VerticalSpacing size={15} />
-            <Button
-                className={styles.button}
-                value='Usuń'
-                disabled={selectedPlayer === null}
-                style={ButtonStyle.Red}
-            />
         </Form >
     );
 }

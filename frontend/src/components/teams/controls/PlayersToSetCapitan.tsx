@@ -26,7 +26,7 @@ export default function PlayersToSetCapitan({
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (!selectedPlayer) return;
-        teamsService.switchCaptain(team.id, selectedPlayer.id)
+        return teamsService.switchCaptain(team.id, selectedPlayer.id)
             .then((team) => {
                 const data = teams ? [...teams] : [];
                 const index = data.findIndex(e => e.id === team.id) ?? -1;
@@ -39,7 +39,15 @@ export default function PlayersToSetCapitan({
     }
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button
+                className={styles.button}
+                value='Wybierz'
+                disabled={selectedPlayer === null}
+                style={ButtonStyle.Red}
+            />
+        </>}>
             <ul className={styles.list}>
                 {team.players.filter((player) => player.id !== team.captainId)
                     .map((player, index) => (
@@ -55,13 +63,6 @@ export default function PlayersToSetCapitan({
                         </li>
                     ))}
             </ul>
-            <VerticalSpacing size={15} />
-            <Button
-                className={styles.button}
-                value='Wybierz'
-                disabled={selectedPlayer === null}
-                style={ButtonStyle.Red}
-            />
         </Form >
     );
 }

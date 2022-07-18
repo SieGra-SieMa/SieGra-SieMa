@@ -19,8 +19,7 @@ import styles from './Matches.module.css';
 
 type Props = {
 	match: MatchType & { groupId: number };
-	confirm: () => void;
-	callback: (homeScore: number, awayScore: number) => void;
+	confirm: (homeScore: number, awayScore: number) => void;
 };
 
 const createFunction = (fn: (data: number) => void) => {
@@ -37,7 +36,6 @@ const createFunction = (fn: (data: number) => void) => {
 export default function MatchResult({
 	match,
 	confirm,
-	callback,
 }: Props) {
 
 	const alert = useAlert();
@@ -61,12 +59,11 @@ export default function MatchResult({
 			homeTeamPoints: teamHomeScore,
 			awayTeamPoints: teamAwayScore,
 		};
-		matchService.insertResults(result).then((data) => {
+		return matchService.insertResults(result).then((data) => {
 			setTournament(data);
-			confirm();
+			confirm(result.homeTeamPoints, result.awayTeamPoints);
 			alert.success('Wynik został zapisany');
 		});
-		callback(result.homeTeamPoints, result.awayTeamPoints);
 	};
 
 	const disabled = user &&
@@ -81,7 +78,16 @@ export default function MatchResult({
 	const teamAway = tournament.teams.find((team) => team.teamId === match.teamAwayId);
 
 	return (
-		<Form onSubmit={onSubmit}>
+		<Form onSubmit={onSubmit} trigger={
+			<GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
+				{!disabled && (
+					<>
+						<VerticalSpacing size={15} />
+						<Button value='Zapisz' />
+					</>
+				)}
+			</GuardComponent>
+		}>
 			<div className={styles.imageBlock}>
 				<TeamImage
 					url={teamHome?.teamProfileUrl}
@@ -115,14 +121,6 @@ export default function MatchResult({
 					createFunction(setTeamAwayScore)(e.target.value)
 				}
 			/>
-			<GuardComponent roles={[ROLES.Employee, ROLES.Admin]}>
-				{!disabled && (
-					<>
-						<VerticalSpacing size={15} />
-						<Button value='Zapisz' />
-					</>
-				)}
-			</GuardComponent>
 		</Form>
 	);
 }

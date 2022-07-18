@@ -6,14 +6,12 @@
 }
 
 .option {
-    height: 440px;
     width: 440px;
     border-radius: 20px;
     padding: 50px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     transition: box-shadow .3s;
 }
 

@@ -6,6 +6,7 @@ import Button from '../../form/Button';
 import { useTeams } from '../TeamsContext';
 import { useAlert } from '../../alert/AlertContext';
 import Form from '../../form/Form';
+import VerticalSpacing from '../../spacing/VerticalSpacing';
 
 export default function CreateTeam() {
 
@@ -18,7 +19,7 @@ export default function CreateTeam() {
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        teamsService.createTeam(name)
+        return teamsService.createTeam(name)
             .then((team) => {
                 if (teams) {
                     setTeams([...teams, team]);
@@ -31,7 +32,13 @@ export default function CreateTeam() {
     }
 
     return (
-        <Form className={styles.option} onSubmit={onSubmit}>
+        <Form className={styles.option} onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={10} />
+            <Button
+                value='Utworzyć'
+                disabled={name.length === 0}
+            />
+        </>}>
             <h4>Utwórz zespół</h4>
             <p>Jeśli Ty i Twoi znajomi chcecie brać udział w naszych turniejach, możecie stworzyć własną drużynę.</p>
             <Input
@@ -41,10 +48,6 @@ export default function CreateTeam() {
                 value={name}
                 required
                 onChange={(e) => setName(e.target.value)}
-            />
-            <Button
-                value='Utworzyć'
-                disabled={name.length === 0}
             />
         </Form>
     );

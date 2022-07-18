@@ -444,9 +444,11 @@ export default function Tournament() {
 			</div>
 
 			{!isOpen && (<>
-				{tournament.ladder[0]?.matches[0].teamHomeId && (
-					<Ladder ladder={tournament.ladder} />
-				)}
+				<div>
+					{tournament.ladder[0]?.matches[0].teamHomeId && (
+						<Ladder ladder={tournament.ladder} />
+					)}
+				</div>
 				<GuardComponent roles={[ROLES.Admin]}>
 					{tournament.groups
 						.map((group) =>

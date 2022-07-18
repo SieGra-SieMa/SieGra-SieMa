@@ -57,10 +57,10 @@ export default function Match({ match }: Props) {
 				>
 					<MatchResult
 						match={match}
-						confirm={() => setIsEdit(false)}
-						callback={(homeScore: number, awayScore: number) => {
+						confirm={(homeScore: number, awayScore: number) => {
 							setHomeScore(homeScore);
 							setAwayScore(awayScore);
+							setIsEdit(false);
 						}}
 					/>
 				</Modal>

@@ -26,14 +26,17 @@ export default function EditTournamentPicture({
         if (!file) return;
         const data = new FormData();
         data.append('file', file);
-        tournamentsService.addProfilePhoto(tournament.id, data)
+        return tournamentsService.addProfilePhoto(tournament.id, data)
             .then((data) => {
                 confirm(data[0].url);
             });
     }
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Zatwierdź' />
+        </>}>
             <label
                 className={styles.selectImage}
                 style={file ? {
@@ -51,8 +54,6 @@ export default function EditTournamentPicture({
                     onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
                 />
             </label>
-            <VerticalSpacing size={15} />
-            <Button value='Zatwierdź' />
         </Form>
     );
 }

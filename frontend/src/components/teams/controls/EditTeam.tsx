@@ -21,21 +21,25 @@ export default function EditTeam({ team, confirm, isAdmin = false }: Props) {
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
+
         if (isAdmin) {
-            teamsService.updateTeamAdmin(team.id, name)
-                .then((data) => {
-                    confirm(data);
-                });
-        } else {
-            teamsService.updateTeam(team.id, name)
+            return teamsService.updateTeamAdmin(team.id, name)
                 .then((data) => {
                     confirm(data);
                 });
         }
+
+        return teamsService.updateTeam(team.id, name)
+            .then((data) => {
+                confirm(data);
+            });
     };
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Zapisz' />
+        </>}>
             <Input
                 id='TeamEdit-name'
                 label='Nazwa'
@@ -43,8 +47,6 @@ export default function EditTeam({ team, confirm, isAdmin = false }: Props) {
                 required
                 onChange={(e) => setName(e.target.value)}
             />
-            <VerticalSpacing size={15} />
-            <Button value='Zapisz' />
         </Form>
     );
 }

@@ -25,14 +25,17 @@ export default function EditUser({ user, confirm }: Props) {
             name,
             surname
         };
-        usersService.adminUpdateUser(user.id, updatedUser)
+        return usersService.adminUpdateUser(user.id, updatedUser)
             .then((data) => {
                 confirm(data);
             });
     };
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Zapisz' />
+        </>}>
             <Input
                 id='EditUser-name'
                 label='Imie'
@@ -45,8 +48,6 @@ export default function EditUser({ user, confirm }: Props) {
                 value={surname}
                 onChange={(e) => setSurname(e.target.value)}
             />
-            <VerticalSpacing size={15} />
-            <Button value='Zapisz' />
         </Form>
     );
 }

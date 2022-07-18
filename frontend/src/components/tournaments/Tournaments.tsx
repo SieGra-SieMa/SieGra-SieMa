@@ -28,7 +28,7 @@ export default function Tournaments() {
 
     return (
         <TournamentsContext.Provider value={value}>
-            <div>
+            <div className={styles.wrapper}>
                 <div className={['container', styles.root].join(' ')}>
                     <Outlet />
                 </div>

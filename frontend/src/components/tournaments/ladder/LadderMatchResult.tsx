@@ -47,7 +47,7 @@ export default function LadderMatchResult({ match, confirm }: Props) {
             homeTeamPoints: teamHomeScore,
             awayTeamPoints: teamAwayScore
         }
-        matchService.insertResults(result)
+        return matchService.insertResults(result)
             .then((data) => {
                 setTournament(data);
                 confirm();
@@ -88,10 +88,15 @@ export default function LadderMatchResult({ match, confirm }: Props) {
     const teamHome = tournament.teams.find((team) => team.teamId === match.teamHomeId);
     const teamAway = tournament.teams.find((team) => team.teamId === match.teamAwayId);
 
-    console.log(teamHome)
-
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <GuardComponent roles={[ROLES.Admin, ROLES.Employee]}>
+                {!disabled && (<>
+                    <VerticalSpacing size={15} />
+                    <Button value='Zapisz' disabled={teamAwayScore === teamHomeScore} />
+                </>)}
+            </GuardComponent>
+        </>}>
             <div className={styles.imageBlock}>
                 <TeamImage
                     url={teamHome?.teamProfileUrl}
@@ -121,12 +126,6 @@ export default function LadderMatchResult({ match, confirm }: Props) {
                 disabled={disabled}
                 onChange={(e) => createFunction(setTeamAwayScore)(e.target.value)}
             />
-            <GuardComponent roles={[ROLES.Admin, ROLES.Employee]}>
-                {!disabled && (<>
-                    <VerticalSpacing size={15} />
-                    <Button value='Zapisz' disabled={teamAwayScore === teamHomeScore} />
-                </>)}
-            </GuardComponent>
         </Form>
     );
 };

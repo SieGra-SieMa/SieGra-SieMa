@@ -82,14 +82,14 @@ export default function UserListItem({
 				{user && (
 					user.isLocked ? <LockOpenIcon
 						className="interactiveIcon"
-						onClick={() => setIsBan(true)}
+						onClick={() => setIsUnban(true)}
 					/> : <BlockIcon
 						className="interactiveIcon"
 						onClick={() => setIsBan(true)}
 					/>)}
 
 			</div>
-			{roleToDelete && (
+			{(roleToDelete) && (
 				<Modal
 					isClose
 					close={() => setRoleToDelete(null)}
@@ -103,7 +103,7 @@ export default function UserListItem({
 					/>
 				</Modal>
 			)}
-			{isAdd && (
+			{(isAdd) && (
 				<Modal isClose title="Dodaj role" close={() => setIsAdd(false)}>
 					<RoleAssign
 						user={user}
@@ -114,7 +114,7 @@ export default function UserListItem({
 					/>
 				</Modal>
 			)}
-			{isEdit && (
+			{(isEdit) && (
 				<Modal
 					isClose
 					title="Edutuj użytkownika"
@@ -129,7 +129,7 @@ export default function UserListItem({
 					/>
 				</Modal>
 			)}
-			{isBan && (
+			{(isBan) && (
 				<Modal
 					isClose
 					title="Czy na pewno chcesz zablokować użytkownika?"

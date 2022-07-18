@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Group, Tournament } from "../../../_lib/_types/tournament";
+import { Tournament } from "../../../_lib/_types/tournament";
 import Button, { ButtonStyle } from "../../form/Button";
 import Modal from "../../modal/Modal";
 import styles from "./Groups.module.css";
@@ -10,11 +10,11 @@ type Props = {
 };
 
 export default function Groups({ tournament }: Props) {
-	const [currentGroup, setCurrentGroup] = useState<Group>(
-		tournament.groups[0]
-	);
+	const [currentGroupId, setCurrentGroupId] = useState<number | null>(null);
 	const [isSelectGroup, setIsSelectGroup] = useState(false);
 	const [opacity, setOpacity] = useState(1);
+
+	const currentGroup = tournament.groups.find((g) => currentGroupId === null || g.id === currentGroupId);
 
 	return (
 		<div className={styles.root}>
@@ -26,12 +26,14 @@ export default function Groups({ tournament }: Props) {
 				>
 					Grupy
 				</h4>
-				<Button
-					id={styles.selectGroupButton}
-					value={"Grupa " + currentGroup.name}
-					onClick={() => setIsSelectGroup(true)}
-					style={ButtonStyle.TransparentBorder}
-				/>
+				{currentGroup && (
+					<Button
+						id={styles.selectGroupButton}
+						value={"Grupa " + currentGroup.name}
+						onClick={() => setIsSelectGroup(true)}
+						style={ButtonStyle.TransparentBorder}
+					/>
+				)}
 				<div className={styles.group}>
 					<table style={{ opacity: `${opacity}` }}>
 						<thead>
@@ -48,7 +50,7 @@ export default function Groups({ tournament }: Props) {
 							</tr>
 						</thead>
 						<tbody>
-							{currentGroup.teams &&
+							{currentGroup && currentGroup.teams &&
 								currentGroup.teams
 									.sort((a, b) => b.goalScored - a.goalScored)
 									.sort((a, b) => b.points - a.points)
@@ -84,26 +86,24 @@ export default function Groups({ tournament }: Props) {
 					close={() => setIsSelectGroup(false)}
 				>
 					<div className={styles.selectGroup}>
-						{tournament.groups
-							.filter((group) => group.matches)
-							.map((group) => (
-								<Button
-									value={"Grupa " + group.name}
-									className={
-										group === currentGroup
-											? styles.active
-											: ""
-									}
-									onClick={() => {
-										setOpacity(0);
-										setTimeout(setCurrentGroup, 200, group);
-										setTimeout(setOpacity, 200, 1);
-										setIsSelectGroup(false);
-									}}
-									key={group.id}
-									style={ButtonStyle.TransparentBorder}
-								/>
-							))}
+						{tournament.groups.map((group) => (
+							<Button
+								value={"Grupa " + group.name}
+								className={
+									group === currentGroup
+										? styles.active
+										: ""
+								}
+								onClick={() => {
+									setOpacity(0);
+									setTimeout(setCurrentGroupId, 200, group.id);
+									setTimeout(setOpacity, 200, 1);
+									setIsSelectGroup(false);
+								}}
+								key={group.id}
+								style={ButtonStyle.TransparentBorder}
+							/>
+						))}
 					</div>
 				</Modal>
 			)}

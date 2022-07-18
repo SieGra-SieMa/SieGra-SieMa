@@ -4,6 +4,7 @@ import Modal from "../../modal/Modal";
 import { useTournament } from "../TournamentContext";
 import styles from "./Matches.module.css";
 import MatchResult from "./MatchResult";
+import TeamImage from '../../image/TeamImage';
 
 
 type Props = {
@@ -18,17 +19,35 @@ export default function Match({ match }: Props) {
 	const [homeScore, setHomeScore] = useState(match.teamHomeScore);
 	const [awayScore, setAwayScore] = useState(match.teamAwayScore);
 
-	const teamHome = tournament!.teams.find((team) => team.teamId === match.teamHomeId)?.teamName;
-	const teamAway = tournament!.teams.find((team) => team.teamId === match.teamAwayId)?.teamName;
+	const teamHome = tournament!.teams.find((team) => team.teamId === match.teamHomeId);
+	const teamAway = tournament!.teams.find((team) => team.teamId === match.teamAwayId);
 
 	return (
 		<>
 			<div className={styles.match} onClick={() => setIsEdit(true)}>
-				<h6 className={styles.teamName}>{teamHome}</h6>
-				<h6 className={styles.teamName}>{teamAway}</h6>
+				<div className={styles.block}>
+					<TeamImage
+						url={teamHome?.teamProfileUrl}
+						size={64}
+						placeholderSize={36}
+					/>
+					<div className={styles.teamBlock}>
+						<h5 className={styles.teamName}>{teamHome?.teamName}</h5>
+						<p>{homeScore ?? "-"}</p>
+					</div>
+				</div>
 				<span className={styles.vs}>VS</span>
-				<p>{homeScore ?? "-"}</p>
-				<p>{awayScore ?? "-"}</p>
+				<div className={styles.block}>
+					<TeamImage
+						url={teamAway?.teamProfileUrl}
+						size={64}
+						placeholderSize={36}
+					/>
+					<div className={styles.teamBlock}>
+						<h5 className={styles.teamName}>{teamAway?.teamName}</h5>
+						<p>{awayScore ?? "-"}</p>
+					</div>
+				</div>
 			</div>
 			{isEdit && (
 				<Modal

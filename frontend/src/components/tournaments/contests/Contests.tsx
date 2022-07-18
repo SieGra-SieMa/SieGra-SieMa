@@ -30,14 +30,14 @@ export default function Contests({ contests, tournamentId }: Props) {
 	const { tournamentsService } = useApi();
 	const { tournament, setTournament } = useTournament();
 
-	const [currentContestId, setCurrentContestId] = useState<number | undefined>(undefined);
+	const [currentContestId, setCurrentContestId] = useState<number | null>(null);
 	const [isAddContest, setIsAddContest] = useState(false);
 	const [isAddScore, setIsAddScore] = useState(false);
 	const [isEditContest, setIsEditContest] = useState(false);
 	const [isDeleteContest, setIsDeleteContest] = useState(false);
 	const [isSelectContest, setIsSelectContest] = useState(false);
 
-	const currentContest = contests.find((c) => !currentContestId || c.id === currentContestId);
+	const currentContest = contests.find((c) => currentContestId === null || c.id === currentContestId);
 
 	const onDelete = () => {
 		if (!currentContest) return;
@@ -49,7 +49,7 @@ export default function Contests({ contests, tournamentId }: Props) {
 					...tournament,
 					contests: tournament.contests.filter((e) => currentContest.id !== e.id)
 				})
-				setCurrentContestId(undefined);
+				setCurrentContestId(null);
 			});
 	};
 

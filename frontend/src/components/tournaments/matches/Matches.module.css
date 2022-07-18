@@ -15,10 +15,6 @@
 	margin: auto;
 }
 
-#selectGroupButton {
-	width: fit-content;
-}
-
 .group {
 	display: flex;
 	flex-direction: column;
@@ -28,10 +24,6 @@
 	width: 100%;
 	max-height: 450px;
 	overflow-y: auto;
-}
-
-Button.active {
-	border-color: var(--accent-color);
 }
 
 .groups {
@@ -47,17 +39,13 @@ Button.active {
 	transition: all 0.2s ease-in-out;
 }
 
-/* Match */
-
 .match {
 	background-color: var(--secondary-color);
 	padding: 25px;
 	border-radius: 5px;
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	grid-template-rows: repeat(2, 1fr);
-	grid-column-gap: 10px;
-	grid-row-gap: 10px;
+	display: flex;
+	justify-content: space-between;
+	gap: 15px;
 	cursor: pointer;
 	align-items: center;
 }
@@ -65,17 +53,39 @@ Button.active {
 .vs {
 	font-size: 36px;
 	color: var(--accent-color);
-	grid-area: 1 / 2 / 3 / 3;
+}
+
+.block {
+	flex: 1;
+	display: flex;
+	align-items: center;
+	gap: 15px;
+}
+
+.block:nth-child(3) {
+	flex-direction: row-reverse;
+}
+
+.teamBlock {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
 }
 
 .teamName {
 	padding: 0;
 }
 
-@media all and (max-width: 500px) {
-	.vs {
-		font-size: 20px;
-		color: var(--accent-color);
-		grid-area: 1 / 2 / 3 / 3;
+.imageBlock {
+	display: flex;
+	justify-content: center;
+}
+
+@media all and (max-width: 560px) {
+
+	.block,
+	.block:nth-child(3) {
+		flex-direction: column;
 	}
 }

@@ -22,7 +22,7 @@ export default function CreateContest({ tournamentId, confirm }: Props) {
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        tournamentsService.createContest(tournamentId, name)
+        return tournamentsService.createContest(tournamentId, name)
             .then((data) => {
                 confirm(data);
                 alert.success('Konkurs został dodany');
@@ -30,7 +30,10 @@ export default function CreateContest({ tournamentId, confirm }: Props) {
     }
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Dodaj' />
+        </>}>
             <Input
                 id='CreateContest-name'
                 label='Nazwa'
@@ -38,8 +41,6 @@ export default function CreateContest({ tournamentId, confirm }: Props) {
                 required
                 onChange={(e) => setName(e.target.value)}
             />
-            <VerticalSpacing size={15} />
-            <Button value='Dodaj' />
         </Form>
     );
 }

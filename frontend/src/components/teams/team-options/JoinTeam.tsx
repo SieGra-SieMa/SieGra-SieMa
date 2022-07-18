@@ -6,6 +6,7 @@ import Button from '../../form/Button';
 import { useTeams } from '../TeamsContext';
 import { useAlert } from '../../alert/AlertContext';
 import Form from '../../form/Form';
+import VerticalSpacing from '../../spacing/VerticalSpacing';
 
 export default function JoinTeam() {
 
@@ -18,7 +19,7 @@ export default function JoinTeam() {
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        teamsService.joinTeam(code)
+        return teamsService.joinTeam(code)
             .then((team) => {
                 if (teams) {
                     setTeams([...teams, team]);
@@ -31,7 +32,13 @@ export default function JoinTeam() {
     }
 
     return (
-        <Form className={styles.option} onSubmit={onSubmit}>
+        <Form className={styles.option} onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={10} />
+            <Button
+                value='Dołącz'
+                disabled={code.length !== 5}
+            />
+        </>}>
             <h4>Dołącz do zespołu</h4>
             <p>Wpisz kod, który otrzymałeś od znajomego.</p>
             <Input
@@ -42,10 +49,6 @@ export default function JoinTeam() {
                 value={code}
                 required
                 onChange={(e) => setCode(e.target.value)}
-            />
-            <Button
-                value='Dołącz'
-                disabled={code.length !== 5}
             />
         </Form>
     );

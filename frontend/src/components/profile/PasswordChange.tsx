@@ -26,7 +26,7 @@ export default function PasswordChange({ confirm }: Props) {
             oldPassword,
             newPassword
         };
-        usersService.changePassword(updatedUser)
+        return usersService.changePassword(updatedUser)
             .then((data) => {
                 alert.success(data.message);
                 confirm();
@@ -34,7 +34,10 @@ export default function PasswordChange({ confirm }: Props) {
     };
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Zmień' style={ButtonStyle.Red} />
+        </>}>
             <Input
                 id='PasswordChange-oldPassword'
                 label='Stare hasło'
@@ -51,8 +54,6 @@ export default function PasswordChange({ confirm }: Props) {
                 required
                 onChange={(e) => setNewPassword(e.target.value)}
             />
-            <VerticalSpacing size={15} />
-            <Button value='Zmień' style={ButtonStyle.Red} />
         </Form>
     );
 }

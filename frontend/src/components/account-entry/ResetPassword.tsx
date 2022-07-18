@@ -24,7 +24,7 @@ export default function ResetPassword() {
     const resetPassword = (e: FormEvent) => {
         e.preventDefault();
         if (!token || !userId) return;
-        accountsService.resetPassword(userId!, token, password)
+        return accountsService.resetPassword(userId!, token, password)
             .then((data) => {
                 navigate('/entry');
                 alert.success(data.message);
@@ -42,7 +42,10 @@ export default function ResetPassword() {
         ].join(' ')}>
             <h1>Zmiana hasła</h1>
             <div className={styles.resetPasswordContainer}>
-                <Form onSubmit={resetPassword}>
+                <Form onSubmit={resetPassword} trigger={<>
+                    <VerticalSpacing size={15} />
+                    <Button value='Zresetuj' />
+                </>}>
                     <Input
                         id='ResetPassword-password'
                         label='Nowe hasło'
@@ -51,8 +54,6 @@ export default function ResetPassword() {
                         required
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    <VerticalSpacing size={15} />
-                    <Button value='Zresetuj' />
                 </Form>
             </div>
         </div>

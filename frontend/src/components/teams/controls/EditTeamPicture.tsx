@@ -28,22 +28,26 @@ export default function EditTeamPicture({
         if (!file) return;
         const data = new FormData();
         data.append('file', file);
+
         if (isAdmin) {
-            teamsService.addProfilePhotoAdmin(team.id, data)
+            return teamsService.addProfilePhotoAdmin(team.id, data)
                 .then((data) => {
                     confirm(data[0].url);
                 });
 
-        } else {
-            teamsService.addProfilePhoto(team.id, data)
-                .then((data) => {
-                    confirm(data[0].url);
-                });
         }
+
+        return teamsService.addProfilePhoto(team.id, data)
+            .then((data) => {
+                confirm(data[0].url);
+            });
     };
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Zatwierdź' />
+        </>}>
             <label
                 className={styles.selectImage}
                 style={file ? {
@@ -61,8 +65,6 @@ export default function EditTeamPicture({
                     onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
                 />
             </label>
-            <VerticalSpacing size={15} />
-            <Button value='Zatwierdź' />
         </Form>
     );
 }

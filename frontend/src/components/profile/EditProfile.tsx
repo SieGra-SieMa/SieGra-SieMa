@@ -26,7 +26,7 @@ export default function EditProfile({ confirm }: Props) {
             name,
             surname
         };
-        usersService.updateUser(updatedUser)
+        return usersService.updateUser(updatedUser)
             .then((data) => {
                 setUser({ ...user!, ...updatedUser });
                 confirm();
@@ -34,7 +34,10 @@ export default function EditProfile({ confirm }: Props) {
     };
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Zapisz' />
+        </>}>
             <Input
                 id='AccountData-name'
                 label='Imie'
@@ -47,8 +50,6 @@ export default function EditProfile({ confirm }: Props) {
                 value={surname}
                 onChange={(e) => setSurname(e.target.value)}
             />
-            <VerticalSpacing size={15} />
-            <Button value='Zapisz' />
         </Form>
     );
 }

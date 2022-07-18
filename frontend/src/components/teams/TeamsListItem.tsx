@@ -1,4 +1,3 @@
-import Config from '../../config.json';
 import styles from './TeamsListItem.module.css';
 import { Team } from '../../_lib/types';
 import { useCallback, useState } from 'react';
@@ -13,15 +12,16 @@ import { useTeams } from './TeamsContext';
 import PlayersToRemove from './controls/PlayersToRemove';
 import PlayersToSetCapitan from './controls/PlayersToSetCapitan';
 import EditTeamPicture from './controls/EditTeamPicture';
-import ImageIcon from '@mui/icons-material/Image';
+import TeamImage from '../image/TeamImage';
 
-type TeamsListItemProp = {
+
+type Props = {
     team: Team;
 }
 
 export default function TeamsListItem({
     team,
-}: TeamsListItemProp) {
+}: Props) {
 
     const { teamsService } = useApi();
     const { user } = useUser();
@@ -53,11 +53,11 @@ export default function TeamsListItem({
     return (
         <div className={styles.root}>
             <div className={styles.content}>
-                <div className={styles.pictureBlock} style={team.profilePicture ? {
-                    backgroundImage: `url(${Config.HOST}${team.profilePicture})`
-                } : undefined}>
-                    {(!team.profilePicture) && (<ImageIcon className={styles.picture} />)}
-                </div>
+                <TeamImage
+                    url={team.profilePicture}
+                    size={150}
+                    placeholderSize={72}
+                />
                 <h4 className={styles.title}>{team.name}</h4>
                 <p>
                     Kod: <b>{team.code}</b>

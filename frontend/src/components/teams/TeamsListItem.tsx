@@ -38,7 +38,7 @@ export default function TeamsListItem({
     const captain = team.players.find((player) => player.id === team.captainId);
 
     const leaveTeam = useCallback(() => {
-        teamsService.leaveTeam(team.id)
+        return teamsService.leaveTeam(team.id)
             .then(() => {
                 const data = teams ? [...teams] : [];
                 const index = data.findIndex(e => e.id === team.id) ?? -1;
@@ -184,7 +184,7 @@ export default function TeamsListItem({
                 >
                     <Confirm
                         cancel={() => setIsLeave(false)}
-                        confirm={() => leaveTeam()}
+                        confirm={leaveTeam}
                         label='Opuść'
                         style={ButtonStyle.Red}
                     />

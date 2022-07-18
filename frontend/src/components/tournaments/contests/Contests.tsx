@@ -41,7 +41,7 @@ export default function Contests({ contests, tournamentId }: Props) {
 
 	const onDelete = () => {
 		if (!currentContest) return;
-		tournamentsService.deleteContest(currentContest.tournamentId, currentContest.id)
+		return tournamentsService.deleteContest(currentContest.tournamentId, currentContest.id)
 			.then((data) => {
 				setIsDeleteContest(false);
 				alert.success(data.message);

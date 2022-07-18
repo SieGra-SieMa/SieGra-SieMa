@@ -35,7 +35,7 @@ export default function TeamsListItem({
 	const capitan = team.players.find((player) => player.id === team.captainId);
 
 	const onDelete = () => {
-		teamsService.adminDeleteTeam(team.id)
+		return teamsService.adminDeleteTeam(team.id)
 			.then((data) => {
 				onTeamDelete(team);
 				setIsDelete(false);

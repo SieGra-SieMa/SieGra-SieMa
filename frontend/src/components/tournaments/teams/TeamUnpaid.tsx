@@ -24,7 +24,7 @@ export default function TeamUnpaid({ team }: Props) {
 	const [isChange, setIsChange] = useState(false);
 
 	const updateTeamStatus = () => {
-		tournamentsService
+		return tournamentsService
 			.setTeamStatus(team.tournamentId, team.teamId, TeamPaidEnum.Paid)
 			.then((data) => {
 				const newTeams = tournament!.teams.filter((e) => e.teamId !== team.teamId);

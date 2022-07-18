@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Match as MatchType } from '../../../_lib/_types/tournament';
+import TeamImage from '../../image/TeamImage';
 import Modal from '../../modal/Modal';
 import { useTournament } from '../TournamentContext';
 import styles from './Ladder.module.css';
-import MatchResult from './MatchResult';
+import LadderMatchResult from './LadderMatchResult';
 
 
 type Props = {
@@ -16,23 +17,33 @@ export default function Match({ match }: Props) {
 
     const [isEdit, setIsEdit] = useState(false);
 
-    const teamHome = tournament!.teams.find((team) => team.teamId === match.teamHomeId)?.teamName;
-    const teamAway = tournament!.teams.find((team) => team.teamId === match.teamAwayId)?.teamName;
+    const teamHome = tournament!.teams.find((team) => team.teamId === match.teamHomeId);
+    const teamAway = tournament!.teams.find((team) => team.teamId === match.teamAwayId);
 
     return (
         <div className={styles.matchItem}>
             <div className={styles.match} onClick={() => setIsEdit(true)}>
                 <div className={styles.team}>
+                    <TeamImage
+                        url={teamHome?.teamProfileUrl}
+                        size={36}
+                        placeholderSize={17}
+                    />
                     <div>
-                        {teamHome ?? '---------'}
+                        {teamHome?.teamName ?? '---------'}
                     </div>
                     <div>
                         {match.teamHomeScore ?? '-'}
                     </div>
                 </div>
                 <div className={styles.team}>
+                    <TeamImage
+                        url={teamAway?.teamProfileUrl}
+                        size={36}
+                        placeholderSize={17}
+                    />
                     <div>
-                        {teamAway ?? '---------'}
+                        {teamAway?.teamName ?? '---------'}
                     </div>
                     <div>
                         {match.teamAwayScore ?? '-'}
@@ -44,7 +55,7 @@ export default function Match({ match }: Props) {
                     isClose
                     close={() => setIsEdit(false)}
                     title='Wynik meczu'>
-                    <MatchResult
+                    <LadderMatchResult
                         match={match}
                         confirm={() => setIsEdit(false)}
                     />

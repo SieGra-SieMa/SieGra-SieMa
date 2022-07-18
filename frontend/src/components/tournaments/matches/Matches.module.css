@@ -15,10 +15,6 @@
 	margin: auto;
 }
 
-#selectGroupButton {
-	width: fit-content;
-}
-
 .group {
 	display: flex;
 	flex-direction: column;
@@ -28,10 +24,6 @@
 	width: 100%;
 	max-height: 450px;
 	overflow-y: auto;
-}
-
-Button.active {
-	border-color: var(--accent-color);
 }
 
 .groups {
@@ -46,8 +38,6 @@ Button.active {
 	gap: 15px;
 	transition: all 0.2s ease-in-out;
 }
-
-/* Match */
 
 .match {
 	background-color: var(--secondary-color);
@@ -87,23 +77,9 @@ Button.active {
 	padding: 0;
 }
 
-.pictureBlock {
-	width: 64px;
-	height: 64px;
-	background-size: cover;
-	border-radius: 50%;
-	border: 2px solid #fff;
-	align-self: center;
-	background-color: #3e555f;
+.imageBlock {
 	display: flex;
-	align-items: center;
 	justify-content: center;
-	background-position: center;
-}
-
-.picture {
-	color: #fff;
-	font-size: 36px !important;
 }
 
 @media all and (max-width: 560px) {

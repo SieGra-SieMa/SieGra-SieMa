@@ -1,11 +1,10 @@
-import Config from '../../../config.json';
 import { useState } from "react";
 import { Match as MatchType } from "../../../_lib/_types/tournament";
 import Modal from "../../modal/Modal";
 import { useTournament } from "../TournamentContext";
 import styles from "./Matches.module.css";
 import MatchResult from "./MatchResult";
-import ImageIcon from '@mui/icons-material/Image';
+import TeamImage from '../../image/TeamImage';
 
 
 type Props = {
@@ -27,11 +26,11 @@ export default function Match({ match }: Props) {
 		<>
 			<div className={styles.match} onClick={() => setIsEdit(true)}>
 				<div className={styles.block}>
-					<div className={styles.pictureBlock} style={teamHome?.teamProfileUrl ? {
-						backgroundImage: `url(${Config.HOST}${teamHome.teamProfileUrl})`
-					} : undefined}>
-						{(!teamHome?.teamProfileUrl) && (<ImageIcon className={styles.picture} />)}
-					</div>
+					<TeamImage
+						url={teamHome?.teamProfileUrl}
+						size={64}
+						placeholderSize={36}
+					/>
 					<div className={styles.teamBlock}>
 						<h5 className={styles.teamName}>{teamHome?.teamName}</h5>
 						<p>{homeScore ?? "-"}</p>
@@ -39,11 +38,11 @@ export default function Match({ match }: Props) {
 				</div>
 				<span className={styles.vs}>VS</span>
 				<div className={styles.block}>
-					<div className={styles.pictureBlock} style={teamAway?.teamProfileUrl ? {
-						backgroundImage: `url(${Config.HOST}${teamAway.teamProfileUrl})`
-					} : undefined}>
-						{(!teamAway?.teamProfileUrl) && (<ImageIcon className={styles.picture} />)}
-					</div>
+					<TeamImage
+						url={teamAway?.teamProfileUrl}
+						size={64}
+						placeholderSize={36}
+					/>
 					<div className={styles.teamBlock}>
 						<h5 className={styles.teamName}>{teamAway?.teamName}</h5>
 						<p>{awayScore ?? "-"}</p>

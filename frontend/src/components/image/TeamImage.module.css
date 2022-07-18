@@ -1,0 +1,15 @@
+.picture {
+    background-size: cover;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    align-self: center;
+    background-color: #3e555f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-position: center;
+}
+
+.placeholder {
+    color: #fff;
+}

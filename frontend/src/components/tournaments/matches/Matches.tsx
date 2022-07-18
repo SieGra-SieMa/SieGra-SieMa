@@ -33,8 +33,7 @@ export default function Matches({ groups }: Props) {
 					</h4>
 					{currentGroup && (
 						<Button
-							id={styles.selectGroupButton}
-							value={"Grupa " + currentGroup.name}
+							value={`Grupa ${currentGroup.name}`}
 							onClick={() => setIsSelectGroup(true)}
 							style={ButtonStyle.TransparentBorder}
 						/>

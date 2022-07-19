@@ -14,8 +14,9 @@ export default function AdminTeamsList() {
 	const [search, setSearch] = useState("");
 
 	useEffect(() => {
-		teamsService.getAllTeams()
-			.then((result) => setTeams(result));
+		return teamsService.getAllTeams()
+			.then((result) => setTeams(result))
+			.abort;
 	}, [teamsService]);
 
 	const onTeamChange = (team: Team) => {

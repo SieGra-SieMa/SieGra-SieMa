@@ -49,9 +49,11 @@ export default function Album() {
 	}, []);
 
 	useEffect(() => {
-		albumsService.getAlbumWithMedia(albumId!).then((data) => {
-			setAlbum(data);
-		});
+		return albumsService.getAlbumWithMedia(albumId!)
+			.then((data) => {
+				setAlbum(data);
+			})
+			.abort;
 	}, [albumId, albumsService]);
 
 	const removeAlbum = () => {

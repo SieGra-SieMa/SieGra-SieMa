@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ApiResponse } from '../../_services/service';
 import Button, { ButtonStyle } from '../form/Button';
 import Loader from '../loader/Loader';
 import styles from './Confirm.module.css';
@@ -6,7 +7,7 @@ import styles from './Confirm.module.css';
 
 type Props = {
     cancel: () => void;
-    confirm: () => (Promise<any> | undefined);
+    confirm: () => (ApiResponse<any> | undefined);
     label: string;
     style: ButtonStyle;
 };

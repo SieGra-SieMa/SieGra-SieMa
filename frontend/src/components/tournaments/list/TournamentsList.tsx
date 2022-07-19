@@ -24,10 +24,11 @@ export default function TournamentsList() {
 
 	useEffect(() => {
 		if (!session) return;
-		teamsService.getTeamsIAmCaptain()
+		return teamsService.getTeamsIAmCaptain()
 			.then((data) => {
 				setTeams(data);
-			});
+			})
+			.abort;
 	}, [session, teamsService]);
 
 	return (

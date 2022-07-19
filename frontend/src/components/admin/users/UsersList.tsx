@@ -16,10 +16,11 @@ export default function UsersList() {
 
 	useEffect(() => {
 		if (!user) return;
-		usersService.getUsers()
+		return usersService.getUsers()
 			.then((result) => setUsers(result.filter(
 				(e) => user.id !== e.id
-			)));
+			)))
+			.abort;
 	}, [user, usersService]);
 
 	const onUserPropChange = (user: User) => {

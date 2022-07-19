@@ -7,6 +7,13 @@ export type AuthState = {
     update: (session: Session) => void;
 }
 
+export type ApiResponse<T> = {
+    promise: Promise<T>;
+    abort: () => void;
+    then: (resolve: (_: T) => void, reject?: (_: Error) => void) => ApiResponse<T>;
+    catch: (_: (_: Error) => void) => ApiResponse<T>;
+}
+
 type WSResponse = {
     error: string;
     data: any;
@@ -28,7 +35,6 @@ export default class Service {
 
     handleResponse<T>(
         response: Response,
-        options: RequestInit,
     ): Promise<T> {
         return response.text().then(async (text) => {
             if ([401, 403].indexOf(response.status) !== -1) {
@@ -73,7 +79,7 @@ export default class Service {
                         Service.refresh = this.post<Tokens>(
                             `${Config.HOST}/api/accounts/refresh-token`,
                             { refreshToken }
-                        );
+                        ).promise;
                         const tokens = await Service.refresh;
                         token = tokens.token;
                         this.authState.update({
@@ -103,53 +109,75 @@ export default class Service {
         options.headers = headers;
 
         return fetch(url, options)
-            .then(res => this.handleResponse<T>(res, options))
+            .then(res => this.handleResponse<T>(res))
             .catch((e) => {
-                if (Service.alert) Service.alert(e.message || e);
+                if (
+                    e.name !== "AbortError" &&
+                    Service.alert
+                ) {
+                    Service.alert(e.message || e);
+                }
                 return Promise.reject(e.message || e)
             });
     }
 
-    get<T>(url: string, headers?: Headers): Promise<T> {
+    wrapApi<T>(url: string, options: RequestInit): ApiResponse<T> {
+        const controller = new AbortController();
+        const promise = this.api<T>(url, { ...options, signal: controller.signal });
+        return {
+            promise,
+            then: function (resolve, reject = () => { }) {
+                promise.then(resolve, reject);
+                return this;
+            },
+            catch: function (onCatch) {
+                promise.catch(onCatch);
+                return this;
+            },
+            abort: () => controller.abort('Hello'),
+        }
+    }
+
+    get<T>(url: string, headers?: Headers): ApiResponse<T> {
         const options: RequestInit = {
             method: 'GET',
             headers,
         }
-        return this.api<T>(url, options);
+        return this.wrapApi<T>(url, options);
     }
 
-    post<T>(url: string, body: any, headers?: Headers, isJSON: boolean = true): Promise<T> {
+    post<T>(url: string, body: any, headers?: Headers, isJSON: boolean = true): ApiResponse<T> {
         const options: RequestInit = {
             method: 'POST',
             body: isJSON ? JSON.stringify(body) : body,
             headers,
         }
-        return this.api<T>(url, options);
+        return this.wrapApi<T>(url, options);
     }
 
-    put<T>(url: string, body: any, headers?: Headers): Promise<T> {
+    put<T>(url: string, body: any, headers?: Headers): ApiResponse<T> {
         const options: RequestInit = {
             method: 'PUT',
             body: JSON.stringify(body),
             headers,
         }
-        return this.api<T>(url, options);
+        return this.wrapApi<T>(url, options);
     }
 
-    patch<T>(url: string, body: any, headers?: Headers): Promise<T> {
+    patch<T>(url: string, body: any, headers?: Headers): ApiResponse<T> {
         const options: RequestInit = {
             method: 'PATCH',
             body: JSON.stringify(body),
             headers,
         }
-        return this.api<T>(url, options);
+        return this.wrapApi<T>(url, options);
     }
 
-    del<T>(url: string, headers?: Headers): Promise<T> {
+    del<T>(url: string, headers?: Headers): ApiResponse<T> {
         const options: RequestInit = {
             method: 'DELETE',
             headers,
         }
-        return this.api<T>(url, options,);
+        return this.wrapApi<T>(url, options,);
     }
 }

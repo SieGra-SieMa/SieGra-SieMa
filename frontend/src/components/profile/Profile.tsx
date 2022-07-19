@@ -8,17 +8,20 @@ import EditProfile from './EditProfile';
 import AccountPasswordChange from './PasswordChange';
 import Confirm from '../modal/Confirm';
 import { useApi } from '../api/ApiContext';
+import { useAlert } from '../alert/AlertContext';
 
 export default function Profile() {
 
-    const { user, setUser } = useUser();
+    const alert = useAlert();
     const { setSession } = useAuth();
+    const { user, setUser } = useUser();
     const { usersService } = useApi();
 
     const [isEdit, setIsEdit] = useState(false);
     const [isNewsletterJoin, setIsNewsletterJoin] = useState(false);
     const [isNewsletterLeave, setIsNewsletterLeave] = useState(false);
     const [isPasswordChange, setIsPasswordChange] = useState(false);
+    const [isAccountDelete, setIsAccountDetele] = useState(false);
 
     const joinNewsletter = () => {
         return usersService.joinNewsletter()
@@ -33,6 +36,15 @@ export default function Profile() {
             .then((data) => {
                 setUser(data);
                 setIsNewsletterLeave(false);
+            });
+    }
+
+    const deleteAccount = () => {
+        return usersService.deleteAccount()
+            .then(() => {
+                setIsAccountDetele(false);
+                setSession(null);
+                alert.success('Konto zostało zablokowane');
             });
     }
 
@@ -64,10 +76,14 @@ export default function Profile() {
                             />
                         )
                     )}
-
                     <Button
                         value='Zmień hasło'
                         onClick={() => setIsPasswordChange(true)}
+                        style={ButtonStyle.Red}
+                    />
+                    <Button
+                        value='Usuń konto'
+                        onClick={() => setIsAccountDetele(true)}
                         style={ButtonStyle.Red}
                     />
                 </div>
@@ -98,7 +114,7 @@ export default function Profile() {
             {isNewsletterJoin && (
                 <Modal
                     close={() => setIsNewsletterJoin(false)}
-                    title={`Czy na pewno chcesz dołączyć do newslettera?`}
+                    title="Czy na pewno chcesz dołączyć do newslettera?"
                 >
                     <Confirm
                         cancel={() => setIsNewsletterJoin(false)}
@@ -111,11 +127,24 @@ export default function Profile() {
             {isNewsletterLeave && (
                 <Modal
                     close={() => setIsNewsletterLeave(false)}
-                    title={`Czy na pewno chcesz zrezygnować z newslettera?`}
+                    title="Czy na pewno chcesz zrezygnować z newslettera?"
                 >
                     <Confirm
                         cancel={() => setIsNewsletterLeave(false)}
                         confirm={leaveNewsletter}
+                        label='Potwierdź'
+                        style={ButtonStyle.Red}
+                    />
+                </Modal>
+            )}
+            {isAccountDelete && (
+                <Modal
+                    close={() => setIsAccountDetele(false)}
+                    title="Czy na pewno chcesz usunąć konto?"
+                >
+                    <Confirm
+                        cancel={() => setIsAccountDetele(false)}
+                        confirm={deleteAccount}
                         label='Potwierdź'
                         style={ButtonStyle.Red}
                     />

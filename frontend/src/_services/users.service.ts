@@ -52,4 +52,8 @@ export default class UsersService extends Service {
     sendNewsletter(title: string, body: string, tournamentId?: string): ApiResponse<Message> {
         return super.post(`${Config.HOST}/api/users/newsletter/send`, { title, body, tournamentId });
     };
+
+    deleteAccount(): ApiResponse<Message> {
+        return super.del(`${Config.HOST}/api/users/delete-account`);
+    };
 }

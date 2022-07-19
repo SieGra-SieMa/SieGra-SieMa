@@ -6,32 +6,48 @@ import { useApi } from "../../api/ApiContext";
 import { useUser } from "../../user/UserContext";
 import Input from "../../form/Input";
 import Loader from "../../loader/Loader";
+import { useSearchParams } from "react-router-dom";
+import Pagination from "../../pagination/Pagination";
+
+export const COUNT = 12;
 
 export default function UsersList() {
+
+	const [searchParams, setSearchParams] = useSearchParams();
+
 	const { usersService } = useApi();
 	const { user } = useUser();
 
 	const [users, setUsers] = useState<User[] | null>(null);
 	const [search, setSearch] = useState("");
+	const [totalCount, setTotalCount] = useState(0);
+
+	const pageParam = parseInt(searchParams.get('page') || '1');
+	const page = isNaN(pageParam) ? 1 : pageParam;
+
+	const totalPages = Math.ceil(totalCount / COUNT);
 
 	useEffect(() => {
 		if (!user) return;
-		return usersService.getUsers()
-			.then((result) => setUsers(result.filter(
-				(e) => user.id !== e.id
-			)))
-			.abort;
-	}, [user, usersService]);
+		setUsers(null);
+		return usersService.getUsers(page, COUNT, search)
+			.then((result) => {
+				setTotalCount(result.totalCount);
+				setUsers(result.items.filter(
+					(e) => user.id !== e.id
+				));
+			}).abort;
+	}, [search, page, user, usersService]);
 
 	const onUserPropChange = (user: User) => {
 		const data = users ? [...users] : [];
 		const index = data.findIndex((e) => e.id === user.id);
-		console.log(data, index, user);
 		if (index >= 0) {
 			data[index] = user;
 			setUsers(data);
 		}
 	};
+
 
 	return (
 		<div className={styles.root}>
@@ -41,25 +57,38 @@ export default function UsersList() {
 			<Input
 				placeholder="Wyszukaj..."
 				value={search}
-				onChange={(e) => setSearch(e.target.value)}
+				onChange={(e) => {
+					setSearchParams({ page: '1' });
+					setSearch(e.target.value)
+				}}
 			/>
-			{users ? (
-				<div className={styles.content}>
-					{users.filter((user) =>
-						user.name.toLowerCase().includes(search.toLowerCase()) ||
-						user.surname.toLowerCase().includes(search.toLowerCase()) ||
-						user.email.toLowerCase().includes(search.toLowerCase())
-					).map((user, index) => (
-						<UsersListItem
-							key={index}
-							user={user}
-							onUserPropChange={onUserPropChange}
-						/>
-					))}
-				</div>
-			) : (
-				<Loader size={20} margin={40} />
-			)}
+			<Pagination totalPages={totalPages}>
+				{(users) ?
+					(users.length > 0 ? (
+						<div className={styles.content}>
+							{users.map((user, index) => (
+								<UsersListItem
+									key={index}
+									user={user}
+									onUserPropChange={onUserPropChange}
+								/>
+							))}
+						</div>
+					) : (
+						<h4 style={{
+							justifySelf: 'center',
+							alignSelf: 'center',
+							flex: 1,
+							display: 'flex',
+							alignItems: 'center'
+						}}>
+							Nie znaleziono
+						</h4>
+					)
+					) : (
+						<Loader size={20} margin={40} />
+					)}
+			</Pagination>
 		</div>
 	);
 }

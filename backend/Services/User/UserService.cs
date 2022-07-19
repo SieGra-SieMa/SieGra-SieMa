@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SieGraSieMa.DTOs.Pagging;
 using SieGraSieMa.DTOs.Users;
 using SieGraSieMa.Models;
 using System;
@@ -92,7 +93,9 @@ namespace SieGraSieMa.Services
         {
             if (filter == null) return _SieGraSieMaContext.Users.Include(u => u.Newsletters)
                     .Select(user => new UserDTO { Id = user.Id, Email = user.Email, Name = user.Name, Surname = user.Surname }).ToList();
-            var users = _SieGraSieMaContext.Users.Where(u => u.NormalizedEmail.StartsWith(filter.ToUpper()))
+            var users = _SieGraSieMaContext.Users.Where(u => u.NormalizedEmail.Contains(filter) ||
+                                                u.Name.ToUpper().Contains(filter) ||
+                                                u.Surname.ToUpper().Contains(filter))
                 .Select(user => new UserDTO
                 {
                     Id = user.Id,
@@ -107,7 +110,9 @@ namespace SieGraSieMa.Services
         public IEnumerable<User> GetJustUsers(string filter)
         {
             if (filter == null) return _SieGraSieMaContext.Users.ToList();
-            return _SieGraSieMaContext.Users.Where(u => u.NormalizedEmail.StartsWith(filter.ToUpper())).ToList();
+            return _SieGraSieMaContext.Users.Where(u => u.NormalizedEmail.Contains(filter) ||
+                                                u.Name.ToUpper().Contains(filter) ||
+                                                u.Surname.ToUpper().Contains(filter)).ToList();
         }
 
         public void JoinNewsletter(int userId)

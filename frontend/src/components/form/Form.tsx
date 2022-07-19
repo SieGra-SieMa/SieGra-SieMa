@@ -34,10 +34,10 @@ export default function Form({ className, onSubmit, trigger, children }: Props) 
             }}
         >
             {children}
-            {isLoading ? (<>
+            {isLoading ? (trigger && (<>
                 <VerticalSpacing size={10} />
                 <Loader size={12} />
-            </>) : (trigger)}
+            </>)) : (trigger)}
         </form>
     );
 }

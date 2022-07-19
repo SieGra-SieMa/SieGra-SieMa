@@ -151,7 +151,7 @@ namespace SieGraSieMa.Controllers
         [HttpGet()]
         public async Task<ActionResult> GetUsers(string filter, [FromQuery] PaggingParam pp)
         {
-            var users = _userService.GetJustUsers(filter);
+            var users = _userService.GetJustUsers(filter?.ToUpper());
             List<UserDTO> usersDTO = new();
             foreach (var user in users)
             {

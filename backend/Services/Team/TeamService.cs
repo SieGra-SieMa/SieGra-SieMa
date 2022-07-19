@@ -28,7 +28,7 @@ namespace SieGraSieMa.Services
         Task<GetTeamsDTO> DeleteUserFromTeam(int userId, int captainId, int teamId);
         Task<GetTeamsDTO> SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId);
         Task DeleteTeam(int teamId, int captainId);
-        Task<TeamsWithPagging> GetAllTeams(PaggingParam pp);
+        Task<IEnumerable<GetTeamsDTO>> GetAllTeams(PaggingParam pp, string filter);
         Task DeleteTeamByAdmin(int teamId);
 
     }
@@ -474,10 +474,12 @@ namespace SieGraSieMa.Services
                 
             await _SieGraSieMaContext.SaveChangesAsync();
         }
-        public async Task<TeamsWithPagging> GetAllTeams(PaggingParam pp)
+        public async Task<IEnumerable<GetTeamsDTO>> GetAllTeams(PaggingParam pp, string filter)
         {
-            var totalCount = await _SieGraSieMaContext.Teams.CountAsync();
-            var teams = await _SieGraSieMaContext.Teams.Include(e => e.Players).ThenInclude(e => e.User).Where(t=>t.CaptainId!=null)
+            //var totalCount = await _SieGraSieMaContext.Teams.CountAsync();
+            if(filter == null)
+            {
+                var teams = await _SieGraSieMaContext.Teams.Include(e => e.Players).ThenInclude(e => e.User).Where(t => t.CaptainId != null)
                 .Select(t => new GetTeamsDTO
                 {
                     Id = t.Id,
@@ -502,10 +504,44 @@ namespace SieGraSieMa.Services
                         })
                         .ToList()
                 })
-                .Skip((pp.Page - 1) * pp.Count).Take(pp.Count)
+                //.Skip((pp.Page - 1) * pp.Count).Take(pp.Count)
                 .ToListAsync();
+                return teams;
+                //return new TeamsWithPagging { TotalCount = teams.Count, Items = teams };
+            }
+            else
+            {
+                var teams = await _SieGraSieMaContext.Teams.Include(e => e.Players).ThenInclude(e => e.User).Where(t => t.CaptainId != null &&(t.Code.ToUpper().Contains(filter) || t.Name.ToUpper().Contains(filter)))
+                .Select(t => new GetTeamsDTO
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    CaptainId = t.CaptainId.Value,
+                    Captain = new PlayerDTO
+                    {
+                        Id = t.CaptainId.Value,
+                        Name = t.Captain.Name,
+                        Surname = t.Captain.Surname
 
-            return new TeamsWithPagging { TotalCount = totalCount, Items = teams };
+                    },
+                    Code = t.Code,
+                    ProfilePicture = t.Medium == null ? null : t.Medium.Url,
+                    Players = t.Players
+                        .Select(p => new PlayerDTO
+                        {
+                            Id = p.UserId,
+                            Name = p.User.Name,
+                            Surname = p.User.Surname
+
+                        })
+                        .ToList()
+                })
+                //.Skip((pp.Page - 1) * pp.Count).Take(pp.Count)
+                .ToListAsync();
+                return teams;
+                //return new TeamsWithPagging { TotalCount = teams.Count, Items = teams };
+            }
+            
         }
     }
 }

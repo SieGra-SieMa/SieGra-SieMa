@@ -319,12 +319,13 @@ namespace SieGraSieMa.Controllers
 
         [Authorize(Policy = "OnlyAdminAuthenticated")]
         [HttpGet("admin")]
-        public async Task<IActionResult> GetAllTeamsByAdmin([FromQuery] PaggingParam pp)
+        public async Task<IActionResult> GetAllTeamsByAdmin([FromQuery] PaggingParam pp, string filter)
         {
             try
             {
-                var result = await _teamService.GetAllTeams(pp);
-                return Ok(result);
+                var teams = await _teamService.GetAllTeams(pp, filter?.ToUpper());
+                //return Ok(result);
+                return Ok(new TeamsWithPagging { TotalCount = teams.Count(), Items = teams.Skip((pp.Page - 1) * pp.Count).Take(pp.Count).ToList() });
             }
             catch (Exception e)
             {

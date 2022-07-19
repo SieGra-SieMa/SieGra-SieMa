@@ -21,7 +21,7 @@ export default function Profile() {
     const [isPasswordChange, setIsPasswordChange] = useState(false);
 
     const joinNewsletter = () => {
-        usersService.joinNewsletter()
+        return usersService.joinNewsletter()
             .then((data) => {
                 setUser(data);
                 setIsNewsletterJoin(false);
@@ -29,7 +29,7 @@ export default function Profile() {
     }
 
     const leaveNewsletter = () => {
-        usersService.leaveNewsletter()
+        return usersService.leaveNewsletter()
             .then((data) => {
                 setUser(data);
                 setIsNewsletterLeave(false);
@@ -102,7 +102,7 @@ export default function Profile() {
                 >
                     <Confirm
                         cancel={() => setIsNewsletterJoin(false)}
-                        confirm={() => joinNewsletter()}
+                        confirm={joinNewsletter}
                         label='Potwierdź'
                         style={ButtonStyle.Yellow}
                     />
@@ -115,7 +115,7 @@ export default function Profile() {
                 >
                     <Confirm
                         cancel={() => setIsNewsletterLeave(false)}
-                        confirm={() => leaveNewsletter()}
+                        confirm={leaveNewsletter}
                         label='Potwierdź'
                         style={ButtonStyle.Red}
                     />

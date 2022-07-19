@@ -31,26 +31,26 @@ export default function UserListItem({
 	const [roleToDelete, setRoleToDelete] = useState<string | null>(null);
 
 	const removeRole = (role: string) => {
-		usersService.removeUserRole(user.id, [role]).then((data) => {
+		return usersService.removeUserRole(user.id, [role]).then((data) => {
 			onUserPropChange(data);
 			setRoleToDelete(null);
 		});
 	};
 
 	const banUser = () => {
-		usersService.adminBanUser(user.id).then((data) => {
+		return usersService.adminBanUser(user.id).then((data) => {
 			onUserPropChange(data);
 			setIsBan(false);
 		});
 	};
 
-    const unbanUser = () => {
-        usersService.adminUnbanUser(user.id)
-            .then((data) => {
-                onUserPropChange(data);
-                setIsUnban(false);
-            });
-    };
+	const unbanUser = () => {
+		return usersService.adminUnbanUser(user.id)
+			.then((data) => {
+				onUserPropChange(data);
+				setIsUnban(false);
+			});
+	};
 
 	return (
 		<div className={styles.root}>
@@ -79,17 +79,17 @@ export default function UserListItem({
 					className="interactiveIcon"
 					onClick={() => setIsAdd(true)}
 				/>
-                {user && (
-                    user.isLocked ? <LockOpenIcon
-					className="interactiveIcon"
-					onClick={() => setIsBan(true)}
-				/> : <BlockIcon
-					className="interactiveIcon"
-					onClick={() => setIsBan(true)}
-				/>)}
+				{user && (
+					user.isLocked ? <LockOpenIcon
+						className="interactiveIcon"
+						onClick={() => setIsUnban(true)}
+					/> : <BlockIcon
+						className="interactiveIcon"
+						onClick={() => setIsBan(true)}
+					/>)}
 
 			</div>
-			{roleToDelete && (
+			{(roleToDelete) && (
 				<Modal
 					isClose
 					close={() => setRoleToDelete(null)}
@@ -103,7 +103,7 @@ export default function UserListItem({
 					/>
 				</Modal>
 			)}
-			{isAdd && (
+			{(isAdd) && (
 				<Modal isClose title="Dodaj role" close={() => setIsAdd(false)}>
 					<RoleAssign
 						user={user}
@@ -114,7 +114,7 @@ export default function UserListItem({
 					/>
 				</Modal>
 			)}
-			{isEdit && (
+			{(isEdit) && (
 				<Modal
 					isClose
 					title="Edutuj użytkownika"
@@ -129,7 +129,7 @@ export default function UserListItem({
 					/>
 				</Modal>
 			)}
-			{isBan && (
+			{(isBan) && (
 				<Modal
 					isClose
 					title="Czy na pewno chcesz zablokować użytkownika?"
@@ -143,20 +143,20 @@ export default function UserListItem({
 					/>
 				</Modal>
 			)}
-            {(isUnban) && (
-                <Modal
-                    isClose
-                    title='Czy na pewno chcesz odblokować użytkownika?'
-                    close={() => setIsUnban(false)}
-                >
-                    <Confirm
-                        cancel={() => setIsUnban(false)}
-                        confirm={() => unbanUser()}
-                        label='Odblokuj'
-                        style={ButtonStyle.Yellow}
-                    />
-                </Modal>
-            )}
+			{(isUnban) && (
+				<Modal
+					isClose
+					title='Czy na pewno chcesz odblokować użytkownika?'
+					close={() => setIsUnban(false)}
+				>
+					<Confirm
+						cancel={() => setIsUnban(false)}
+						confirm={unbanUser}
+						label='Odblokuj'
+						style={ButtonStyle.Yellow}
+					/>
+				</Modal>
+			)}
 		</div>
 	);
 }

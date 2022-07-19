@@ -6,9 +6,11 @@ import Button from '../../form/Button';
 import Form from '../../form/Form';
 import Input from '../../form/Input';
 import GuardComponent from '../../guard-components/GuardComponent';
+import TeamImage from '../../image/TeamImage';
 import VerticalSpacing from '../../spacing/VerticalSpacing';
 import { useUser } from '../../user/UserContext';
 import { useTournament } from '../TournamentContext';
+import styles from './Ladder.module.css';
 
 
 type Props = {
@@ -27,7 +29,7 @@ const createFunction = (fn: (data: number) => void) => {
     }
 };
 
-export default function MatchResult({ match, confirm }: Props) {
+export default function LadderMatchResult({ match, confirm }: Props) {
 
     const { matchService } = useApi();
     const { user } = useUser();
@@ -45,7 +47,7 @@ export default function MatchResult({ match, confirm }: Props) {
             homeTeamPoints: teamHomeScore,
             awayTeamPoints: teamAwayScore
         }
-        matchService.insertResults(result)
+        return matchService.insertResults(result)
             .then((data) => {
                 setTournament(data);
                 confirm();
@@ -54,9 +56,9 @@ export default function MatchResult({ match, confirm }: Props) {
 
     const isEditable = () => {
         if (match.phase === tournament!.ladder.length - 2) {
-            const thirdPlacePhase = tournament!.ladder[match.phase];
+            const thirdPlacePhase = tournament.ladder[match.phase];
             const thirdPlaceMatch = thirdPlacePhase.matches[0];
-            const finalPhase = tournament!.ladder[match.phase + 1];
+            const finalPhase = tournament.ladder[match.phase + 1];
             const finalMatch = finalPhase.matches[0];
             return (
                 finalMatch.teamAwayScore === null &&
@@ -65,7 +67,7 @@ export default function MatchResult({ match, confirm }: Props) {
                 thirdPlaceMatch.teamHomeScore === null
             );
         } else if (match.phase < tournament!.ladder.length - 2) {
-            const nextPhase = tournament!.ladder[match.phase];
+            const nextPhase = tournament.ladder[match.phase];
             const nextMatch = nextPhase.matches[Math.ceil(match.matchId / 2) - 1];
             return (
                 nextMatch.teamAwayScore === null &&
@@ -83,31 +85,47 @@ export default function MatchResult({ match, confirm }: Props) {
         isEditable()
     ) ? false : true;
 
-    const teamHome = tournament!.teams.find((team) => team.teamId === match.teamHomeId)?.teamName;
-    const teamAway = tournament!.teams.find((team) => team.teamId === match.teamAwayId)?.teamName;
+    const teamHome = tournament.teams.find((team) => team.teamId === match.teamHomeId);
+    const teamAway = tournament.teams.find((team) => team.teamId === match.teamAwayId);
 
     return (
-        <Form onSubmit={onSubmit}>
-            <Input
-                id='MatchResult-teamHomeScore'
-                label={teamHome ?? '-----------'}
-                value={`${teamHomeScore}`}
-                disabled={disabled}
-                onChange={(e) => createFunction(setTeamHomeScore)(e.target.value)}
-            />
-            <Input
-                id='MatchResult-teamAwayScore'
-                label={teamAway ?? '-----------'}
-                value={`${teamAwayScore}`}
-                disabled={disabled}
-                onChange={(e) => createFunction(setTeamAwayScore)(e.target.value)}
-            />
+        <Form onSubmit={onSubmit} trigger={<>
             <GuardComponent roles={[ROLES.Admin, ROLES.Employee]}>
                 {!disabled && (<>
                     <VerticalSpacing size={15} />
                     <Button value='Zapisz' disabled={teamAwayScore === teamHomeScore} />
                 </>)}
             </GuardComponent>
+        </>}>
+            <div className={styles.imageBlock}>
+                <TeamImage
+                    url={teamHome?.teamProfileUrl}
+                    size={64}
+                    placeholderSize={36}
+                />
+            </div>
+            <Input
+                id='LadderMatchResult-teamHomeScore'
+                label={teamHome?.teamName ?? '-----------'}
+                value={`${teamHomeScore}`}
+                disabled={disabled}
+                onChange={(e) => createFunction(setTeamHomeScore)(e.target.value)}
+            />
+            <VerticalSpacing size={10} />
+            <div className={styles.imageBlock}>
+                <TeamImage
+                    url={teamAway?.teamProfileUrl}
+                    size={64}
+                    placeholderSize={36}
+                />
+            </div>
+            <Input
+                id='LadderMatchResult-teamAwayScore'
+                label={teamAway?.teamName ?? '-----------'}
+                value={`${teamAwayScore}`}
+                disabled={disabled}
+                onChange={(e) => createFunction(setTeamAwayScore)(e.target.value)}
+            />
         </Form>
     );
 };

@@ -22,7 +22,7 @@ export default function AddParticipant({ team, confirm }: Props) {
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        teamsService.sendInvite(team.id, email)
+        return teamsService.sendInvite(team.id, email)
             .then((data) => {
                 alert.success(data.message);
                 confirm();
@@ -30,7 +30,10 @@ export default function AddParticipant({ team, confirm }: Props) {
     };
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Dodaj' />
+        </>}>
             <Input
                 id='AddParticipant-email'
                 label='Email'
@@ -38,8 +41,6 @@ export default function AddParticipant({ team, confirm }: Props) {
                 required
                 onChange={(e) => setEmail(e.target.value)}
             />
-            <VerticalSpacing size={15} />
-            <Button value='Dodaj' />
         </Form>
     );
 }

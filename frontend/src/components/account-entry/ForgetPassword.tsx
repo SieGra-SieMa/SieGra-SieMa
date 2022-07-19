@@ -20,7 +20,7 @@ export default function ForgetPassword({ confirm }: Props) {
 
     const resetPassword = (e: FormEvent) => {
         e.preventDefault();
-        accountsService.forgetPassword(email)
+        return accountsService.forgetPassword(email)
             .then(() => {
                 confirm();
                 alert.success('Link do resetowania hasła został wysłany');
@@ -28,7 +28,10 @@ export default function ForgetPassword({ confirm }: Props) {
     };
 
     return (
-        <Form onSubmit={resetPassword}>
+        <Form onSubmit={resetPassword} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Zresetuj' />
+        </>}>
             <Input
                 id='ForgetPassword-email'
                 label='Email'
@@ -37,8 +40,6 @@ export default function ForgetPassword({ confirm }: Props) {
                 required
                 onChange={(e) => setEmail(e.target.value)}
             />
-            <VerticalSpacing size={15} />
-            <Button value='Zresetuj' />
         </Form>
     );
 }

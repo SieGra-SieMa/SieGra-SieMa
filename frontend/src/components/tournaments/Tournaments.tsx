@@ -12,10 +12,10 @@ export default function Tournaments() {
     const [tournaments, setTournaments] = useState<TournamentListItem[] | null>(null);
 
     useEffect(() => {
-        tournamentsService.getTournaments()
+        return tournamentsService.getTournaments()
             .then((data) => {
                 setTournaments(data);
-            });
+            }).abort;
     }, [tournamentsService]);
 
     const value = useMemo(() => {
@@ -28,7 +28,7 @@ export default function Tournaments() {
 
     return (
         <TournamentsContext.Provider value={value}>
-            <div>
+            <div className={styles.wrapper}>
                 <div className={['container', styles.root].join(' ')}>
                     <Outlet />
                 </div>

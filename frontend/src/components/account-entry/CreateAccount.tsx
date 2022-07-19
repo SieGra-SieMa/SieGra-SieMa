@@ -22,7 +22,7 @@ export default function CreateAccount() {
     const createAccount = (e: FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        accountsService.register(name, surname, email, password)
+        return accountsService.register(name, surname, email, password)
             .then(
                 (data) => {
                     setLoading(false);

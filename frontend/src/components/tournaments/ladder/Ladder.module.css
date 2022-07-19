@@ -89,4 +89,10 @@
     padding: 10px 15px;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+}
+
+.imageBlock {
+    display: flex;
+    justify-content: center;
 }

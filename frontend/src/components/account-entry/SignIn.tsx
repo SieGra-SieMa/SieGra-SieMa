@@ -27,13 +27,14 @@ export default function SignIn() {
 	const signIn = (e: FormEvent) => {
 		e.preventDefault();
 		setLoading(true);
-		accountsService.authenticate(email, password).then(
-			(session) => {
-				setSession(session);
-				navigate("/account");
-			},
-			() => setLoading(false)
-		);
+		return accountsService.authenticate(email, password)
+			.then(
+				(session) => {
+					setSession(session);
+					navigate("/account");
+				},
+				() => setLoading(false)
+			);
 	};
 
 	return (

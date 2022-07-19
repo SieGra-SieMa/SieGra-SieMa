@@ -30,13 +30,13 @@ export default function UsersList() {
 	useEffect(() => {
 		if (!user) return;
 		setUsers(null);
-		usersService.getUsers(page, COUNT, search)
+		return usersService.getUsers(page, COUNT, search)
 			.then((result) => {
 				setTotalCount(result.totalCount);
 				setUsers(result.items.filter(
 					(e) => user.id !== e.id
 				));
-			});
+			}).abort;
 	}, [search, page, user, usersService]);
 
 	const onUserPropChange = (user: User) => {

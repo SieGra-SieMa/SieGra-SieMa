@@ -24,14 +24,17 @@ export default function CreateAlbum({ confirm, tournamentId }: Props) {
             name,
             createDate: new Date().toISOString(),
         };
-        tournamentsService.addAlbum(tournamentId, album)
+        return tournamentsService.addAlbum(tournamentId, album)
             .then((data) => {
                 confirm(data);
             });
     }
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Dodaj' />
+        </>}>
             <Input
                 id='CreateAlbum-name'
                 label='Name'
@@ -39,8 +42,6 @@ export default function CreateAlbum({ confirm, tournamentId }: Props) {
                 required
                 onChange={(e) => setName(e.target.value)}
             />
-            <VerticalSpacing size={15} />
-            <Button value='Dodaj' />
         </Form>
     );
 };

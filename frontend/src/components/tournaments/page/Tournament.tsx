@@ -80,18 +80,18 @@ export default function Tournament() {
 
 	useEffect(() => {
 		if (!session) return;
-		teamsService.getTeamsIAmCaptain()
+		return teamsService.getTeamsIAmCaptain()
 			.then((data) => {
 				setTeams(data);
-			});
+			}).abort;
 	}, [session, teamsService]);
 
 	useEffect(() => {
 		if (!id || isNaN(parseInt(id))) return;
-		tournamentsService.getTournamentById(id)
+		return tournamentsService.getTournamentById(id)
 			.then((data) => {
 				setTournament(data);
-			});
+			}).abort;
 	}, [id, tournamentsService]);
 
 	if (!id || isNaN(parseInt(id))) {
@@ -126,7 +126,7 @@ export default function Tournament() {
 	};
 
 	const deleteTournament = () => {
-		tournamentsService.deleteTournament(id)
+		return tournamentsService.deleteTournament(id)
 			.then((data) => {
 				setIsDelete(false);
 				navigate('..');
@@ -141,43 +141,44 @@ export default function Tournament() {
 	};
 
 	const removeTeam = (teamId: number) => () => {
-		tournamentsService.removeTeam(id, teamId).then(() => {
-			setIsTeamRemove(false);
-			if (!tournament) return;
-			const updatedTournament = {
-				...tournament,
-				team: null,
-				teams: tournament.teams.filter(
-					(team) => team.teamId !== teamId
-				),
-			};
-			setTournament(updatedTournament);
-			if (!tournaments) return;
-			const index = tournaments!.findIndex(
-				(e) => e.id === updatedTournament.id
-			);
-			const data = [...tournaments];
-			data[index] = updatedTournament;
-			setTournaments(data);
-		});
+		return tournamentsService.removeTeam(id, teamId)
+			.then(() => {
+				setIsTeamRemove(false);
+				if (!tournament) return;
+				const updatedTournament = {
+					...tournament,
+					team: null,
+					teams: tournament.teams.filter(
+						(team) => team.teamId !== teamId
+					),
+				};
+				setTournament(updatedTournament);
+				if (!tournaments) return;
+				const index = tournaments!.findIndex(
+					(e) => e.id === updatedTournament.id
+				);
+				const data = [...tournaments];
+				data[index] = updatedTournament;
+				setTournaments(data);
+			});
 	};
 
 	const composeLadder = () => {
-		tournamentsService.composeLadder(id!).then((data) => {
+		return tournamentsService.composeLadder(id!).then((data) => {
 			setTournament(data);
 			setIsLadderCompose(false);
 		});
 	};
 
 	const resetLadder = () => {
-		tournamentsService.resetLadder(id).then((data) => {
+		return tournamentsService.resetLadder(id).then((data) => {
 			setTournament(data);
 			setIsLadderReset(false);
 		});
 	};
 
 	const prepareTournament = () => {
-		tournamentsService.prepareTournamnet(id)
+		return tournamentsService.prepareTournamnet(id)
 			.then((data) => {
 				setTournament(data);
 				setIsPrepare(false);
@@ -185,7 +186,7 @@ export default function Tournament() {
 	};
 
 	const resetTournament = () => {
-		tournamentsService.resetTournament(id)
+		return tournamentsService.resetTournament(id)
 			.then((data) => {
 				setTournament(data);
 				setIsReset(false);
@@ -444,9 +445,11 @@ export default function Tournament() {
 			</div>
 
 			{!isOpen && (<>
-				{tournament.ladder[0]?.matches[0].teamHomeId && (
-					<Ladder ladder={tournament.ladder} />
-				)}
+				<div>
+					{tournament.ladder[0]?.matches[0].teamHomeId && (
+						<Ladder ladder={tournament.ladder} />
+					)}
+				</div>
 				<GuardComponent roles={[ROLES.Admin]}>
 					{tournament.groups
 						.map((group) =>

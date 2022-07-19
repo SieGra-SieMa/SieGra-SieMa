@@ -42,7 +42,7 @@ export default function EditTournament({
 			description,
 		};
 
-		tournamentsService
+		return tournamentsService
 			.updateTournament(tournament.id, updatedTournament)
 			.then((data) => {
 				confirm(data);
@@ -50,7 +50,10 @@ export default function EditTournament({
 	};
 
 	return (
-		<Form onSubmit={onSubmit}>
+		<Form onSubmit={onSubmit} trigger={<>
+			<VerticalSpacing size={15} />
+			<Button value="Zatwierdź" />
+		</>}>
 			<Input
 				id="TournamentAdd-name"
 				label="Nazwa"
@@ -93,8 +96,6 @@ export default function EditTournament({
 					startDate ? date.getTime() - startDate.getTime() >= 0 : true
 				}
 			/>
-			<VerticalSpacing size={15} />
-			<Button value="Zatwierdź" />
 		</Form>
 	);
 }

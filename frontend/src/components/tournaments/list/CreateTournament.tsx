@@ -34,13 +34,17 @@ export default function CreateTournament({ confirm }: CreateTournamentType) {
 			startDate: startDate!.toISOString(),
 			endDate: endDate!.toISOString(),
 		};
-		tournamentsService.createTournament(tournament).then((data) => {
-			confirm(data);
-		});
+		return tournamentsService.createTournament(tournament)
+			.then((data) => {
+				confirm(data);
+			});
 	};
 
 	return (
-		<Form onSubmit={onSubmit}>
+		<Form onSubmit={onSubmit} trigger={<>
+			<VerticalSpacing size={15} />
+			<Button value="Zatwierdź" />
+		</>}>
 			<Input
 				id="TournamentAdd-name"
 				label="Nazwa"
@@ -83,8 +87,6 @@ export default function CreateTournament({ confirm }: CreateTournamentType) {
 					startDate ? date.getTime() - startDate.getTime() >= 0 : true
 				}
 			/>
-			<VerticalSpacing size={15} />
-			<Button value="Zatwierdź" />
 		</Form>
 	);
 }

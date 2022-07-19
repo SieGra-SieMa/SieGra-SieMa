@@ -26,11 +26,12 @@ export default function AdminTeamsList() {
 	const totalPages = Math.ceil(totalCount / COUNT);
 
 	useEffect(() => {
-		teamsService.getAllTeams(page, COUNT, search)
+		setTeams(null);
+		return teamsService.getAllTeams(page, COUNT, search)
 			.then((result) => {
 				setTotalCount(result.totalCount);
 				setTeams(result.items);
-			});
+			}).abort;
 	}, [search, page, teamsService]);
 
 	const onTeamChange = (team: Team) => {

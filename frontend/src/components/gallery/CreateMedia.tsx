@@ -23,14 +23,17 @@ export default function CreateMedia({ confirm, albumId }: Props) {
         if (!file) return;
         const formData = new FormData();
         formData.append("files", file);
-        albumsService.addMediaToAlbum(albumId, formData)
+        return albumsService.addMediaToAlbum(albumId, formData)
             .then((data) => {
                 confirm(data)
             });
     }
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Zatwierdź' />
+        </>}>
             <label
                 className={styles.selectImage}
                 style={file ? {
@@ -48,8 +51,6 @@ export default function CreateMedia({ confirm, albumId }: Props) {
                     onChange={(e) => setFile(e.target.files ? e.target.files[0] : null)}
                 />
             </label>
-            <VerticalSpacing size={15} />
-            <Button value='Zatwierdź' />
         </Form>
     );
 }

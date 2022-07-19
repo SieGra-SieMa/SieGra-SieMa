@@ -25,7 +25,7 @@ export default function EditContest({
 
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
-        tournamentsService.updateContest(contest.tournamentId, contest.id, name)
+        return tournamentsService.updateContest(contest.tournamentId, contest.id, name)
             .then((data) => {
                 const id = tournament!.contests.findIndex((e) => e.id === contest.id);
                 const updatedContest = [...tournament!.contests];
@@ -39,7 +39,10 @@ export default function EditContest({
     }
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Zapisz' />
+        </>}>
             <Input
                 id='EditContest-name'
                 label='Name'
@@ -47,8 +50,6 @@ export default function EditContest({
                 required
                 onChange={(e) => setName(e.target.value)}
             />
-            <VerticalSpacing size={15} />
-            <Button value='Zapisz' />
         </Form>
     );
 }

@@ -24,14 +24,17 @@ export default function EditAlbum({ confirm, album }: Props) {
             ...album,
             name,
         };
-        albumsService.editAlbum(album.id, updatedAlbum)
+        return albumsService.editAlbum(album.id, updatedAlbum)
             .then((data) => {
                 confirm(updatedAlbum);
             });
     }
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button value='Zapisz' />
+        </>}>
             <Input
                 id='EditAlbum-name'
                 label='Name'
@@ -39,8 +42,6 @@ export default function EditAlbum({ confirm, album }: Props) {
                 required
                 onChange={(e) => setName(e.target.value)}
             />
-            <VerticalSpacing size={15} />
-            <Button value='Zapisz' />
         </Form>
     );
 };

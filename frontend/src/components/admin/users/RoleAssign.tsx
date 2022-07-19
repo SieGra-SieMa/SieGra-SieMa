@@ -22,14 +22,21 @@ export default function RoleAssign({ user, confirm }: Props) {
     const onSubmit = (e: FormEvent) => {
         e.preventDefault();
         if (!selectedRoles.length) return;
-        usersService.addUserRole(user.id, selectedRoles)
+        return usersService.addUserRole(user.id, selectedRoles)
             .then((data) => {
                 confirm(data);
             });
     };
 
     return (
-        <Form onSubmit={onSubmit}>
+        <Form onSubmit={onSubmit} trigger={<>
+            <VerticalSpacing size={15} />
+            <Button
+                className={styles.button}
+                value='Dodaj'
+                disabled={!selectedRoles.length}
+            />
+        </>}>
             <ul className={styles.list}>
                 {Object.values(ROLES).filter((role) => !user.roles.includes(role))
                     .map((role, index) => (
@@ -52,8 +59,6 @@ export default function RoleAssign({ user, confirm }: Props) {
                         </li>
                     ))}
             </ul>
-            <VerticalSpacing size={15} />
-            <Button className={styles.button} value='Dodaj' disabled={!selectedRoles.length} />
         </Form >
     );
 };

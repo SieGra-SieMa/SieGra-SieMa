@@ -16,8 +16,9 @@ export default function UserProvider({ children }: { children: React.ReactNode }
             setUser(null);
             return;
         }
-        usersService.currentUser()
-            .then((user) => setUser(user));
+        return usersService.currentUser()
+            .then((user) => setUser(user))
+            .abort;
     }, [session, setUser, usersService]);
 
     const value = { user, setUser };

@@ -28,7 +28,7 @@
 
 .contests {
     width: 100%;
-    height: 450px;
+    max-height: 450px;
     overflow-x: auto;
 }
 

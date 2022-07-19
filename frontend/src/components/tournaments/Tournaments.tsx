@@ -12,10 +12,10 @@ export default function Tournaments() {
     const [tournaments, setTournaments] = useState<TournamentListItem[] | null>(null);
 
     useEffect(() => {
-        tournamentsService.getTournaments()
+        return tournamentsService.getTournaments()
             .then((data) => {
                 setTournaments(data);
-            });
+            }).abort;
     }, [tournamentsService]);
 
     const value = useMemo(() => {

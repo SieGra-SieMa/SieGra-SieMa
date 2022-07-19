@@ -80,18 +80,18 @@ export default function Tournament() {
 
 	useEffect(() => {
 		if (!session) return;
-		teamsService.getTeamsIAmCaptain()
+		return teamsService.getTeamsIAmCaptain()
 			.then((data) => {
 				setTeams(data);
-			});
+			}).abort;
 	}, [session, teamsService]);
 
 	useEffect(() => {
 		if (!id || isNaN(parseInt(id))) return;
-		tournamentsService.getTournamentById(id)
+		return tournamentsService.getTournamentById(id)
 			.then((data) => {
 				setTournament(data);
-			});
+			}).abort;
 	}, [id, tournamentsService]);
 
 	if (!id || isNaN(parseInt(id))) {

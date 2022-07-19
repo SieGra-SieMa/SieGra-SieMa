@@ -151,13 +151,19 @@ namespace SieGraSieMa.Controllers
         [HttpGet()]
         public async Task<ActionResult> GetUsers(string filter, [FromQuery] PaggingParam pp)
         {
-            var users = _userService.GetJustUsers(filter?.ToUpper());
+            var users = _userService.GetJustUsers(filter?.ToUpper()).Where(u => u.Email != HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value);
             List<UserDTO> usersDTO = new();
-            foreach (var user in users)
+            foreach (var user in users.Skip((pp.Page - 1) * pp.Count).Take(pp.Count))
             {
-                usersDTO.Add(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id), isLocked = user.LockoutEnd.HasValue?DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0:false });
+                usersDTO.Add(new UserDTO { Id = user.Id,
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    Email = user.Email,
+                    Roles = await _userManager.GetRolesAsync(user), 
+                    Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id), 
+                    isLocked = user.LockoutEnd.HasValue ? DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0 : false }); ;
             }
-            return Ok(new UsersWithPagging { TotalCount = usersDTO.Count(), Items = usersDTO.Skip((pp.Page - 1) * pp.Count).Take(pp.Count).ToList() });
+            return Ok(new UsersWithPagging { TotalCount = users.Count(), Items = usersDTO });
         }
 
 

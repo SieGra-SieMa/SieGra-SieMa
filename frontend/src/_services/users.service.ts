@@ -1,6 +1,6 @@
 import Config from '../config.json';
 import { User, UserDetailsRequest, PasswordChange } from '../_lib/types';
-import { Message } from '../_lib/_types/response';
+import { Message, Paginated } from '../_lib/_types/response';
 import Service from './service';
 
 export default class UsersService extends Service {
@@ -25,8 +25,8 @@ export default class UsersService extends Service {
         return super.post(`${Config.HOST}/api/users/change-password`, pass);
     };
 
-    getUsers(): Promise<User[]> {
-        return super.get(`${Config.HOST}/api/users`);
+    getUsers(page: number, count: number, search: string): Promise<Paginated<User>> {
+        return super.get(`${Config.HOST}/api/users?page=${page}&count=${count}&filter=${search}`);
     };
 
     addUserRole(id: number, role: string[]): Promise<User> {

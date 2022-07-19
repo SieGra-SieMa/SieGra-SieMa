@@ -1,6 +1,6 @@
 import Config from '../config.json';
 import { Team } from '../_lib/types';
-import { Media, Message } from '../_lib/_types/response';
+import { Media, Message, Paginated } from '../_lib/_types/response';
 import Service from './service';
 
 export default class TeamsService extends Service {
@@ -17,8 +17,8 @@ export default class TeamsService extends Service {
         return super.get<Team[]>(`${Config.HOST}/api/teams`);
     };
 
-    getAllTeams(): Promise<Team[]> {
-        return super.get(`${Config.HOST}/api/teams/admin`);
+    getAllTeams(page: number, count: number, search: string): Promise<Paginated<Team>> {
+        return super.get(`${Config.HOST}/api/teams/admin?page=${page}&count=${count}&filter=${search}`);
     };
 
     getTeamsIAmCaptain(): Promise<Team[]> {

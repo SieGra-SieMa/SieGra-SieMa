@@ -56,6 +56,7 @@ export type FacebookFeed = {
 			before: string;
 		}
 	}
+	error?: any;
 };
 
 export enum TeamPaidEnum {

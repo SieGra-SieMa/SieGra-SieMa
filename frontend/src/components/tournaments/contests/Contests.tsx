@@ -18,37 +18,42 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useTournament } from "../TournamentContext";
 import { useAlert } from "../../alert/AlertContext";
 
-
 type Props = {
 	contests: ContestType[];
 	tournamentId: string;
 };
 
 export default function Contests({ contests, tournamentId }: Props) {
-
 	const alert = useAlert();
 	const { tournamentsService } = useApi();
 	const { tournament, setTournament } = useTournament();
 
-	const [currentContestId, setCurrentContestId] = useState<number | null>(null);
+	const [currentContestId, setCurrentContestId] = useState<number | null>(
+		null
+	);
 	const [isAddContest, setIsAddContest] = useState(false);
 	const [isAddScore, setIsAddScore] = useState(false);
 	const [isEditContest, setIsEditContest] = useState(false);
 	const [isDeleteContest, setIsDeleteContest] = useState(false);
 	const [isSelectContest, setIsSelectContest] = useState(false);
 
-	const currentContest = contests.find((c) => currentContestId === null || c.id === currentContestId);
+	const currentContest = contests.find(
+		(c) => currentContestId === null || c.id === currentContestId
+	);
 
 	const onDelete = () => {
 		if (!currentContest) return;
-		return tournamentsService.deleteContest(currentContest.tournamentId, currentContest.id)
+		return tournamentsService
+			.deleteContest(currentContest.tournamentId, currentContest.id)
 			.then((data) => {
 				setIsDeleteContest(false);
 				alert.success(data.message);
 				setTournament({
 					...tournament,
-					contests: tournament.contests.filter((e) => currentContest.id !== e.id)
-				})
+					contests: tournament.contests.filter(
+						(e) => currentContest.id !== e.id
+					),
+				});
 				setCurrentContestId(null);
 			});
 	};
@@ -67,7 +72,7 @@ export default function Contests({ contests, tournamentId }: Props) {
 					Konkursy
 				</h4>
 				<div className={styles.header}>
-					<div style={{ width: '100%' }}>
+					<div style={{ width: "100%" }}>
 						<GuardComponent roles={[ROLES.Admin]}>
 							<div className={styles.manageButtons}>
 								<AddIcon
@@ -109,7 +114,14 @@ export default function Contests({ contests, tournamentId }: Props) {
 					)}
 				</div>
 				<div className={styles.contests}>
-					{currentContest && <Contest contest={currentContest} />}
+					{currentContest &&
+						(currentContest.contestants.length === 0 ? (
+							<div className={styles.placeholder}>
+								<h4>Konkurs jeszcze się nie odbył</h4>
+							</div>
+						) : (
+							<Contest contest={currentContest} />
+						))}
 				</div>
 			</div>
 
@@ -117,7 +129,7 @@ export default function Contests({ contests, tournamentId }: Props) {
 				{isAddContest && (
 					<Modal
 						isClose
-						title='Dodaj konkurs'
+						title="Dodaj konkurs"
 						close={() => setIsAddContest(false)}
 					>
 						<CreateContest
@@ -126,7 +138,7 @@ export default function Contests({ contests, tournamentId }: Props) {
 								setTournament({
 									...tournament,
 									contests: tournament.contests.concat(data),
-								})
+								});
 								setIsAddContest(false);
 							}}
 						/>
@@ -141,26 +153,39 @@ export default function Contests({ contests, tournamentId }: Props) {
 						<AddScoreContest
 							contest={currentContest}
 							confirm={(data) => {
-								const index = currentContest.contestants.findIndex((e) => e.userId === data.userId);
+								const index =
+									currentContest.contestants.findIndex(
+										(e) => e.userId === data.userId
+									);
 								const updatedContest = { ...currentContest };
 								if (index >= 0) {
 									updatedContest.contestants[index] = data;
 								} else {
-									updatedContest.contestants = updatedContest.contestants.concat(data);
+									updatedContest.contestants =
+										updatedContest.contestants.concat(data);
 								}
 								if (data.points === 0) {
-									updatedContest.contestants = updatedContest.contestants.filter((e) => e.userId !== data.userId)
+									updatedContest.contestants =
+										updatedContest.contestants.filter(
+											(e) => e.userId !== data.userId
+										);
 								}
-								updatedContest.contestants = updatedContest.contestants.sort((a, b) => b.points - a.points);
-								const contestIndex = tournament.contests.findIndex((e) => e.id === updatedContest.id);
+								updatedContest.contestants =
+									updatedContest.contestants.sort(
+										(a, b) => b.points - a.points
+									);
+								const contestIndex =
+									tournament.contests.findIndex(
+										(e) => e.id === updatedContest.id
+									);
 								const updatedContests = [
-									...tournament.contests
+									...tournament.contests,
 								];
 								updatedContests[contestIndex] = updatedContest;
 								setTournament({
 									...tournament,
 									contests: updatedContests,
-								})
+								});
 								setIsAddScore(false);
 							}}
 						/>

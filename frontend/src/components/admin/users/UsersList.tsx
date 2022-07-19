@@ -63,19 +63,31 @@ export default function UsersList() {
 				}}
 			/>
 			<Pagination totalPages={totalPages}>
-				{users ? (
-					<div className={styles.content}>
-						{users.map((user, index) => (
-							<UsersListItem
-								key={index}
-								user={user}
-								onUserPropChange={onUserPropChange}
-							/>
-						))}
-					</div>
-				) : (
-					<Loader size={20} margin={40} />
-				)}
+				{(users) ?
+					(users.length > 0 ? (
+						<div className={styles.content}>
+							{users.map((user, index) => (
+								<UsersListItem
+									key={index}
+									user={user}
+									onUserPropChange={onUserPropChange}
+								/>
+							))}
+						</div>
+					) : (
+						<h4 style={{
+							justifySelf: 'center',
+							alignSelf: 'center',
+							flex: 1,
+							display: 'flex',
+							alignItems: 'center'
+						}}>
+							Nie znaleziono
+						</h4>
+					)
+					) : (
+						<Loader size={20} margin={40} />
+					)}
 			</Pagination>
 		</div>
 	);

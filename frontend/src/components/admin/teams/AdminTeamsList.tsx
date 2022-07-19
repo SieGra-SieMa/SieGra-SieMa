@@ -66,23 +66,35 @@ export default function AdminTeamsList() {
 				}}
 			/>
 			<Pagination totalPages={totalPages}>
-				{teams ? (
-					<div className={styles.content}>
-						{teams.filter((team) =>
-							team.name.toLowerCase().includes(search.toLowerCase()) ||
-							team.code.toLowerCase().includes(search.toLowerCase())
-						).map((team, index) => (
-							<TeamsListItem
-								key={index}
-								team={team}
-								onTeamChange={onTeamChange}
-								onTeamDelete={onTeamDelete}
-							/>
-						))}
-					</div>
-				) : (
-					<Loader size={20} margin={40} />
-				)}
+				{(teams) ?
+					((teams.length > 0) ? (
+						<div className={styles.content}>
+							{teams.filter((team) =>
+								team.name.toLowerCase().includes(search.toLowerCase()) ||
+								team.code.toLowerCase().includes(search.toLowerCase())
+							).map((team, index) => (
+								<TeamsListItem
+									key={index}
+									team={team}
+									onTeamChange={onTeamChange}
+									onTeamDelete={onTeamDelete}
+								/>
+							))}
+						</div>
+					) : (
+						<h4 style={{
+							justifySelf: 'center',
+							alignSelf: 'center',
+							flex: 1,
+							display: 'flex',
+							alignItems: 'center'
+						}}>
+							Nie znaleziono
+						</h4>
+					)
+					) : (
+						<Loader size={20} margin={40} />
+					)}
 			</Pagination>
 		</div>
 	);

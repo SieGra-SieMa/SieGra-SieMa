@@ -16,11 +16,13 @@ import TeamImage from "../../image/TeamImage";
 type Props = {
 	team: Team;
 	onTeamChange: (team: Team) => void;
+	onTeamDelete: () => void;
 };
 
 export default function TeamsListItem({
 	team,
 	onTeamChange,
+	onTeamDelete,
 }: Props) {
 
 	const alert = useAlert();
@@ -35,11 +37,7 @@ export default function TeamsListItem({
 	const onDelete = () => {
 		return teamsService.adminDeleteTeam(team.id)
 			.then((data) => {
-				onTeamChange({
-					...team,
-					captainId: null,
-					players: [],
-				});
+				onTeamDelete();
 				setIsDelete(false);
 				alert.success(data.message);
 			});
@@ -68,7 +66,7 @@ export default function TeamsListItem({
 					className="interactiveIcon"
 					onClick={() => setIsEdit(true)}
 				/>
-				{(capitan) && (
+				{(!capitan) && (
 					<DeleteIcon
 						className="interactiveIcon"
 						onClick={() => setIsDelete(true)}

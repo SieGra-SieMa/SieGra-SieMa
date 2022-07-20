@@ -19,6 +19,7 @@ export default function AdminTeamsList() {
 	const [teams, setTeams] = useState<Team[] | null>(null);
 	const [search, setSearch] = useState("");
 	const [totalCount, setTotalCount] = useState(0);
+	const [refresh, setRefresh] = useState(false);
 
 	const pageParam = parseInt(searchParams.get('page') || '1');
 	const page = isNaN(pageParam) ? 1 : pageParam;
@@ -32,7 +33,7 @@ export default function AdminTeamsList() {
 				setTotalCount(result.totalCount);
 				setTeams(result.items);
 			}).abort;
-	}, [search, page, teamsService]);
+	}, [refresh, search, page, teamsService]);
 
 	const onTeamChange = (team: Team) => {
 		if (!teams) return;
@@ -42,6 +43,10 @@ export default function AdminTeamsList() {
 			updatedTeams[index] = team;
 			setTeams(updatedTeams);
 		}
+	};
+
+	const onTeamDelete = () => {
+		setRefresh(state => !state)
 	};
 
 	return (
@@ -69,6 +74,7 @@ export default function AdminTeamsList() {
 									key={index}
 									team={team}
 									onTeamChange={onTeamChange}
+									onTeamDelete={onTeamDelete}
 								/>
 							))}
 						</div>

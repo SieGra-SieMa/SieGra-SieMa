@@ -44,14 +44,6 @@ export default function AdminTeamsList() {
 		}
 	};
 
-	const onTeamDelete = (team: Team) => {
-		if (!teams) return;
-		const index = teams.findIndex((e) => e.id === team.id);
-		if (index >= 0) {
-			setTeams(teams.filter((e) => e === team));
-		}
-	};
-
 	return (
 		<div className={styles.root}>
 			<div className={styles.top}>
@@ -77,7 +69,6 @@ export default function AdminTeamsList() {
 									key={index}
 									team={team}
 									onTeamChange={onTeamChange}
-									onTeamDelete={onTeamDelete}
 								/>
 							))}
 						</div>

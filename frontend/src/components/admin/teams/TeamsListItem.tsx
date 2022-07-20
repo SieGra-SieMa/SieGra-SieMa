@@ -16,13 +16,11 @@ import TeamImage from "../../image/TeamImage";
 type Props = {
 	team: Team;
 	onTeamChange: (team: Team) => void;
-	onTeamDelete: (team: Team) => void;
 };
 
 export default function TeamsListItem({
 	team,
 	onTeamChange,
-	onTeamDelete,
 }: Props) {
 
 	const alert = useAlert();
@@ -37,7 +35,11 @@ export default function TeamsListItem({
 	const onDelete = () => {
 		return teamsService.adminDeleteTeam(team.id)
 			.then((data) => {
-				onTeamDelete(team);
+				onTeamChange({
+					...team,
+					captainId: null,
+					players: [],
+				});
 				setIsDelete(false);
 				alert.success(data.message);
 			});
@@ -45,7 +47,6 @@ export default function TeamsListItem({
 
 	return (
 		<div className={styles.root}>
-
 			<TeamImage
 				className={styles.pictureBlock}
 				url={team.profilePicture}
@@ -53,7 +54,6 @@ export default function TeamsListItem({
 				placeholderSize={72}
 				onClick={() => setIsPicture(true)}
 			/>
-
 			<h6 className={styles.title}>{team.name}</h6>
 			<p>Kod: {team.code}</p>
 			{
@@ -68,10 +68,12 @@ export default function TeamsListItem({
 					className="interactiveIcon"
 					onClick={() => setIsEdit(true)}
 				/>
-				<DeleteIcon
-					className="interactiveIcon"
-					onClick={() => setIsDelete(true)}
-				/>
+				{(capitan) && (
+					<DeleteIcon
+						className="interactiveIcon"
+						onClick={() => setIsDelete(true)}
+					/>
+				)}
 			</div>
 			{
 				isPicture && (

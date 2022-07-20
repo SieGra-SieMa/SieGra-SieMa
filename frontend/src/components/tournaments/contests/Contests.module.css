@@ -37,6 +37,7 @@
     height: 100%;
     margin: auto;
 }
+
 .placeholder>h4 {
     margin: auto;
     width: fit-content;
@@ -74,4 +75,13 @@
 
 .active {
     border-color: var(--accent-color);
+}
+
+.option {
+    display: flex;
+    flex-direction: column;
+}
+
+.optionTitle {
+    font-weight: bold;
 }

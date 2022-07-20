@@ -66,7 +66,7 @@ export default function TeamsListItem({
 					className="interactiveIcon"
 					onClick={() => setIsEdit(true)}
 				/>
-				{(!capitan) && (
+				{(capitan) && (
 					<DeleteIcon
 						className="interactiveIcon"
 						onClick={() => setIsDelete(true)}

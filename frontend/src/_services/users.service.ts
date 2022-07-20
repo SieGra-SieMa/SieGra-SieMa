@@ -1,55 +1,59 @@
 import Config from '../config.json';
 import { User, UserDetailsRequest, PasswordChange } from '../_lib/types';
-import { Message } from '../_lib/_types/response';
-import Service from './service';
+import { Message, Paginated } from '../_lib/_types/response';
+import Service, { ApiResponse } from './service';
 
 export default class UsersService extends Service {
 
-    updateUser(user: UserDetailsRequest): Promise<User> {
+    updateUser(user: UserDetailsRequest): ApiResponse<User> {
         return super.patch(`${Config.HOST}/api/users/change-details`, user);
     };
 
-    currentUser(): Promise<User> {
+    currentUser(): ApiResponse<User> {
         return super.get(`${Config.HOST}/api/users/current`);
     };
 
-    joinNewsletter(): Promise<User> {
+    joinNewsletter(): ApiResponse<User> {
         return super.get(`${Config.HOST}/api/users/newsletter/join`);
     };
 
-    leaveNewsletter(): Promise<User> {
+    leaveNewsletter(): ApiResponse<User> {
         return super.get(`${Config.HOST}/api/users/newsletter/leave`);
     };
 
-    changePassword(pass: PasswordChange): Promise<Message> {
+    changePassword(pass: PasswordChange): ApiResponse<Message> {
         return super.post(`${Config.HOST}/api/users/change-password`, pass);
     };
 
-    getUsers(): Promise<User[]> {
-        return super.get(`${Config.HOST}/api/users`);
+    getUsers(page: number, count: number, search: string): ApiResponse<Paginated<User>> {
+        return super.get(`${Config.HOST}/api/users?page=${page}&count=${count}&filter=${search}`);
     };
 
-    addUserRole(id: number, role: string[]): Promise<User> {
+    addUserRole(id: number, role: string[]): ApiResponse<User> {
         return super.post(`${Config.HOST}/api/users/${id}/add-role`, role);
     };
 
-    removeUserRole(id: number, role: string[]): Promise<User> {
+    removeUserRole(id: number, role: string[]): ApiResponse<User> {
         return super.post(`${Config.HOST}/api/users/${id}/remove-role`, role);
     };
 
-    adminUpdateUser(id: number, user: UserDetailsRequest): Promise<User> {
+    adminUpdateUser(id: number, user: UserDetailsRequest): ApiResponse<User> {
         return super.patch(`${Config.HOST}/api/users/${id}/update-user`, user);
     };
 
-    adminBanUser(id: number): Promise<User> {
+    adminBanUser(id: number): ApiResponse<User> {
         return super.del(`${Config.HOST}/api/users/admin/${id}`);
     };
 
-    adminUnbanUser(id: number): Promise<User> {
+    adminUnbanUser(id: number): ApiResponse<User> {
         return super.patch(`${Config.HOST}/api/users/admin/${id}`, {});
     };
 
-    sendNewsletter(title: string, body: string, tournamentId?: string): Promise<Message> {
+    sendNewsletter(title: string, body: string, tournamentId?: string): ApiResponse<Message> {
         return super.post(`${Config.HOST}/api/users/newsletter/send`, { title, body, tournamentId });
+    };
+
+    deleteAccount(): ApiResponse<Message> {
+        return super.del(`${Config.HOST}/api/users/delete-account`);
     };
 }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SieGraSieMa.DTOs;
 using SieGraSieMa.DTOs.ErrorDTO;
 using SieGraSieMa.DTOs.Newsletter;
+using SieGraSieMa.DTOs.Pagging;
 using SieGraSieMa.DTOs.Users;
 using SieGraSieMa.Models;
 using SieGraSieMa.Services;
@@ -148,15 +149,21 @@ namespace SieGraSieMa.Controllers
 
         [Authorize(Policy = "OnlyEmployeesAuthenticated")]
         [HttpGet()]
-        public async Task<ActionResult> GetUsers(string filter)
+        public async Task<ActionResult> GetUsers(string filter, [FromQuery] PaggingParam pp)
         {
-            var users = _userService.GetJustUsers(filter);
+            var users = _userService.GetJustUsers(filter?.ToUpper()).Where(u => u.Email != HttpContext.User.FindFirst(e => e.Type == ClaimTypes.Name)?.Value);
             List<UserDTO> usersDTO = new();
-            foreach (var user in users)
+            foreach (var user in users.Skip((pp.Page - 1) * pp.Count).Take(pp.Count))
             {
-                usersDTO.Add(new UserDTO { Id = user.Id, Name = user.Name, Surname = user.Surname, Email = user.Email, Roles = await _userManager.GetRolesAsync(user), Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id), isLocked = user.LockoutEnd.HasValue?DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0:false });
+                usersDTO.Add(new UserDTO { Id = user.Id,
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    Email = user.Email,
+                    Roles = await _userManager.GetRolesAsync(user), 
+                    Newsletter = await _userService.CheckIfUserIsSubscribed(user.Id), 
+                    isLocked = user.LockoutEnd.HasValue ? DateTimeOffset.Compare(user.LockoutEnd.Value, DateTime.Now) > 0 : false }); ;
             }
-            return Ok(usersDTO);
+            return Ok(new UsersWithPagging { TotalCount = users.Count(), Items = usersDTO });
         }
 
 

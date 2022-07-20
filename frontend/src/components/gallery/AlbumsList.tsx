@@ -28,9 +28,11 @@ export default function AlbumsList() {
 	}, []);
 
 	useEffect(() => {
-		tournamentsService.getTournamentWithAlbums(id!).then((data) => {
-			setTournamentWithAlbums(data);
-		});
+		return tournamentsService.getTournamentWithAlbums(id!)
+			.then((data) => {
+				setTournamentWithAlbums(data);
+			})
+			.abort;
 	}, [id, tournamentsService]);
 
 	return (
@@ -64,8 +66,8 @@ export default function AlbumsList() {
 								style={
 									album.profilePicture
 										? {
-												backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
-										  }
+											backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
+										}
 										: undefined
 								}
 								onClick={() => navigate(`${album.id}`)}

@@ -42,7 +42,8 @@ namespace SieGraSieMa.Models
                 SecurityStamp = Guid.NewGuid().ToString(),
                 EmailConfirmed = true,
                 PhoneNumber = null,
-                TwoFactorEnabled = false
+                TwoFactorEnabled = false,
+                LockoutEnabled = false
             };
             if (!context.Users.Any(u => u.UserName == user.UserName))
             {
@@ -54,6 +55,7 @@ namespace SieGraSieMa.Models
                 //var result = userStore.CreateAsync(user);
             }
             user = await _userManager.FindByEmailAsync(user.Email);
+            if (await _userManager.IsLockedOutAsync(user)) await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.Parse("2000-01-01 00:00:00"));
             if (!(await _userManager.IsInRoleAsync(user, "Admin")))
             {
                 await _userManager.AddToRolesAsync(user, roles);

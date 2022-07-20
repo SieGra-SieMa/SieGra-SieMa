@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using SieGraSieMa.DTOs.Pagging;
 using SieGraSieMa.DTOs.TeamsDTO;
 using SieGraSieMa.Models;
 using System;
@@ -27,13 +28,12 @@ namespace SieGraSieMa.Services
         Task<GetTeamsDTO> DeleteUserFromTeam(int userId, int captainId, int teamId);
         Task<GetTeamsDTO> SwitchCaptain(int teamId, int oldCaptainId, int newCaptainId);
         Task DeleteTeam(int teamId, int captainId);
-        Task<IEnumerable<GetTeamsDTO>> GetAllTeams();
+        Task<IEnumerable<GetTeamsDTO>> GetAllTeams(PaggingParam pp, string filter);
         Task DeleteTeamByAdmin(int teamId);
 
     }
     public class TeamService : ITeamService
     {
-        //private readonly IMapper _mapper;
         private readonly SieGraSieMaContext _SieGraSieMaContext;
 
         public TeamService(SieGraSieMaContext SieGraSieMaContext)
@@ -253,37 +253,32 @@ namespace SieGraSieMa.Services
 
         public string GenerateNewCode()
         {
-            return new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 5)
+            var code = new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 5)
                 .Select(s => s[new Random().Next(s.Length)]).ToArray());
+
+            var teams = _SieGraSieMaContext.Teams.Where(t => t.Code == code).ToList();
+
+            if (teams.Count != 0)
+            {
+                return GenerateNewCode();
+            }
+            
+            return code;
         }
-
-        /*public async Task<bool> CheckUsersInTeam(List<User> users, int tournamentId)
-        {
-            var emptyList = await _SieGraSieMaContext.Tournaments.Where(t => t.Id == tournamentId)
-                .Include(t => t.TeamInTournaments)
-                .ThenInclude(t => t.Team)
-                .ThenInclude(t => t.Players)
-                .Where(p => p.TeamInTournaments.Any(t => t.Team.Players.Any(p => users.Any(u => u == p.User))))
-                .ToListAsync();
-
-            if (emptyList.Count == 0)
-                return true;
-
-            return false;
-        }*/
 
         public async Task<bool> IsUserAbleToJoinTeam(User user, string code)
         {
-            var team = _SieGraSieMaContext.Teams.Where(e => e.Code == code).SingleOrDefaultAsync();
+            var team = await _SieGraSieMaContext.Teams.Where(e => e.Code == code).SingleOrDefaultAsync();
 
-            if (await team == null)
+            if (team == null)
                 throw new Exception("Drużyna o podanym kodzie nie istnieje!");
 
             var result = await _SieGraSieMaContext.Tournaments
                 .Where(t => t.StartDate > DateTime.Now)
                 .Include(t => t.TeamInTournaments)
                 .ThenInclude(t => t.Team)
-                .Where(t => t.TeamInTournaments.Any(t => t.Team.Players.Any(t => t.UserId == user.Id)))
+                .ThenInclude(t => t.Players)
+                .Where(t =>t.TeamInTournaments.Any(tt => tt.Team.Players.Any(p => p.UserId == user.Id)))
                 .ToListAsync();
 
             if (result.Count == 0)
@@ -479,9 +474,12 @@ namespace SieGraSieMa.Services
                 
             await _SieGraSieMaContext.SaveChangesAsync();
         }
-        public async Task<IEnumerable<GetTeamsDTO>> GetAllTeams()
+        public async Task<IEnumerable<GetTeamsDTO>> GetAllTeams(PaggingParam pp, string filter)
         {
-            return await _SieGraSieMaContext.Teams.Include(e => e.Players).ThenInclude(e => e.User).Where(t=>t.CaptainId!=null)
+            //var totalCount = await _SieGraSieMaContext.Teams.CountAsync();
+            if(filter == null)
+            {
+                var teams = await _SieGraSieMaContext.Teams.Include(e => e.Players).ThenInclude(e => e.User).Where(t => t.CaptainId != null)
                 .Select(t => new GetTeamsDTO
                 {
                     Id = t.Id,
@@ -503,9 +501,47 @@ namespace SieGraSieMa.Services
                             Name = p.User.Name,
                             Surname = p.User.Surname
 
-                        }).ToList()
+                        })
+                        .ToList()
                 })
+                //.Skip((pp.Page - 1) * pp.Count).Take(pp.Count)
                 .ToListAsync();
+                return teams;
+                //return new TeamsWithPagging { TotalCount = teams.Count, Items = teams };
+            }
+            else
+            {
+                var teams = await _SieGraSieMaContext.Teams.Include(e => e.Players).ThenInclude(e => e.User).Where(t => t.CaptainId != null &&(t.Code.ToUpper().Contains(filter) || t.Name.ToUpper().Contains(filter)))
+                .Select(t => new GetTeamsDTO
+                {
+                    Id = t.Id,
+                    Name = t.Name,
+                    CaptainId = t.CaptainId.Value,
+                    Captain = new PlayerDTO
+                    {
+                        Id = t.CaptainId.Value,
+                        Name = t.Captain.Name,
+                        Surname = t.Captain.Surname
+
+                    },
+                    Code = t.Code,
+                    ProfilePicture = t.Medium == null ? null : t.Medium.Url,
+                    Players = t.Players
+                        .Select(p => new PlayerDTO
+                        {
+                            Id = p.UserId,
+                            Name = p.User.Name,
+                            Surname = p.User.Surname
+
+                        })
+                        .ToList()
+                })
+                //.Skip((pp.Page - 1) * pp.Count).Take(pp.Count)
+                .ToListAsync();
+                return teams;
+                //return new TeamsWithPagging { TotalCount = teams.Count, Items = teams };
+            }
+            
         }
     }
 }

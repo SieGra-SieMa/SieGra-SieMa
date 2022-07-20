@@ -26,8 +26,9 @@ export default function Newsletter() {
     const [tournaments, setTournamnets] = useState<Tournament[] | null>(null);
 
     useEffect(() => {
-        tournamentsService.getTournaments()
-            .then((data) => setTournamnets(data));
+        return tournamentsService.getTournaments()
+            .then((data) => setTournamnets(data))
+            .abort;
     }, [tournamentsService]);
 
     const onConfirm = () => {
@@ -60,11 +61,14 @@ export default function Newsletter() {
                 <select
                     id="Newsletter-tournamentId"
                     className={styles.select}
+                    value={tournamentId}
                     onChange={(e) => setTournamentId(e.target.value)}
                 >
-                    <option selected value=''>Do wszystkich</option>
-                    {tournaments.map((tournament) => (
-                        <option value={tournament.id}>Do graczy w {tournament.name}</option>
+                    <option value=''>Do wszystkich</option>
+                    {tournaments.map((tournament, index) => (
+                        <option key={index} value={tournament.id}>
+                            Do graczy w {tournament.name}
+                        </option>
                     ))}
                 </select>
             </div>)}

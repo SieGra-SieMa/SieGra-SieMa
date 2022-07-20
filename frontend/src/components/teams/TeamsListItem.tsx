@@ -77,10 +77,12 @@ export default function TeamsListItem({ team }: Props) {
 				<div className={styles.titleContainer}>
 					<span></span>
 					<h4 className={styles.title}>{team.name}</h4>
-					<EditIcon
-						className="interactiveIcon"
-						onClick={() => setIsEdit(true)}
-					/>
+					{user && team.captainId === user.id && (
+						<EditIcon
+							className="interactiveIcon"
+							onClick={() => setIsEdit(true)}
+						/>
+					)}
 				</div>
 				<p>
 					Kod: <b>{team.code}</b>

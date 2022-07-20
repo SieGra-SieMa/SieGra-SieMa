@@ -9,6 +9,7 @@ type Props = {
 	size: number;
 	placeholderSize: number;
 	onClick?: () => void;
+	isEditable?: boolean;
 };
 
 export default function TeamImage({
@@ -17,6 +18,7 @@ export default function TeamImage({
 	size,
 	placeholderSize,
 	onClick,
+	isEditable,
 }: Props) {
 	const sizes = {
 		width: `${size}px`,
@@ -25,13 +27,17 @@ export default function TeamImage({
 
 	return (
 		<div
-			className={[styles.picture, className].filter((e) => e).join(" ")}
+			className={[
+				styles.picture,
+				className,
+				isEditable ? styles.editable : undefined,
+			].filter((e) => e).join(" ")}
 			style={
 				url
 					? {
-							...sizes,
-							backgroundImage: `url(${Config.HOST}${url})`,
-					  }
+						...sizes,
+						backgroundImage: `url(${Config.HOST}${url})`,
+					}
 					: sizes
 			}
 			onClick={onClick}

@@ -11,27 +11,30 @@
     transition: all .3s ease-in-out;
 }
 
-.picture:hover {
+.picture.editable {
+    transform: scale(1);
+    transition: all .3s ease-in-out;
+}
+
+.picture.editable:hover {
     background-color: var(--secondary-color);
+    cursor: pointer;
+    transform: scale(1.05);
 }
 
-.picture:hover .editImage {
-    opacity: 1;
+.picture.editable:hover .editImage {
+    display: block !important;
 }
 
-.picture:hover .placeholder {
-    opacity: 0;
+.picture.editable:hover .placeholder {
+    display: none !important;
 }
 
 .placeholder {
     color: #fff;
-    transition: all .2s ease-in-out;
 }
 
 .editImage {
-    position: absolute;
-    transform: translateX(-100%);
-    color: white;
-    opacity: 0;
-    transition: all .2s ease-in-out;
+    display: none !important;
+    color: #fff;
 }

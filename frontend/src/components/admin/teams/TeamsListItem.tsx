@@ -46,11 +46,11 @@ export default function TeamsListItem({
 	return (
 		<div className={styles.root}>
 			<TeamImage
-				className={styles.pictureBlock}
 				url={team.profilePicture}
 				size={150}
 				placeholderSize={72}
 				onClick={() => setIsPicture(true)}
+				isEditable
 			/>
 			<h6 className={styles.title}>{team.name}</h6>
 			<p>Kod: {team.code}</p>

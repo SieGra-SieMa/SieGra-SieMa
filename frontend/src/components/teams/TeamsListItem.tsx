@@ -72,6 +72,7 @@ export default function TeamsListItem({ team }: Props) {
 					size={150}
 					placeholderSize={72}
 					onClick={() => setIsPicture(true)}
+					isEditable
 				/>
 
 				<div className={styles.titleContainer}>

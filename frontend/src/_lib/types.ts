@@ -20,7 +20,7 @@ export type Team = {
 	id: number;
 	name: string;
 	code: string;
-	captainId: number;
+	captainId: number | null;
 	profilePicture: string;
 	players: Player[];
 };

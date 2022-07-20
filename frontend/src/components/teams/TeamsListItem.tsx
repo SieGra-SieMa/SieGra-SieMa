@@ -113,12 +113,14 @@ export default function TeamsListItem({ team }: Props) {
 							.map((player, index) => (
 								<li key={index}>
 									<p>{`${player.name} ${player.surname}`}</p>
-									<CloseIcon
-										className="interactiveIcon"
-										onClick={() =>
-											setPlayerToRemove(player)
-										}
-									/>
+									{user && team.captainId === user.id && (
+										<CloseIcon
+											className="interactiveIcon"
+											onClick={() =>
+												setPlayerToRemove(player)
+											}
+										/>
+									)}
 								</li>
 							))
 					) : (

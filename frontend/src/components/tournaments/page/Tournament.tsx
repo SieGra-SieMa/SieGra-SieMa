@@ -28,7 +28,7 @@ import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import Contests from "../contests/Contests";
 import CreateAlbum from "../../gallery/CreateAlbum";
-import AddIcon from '@mui/icons-material/Add';
+import AddIcon from "@mui/icons-material/Add";
 import { useAlert } from "../../alert/AlertContext";
 import { useUser } from "../../user/UserContext";
 import { Team } from "../../../_lib/types";
@@ -36,7 +36,6 @@ import Loader from "../../loader/Loader";
 import { useAuth } from "../../auth/AuthContext";
 
 export default function Tournament() {
-
 	const navigate = useNavigate();
 
 	const { id } = useParams<{ id: string }>();
@@ -95,21 +94,23 @@ export default function Tournament() {
 	}, [id, tournamentsService]);
 
 	if (!id || isNaN(parseInt(id))) {
-		navigate('..');
+		navigate("..");
 		return null;
-	};
+	}
 
 	if (!tournament) {
-		return (<>
-			<div className={styles.top}>
-				<ArrowBackIosNewIcon
-					className="interactiveIcon"
-					onClick={() => navigate('..')}
-					fontSize="large"
-				/>
-			</div>
-			<Loader size={20} margin={40} />
-		</>);
+		return (
+			<>
+				<div className={styles.top}>
+					<ArrowBackIosNewIcon
+						className="interactiveIcon"
+						onClick={() => navigate("..")}
+						fontSize="large"
+					/>
+				</div>
+				<Loader size={20} margin={40} />
+			</>
+		);
 	}
 
 	const editTournament = (updatedTournament: TournamentType) => {
@@ -126,41 +127,39 @@ export default function Tournament() {
 	};
 
 	const deleteTournament = () => {
-		return tournamentsService.deleteTournament(id)
-			.then((data) => {
-				setIsDelete(false);
-				navigate('..');
-				if (tournaments) {
-					const updatedTournaments = tournaments.filter(
-						(tournament) => tournament.id !== parseInt(id!)
-					);
-					setTournaments(updatedTournaments);
-				}
-				alert.success(data.message);
-			});
+		return tournamentsService.deleteTournament(id).then((data) => {
+			setIsDelete(false);
+			navigate("..");
+			if (tournaments) {
+				const updatedTournaments = tournaments.filter(
+					(tournament) => tournament.id !== parseInt(id!)
+				);
+				setTournaments(updatedTournaments);
+			}
+			alert.success(data.message);
+		});
 	};
 
 	const removeTeam = (teamId: number) => () => {
-		return tournamentsService.removeTeam(id, teamId)
-			.then(() => {
-				setIsTeamRemove(false);
-				if (!tournament) return;
-				const updatedTournament = {
-					...tournament,
-					team: null,
-					teams: tournament.teams.filter(
-						(team) => team.teamId !== teamId
-					),
-				};
-				setTournament(updatedTournament);
-				if (!tournaments) return;
-				const index = tournaments!.findIndex(
-					(e) => e.id === updatedTournament.id
-				);
-				const data = [...tournaments];
-				data[index] = updatedTournament;
-				setTournaments(data);
-			});
+		return tournamentsService.removeTeam(id, teamId).then(() => {
+			setIsTeamRemove(false);
+			if (!tournament) return;
+			const updatedTournament = {
+				...tournament,
+				team: null,
+				teams: tournament.teams.filter(
+					(team) => team.teamId !== teamId
+				),
+			};
+			setTournament(updatedTournament);
+			if (!tournaments) return;
+			const index = tournaments!.findIndex(
+				(e) => e.id === updatedTournament.id
+			);
+			const data = [...tournaments];
+			data[index] = updatedTournament;
+			setTournaments(data);
+		});
 	};
 
 	const composeLadder = () => {
@@ -178,146 +177,154 @@ export default function Tournament() {
 	};
 
 	const prepareTournament = () => {
-		return tournamentsService.prepareTournamnet(id)
-			.then((data) => {
-				setTournament(data);
-				setIsPrepare(false);
-			});
+		return tournamentsService.prepareTournamnet(id).then((data) => {
+			setTournament(data);
+			setIsPrepare(false);
+		});
 	};
 
 	const resetTournament = () => {
-		return tournamentsService.resetTournament(id)
-			.then((data) => {
-				setTournament(data);
-				setIsReset(false);
-			});
+		return tournamentsService.resetTournament(id).then((data) => {
+			setTournament(data);
+			setIsReset(false);
+		});
 	};
 
-	const prepareComponent = isOpen ? (<>
-		<PlayArrowIcon
-			className="interactiveIcon"
-			onClick={() => setIsPrepare(true)}
-			fontSize="medium"
-		/>
-		{isPrepare && (
-			<Modal
-				isClose
-				close={() => setIsPrepare(false)}
-				title="Czy na pewno chcesz przygotuj turniej?"
-			>
-				<Confirm
-					cancel={() => setIsPrepare(false)}
-					confirm={prepareTournament}
-					label="Potwierdź"
-					style={ButtonStyle.Yellow}
-				/>
-			</Modal>
-		)}
-	</>) : (<>
-		<RestartAltIcon
-			className="interactiveIcon"
-			onClick={() => setIsReset(true)}
-			fontSize="medium"
-		/>
-		{isReset && (
-			<Modal
-				isClose
-				close={() => setIsReset(false)}
-				title="Czy na pewno chcesz zresetować turniej?"
-			>
-				<Confirm
-					cancel={() => setIsReset(false)}
-					confirm={resetTournament}
-					label="Potwierdź"
-					style={ButtonStyle.Red}
-				/>
-			</Modal>
-		)}
-	</>);
+	const prepareComponent = isOpen ? (
+		<>
+			<PlayArrowIcon
+				className="interactiveIcon"
+				onClick={() => setIsPrepare(true)}
+				fontSize="medium"
+			/>
+			{isPrepare && (
+				<Modal
+					isClose
+					close={() => setIsPrepare(false)}
+					title="Czy na pewno chcesz przygotuj turniej?"
+				>
+					<Confirm
+						cancel={() => setIsPrepare(false)}
+						confirm={prepareTournament}
+						label="Potwierdź"
+						style={ButtonStyle.Yellow}
+					/>
+				</Modal>
+			)}
+		</>
+	) : (
+		<>
+			<RestartAltIcon
+				className="interactiveIcon"
+				onClick={() => setIsReset(true)}
+				fontSize="medium"
+			/>
+			{isReset && (
+				<Modal
+					isClose
+					close={() => setIsReset(false)}
+					title="Czy na pewno chcesz zresetować turniej?"
+				>
+					<Confirm
+						cancel={() => setIsReset(false)}
+						confirm={resetTournament}
+						label="Potwierdź"
+						style={ButtonStyle.Red}
+					/>
+				</Modal>
+			)}
+		</>
+	);
 
-	const pictureComponent = (<>
-		<InsertPhotoIcon
-			className="interactiveIcon"
-			onClick={() => setIsPicture(true)}
-			fontSize="medium"
-		/>
-		{isPicture && (
-			<Modal
-				isClose
-				close={() => setIsPicture(false)}
-				title="Edytuj zdjęcie profilowe"
-			>
-				<EditTournamentPicture
-					tournament={tournament}
-					confirm={(url) => {
-						setIsPicture(false);
-						const updatedTournament = {
-							...tournament,
-							profilePicture: url,
-						};
-						setTournament(updatedTournament);
-						setIsEdit(false);
-						if (tournaments) {
-							const index = tournaments!.findIndex(
-								(e) => e.id === updatedTournament.id
-							);
-							const data = [...tournaments];
-							data[index] = updatedTournament;
-							setTournaments(data);
-						}
-					}}
-				/>
-			</Modal>
-		)}
-	</>);
+	const pictureComponent = (
+		<>
+			<InsertPhotoIcon
+				className="interactiveIcon"
+				onClick={() => setIsPicture(true)}
+				fontSize="medium"
+			/>
+			{isPicture && (
+				<Modal
+					isClose
+					close={() => setIsPicture(false)}
+					title="Edytuj zdjęcie profilowe"
+				>
+					<EditTournamentPicture
+						tournament={tournament}
+						confirm={(url) => {
+							setIsPicture(false);
+							const updatedTournament = {
+								...tournament,
+								profilePicture: url,
+							};
+							setTournament(updatedTournament);
+							setIsEdit(false);
+							if (tournaments) {
+								const index = tournaments!.findIndex(
+									(e) => e.id === updatedTournament.id
+								);
+								const data = [...tournaments];
+								data[index] = updatedTournament;
+								setTournaments(data);
+							}
+						}}
+					/>
+				</Modal>
+			)}
+		</>
+	);
 
-	const editComponent = (<>
-		<EditIcon
-			className="interactiveIcon"
-			onClick={() => setIsEdit(true)}
-			fontSize="medium"
-		/>
-		{isEdit && (
-			<Modal
-				isClose
-				close={() => setIsEdit(false)}
-				title={`Edytuj turniej  - "${tournament.name}"`}
-			>
-				<EditTournament
-					tournament={tournament}
-					confirm={editTournament}
-				/>
-			</Modal>
-		)}
-	</>);
+	const editComponent = (
+		<>
+			<EditIcon
+				className="interactiveIcon"
+				onClick={() => setIsEdit(true)}
+				fontSize="medium"
+			/>
+			{isEdit && (
+				<Modal
+					isClose
+					close={() => setIsEdit(false)}
+					title={`Edytuj turniej  - "${tournament.name}"`}
+				>
+					<EditTournament
+						tournament={tournament}
+						confirm={editTournament}
+					/>
+				</Modal>
+			)}
+		</>
+	);
 
-	const deleteComponent = (<>
-		<DeleteIcon
-			className="interactiveIcon"
-			onClick={() => setIsDelete(true)}
-			fontSize="medium"
-		/>
-		{isDelete && (
-			<Modal
-				close={() => setIsDelete(false)}
-				title="Czy na pewno chcesz usunąć turniej?"
-			>
-				<Confirm
-					cancel={() => setIsDelete(false)}
-					confirm={deleteTournament}
-					label="Usuń"
-					style={ButtonStyle.Red}
-				/>
-			</Modal>
-		)}
-	</>);
+	const deleteComponent = (
+		<>
+			<DeleteIcon
+				className="interactiveIcon"
+				onClick={() => setIsDelete(true)}
+				fontSize="medium"
+			/>
+			{isDelete && (
+				<Modal
+					close={() => setIsDelete(false)}
+					title="Czy na pewno chcesz usunąć turniej?"
+				>
+					<Confirm
+						cancel={() => setIsDelete(false)}
+						confirm={deleteTournament}
+						label="Usuń"
+						style={ButtonStyle.Red}
+					/>
+				</Modal>
+			)}
+		</>
+	);
 
 	return (
 		<TournamentContext.Provider value={{ tournament, setTournament }}>
 			<div className={styles.top}>
 				<ArrowBackIosNewIcon
 					className="interactiveIcon"
-					onClick={() => navigate('..')}
+					onClick={() => navigate("..")}
 					fontSize="large"
 				/>
 				<GuardComponent roles={[ROLES.Admin]}>
@@ -340,16 +347,17 @@ export default function Tournament() {
 					<div className={styles.address}>
 						<LocationOnOutlinedIcon
 							fontSize="medium"
-							style={{ color: 'var(--accent-color)' }}
+							style={{ color: "var(--accent-color)" }}
 						/>
 						<p>{tournament.address}</p>
 					</div>
 					<div className={styles.tournamentInfo}>
 						<div className={styles.description}>
 							<h4 className="underline">Opis</h4>
-							<div dangerouslySetInnerHTML={{
-								__html: `${tournament.description}`,
-							}}
+							<div
+								dangerouslySetInnerHTML={{
+									__html: `${tournament.description}`,
+								}}
 							></div>
 						</div>
 						<div>
@@ -362,148 +370,199 @@ export default function Tournament() {
 							)}
 						</div>
 					</div>
-					{user && tournament.isOpen && tournament.team && tournament.team.captainId === user.id && (<>
-						<div className={styles.team}>
-							<h6>{tournament.team.name}</h6>
-							<Button
-								value="Usuń zespół"
-								onClick={() => setIsTeamRemove(true)}
-								style={ButtonStyle.Red}
-							/>
-						</div>
-						{isTeamRemove && (
-							<Modal
-								isClose
-								title={`Czy na pewno chcesz usunąć zespół - "${tournament.team.name}"?`}
-								close={() => setIsTeamRemove(false)}
-							>
-								<Confirm
-									confirm={removeTeam(tournament.team.id)}
-									cancel={() => setIsTeamRemove(false)}
-									label="Usuń"
-									style={ButtonStyle.Red}
-								/>
-							</Modal>
+					{user &&
+						tournament.isOpen &&
+						tournament.team &&
+						tournament.team.captainId === user.id && (
+							<>
+								<div className={styles.team}>
+									<h6>{tournament.team.name}</h6>
+									<Button
+										value="Usuń zespół"
+										onClick={() => setIsTeamRemove(true)}
+										style={ButtonStyle.Red}
+									/>
+								</div>
+								{isTeamRemove && (
+									<Modal
+										isClose
+										title={`Czy na pewno chcesz usunąć zespół - "${tournament.team.name}"?`}
+										close={() => setIsTeamRemove(false)}
+									>
+										<Confirm
+											confirm={removeTeam(
+												tournament.team.id
+											)}
+											cancel={() =>
+												setIsTeamRemove(false)
+											}
+											label="Usuń"
+											style={ButtonStyle.Red}
+										/>
+									</Modal>
+								)}
+							</>
 						)}
-					</>)}
-					{user && tournament.isOpen && (!tournament.team) && teams && teams.length > 0 && (<>
-						<Button
-							value="Zapisz zespół"
-							onClick={() => setIsTeamAssign(true)}
-						/>
-						{isTeamAssign && (
-							<Modal
-								title="Zapisz zespół"
-								isClose
-								close={() => setIsTeamAssign(false)}
-							>
-								<TeamAssign
-									id={tournament.id}
-									teams={teams}
-									confirm={(team) => {
-										setIsTeamAssign(false);
-										const updatedTournament = {
-											...tournament,
-											team,
-											teams: tournament.teams.concat({
-												teamId: team.id,
-												tournamentId: tournament.id,
-												teamName: team.name,
-												teamProfileUrl: team.profilePicture,
-												paid: false,
-											}),
-										};
-										setTournament(updatedTournament);
-										if (tournaments) {
-											const index = tournaments!.findIndex(
-												(e) => e.id === updatedTournament.id
-											);
-											const data = [...tournaments];
-											data[index] = updatedTournament;
-											setTournaments(data);
-										}
-									}}
+					{user &&
+						tournament.isOpen &&
+						!tournament.team &&
+						teams &&
+						teams.length > 0 && (
+							<>
+								<Button
+									value="Zapisz zespół"
+									onClick={() => setIsTeamAssign(true)}
 								/>
-							</Modal>
+								{isTeamAssign && (
+									<Modal
+										title="Zapisz zespół"
+										isClose
+										close={() => setIsTeamAssign(false)}
+									>
+										<TeamAssign
+											id={tournament.id}
+											teams={teams}
+											confirm={(team) => {
+												setIsTeamAssign(false);
+												const updatedTournament = {
+													...tournament,
+													team,
+													teams: tournament.teams.concat(
+														{
+															teamId: team.id,
+															tournamentId:
+																tournament.id,
+															teamName: team.name,
+															teamProfileUrl:
+																team.profilePicture,
+															paid: false,
+														}
+													),
+												};
+												setTournament(
+													updatedTournament
+												);
+												if (tournaments) {
+													const index =
+														tournaments!.findIndex(
+															(e) =>
+																e.id ===
+																updatedTournament.id
+														);
+													const data = [
+														...tournaments,
+													];
+													data[index] =
+														updatedTournament;
+													setTournaments(data);
+												}
+											}}
+										/>
+									</Modal>
+								)}
+							</>
 						)}
-					</>)}
 				</div>
 			</div>
 
 			<div className={styles.matchesAndContests}>
-				<div className={styles.matchesContainer}>
-					{!isOpen && tournament.groups.length > 1 && (
-						<Matches groups={tournament.groups} />
-					)}
-				</div>
 				<div className={styles.contestsContainer}>
 					<Contests
 						contests={tournament.contests}
 						tournamentId={id}
 					/>
 				</div>
-			</div>
-
-			{!isOpen && (<>
-				<div>
-					{tournament.ladder[0]?.matches[0].teamHomeId && (
-						<Ladder ladder={tournament.ladder} />
+				<div className={styles.matchesContainer}>
+					{!isOpen && tournament.groups.length > 1 && (
+						<Matches groups={tournament.groups} />
 					)}
 				</div>
-				<GuardComponent roles={[ROLES.Admin]}>
-					{tournament.groups
-						.map((group) =>
-							group.matches?.map(
-								(e) => e.teamAwayScore !== null && e.teamHomeScore !== null
-							).every((e) => e) ?? true
-						).every((e) => e) && (
+			</div>
+
+			{!isOpen && (
+				<>
+					<div>
+						{tournament.ladder[0]?.matches[0].teamHomeId && (
+							<Ladder ladder={tournament.ladder} />
+						)}
+					</div>
+					<GuardComponent roles={[ROLES.Admin]}>
+						{tournament.groups
+							.map(
+								(group) =>
+									group.matches
+										?.map(
+											(e) =>
+												e.teamAwayScore !== null &&
+												e.teamHomeScore !== null
+										)
+										.every((e) => e) ?? true
+							)
+							.every((e) => e) && (
 							<div className={styles.ladderControls}>
-								{(tournament.ladder[0]?.matches[0].teamHomeId ? (<>
-									<Button
-										value="Zresetuj drabinke"
-										onClick={() => setIsLadderReset(true)}
-										style={ButtonStyle.Red}
-									/>
-									{isLadderReset && (
-										<Modal
-											title="Czy na pewno chcesz zresetować drabinke?"
-											isClose
-											close={() => setIsLadderReset(false)}
-										>
-											<Confirm
-												confirm={resetLadder}
-												cancel={() => setIsLadderReset(false)}
-												label="Potwierdź"
-												style={ButtonStyle.Red}
-											/>
-										</Modal>
-									)}
-								</>
-								) : (<>
-									<Button
-										value="Zbuduj drabinke"
-										onClick={() => setIsLadderCompose(true)}
-									/>
-									{isLadderCompose && (
-										<Modal
-											title="Czy na pewno chcesz zbudować drabinke?"
-											isClose
-											close={() => setIsLadderCompose(false)}
-										>
-											<Confirm
-												confirm={composeLadder}
-												cancel={() => setIsLadderCompose(false)}
-												label="Potwierdź"
-												style={ButtonStyle.Yellow}
-											/>
-										</Modal>
-									)}
-								</>
-								))}
+								{tournament.ladder[0]?.matches[0].teamHomeId ? (
+									<>
+										<Button
+											value="Zresetuj drabinke"
+											onClick={() =>
+												setIsLadderReset(true)
+											}
+											style={ButtonStyle.Red}
+										/>
+										{isLadderReset && (
+											<Modal
+												title="Czy na pewno chcesz zresetować drabinke?"
+												isClose
+												close={() =>
+													setIsLadderReset(false)
+												}
+											>
+												<Confirm
+													confirm={resetLadder}
+													cancel={() =>
+														setIsLadderReset(false)
+													}
+													label="Potwierdź"
+													style={ButtonStyle.Red}
+												/>
+											</Modal>
+										)}
+									</>
+								) : (
+									<>
+										<Button
+											value="Zbuduj drabinke"
+											onClick={() =>
+												setIsLadderCompose(true)
+											}
+										/>
+										{isLadderCompose && (
+											<Modal
+												title="Czy na pewno chcesz zbudować drabinke?"
+												isClose
+												close={() =>
+													setIsLadderCompose(false)
+												}
+											>
+												<Confirm
+													confirm={composeLadder}
+													cancel={() =>
+														setIsLadderCompose(
+															false
+														)
+													}
+													label="Potwierdź"
+													style={ButtonStyle.Yellow}
+												/>
+											</Modal>
+										)}
+									</>
+								)}
 							</div>
 						)}
-				</GuardComponent>
-			</>)}
+					</GuardComponent>
+				</>
+			)}
 
 			<div>
 				<div className={styles.header}>
@@ -525,7 +584,9 @@ export default function Tournament() {
 									confirm={(album) => {
 										setTournament({
 											...tournament,
-											albums: tournament.albums.concat(album),
+											albums: tournament.albums.concat(
+												album
+											),
 										});
 										setIsAddAlbum(false);
 									}}
@@ -539,10 +600,16 @@ export default function Tournament() {
 						<li
 							key={index}
 							className={styles.item}
-							style={album.profilePicture ? {
-								backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
-							} : undefined}
-							onClick={() => navigate(`/gallery/${id!}/albums/${album.id}`)}
+							style={
+								album.profilePicture
+									? {
+											backgroundImage: `url(${Config.HOST}${album.profilePicture})`,
+									  }
+									: undefined
+							}
+							onClick={() =>
+								navigate(`/gallery/${id!}/albums/${album.id}`)
+							}
 						>
 							<div className={styles.box}>
 								{!album.profilePicture && (

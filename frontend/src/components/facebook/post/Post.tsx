@@ -8,18 +8,36 @@ export default function Post(post: FacebookPost) {
 				<div className={styles.post}>
 					<div
 						className={styles.pictureBlock}
-						style={post.full_picture ? {
-							backgroundImage: `url(${post.full_picture})`,
-						} : undefined}
+						style={
+							post.full_picture
+								? {
+										backgroundImage: `url(${post.full_picture})`,
+								  }
+								: undefined
+						}
 					></div>
 					<div className={styles.itemContent}>
 						<div className={styles.itemDetails}>
 							<p className={styles.dates}>
 								{post.created_time.split("T")[0]}
 							</p>
-							<p>{post.message.slice(0, 200)}</p>
+							<p>
+								{post.message.slice(
+									0,
+									window.innerWidth > 960 ? 1500 : 400
+								)}
+							</p>
+							{post.message.length >
+								(window.innerWidth > 960 ? 1500 : 400) && (
+								<p className={styles.readMore}>...</p>
+							)}
 						</div>
-						<a className="slide-button" href={post.permalink_url} target="_blank" rel="noreferrer">
+						<a
+							className="slide-button"
+							href={post.permalink_url}
+							target="_blank"
+							rel="noreferrer"
+						>
 							Zobacz więcej
 						</a>
 					</div>

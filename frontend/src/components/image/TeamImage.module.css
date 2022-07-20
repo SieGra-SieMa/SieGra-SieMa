@@ -8,8 +8,30 @@
     align-items: center;
     justify-content: center;
     background-position: center;
+    transition: all .3s ease-in-out;
+}
+
+.picture:hover {
+    background-color: var(--secondary-color);
+}
+
+.picture:hover .editImage {
+    opacity: 1;
+}
+
+.picture:hover .placeholder {
+    opacity: 0;
 }
 
 .placeholder {
     color: #fff;
+    transition: all .2s ease-in-out;
+}
+
+.editImage {
+    position: absolute;
+    transform: translateX(-100%);
+    color: white;
+    opacity: 0;
+    transition: all .2s ease-in-out;
 }

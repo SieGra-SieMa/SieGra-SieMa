@@ -71,7 +71,7 @@ export default function TeamsListItem({ team }: Props) {
 					url={team.profilePicture}
 					size={150}
 					placeholderSize={72}
-					onClick={() => setIsPicture(true)}
+					onClick={user !== null && team.captainId === user.id ? () => setIsPicture(true) : undefined}
 					isEditable={user !== null && team.captainId === user.id}
 				/>
 
